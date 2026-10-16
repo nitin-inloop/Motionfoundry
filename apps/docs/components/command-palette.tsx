@@ -7,15 +7,15 @@ import type { NavIndex } from "../lib/nav";
 
 type Item = { href: string; label: string; group: string; hint: string };
 
-/** Docs, design systems, and components from LISTED collections only (nav.components is pre-filtered). */
+/** Docs, collections, ALL components (labelled with their collection; listed collections first), and design systems. */
 function toItems(nav: NavIndex): Item[] {
-  const collectionNames = new Map(nav.collections.map((col) => [col.id, col.name]));
+  const collectionNames = new Map(nav.allCollections.map((col) => [col.id, col.name]));
   return [
     ...nav.docs.map((d) => ({ href: `/docs/${d.slug}`, label: d.title, group: "Docs", hint: d.category })),
+    { href: "/components", label: "All Components", group: "Collections", hint: `${nav.allComponents.length} components` },
     ...nav.collections.map((col) => ({ href: `/collections/${col.id}`, label: `${col.name} collection`, group: "Collections", hint: `${col.count} components` })),
-    ...nav.components
-      .filter((c) => collectionNames.has(c.collection))
-      .map((c) => ({
+    // nav.allComponents is already ordered listed-collections-first (Scroll, Shaders, UI, then Text FX, Studio Kit, Core).
+    ...nav.allComponents.map((c) => ({
         href: `/components/${c.slug}`,
         label: c.name,
         group: collectionNames.get(c.collection) ?? "Components",

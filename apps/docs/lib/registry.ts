@@ -90,6 +90,23 @@ export function getListedCategories(): string[] {
   return registryData.categories.filter((c) => used.has(c));
 }
 
+/** Every collection, listed ones first, each group sorted by display order (Scroll, Shaders, UI, Text FX, Studio Kit, Core). */
+export function getCollectionsListedFirst(): RegistryCollection[] {
+  const all = getCollections();
+  return [...all.filter((c) => c.listed), ...all.filter((c) => !c.listed)];
+}
+
+/** Every component (listed or not), in `getCollectionsListedFirst()` order and then registry order. */
+export function getAllComponentsOrdered(): RegistryComponent[] {
+  return getCollectionsListedFirst().flatMap((col) => getComponentsByCollection(col.id));
+}
+
+/** Categories used by at least one component (any collection), in registry order. */
+export function getUsedCategories(): string[] {
+  const used = new Set(registryData.components.map((c) => c.category));
+  return registryData.categories.filter((c) => used.has(c));
+}
+
 export function getCollection(id: string): RegistryCollection | undefined {
   return registryData.collections.find((c) => c.id === id);
 }

@@ -93,6 +93,12 @@ export function DocsSidebar({ nav }: { nav: NavIndex }) {
           ))}
         </Group>
 
+        {/* Every component across all collections (including unlisted ones), ordered Scroll first. */}
+        <SidebarLink href="/components" active={pathname === "/components"}>
+          All Components
+          <span className="ml-auto font-mono text-[11px] font-normal text-muted-foreground">{nav.allComponents.length}</span>
+        </SidebarLink>
+
         {nav.collections.map((col) => {
           const items = nav.components.filter((c) => c.collection === col.id);
           const byCategory = groupBy(items, (c) => c.category, nav.categories);

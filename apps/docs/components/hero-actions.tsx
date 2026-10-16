@@ -1,9 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { ArrowRight } from "lucide-react";
-import { RollingText } from "@motionfoundry/ui";
 
 type Action = { label: string; href: string };
 
@@ -11,14 +9,16 @@ type Action = { label: string; href: string };
 export function HeroActions({
   primary = { label: "Get started", href: "/docs/getting-started" },
   secondary = { label: "Explore Scroll", href: "/collections/scroll" },
+  align = "center",
   className = "",
 }: {
   primary?: Action;
   secondary?: Action;
+  align?: "center" | "start";
   className?: string;
 }) {
   return (
-    <div className={`flex flex-wrap items-center justify-center gap-3 ${className}`}>
+    <div className={`flex flex-wrap items-center gap-3 ${align === "start" ? "justify-start" : "justify-center"} ${className}`}>
       <Link
         href={primary.href}
         className="group inline-flex h-11 items-center gap-2 rounded-full bg-foreground px-5 text-sm font-medium text-background transition hover:bg-foreground/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
@@ -33,20 +33,5 @@ export function HeroActions({
         {secondary.label}
       </Link>
     </div>
-  );
-}
-
-/** Closing CTA: a RollingText pill that navigates on click. */
-export function RollingCta({ label, href }: { label: string; href: string }) {
-  const router = useRouter();
-  return (
-    <RollingText
-      text={label}
-      onClick={() => router.push(href)}
-      fontSize={15}
-      color="#0a0a0a"
-      hoverColor="#0a0a0a"
-      className="!rounded-full !bg-foreground !px-6 !py-3 !font-medium !tracking-tight transition hover:!bg-foreground/90"
-    />
   );
 }

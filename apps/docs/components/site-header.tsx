@@ -11,12 +11,25 @@ import { GitHubIcon, LogoMark } from "./icons";
 
 type NavItem = { href: string; label: string; match: (p: string) => boolean };
 
-/** Home, Docs, one entry per listed collection (Scroll, Shaders, UI…), Designs, Changelog. */
+/** Home, Docs, Components (all), one entry per listed collection (Scroll, Shaders, UI…), Designs, Changelog. */
 function buildNav(nav: NavIndex): NavItem[] {
-  const collectionOf = new Map(nav.components.map((c) => [`/components/${c.slug}`, c.collection]));
+  const collectionOf = new Map(nav.allComponents.map((c) => [`/components/${c.slug}`, c.collection]));
+  const listedIds = new Set(nav.collections.map((col) => col.id));
+  const knownIds = new Set(nav.allCollections.map((col) => col.id));
   return [
     { href: "/", label: "Home", match: (p) => p === "/" },
     { href: "/docs/getting-started", label: "Docs", match: (p) => p.startsWith("/docs") && p !== "/docs/changelog" },
+    {
+      href: "/components",
+      label: "Components",
+      // Component pages highlight their collection; only unlisted collections (no header item of their own) fall back to "Components".
+      match: (p: string) => {
+        if (p === "/components") return true;
+        const owner = collectionOf.get(p) ?? (p.startsWith("/collections/") ? p.slice("/collections/".length) : undefined);
+        // Only real collections count — an unknown /collections/<id> is a 404 and highlights nothing.
+        return owner !== undefined && knownIds.has(owner) && !listedIds.has(owner);
+      },
+    },
     ...nav.collections.map((col) => ({
       href: `/collections/${col.id}`,
       label: col.name,

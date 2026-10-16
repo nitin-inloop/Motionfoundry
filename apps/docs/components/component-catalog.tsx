@@ -78,13 +78,21 @@ function compareVersions(a: string, b: string): number {
   return 0;
 }
 
-function sortComponents(list: CatalogComponent[], sort: SortMode, order: Map<string, number>): CatalogComponent[] {
+function sortComponents(
+  list: CatalogComponent[],
+  sort: SortMode,
+  order: Map<string, number>,
+  collectionRank: Map<string, number>
+): CatalogComponent[] {
   const byOrder = (a: CatalogComponent, b: CatalogComponent) => (order.get(a.slug) ?? 0) - (order.get(b.slug) ?? 0);
+  const byCollection = (a: CatalogComponent, b: CatalogComponent) =>
+    (collectionRank.get(a.collection) ?? Number.MAX_SAFE_INTEGER) - (collectionRank.get(b.collection) ?? Number.MAX_SAFE_INTEGER);
   const sorted = [...list];
   if (sort === "az") sorted.sort((a, b) => a.name.localeCompare(b.name));
   else if (sort === "newest")
     sorted.sort((a, b) => b.addedAt.localeCompare(a.addedAt) || compareVersions(b.version, a.version) || byOrder(a, b));
-  else sorted.sort((a, b) => Number(b.featured) - Number(a.featured) || byOrder(a, b));
+  // "Featured" keeps the collection order (Scroll first…) and floats featured items to the top WITHIN each collection.
+  else sorted.sort((a, b) => byCollection(a, b) || Number(b.featured) - Number(a.featured) || byOrder(a, b));
   return sorted;
 }
 
@@ -173,9 +181,11 @@ export function ComponentCatalog({
 
   const order = React.useMemo(() => new Map(components.map((c, i) => [c.slug, i])), [components]);
   const collectionNames = React.useMemo(() => new Map(collections.map((c) => [c.id, c.name])), [collections]);
-  // The server passes only listed collections (already sorted by order); keep every one as a chip,
-  // even if it is still empty, so the chip row is stable (Scroll, Shaders, UI).
-  const shownCollections = collections;
+  // The server passes collections already sorted (listed first, then by order). Keep every one as a chip,
+  // even if it is still empty, so the chip row is stable (Scroll, Shaders, UI | Text FX, Studio Kit, Core).
+  const collectionRank = React.useMemo(() => new Map(collections.map((c, i) => [c.id, i])), [collections]);
+  const listedCollections = collections.filter((c) => c.listed);
+  const moreCollections = collections.filter((c) => !c.listed);
 
   /** Components matching search, engine and the "new" toggle — the base for every faceted count. */
   const base = React.useMemo(
@@ -223,9 +233,10 @@ export function ComponentCatalog({
       sortComponents(
         base.filter((c) => inCollection(c, filters.collection) && inCategory(c, filters.category)),
         filters.sort,
-        order
+        order,
+        collectionRank
       ),
-    [base, filters.collection, filters.category, filters.sort, order]
+    [base, filters.collection, filters.category, filters.sort, order, collectionRank]
   );
 
   const newCount = React.useMemo(() => components.filter(isNewComponent).length, [components]);
@@ -245,6 +256,16 @@ export function ComponentCatalog({
       const keepCategory = f.category === ALL || components.some((c) => inCollection(c, id) && c.category === f.category);
       return withLock({ ...f, collection: id, category: keepCategory ? f.category : ALL });
     });
+
+  const collectionChip = (c: { id: string; name: string }) => {
+    const active = filters.collection === c.id;
+    return (
+      <button key={c.id} type="button" aria-pressed={active} onClick={() => selectCollection(c.id)} className={chip(active)}>
+        {c.name}
+        <Count value={collectionCounts.get(c.id) ?? 0} active={active} />
+      </button>
+    );
+  };
 
   const searchId = React.useId();
   const sortId = React.useId();
@@ -306,16 +327,15 @@ export function ComponentCatalog({
       </div>
 
       {!locked && (
-        <div className="flex flex-wrap gap-1.5" role="group" aria-label="Filter by collection">
-          {[{ id: ALL, name: "All collections" }, ...shownCollections].map((c) => {
-            const active = filters.collection === c.id;
-            return (
-              <button key={c.id} type="button" aria-pressed={active} onClick={() => selectCollection(c.id)} className={chip(active)}>
-                {c.name}
-                <Count value={collectionCounts.get(c.id) ?? 0} active={active} />
-              </button>
-            );
-          })}
+        <div className="flex flex-wrap items-center gap-1.5" role="group" aria-label="Filter by collection">
+          {[{ id: ALL, name: "All collections" }, ...listedCollections].map(collectionChip)}
+          {moreCollections.length > 0 && (
+            <>
+              <span aria-hidden="true" className="mx-1 h-4 w-px bg-border" />
+              <span className="px-1 font-mono text-[10px] uppercase tracking-wider text-neutral-500">More</span>
+              {moreCollections.map(collectionChip)}
+            </>
+          )}
         </div>
       )}
 
