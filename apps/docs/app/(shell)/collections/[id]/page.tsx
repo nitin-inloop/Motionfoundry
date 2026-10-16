@@ -34,7 +34,7 @@ export default async function CollectionPage({ params }: { params: Promise<{ id:
       <PageHeader
         title={collection.name}
         description={collection.description}
-        previous={{ href: "/components", title: "All Components" }}
+        previous={{ href: "/components", title: "Components" }}
         next={nextCollection ? { href: `/collections/${nextCollection.id}`, title: nextCollection.name } : undefined}
       />
       <div className="grid gap-4 lg:grid-cols-2">

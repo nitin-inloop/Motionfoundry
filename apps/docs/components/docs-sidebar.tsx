@@ -73,6 +73,16 @@ function groupBy<T>(items: T[], key: (item: T) => string, order?: string[]): [st
 export function DocsSidebar({ nav }: { nav: NavIndex }) {
   const pathname = usePathname() ?? "";
   const docGroups = groupBy(nav.docs, (d) => DOC_GROUP_LABEL[d.category] ?? d.category);
+  // Browsing components: the sidebar starts at Scroll — docs and setup pages stay in the Docs section.
+  const componentContext = pathname.startsWith("/components") || pathname.startsWith("/collections");
+  // An unlisted collection (Text FX, Studio Kit, Core) gets its own group while you're inside it.
+  const currentCollection =
+    nav.allComponents.find((c) => pathname === `/components/${c.slug}`)?.collection ?? (pathname.startsWith("/collections/") ? pathname.slice("/collections/".length) : undefined);
+  const extraCollection = nav.allCollections.find((col) => col.id === currentCollection && !col.listed);
+  const groups = [
+    ...nav.collections.map((col) => ({ col, items: nav.components.filter((c) => c.collection === col.id) })),
+    ...(extraCollection ? [{ col: extraCollection, items: nav.allComponents.filter((c) => c.collection === extraCollection.id) }] : []),
+  ];
 
   return (
     <aside
@@ -80,27 +90,22 @@ export function DocsSidebar({ nav }: { nav: NavIndex }) {
       className="mf-scrollbar sticky top-[var(--header-height)] hidden h-[calc(100vh-var(--header-height))] w-64 shrink-0 overflow-y-auto border-r border-border/60 py-8 pr-4 lg:block"
     >
       <div className="space-y-8">
-        <Group title="Docs">
-          {docGroups.map(([label, docs]) => (
-            <React.Fragment key={label}>
-              <SubHeading>{label}</SubHeading>
-              {docs.map((d) => (
-                <SidebarLink key={d.slug} href={`/docs/${d.slug}`} active={pathname === `/docs/${d.slug}`}>
-                  {d.title}
-                </SidebarLink>
-              ))}
-            </React.Fragment>
-          ))}
-        </Group>
+        {!componentContext && (
+          <Group title="Docs">
+            {docGroups.map(([label, docs]) => (
+              <React.Fragment key={label}>
+                <SubHeading>{label}</SubHeading>
+                {docs.map((d) => (
+                  <SidebarLink key={d.slug} href={`/docs/${d.slug}`} active={pathname === `/docs/${d.slug}`}>
+                    {d.title}
+                  </SidebarLink>
+                ))}
+              </React.Fragment>
+            ))}
+          </Group>
+        )}
 
-        {/* Every component across all collections (including unlisted ones), ordered Scroll first. */}
-        <SidebarLink href="/components" active={pathname === "/components"}>
-          All Components
-          <span className="ml-auto font-mono text-[11px] font-normal text-muted-foreground">{nav.allComponents.length}</span>
-        </SidebarLink>
-
-        {nav.collections.map((col) => {
-          const items = nav.components.filter((c) => c.collection === col.id);
+        {groups.map(({ col, items }) => {
           const byCategory = groupBy(items, (c) => c.category, nav.categories);
           const href = `/collections/${col.id}`;
           return (

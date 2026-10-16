@@ -167,7 +167,7 @@ export default function HomePage() {
               <div className="min-w-0 space-y-7">
                 {newComponents.length > 0 ? (
                   <Link
-                    href="/components?new=1"
+                    href="/docs/changelog"
                     className="inline-flex max-w-full items-center gap-2 rounded-full border border-emerald-400/30 bg-emerald-500/10 px-3.5 py-1 font-mono text-xs text-emerald-200 backdrop-blur hover:border-emerald-300/50"
                   >
                     <span className="min-w-0 truncate">
@@ -193,7 +193,7 @@ export default function HomePage() {
                 </p>
                 <HeroActions
                   componentCount={components.length}
-                  secondary={newComponents.length > 0 ? { label: `What's new in ${NEW_VERSION_LABEL}`, href: "/components?new=1" } : { label: "Browse Scroll", href: "/collections/scroll" }}
+                  secondary={newComponents.length > 0 ? { label: `What's new in ${NEW_VERSION_LABEL}`, href: "/docs/changelog" } : { label: "Browse Scroll", href: "/collections/scroll" }}
                 />
               </div>
               <div className="min-w-0">
@@ -284,8 +284,8 @@ export default function HomePage() {
           eyebrow={ui?.name ?? "UI"}
           title="Cards & loaders"
           description="The newest pieces: a tilting credit card, expanding accordion cards, and loading states that actually feel alive."
-          href="/components"
-          linkLabel="Browse all components"
+          href="/collections/ui"
+          linkLabel={`Browse ${ui?.name ?? "UI"}`}
         />
         <div className="grid auto-rows-[280px] grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
           {CARD_TILES.map((t) => (

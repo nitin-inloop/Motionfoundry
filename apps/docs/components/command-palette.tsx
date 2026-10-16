@@ -12,7 +12,6 @@ function toItems(nav: NavIndex): Item[] {
   const collectionNames = new Map(nav.allCollections.map((col) => [col.id, col.name]));
   return [
     ...nav.docs.map((d) => ({ href: `/docs/${d.slug}`, label: d.title, group: "Docs", hint: d.category })),
-    { href: "/components", label: "All Components", group: "Collections", hint: `${nav.allComponents.length} components` },
     ...nav.collections.map((col) => ({ href: `/collections/${col.id}`, label: `${col.name} collection`, group: "Collections", hint: `${col.count} components` })),
     // nav.allComponents is already ordered listed-collections-first (Scroll, Shaders, UI, then Text FX, Studio Kit, Core).
     ...nav.allComponents.map((c) => ({

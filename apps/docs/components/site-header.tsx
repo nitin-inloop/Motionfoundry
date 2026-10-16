@@ -20,7 +20,8 @@ function buildNav(nav: NavIndex): NavItem[] {
     { href: "/", label: "Home", match: (p) => p === "/" },
     { href: "/docs/getting-started", label: "Docs", match: (p) => p.startsWith("/docs") && p !== "/docs/changelog" },
     {
-      href: "/components",
+      // Opens the first component directly (Scroll first) — there is no catalog grid.
+      href: nav.components[0] ? `/components/${nav.components[0].slug}` : "/components",
       label: "Components",
       // Component pages highlight their collection; only unlisted collections (no header item of their own) fall back to "Components".
       match: (p: string) => {
