@@ -31,5 +31,8 @@
   "homepage": "https://github.com/nitin-inloop/Motionfoundry#readme",
   "bugs": {
     "url": "https://github.com/nitin-inloop/Motionfoundry/issues"
+  },
+  "engines": {
+    "node": ">=20.9.0"
   }
 }

@@ -72,7 +72,8 @@ for (const slug of slugs) {
   if (!fs.existsSync(metaPath) || !fs.existsSync(tsxPath) || !fs.existsSync(cssPath)) continue;
 
   const meta = JSON.parse(fs.readFileSync(metaPath, "utf8"));
-  const tsx = fs.readFileSync(tsxPath, "utf8");
+  // Normalize line endings so the registry is identical on Windows (CRLF checkouts) and Unix.
+  const tsx = fs.readFileSync(tsxPath, "utf8").replace(/\r\n/g, "\n");
 
   if (meta.slug !== slug) errors.push(`${slug}: metadata slug is "${meta.slug}"`);
   if (!CATEGORIES.includes(meta.category)) errors.push(`${slug}: unknown category "${meta.category}"`);
@@ -87,7 +88,7 @@ for (const slug of slugs) {
     files: [
       { path: `components/ui/${slug}.tsx`, type: "registry:component", content: tsx },
       // Installed next to components/ui/ so the component's "../styles/<slug>.module.css" import resolves.
-      { path: `components/styles/${slug}.module.css`, type: "registry:style", content: fs.readFileSync(cssPath, "utf8") },
+      { path: `components/styles/${slug}.module.css`, type: "registry:style", content: fs.readFileSync(cssPath, "utf8").replace(/\r\n/g, "\n") },
     ],
   };
 

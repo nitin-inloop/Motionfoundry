@@ -1,0 +1,6 @@
+# Keep LF line endings on every platform so generated registry files are identical everywhere.
+* text=auto eol=lf
+
+*.png binary
+*.ico binary
+*.svg text eol=lf

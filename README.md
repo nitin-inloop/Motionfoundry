@@ -1,5 +1,8 @@
 # MotionFoundry (`@motionfoundry/ui` v2.1.0)
 
+> **Get started:** see [SETUP.md](./SETUP.md) for prerequisites, running the docs site, builds, tests, and deployment.
+> Repository: https://github.com/nitin-inloop/Motionfoundry
+
 Precision-engineered, open-source animated React component library, CLI source installer, and interactive documentation platform built with **Next.js App Router**, **TypeScript**, **Motion (`motion/react`)**, **SVG**, **HTML5 Canvas**, and **scoped CSS Modules**.
 
 ## 48 Animated Components in Two Collections
@@ -24,6 +27,10 @@ Hand-picked from the Swirl Studio Kit prototypes and rebuilt on MotionFoundry co
 5. **Loaders and Feedback**: `OrbitLoader`, `PulseLoader`, `NotificationStack`
 6. **Developer-Interface Animations**: `ReorderList`, `ExpandableSearch`
 
+## 11 Brand Design Systems
+
+`design-md/` vendors DESIGN.md files from [VoltAgent/awesome-design-md](https://github.com/VoltAgent/awesome-design-md) (MIT) for **Vercel, Cursor, Claude, Framer, Apple, Airbnb, Expo, ElevenLabs, Runway, Resend, and Spotify**. Each has a curated theme in `design-md/themes.json`. The docs site renders a page per brand (tokens, type specimen, live re-skinned components, full spec), and every component playground has a **Design** picker. Components read `--mf-*` CSS variables (with their original values as fallbacks), so any wrapper can adopt a brand theme.
+
 ## Repository Layout
 
 | Path | Purpose |
@@ -35,6 +42,7 @@ Hand-picked from the Swirl Studio Kit prototypes and rebuilt on MotionFoundry co
 | `packages/cli` | `motionfoundry` CLI — copies component source into apps |
 | `apps/docs` | Next.js docs site with live previews and prop playgrounds (imports components from source) |
 | `apps/docs/content/docs/*.mdx` | Documentation copy; `scripts/build-docs.mjs` generates `apps/docs/lib/docs.ts` |
+| `design-md/` | Vendored DESIGN.md files + `themes.json`; `scripts/build-designs.mjs` generates `registry/designs.json` |
 
 ## Quickstart & Local Development
 
@@ -42,8 +50,9 @@ Hand-picked from the Swirl Studio Kit prototypes and rebuilt on MotionFoundry co
 # 1. Install dependencies
 pnpm install
 
-# 2. Regenerate registry + docs data, build @motionfoundry/ui and the CLI
+# 2. Regenerate registry, design systems, and docs data; build @motionfoundry/ui and the CLI
 node scripts/build-registry.mjs
+node scripts/build-designs.mjs
 node scripts/build-docs.mjs
 node packages/ui/scripts/build.mjs
 node packages/cli/scripts/build.mjs

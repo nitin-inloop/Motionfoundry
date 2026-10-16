@@ -121,14 +121,12 @@ test("1. Registry contains 24 Core + 24 Studio Kit components across 7 categorie
 
 test("2. Registry source code matches actual packages/ui/src implementation files byte-for-byte", () => {
   for (const comp of registry.components) {
-    const diskTsx = fs.readFileSync(
-      path.join(rootDir, "packages/ui/src/components", `${comp.slug}.tsx`),
-      "utf8"
-    );
-    const diskCss = fs.readFileSync(
-      path.join(rootDir, "packages/ui/src/styles", `${comp.slug}.module.css`),
-      "utf8"
-    );
+    const diskTsx = fs
+      .readFileSync(path.join(rootDir, "packages/ui/src/components", `${comp.slug}.tsx`), "utf8")
+      .replace(/\r\n/g, "\n");
+    const diskCss = fs
+      .readFileSync(path.join(rootDir, "packages/ui/src/styles", `${comp.slug}.module.css`), "utf8")
+      .replace(/\r\n/g, "\n");
     const regTsx = comp.files.find((f) => f.path.endsWith(".tsx")).content;
     const regCss = comp.files.find((f) => f.path.endsWith(".css")).content;
 
