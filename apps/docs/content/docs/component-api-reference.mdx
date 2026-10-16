@@ -1,0 +1,55 @@
+---
+title: "Component API Reference"
+category: "Core Concepts"
+summary: "Complete TypeScript prop signatures, dependency matrix, and category index for all 48 components."
+---
+
+# Component API Reference
+
+Every component exports both its React component function and its TypeScript props interface (`<ComponentName>Props`) from `@motionfoundry/ui`.
+
+### Dependency Matrix Across the 48 Components
+
+- **Pure React + CSS / SVG / Canvas (No `motion` required)**: `GlyphCascade`, `OrbitingWords`, `VelocityButton`, `ConstellationCard`, `LiquidGlassCard`, `MorphingBorder`, `InfiniteMarquee`, `FluidMeshBackground`, `NoiseAurora`, `OrbitingParticles`, `LiquidBlob`, `ScrollVelocityProgress`.
+- **Motion for React (`motion/react`) Primitives**: `KineticType`, `TextMorph`, `AuroraHeadline`, `MagneticButton`, `ElasticPressButton`, `HoloTiltCard`, `PortalRevealPanel`, `ScrollNarrative`, `ParallaxDepthScene`, `MagneticDock`, `MorphingCommandPalette`, `StaggeredGridReveal`.
+- **Studio Kit — Pure React + CSS (No `motion` required)**: `ShimmerText`, `ShinyBorderButton`, `Meteors`, `BeamLines`, `GridPulse`, `OrbitLoader`, `PulseLoader`.
+- **Studio Kit — Motion for React**: `BlurInText`, `Typewriter`, `NumberTicker`, `SplitReveal`, `RotatingWords`, `ConfettiButton`, `LoadingButton`, `SlideFillButton`, `ToggleSwitch`, `AnimatedCheckbox`, `FlipCard`, `SwipeCards`, `RevealCard`, `DrawBorderCard`, `NotificationStack`, `ReorderList`, `ExpandableSearch`.
+
+The per-component prop tables live on each component page under the **Props** tab.
+
+```tsx
+import type {
+  KineticTypeProps,
+  GlyphCascadeProps,
+  TextMorphProps,
+  OrbitingWordsProps,
+  AuroraHeadlineProps,
+  MagneticButtonProps,
+  VelocityButtonProps,
+  ElasticPressButtonProps,
+  ConstellationCardProps,
+  LiquidGlassCardProps,
+  HoloTiltCardProps,
+  MorphingBorderProps,
+  PortalRevealPanelProps,
+  InfiniteMarqueeProps,
+  ScrollNarrativeProps,
+  ParallaxDepthSceneProps,
+  FluidMeshBackgroundProps,
+  NoiseAuroraProps,
+  OrbitingParticlesProps,
+  LiquidBlobProps,
+  MagneticDockProps,
+  ScrollVelocityProgressProps,
+  MorphingCommandPaletteProps,
+  StaggeredGridRevealProps,
+  // Studio Kit
+  BlurInTextProps,
+  RotatingWordsProps,
+  ConfettiButtonProps,
+  FlipCardProps,
+  SwipeCardsProps,
+  NotificationStackProps,
+  ReorderListProps,
+} from "@motionfoundry/ui";
+```

@@ -1,0 +1,136 @@
+{
+  "slug": "draw-border-card",
+  "name": "DrawBorderCard",
+  "category": "High-End Animated Cards",
+  "collection": "studio-kit",
+  "featured": false,
+  "addedAt": "2026-10-16",
+  "version": "2.1.0",
+  "requiresMotion": true,
+  "dependencies": [
+    "motion",
+    "react"
+  ],
+  "description": "Card that traces its own rounded outline with a single SVG stroke on hover or focus, using a normalised pathLength so the stroke matches the card radius at any size.",
+  "tags": [
+    "card",
+    "border",
+    "svg",
+    "stroke",
+    "draw",
+    "hover"
+  ],
+  "a11yNotes": "Root is a focusable <article>; the stroke draws on hover and on focus-within so keyboard users get the same affordance, and the SVG outline is aria-hidden. Under prefers-reduced-motion the full outline fades in instead of drawing.",
+  "defaultProps": {
+    "title": "Draw Border Card",
+    "body": "Hover or focus the card and a single stroke traces its outline, matched exactly to the corner radius.",
+    "duration": 0.8,
+    "strokeColor": "#38bdf8",
+    "strokeWidth": 2,
+    "radius": 16
+  },
+  "controls": [
+    {
+      "prop": "title",
+      "label": "Title",
+      "type": "text"
+    },
+    {
+      "prop": "body",
+      "label": "Body",
+      "type": "text"
+    },
+    {
+      "prop": "duration",
+      "label": "Draw Duration (s)",
+      "type": "range",
+      "min": 0.2,
+      "max": 2.5,
+      "step": 0.1
+    },
+    {
+      "prop": "strokeColor",
+      "label": "Stroke Color",
+      "type": "color"
+    },
+    {
+      "prop": "strokeWidth",
+      "label": "Stroke Width (px)",
+      "type": "range",
+      "min": 1,
+      "max": 6,
+      "step": 0.5
+    },
+    {
+      "prop": "radius",
+      "label": "Corner Radius (px)",
+      "type": "range",
+      "min": 0,
+      "max": 40,
+      "step": 2
+    }
+  ],
+  "propsApi": [
+    {
+      "name": "title",
+      "type": "string",
+      "default": "'Draw Border Card'",
+      "description": "Card heading (ignored when children are provided)."
+    },
+    {
+      "name": "body",
+      "type": "string",
+      "default": "'Hover or focus the card and a single stroke traces its outline, matched exactly to the corner radius.'",
+      "description": "Card body copy (ignored when children are provided)."
+    },
+    {
+      "name": "children",
+      "type": "React.ReactNode",
+      "default": "undefined",
+      "description": "Custom card content."
+    },
+    {
+      "name": "duration",
+      "type": "number",
+      "default": "0.8",
+      "description": "Stroke draw duration in seconds."
+    },
+    {
+      "name": "strokeColor",
+      "type": "string",
+      "default": "'#38bdf8'",
+      "description": "Stroke color."
+    },
+    {
+      "name": "strokeWidth",
+      "type": "number",
+      "default": "2",
+      "description": "Stroke width in pixels."
+    },
+    {
+      "name": "radius",
+      "type": "number",
+      "default": "16",
+      "description": "Corner radius in pixels, shared by the card and the stroke."
+    },
+    {
+      "name": "className",
+      "type": "string",
+      "default": "''",
+      "description": "Extra class merged onto the root."
+    }
+  ],
+  "files": [
+    {
+      "path": "components/ui/draw-border-card.tsx",
+      "type": "registry:component",
+      "content": "\"use client\";\n\nimport * as React from \"react\";\nimport { motion, useReducedMotion } from \"motion/react\";\nimport styles from \"../styles/draw-border-card.module.css\";\n\nexport interface DrawBorderCardProps {\n  /** Card heading (ignored when children are provided) */\n  title?: string;\n  /** Card body copy (ignored when children are provided) */\n  body?: string;\n  /** Custom card content */\n  children?: React.ReactNode;\n  /** Stroke draw duration in seconds */\n  duration?: number;\n  /** Stroke color */\n  strokeColor?: string;\n  /** Stroke width in pixels */\n  strokeWidth?: number;\n  /** Card corner radius in pixels (shared by the card and the stroke) */\n  radius?: number;\n  /** Optional className */\n  className?: string;\n}\n\nexport function DrawBorderCard({\n  title = \"Draw Border Card\",\n  body = \"Hover or focus the card and a single stroke traces its outline, matched exactly to the corner radius.\",\n  children,\n  duration = 0.8,\n  strokeColor = \"#38bdf8\",\n  strokeWidth = 2,\n  radius = 16,\n  className = \"\",\n}: DrawBorderCardProps) {\n  const prefersReducedMotion = useReducedMotion();\n  const [hovered, setHovered] = React.useState(false);\n  const [focused, setFocused] = React.useState(false);\n  const active = hovered || focused;\n\n  return (\n    <article\n      tabIndex={0}\n      onPointerEnter={() => setHovered(true)}\n      onPointerLeave={() => setHovered(false)}\n      onFocus={() => setFocused(true)}\n      onBlur={(e) => {\n        if (!e.currentTarget.contains(e.relatedTarget as Node | null)) setFocused(false);\n      }}\n      data-active={active || undefined}\n      style={{ \"--mf-db-radius\": `${radius}px` } as React.CSSProperties}\n      className={`${styles.root} ${className}`.trim()}\n    >\n      <svg className={styles.outline} aria-hidden=\"true\">\n        <motion.rect\n          x=\"0\"\n          y=\"0\"\n          width=\"100%\"\n          height=\"100%\"\n          rx={radius}\n          ry={radius}\n          fill=\"none\"\n          stroke={strokeColor}\n          strokeWidth={strokeWidth}\n          strokeLinecap=\"round\"\n          initial={false}\n          animate={\n            prefersReducedMotion\n              ? { pathLength: 1, opacity: active ? 1 : 0 }\n              : { pathLength: active ? 1 : 0, opacity: active ? 1 : 0 }\n          }\n          transition={\n            prefersReducedMotion\n              ? { duration: 0.15 }\n              : {\n                  pathLength: { duration, ease: [0.65, 0, 0.35, 1] },\n                  opacity: { duration: 0.12, delay: active ? 0 : duration * 0.6 },\n                }\n          }\n        />\n      </svg>\n      <div className={styles.content}>\n        {children ?? (\n          <>\n            <h3 className={styles.title}>{title}</h3>\n            <p className={styles.body}>{body}</p>\n          </>\n        )}\n      </div>\n    </article>\n  );\n}\n"
+    },
+    {
+      "path": "components/styles/draw-border-card.module.css",
+      "type": "registry:style",
+      "content": ".root {\n  position: relative;\n  display: block;\n  width: 18rem;\n  max-width: 100%;\n  padding: 1.5rem;\n  box-sizing: border-box;\n  border-radius: var(--mf-db-radius, 16px);\n  border: 1px solid var(--mf-border, #2e2e38);\n  background: radial-gradient(120% 90% at 50% 0%, var(--mf-surface-raised, #1b1b22) 0%, var(--mf-surface, #121218) 75%);\n  color: var(--mf-fg, #f4f4f6);\n}\n\n.root:focus-visible {\n  outline: 2px solid var(--mf-fg, #e4e4e7);\n  outline-offset: 3px;\n}\n\n/* Covers the border box so the stroke sits exactly on the rounded edge. */\n.outline {\n  position: absolute;\n  inset: -1px;\n  width: calc(100% + 2px);\n  height: calc(100% + 2px);\n  overflow: visible;\n  pointer-events: none;\n}\n\n.content {\n  position: relative;\n}\n\n.title {\n  margin: 0 0 0.5rem;\n  font-size: 1.15rem;\n  font-weight: 650;\n  letter-spacing: -0.02em;\n}\n\n.body {\n  margin: 0;\n  font-size: 0.875rem;\n  line-height: 1.55;\n  color: var(--mf-muted, #a1a1aa);\n}\n\n@media (prefers-reduced-motion: reduce) {\n  .outline rect {\n    transition: none;\n  }\n}\n"
+    }
+  ],
+  "tailwindExample": "\"use client\";\n\nimport { motion } from \"motion/react\";\n\nexport function DrawBorderCardTailwind({ title = \"Draw Border Card\", body = \"A single stroke traces the outline on hover or focus.\" }) {\n  return (\n    <motion.article\n      tabIndex={0}\n      initial=\"rest\"\n      animate=\"rest\"\n      whileHover=\"active\"\n      whileFocus=\"active\"\n      className=\"relative w-72 rounded-2xl border border-zinc-800 bg-zinc-900 p-6 text-zinc-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[3px] focus-visible:outline-zinc-200\"\n    >\n      <svg aria-hidden className=\"pointer-events-none absolute -inset-px h-[calc(100%+2px)] w-[calc(100%+2px)] overflow-visible\">\n        <motion.rect\n          width=\"100%\"\n          height=\"100%\"\n          rx=\"16\"\n          fill=\"none\"\n          stroke=\"#38bdf8\"\n          strokeWidth=\"2\"\n          variants={{ rest: { pathLength: 0, opacity: 0 }, active: { pathLength: 1, opacity: 1 } }}\n          transition={{ duration: 0.8, ease: \"easeInOut\" }}\n        />\n      </svg>\n      <h3 className=\"mb-2 text-lg font-semibold\">{title}</h3>\n      <p className=\"text-sm text-zinc-400\">{body}</p>\n    </motion.article>\n  );\n}"
+}

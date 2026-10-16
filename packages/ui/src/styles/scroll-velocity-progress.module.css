@@ -1,0 +1,57 @@
+.card {
+  width: 100%;
+  border-radius: 0.75rem;
+  border: 1px solid var(--mf-surface-raised, #25252f);
+  background-color: var(--mf-surface, #101015);
+  padding: 1.15rem 1.35rem;
+  color: var(--mf-fg, #f4f4f6);
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.metaRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.72rem;
+}
+
+.label {
+  color: var(--mf-muted, #a1a1aa);
+}
+
+.readout {
+  color: var(--mf-fg, #f4f4f6);
+}
+
+.trackHorizontal {
+  width: 100%;
+  border-radius: 999px;
+  background-color: var(--mf-surface-raised, #1e1e28);
+  overflow: hidden;
+  transition: height 160ms ease;
+}
+
+.trackVertical {
+  height: 7.5rem;
+  border-radius: 999px;
+  background-color: var(--mf-surface-raised, #1e1e28);
+  overflow: hidden;
+  align-self: center;
+  transition: width 160ms ease;
+}
+
+.fill {
+  border-radius: 999px;
+  transition: width 160ms ease, height 160ms ease, box-shadow 160ms ease;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .trackHorizontal,
+  .trackVertical,
+  .fill {
+    transition: none;
+  }
+}

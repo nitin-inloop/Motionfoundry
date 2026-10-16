@@ -1,0 +1,123 @@
+{
+  "slug": "glyph-cascade",
+  "name": "GlyphCascade",
+  "category": "Advanced Text Animations",
+  "featured": true,
+  "addedAt": "2026-10-16",
+  "version": "2.0.0",
+  "requiresMotion": false,
+  "dependencies": [
+    "react"
+  ],
+  "description": "Character-by-character cryptographic cascade reveal with temporary glyph scrambling, progressive blur reduction, selectable text, and directional sweep control.",
+  "tags": [
+    "glyph",
+    "cascade",
+    "scramble",
+    "cipher",
+    "text",
+    "reveal"
+  ],
+  "a11yNotes": "Renders an accessible sr-only text node alongside aria-hidden visual glyph cells while preserving full user text selection once resolved. Skips scrambling under prefers-reduced-motion.",
+  "defaultProps": {
+    "text": "DETERMINISTIC GLYPH CASCADE // v2.0",
+    "direction": "ltr",
+    "scrambleSpeed": 32,
+    "cascadeStep": 2,
+    "blurAmount": 6,
+    "charset": "01/#%&*+<>ΔΛΞ"
+  },
+  "controls": [
+    {
+      "prop": "text",
+      "label": "Target Text",
+      "type": "text"
+    },
+    {
+      "prop": "direction",
+      "label": "Cascade Direction",
+      "type": "select",
+      "options": [
+        "ltr",
+        "rtl",
+        "center"
+      ]
+    },
+    {
+      "prop": "scrambleSpeed",
+      "label": "Frame Interval (ms)",
+      "type": "range",
+      "min": 16,
+      "max": 80,
+      "step": 4
+    },
+    {
+      "prop": "cascadeStep",
+      "label": "Scramble Cycles/Char",
+      "type": "range",
+      "min": 1,
+      "max": 6,
+      "step": 1
+    },
+    {
+      "prop": "blurAmount",
+      "label": "Unresolved Blur (px)",
+      "type": "range",
+      "min": 0,
+      "max": 12,
+      "step": 1
+    }
+  ],
+  "propsApi": [
+    {
+      "name": "text",
+      "type": "string",
+      "default": "'DETERMINISTIC GLYPH...'",
+      "description": "Target text string to decode."
+    },
+    {
+      "name": "direction",
+      "type": "'ltr' | 'rtl' | 'center'",
+      "default": "'ltr'",
+      "description": "Order in which characters lock into their final glyph."
+    },
+    {
+      "name": "scrambleSpeed",
+      "type": "number",
+      "default": "32",
+      "description": "Milliseconds per scramble tick."
+    },
+    {
+      "name": "cascadeStep",
+      "type": "number",
+      "default": "2",
+      "description": "Number of scramble iterations before each character locks."
+    },
+    {
+      "name": "blurAmount",
+      "type": "number",
+      "default": "6",
+      "description": "Blur applied to unresolved characters in pixels."
+    },
+    {
+      "name": "charset",
+      "type": "string",
+      "default": "'01/#%&*+<>ΔΛΞ'",
+      "description": "Pool of temporary cipher glyphs."
+    }
+  ],
+  "files": [
+    {
+      "path": "components/ui/glyph-cascade.tsx",
+      "type": "registry:component",
+      "content": "\"use client\";\n\nimport * as React from \"react\";\nimport styles from \"../styles/glyph-cascade.module.css\";\n\nexport interface GlyphCascadeProps {\n  /** Target string to reveal */\n  text: string;\n  /** Direction of character resolution */\n  direction?: \"ltr\" | \"rtl\" | \"center\";\n  /** Interval in ms between scramble frames */\n  scrambleSpeed?: number;\n  /** Scramble iterations per character */\n  cascadeStep?: number;\n  /** Blur radius in px for unresolved glyphs */\n  blurAmount?: number;\n  /** Cipher character pool */\n  charset?: string;\n  /** Optional className */\n  className?: string;\n}\n\nexport function GlyphCascade({\n  text,\n  direction = \"ltr\",\n  scrambleSpeed = 32,\n  cascadeStep = 2,\n  blurAmount = 6,\n  charset = \"01/#%&*+<>ΔΛΞ\",\n  className = \"\",\n}: GlyphCascadeProps) {\n  const [step, setStep] = React.useState(0);\n  const [reducedMotion, setReducedMotion] = React.useState(false);\n\n  React.useEffect(() => {\n    if (typeof window === \"undefined\" || !window.matchMedia) return;\n    const mq = window.matchMedia(\"(prefers-reduced-motion: reduce)\");\n    setReducedMotion(mq.matches);\n    const handler = (e: MediaQueryListEvent) => setReducedMotion(e.matches);\n    mq.addEventListener(\"change\", handler);\n    return () => mq.removeEventListener(\"change\", handler);\n  }, []);\n\n  const chars = React.useMemo(() => Array.from(text), [text]);\n  const maxSteps = chars.length * Math.max(1, cascadeStep);\n\n  React.useEffect(() => {\n    if (reducedMotion) {\n      setStep(maxSteps);\n      return;\n    }\n    setStep(0);\n    const timer = window.setInterval(() => {\n      setStep((prev) => {\n        if (prev >= maxSteps) {\n          window.clearInterval(timer);\n          return maxSteps;\n        }\n        return prev + 1;\n      });\n    }, scrambleSpeed);\n    return () => window.clearInterval(timer);\n  }, [text, direction, scrambleSpeed, maxSteps, reducedMotion]);\n\n  const isCharResolved = (index: number) => {\n    if (reducedMotion || step >= maxSteps) return true;\n    const total = chars.length;\n    let orderIndex = index;\n    if (direction === \"rtl\") {\n      orderIndex = total - 1 - index;\n    } else if (direction === \"center\") {\n      const mid = (total - 1) / 2;\n      orderIndex = Math.abs(index - mid) * 1.8;\n    }\n    return step >= orderIndex * cascadeStep;\n  };\n\n  return (\n    <span className={`${styles.root} ${className}`.trim()}>\n      <span className={styles.srOnly}>{text}</span>\n      <span aria-hidden=\"true\" className={styles.glyphTrack}>\n        {chars.map((ch, idx) => {\n          if (ch === \" \") {\n            return <span key={idx} className={styles.space}>&nbsp;</span>;\n          }\n          const resolved = isCharResolved(idx);\n          const pool = charset.length > 0 ? charset : \"01X#\";\n          const cipherChar = pool[(idx * 7 + step) % pool.length];\n          return (\n            <span\n              key={idx}\n              className={`${styles.glyph} ${resolved ? styles.resolved : styles.scrambling}`}\n              style={\n                resolved\n                  ? undefined\n                  : ({\n                      filter: `blur(${ Math.max(0, blurAmount * 0.5) }px)`,\n                    } as React.CSSProperties)\n              }\n            >\n              {resolved ? ch : cipherChar}\n            </span>\n          );\n        })}\n      </span>\n    </span>\n  );\n}\n"
+    },
+    {
+      "path": "components/styles/glyph-cascade.module.css",
+      "type": "registry:style",
+      "content": ".root {\n  position: relative;\n  display: inline-block;\n  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;\n  font-weight: 600;\n  letter-spacing: 0.02em;\n  user-select: text;\n}\n\n.srOnly {\n  position: absolute;\n  width: 1px;\n  height: 1px;\n  padding: 0;\n  margin: -1px;\n  overflow: hidden;\n  clip: rect(0, 0, 0, 0);\n  border: 0;\n}\n\n.glyphTrack {\n  display: inline-flex;\n  flex-wrap: wrap;\n}\n\n.glyph {\n  display: inline-block;\n  transition: filter 160ms ease, opacity 160ms ease, transform 160ms ease;\n}\n\n.resolved {\n  opacity: 1;\n  transform: translateY(0);\n  color: inherit;\n}\n\n.scrambling {\n  opacity: 0.62;\n  transform: translateY(2px);\n  color: var(--mf-muted, #a1a1aa);\n}\n\n.space {\n  display: inline-block;\n}\n\n@media (prefers-reduced-motion: reduce) {\n  .glyph {\n    transition: none;\n    filter: none !important;\n    transform: none !important;\n    opacity: 1 !important;\n  }\n}\n"
+    }
+  ],
+  "tailwindExample": "\"use client\";\n\nimport * as React from \"react\";\n\nexport function GlyphCascadeTailwind({ text = \"DETERMINISTIC GLYPH CASCADE\" }) {\n  const [step, setStep] = React.useState(0);\n  React.useEffect(() => {\n    const id = setInterval(() => setStep((s) => (s < text.length * 2 ? s + 1 : s)), 30);\n    return () => clearInterval(id);\n  }, [text]);\n  return (\n    <span className=\"font-mono text-base font-semibold tracking-wider text-zinc-100\">\n      {Array.from(text).map((c, i) => (\n        <span key={i} className={step >= i * 2 ? \"text-zinc-100\" : \"text-zinc-500 blur-[1px]\"}>\n          {c === \" \" || step >= i * 2 ? c : \"01/#%\"[(i + step) % 5]}\n        </span>\n      ))}\n    </span>\n  );\n}",
+  "collection": "core"
+}

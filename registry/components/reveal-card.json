@@ -1,0 +1,109 @@
+{
+  "slug": "reveal-card",
+  "name": "RevealCard",
+  "category": "High-End Animated Cards",
+  "collection": "studio-kit",
+  "featured": false,
+  "addedAt": "2026-10-16",
+  "version": "2.1.0",
+  "requiresMotion": true,
+  "dependencies": [
+    "motion",
+    "react"
+  ],
+  "description": "Card whose accent-colored overlay springs in from any edge on hover or keyboard focus to reveal the title, body copy and optional actions.",
+  "tags": [
+    "card",
+    "reveal",
+    "overlay",
+    "hover",
+    "spring",
+    "focus"
+  ],
+  "a11yNotes": "Root is a focusable <article> labelled by the title; the overlay opens on hover and on focus-within, so tabbing to the card or to a link inside reveals it. The decorative cover is aria-hidden while the overlay text stays in the accessibility tree, and prefers-reduced-motion replaces the slide with a short fade.",
+  "defaultProps": {
+    "title": "Reveal Card",
+    "body": "A spring-driven overlay slides in on hover or keyboard focus, carrying the detail without leaving the card.",
+    "revealFrom": "bottom",
+    "accentColor": "#38bdf8"
+  },
+  "controls": [
+    {
+      "prop": "title",
+      "label": "Title",
+      "type": "text"
+    },
+    {
+      "prop": "body",
+      "label": "Body",
+      "type": "text"
+    },
+    {
+      "prop": "revealFrom",
+      "label": "Reveal From",
+      "type": "select",
+      "options": [
+        "bottom",
+        "top",
+        "left",
+        "right"
+      ]
+    },
+    {
+      "prop": "accentColor",
+      "label": "Overlay Color",
+      "type": "color"
+    }
+  ],
+  "propsApi": [
+    {
+      "name": "title",
+      "type": "string",
+      "default": "'Reveal Card'",
+      "description": "Title shown on the cover and the overlay."
+    },
+    {
+      "name": "body",
+      "type": "string",
+      "default": "'A spring-driven overlay slides in on hover or keyboard focus, carrying the detail without leaving the card.'",
+      "description": "Body copy revealed in the overlay."
+    },
+    {
+      "name": "revealFrom",
+      "type": "'bottom' | 'top' | 'left' | 'right'",
+      "default": "'bottom'",
+      "description": "Edge the overlay slides in from."
+    },
+    {
+      "name": "accentColor",
+      "type": "string",
+      "default": "'#38bdf8'",
+      "description": "Overlay background color."
+    },
+    {
+      "name": "children",
+      "type": "React.ReactNode",
+      "default": "undefined",
+      "description": "Extra overlay content such as a link or button."
+    },
+    {
+      "name": "className",
+      "type": "string",
+      "default": "''",
+      "description": "Extra class merged onto the root."
+    }
+  ],
+  "files": [
+    {
+      "path": "components/ui/reveal-card.tsx",
+      "type": "registry:component",
+      "content": "\"use client\";\n\nimport * as React from \"react\";\nimport { motion, useReducedMotion } from \"motion/react\";\nimport styles from \"../styles/reveal-card.module.css\";\n\nexport interface RevealCardProps {\n  /** Card title, shown on the cover and the overlay */\n  title?: string;\n  /** Body copy revealed in the overlay */\n  body?: string;\n  /** Edge the overlay slides in from */\n  revealFrom?: \"bottom\" | \"top\" | \"left\" | \"right\";\n  /** Overlay background color */\n  accentColor?: string;\n  /** Extra overlay content (e.g. a link or button) rendered under the body */\n  children?: React.ReactNode;\n  /** Optional className */\n  className?: string;\n}\n\nconst HIDDEN: Record<NonNullable<RevealCardProps[\"revealFrom\"]>, { x: string; y: string }> = {\n  bottom: { x: \"0%\", y: \"100%\" },\n  top: { x: \"0%\", y: \"-100%\" },\n  left: { x: \"-100%\", y: \"0%\" },\n  right: { x: \"100%\", y: \"0%\" },\n};\n\nexport function RevealCard({\n  title = \"Reveal Card\",\n  body = \"A spring-driven overlay slides in on hover or keyboard focus, carrying the detail without leaving the card.\",\n  revealFrom = \"bottom\",\n  accentColor = \"#38bdf8\",\n  children,\n  className = \"\",\n}: RevealCardProps) {\n  const prefersReducedMotion = useReducedMotion();\n  const [hovered, setHovered] = React.useState(false);\n  const [focused, setFocused] = React.useState(false);\n  const open = hovered || focused;\n  const hidden = HIDDEN[revealFrom] ?? HIDDEN.bottom;\n\n  return (\n    <article\n      tabIndex={0}\n      aria-label={title}\n      onPointerEnter={() => setHovered(true)}\n      onPointerLeave={() => setHovered(false)}\n      onFocus={() => setFocused(true)}\n      onBlur={(e) => {\n        if (!e.currentTarget.contains(e.relatedTarget as Node | null)) setFocused(false);\n      }}\n      data-open={open || undefined}\n      style={{ \"--mf-rc-accent\": accentColor } as React.CSSProperties}\n      className={`${styles.root} ${className}`.trim()}\n    >\n      <div className={styles.cover} aria-hidden=\"true\">\n        <span className={styles.glyph}>\n          <svg viewBox=\"0 0 24 24\" width=\"20\" height=\"20\">\n            <path d=\"M12 5v14M5 12h14\" fill=\"none\" stroke=\"currentColor\" strokeWidth=\"2\" strokeLinecap=\"round\" />\n          </svg>\n        </span>\n        <span className={styles.coverTitle}>{title}</span>\n      </div>\n      <motion.div\n        className={styles.overlay}\n        initial={false}\n        animate={\n          prefersReducedMotion\n            ? { x: \"0%\", y: \"0%\", opacity: open ? 1 : 0 }\n            : open\n              ? { x: \"0%\", y: \"0%\", opacity: 1 }\n              : { ...hidden, opacity: 1 }\n        }\n        transition={\n          prefersReducedMotion ? { duration: 0.15 } : { type: \"spring\", stiffness: 300, damping: 30 }\n        }\n      >\n        <h3 className={styles.title}>{title}</h3>\n        <p className={styles.body}>{body}</p>\n        {children ? <div className={styles.extra}>{children}</div> : null}\n      </motion.div>\n    </article>\n  );\n}\n"
+    },
+    {
+      "path": "components/styles/reveal-card.module.css",
+      "type": "registry:style",
+      "content": ".root {\n  position: relative;\n  display: block;\n  width: 18rem;\n  max-width: 100%;\n  height: 16rem;\n  overflow: hidden;\n  border-radius: 1rem;\n  border: 1px solid var(--mf-border, #2e2e38);\n  background: radial-gradient(120% 90% at 50% 0%, var(--mf-surface-raised, #1b1b22) 0%, var(--mf-surface, #121218) 75%);\n  color: var(--mf-fg, #f4f4f6);\n  isolation: isolate;\n  transition: border-color 200ms ease;\n}\n\n.root[data-open] {\n  border-color: var(--mf-rc-accent, var(--mf-accent, #38bdf8));\n}\n\n.root:focus-visible {\n  outline: 2px solid var(--mf-fg, #e4e4e7);\n  outline-offset: 3px;\n}\n\n.cover {\n  display: flex;\n  height: 100%;\n  flex-direction: column;\n  align-items: center;\n  justify-content: center;\n  gap: 0.85rem;\n  padding: 1.5rem;\n  box-sizing: border-box;\n}\n\n.glyph {\n  display: inline-flex;\n  align-items: center;\n  justify-content: center;\n  width: 2.5rem;\n  height: 2.5rem;\n  border-radius: 999px;\n  border: 1px solid var(--mf-border, #2e2e38);\n  color: var(--mf-rc-accent, var(--mf-accent, #38bdf8));\n}\n\n.coverTitle {\n  font-size: 1.5rem;\n  font-weight: 700;\n  letter-spacing: -0.02em;\n  text-align: center;\n}\n\n.overlay {\n  position: absolute;\n  inset: 0;\n  z-index: 1;\n  display: flex;\n  flex-direction: column;\n  justify-content: flex-end;\n  gap: 0.4rem;\n  padding: 1.5rem;\n  box-sizing: border-box;\n  background-color: var(--mf-rc-accent, var(--mf-accent, #38bdf8));\n  color: var(--mf-bg, #09090b);\n}\n\n.title {\n  margin: 0;\n  font-size: 1.25rem;\n  font-weight: 700;\n  letter-spacing: -0.02em;\n}\n\n.body {\n  margin: 0;\n  font-size: 0.875rem;\n  line-height: 1.5;\n  opacity: 0.85;\n}\n\n.extra {\n  margin-top: 0.6rem;\n}\n\n@media (prefers-reduced-motion: reduce) {\n  .root {\n    transition: none;\n  }\n}\n"
+    }
+  ],
+  "tailwindExample": "\"use client\";\n\nimport { motion } from \"motion/react\";\n\nexport function RevealCardTailwind({ title = \"Reveal Card\", body = \"A spring-driven overlay slides in on hover or focus.\" }) {\n  return (\n    <motion.article\n      tabIndex={0}\n      initial=\"rest\"\n      animate=\"rest\"\n      whileHover=\"open\"\n      whileFocus=\"open\"\n      className=\"relative h-64 w-72 overflow-hidden rounded-2xl border border-zinc-800 bg-zinc-900 text-zinc-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[3px] focus-visible:outline-zinc-200\"\n    >\n      <div aria-hidden className=\"flex h-full items-center justify-center text-2xl font-bold\">{title}</div>\n      <motion.div\n        variants={{ rest: { y: \"100%\" }, open: { y: 0 } }}\n        transition={{ type: \"spring\", stiffness: 300, damping: 30 }}\n        className=\"absolute inset-0 flex flex-col justify-end gap-1 bg-sky-400 p-6 text-zinc-950\"\n      >\n        <h3 className=\"text-xl font-bold\">{title}</h3>\n        <p className=\"text-sm opacity-85\">{body}</p>\n      </motion.div>\n    </motion.article>\n  );\n}"
+}

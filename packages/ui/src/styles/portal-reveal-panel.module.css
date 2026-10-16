@@ -1,0 +1,65 @@
+.wrapper {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+}
+
+.toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.toggleBtn {
+  font-size: 0.78rem;
+  font-weight: 500;
+  padding: 0.4rem 0.85rem;
+  border-radius: 0.5rem;
+  border: 1px solid var(--mf-border, #2e2e3a);
+  background-color: var(--mf-surface, #16161d);
+  color: var(--mf-fg, #f4f4f6);
+  cursor: pointer;
+}
+
+.originBadge {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.7rem;
+  color: var(--mf-muted, #a1a1aa);
+}
+
+.panel {
+  border-radius: 0.8rem;
+  border: 1px solid var(--mf-border, #2b2b36);
+  background: linear-gradient(155deg, #161620 0%, var(--mf-bg, #0d0d12) 100%);
+  padding: 1.25rem;
+  color: var(--mf-fg, #f4f4f6);
+}
+
+.title {
+  margin: 0 0 0.75rem 0;
+  font-size: 0.98rem;
+  font-weight: 600;
+}
+
+.metricsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 0.5rem;
+}
+
+.chip {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.7rem;
+  padding: 0.45rem 0.6rem;
+  border-radius: 0.45rem;
+  border: 1px solid #262630;
+  background-color: var(--mf-surface, #101015);
+  color: var(--mf-fg, #d4d4d8);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .panel {
+    clip-path: none !important;
+  }
+}

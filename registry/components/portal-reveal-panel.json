@@ -1,0 +1,115 @@
+{
+  "slug": "portal-reveal-panel",
+  "name": "PortalRevealPanel",
+  "category": "Reveals and Continuous Motion",
+  "featured": true,
+  "addedAt": "2026-10-16",
+  "version": "2.0.0",
+  "requiresMotion": true,
+  "dependencies": [
+    "motion",
+    "react"
+  ],
+  "description": "Clip-path iris and geometric portal entrance animation supporting multiple origin coordinates, staggered child reveals, and clean unmount choreography.",
+  "tags": [
+    "portal",
+    "clip-path",
+    "reveal",
+    "panel",
+    "origin",
+    "stagger"
+  ],
+  "a11yNotes": "Links the toggle trigger to the revealed region via aria-expanded and aria-controls, and falls back to an instant opacity toggle when prefers-reduced-motion is active.",
+  "defaultProps": {
+    "title": "Radial Clip-Path Iris Portal",
+    "origin": "center",
+    "duration": 0.65,
+    "staggerChildren": 0.08,
+    "isOpen": true
+  },
+  "controls": [
+    {
+      "prop": "title",
+      "label": "Portal Heading",
+      "type": "text"
+    },
+    {
+      "prop": "origin",
+      "label": "Portal Origin",
+      "type": "select",
+      "options": [
+        "center",
+        "top-left",
+        "bottom-right",
+        "top-right"
+      ]
+    },
+    {
+      "prop": "duration",
+      "label": "Aperture Speed (s)",
+      "type": "range",
+      "min": 0.25,
+      "max": 1.3,
+      "step": 0.05
+    },
+    {
+      "prop": "staggerChildren",
+      "label": "Child Stagger (s)",
+      "type": "range",
+      "min": 0.02,
+      "max": 0.2,
+      "step": 0.02
+    },
+    {
+      "prop": "isOpen",
+      "label": "Portal Open State",
+      "type": "boolean"
+    }
+  ],
+  "propsApi": [
+    {
+      "name": "title",
+      "type": "string",
+      "default": "'Radial Clip-Path Iris Portal'",
+      "description": "Panel title."
+    },
+    {
+      "name": "origin",
+      "type": "'center' | 'top-left' | 'bottom-right' | 'top-right'",
+      "default": "'center'",
+      "description": "Origin coordinate for the circular clip-path expansion."
+    },
+    {
+      "name": "duration",
+      "type": "number",
+      "default": "0.65",
+      "description": "Duration in seconds for the clip-path transition."
+    },
+    {
+      "name": "staggerChildren",
+      "type": "number",
+      "default": "0.08",
+      "description": "Delay in seconds between inner child reveals."
+    },
+    {
+      "name": "isOpen",
+      "type": "boolean",
+      "default": "true",
+      "description": "Controlled open/mount state."
+    }
+  ],
+  "files": [
+    {
+      "path": "components/ui/portal-reveal-panel.tsx",
+      "type": "registry:component",
+      "content": "\"use client\";\n\nimport * as React from \"react\";\nimport { motion, AnimatePresence, useReducedMotion } from \"motion/react\";\nimport styles from \"../styles/portal-reveal-panel.module.css\";\n\nexport interface PortalRevealPanelProps {\n  /** Panel heading */\n  title?: string;\n  /** Clip-path origin coordinate */\n  origin?: \"center\" | \"top-left\" | \"bottom-right\" | \"top-right\";\n  /** Reveal duration in seconds */\n  duration?: number;\n  /** Child stagger delay in seconds */\n  staggerChildren?: number;\n  /** Initial or controlled open state */\n  isOpen?: boolean;\n  /** Optional className */\n  className?: string;\n}\n\nconst ORIGIN_MAP: Record<string, string> = {\n  center: \"50% 50%\",\n  \"top-left\": \"8% 12%\",\n  \"bottom-right\": \"92% 88%\",\n  \"top-right\": \"92% 12%\",\n};\n\nexport function PortalRevealPanel({\n  title = \"Radial Clip-Path Iris Portal\",\n  origin = \"center\",\n  duration = 0.65,\n  staggerChildren = 0.08,\n  isOpen: isOpenProp = true,\n  className = \"\",\n}: PortalRevealPanelProps) {\n  const [open, setOpen] = React.useState(isOpenProp);\n  const prefersReducedMotion = useReducedMotion();\n  const regionId = React.useId();\n\n  React.useEffect(() => {\n    setOpen(isOpenProp);\n  }, [isOpenProp]);\n\n  const coord = ORIGIN_MAP[origin] ?? \"50% 50%\";\n\n  return (\n    <div className={`${styles.wrapper} ${className}`.trim()}>\n      <div className={styles.toolbar}>\n        <button\n          type=\"button\"\n          aria-expanded={open}\n          aria-controls={regionId}\n          onClick={() => setOpen((prev) => !prev)}\n          className={styles.toggleBtn}\n        >\n          {open ? \"Close Portal Panel\" : \"Open Portal Panel\"}\n        </button>\n        <span className={styles.originBadge}>origin: {origin}</span>\n      </div>\n\n      <AnimatePresence mode=\"wait\">\n        {open && (\n          <motion.div\n            id={regionId}\n            key={origin}\n            initial={\n              prefersReducedMotion\n                ? { opacity: 0 }\n                : { clipPath: `circle(0% at ${coord})`, opacity: 0.4 }\n            }\n            animate={\n              prefersReducedMotion\n                ? { opacity: 1 }\n                : { clipPath: `circle(150% at ${coord})`, opacity: 1 }\n            }\n            exit={\n              prefersReducedMotion\n                ? { opacity: 0 }\n                : { clipPath: `circle(0% at ${coord})`, opacity: 0 }\n            }\n            transition={{ duration, ease: [0.16, 1, 0.3, 1] }}\n            className={styles.panel}\n          >\n            <h4 className={styles.title}>{title}</h4>\n            <div className={styles.metricsGrid}>\n              {[\"Clip-Path Compositor\", \"Staggered Children\", \"Clean Unmount\"].map(\n                (item, idx) => (\n                  <motion.div\n                    key={item}\n                    initial={prefersReducedMotion ? false : { opacity: 0, y: 12 }}\n                    animate={{ opacity: 1, y: 0 }}\n                    transition={{ delay: idx * staggerChildren + 0.12, duration: 0.35 }}\n                    className={styles.chip}\n                  >\n                    {item}\n                  </motion.div>\n                )\n              )}\n            </div>\n          </motion.div>\n        )}\n      </AnimatePresence>\n    </div>\n  );\n}\n"
+    },
+    {
+      "path": "components/styles/portal-reveal-panel.module.css",
+      "type": "registry:style",
+      "content": ".wrapper {\n  width: 100%;\n  display: flex;\n  flex-direction: column;\n  gap: 0.65rem;\n}\n\n.toolbar {\n  display: flex;\n  align-items: center;\n  justify-content: space-between;\n}\n\n.toggleBtn {\n  font-size: 0.78rem;\n  font-weight: 500;\n  padding: 0.4rem 0.85rem;\n  border-radius: 0.5rem;\n  border: 1px solid var(--mf-border, #2e2e3a);\n  background-color: var(--mf-surface, #16161d);\n  color: var(--mf-fg, #f4f4f6);\n  cursor: pointer;\n}\n\n.originBadge {\n  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;\n  font-size: 0.7rem;\n  color: var(--mf-muted, #a1a1aa);\n}\n\n.panel {\n  border-radius: 0.8rem;\n  border: 1px solid var(--mf-border, #2b2b36);\n  background: linear-gradient(155deg, #161620 0%, var(--mf-bg, #0d0d12) 100%);\n  padding: 1.25rem;\n  color: var(--mf-fg, #f4f4f6);\n}\n\n.title {\n  margin: 0 0 0.75rem 0;\n  font-size: 0.98rem;\n  font-weight: 600;\n}\n\n.metricsGrid {\n  display: grid;\n  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));\n  gap: 0.5rem;\n}\n\n.chip {\n  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;\n  font-size: 0.7rem;\n  padding: 0.45rem 0.6rem;\n  border-radius: 0.45rem;\n  border: 1px solid #262630;\n  background-color: var(--mf-surface, #101015);\n  color: var(--mf-fg, #d4d4d8);\n}\n\n@media (prefers-reduced-motion: reduce) {\n  .panel {\n    clip-path: none !important;\n  }\n}\n"
+    }
+  ],
+  "tailwindExample": "\"use client\";\n\nimport * as React from \"react\";\nimport { motion, AnimatePresence } from \"motion/react\";\n\nexport function PortalRevealTailwind() {\n  const [open, setOpen] = React.useState(true);\n  return (\n    <div className=\"space-y-3\">\n      <button type=\"button\" onClick={() => setOpen(!open)} className=\"rounded bg-zinc-800 px-3 py-1 text-xs text-zinc-100\">\n        Toggle Portal\n      </button>\n      <AnimatePresence>\n        {open && (\n          <motion.div\n            initial={{ clipPath: \"circle(0% at 50% 50%)\" }}\n            animate={{ clipPath: \"circle(140% at 50% 50%)\" }}\n            exit={{ clipPath: \"circle(0% at 50% 50%)\" }}\n            transition={{ duration: 0.65, ease: [0.16, 1, 0.3, 1] }}\n            className=\"rounded-xl border border-zinc-800 bg-zinc-900 p-5 text-zinc-100\"\n          >\n            Radial Clip-Path Iris Portal\n          </motion.div>\n        )}\n      </AnimatePresence>\n    </div>\n  );\n}",
+  "collection": "core"
+}

@@ -1,0 +1,25 @@
+---
+title: "Contributing"
+category: "Open Source"
+summary: "How to add a new animated component, synchronize the registry, and run the validation suite."
+---
+
+# Contributing
+
+MotionFoundry is architected so outside contributors can add a new component in minutes without touching unrelated platform code:
+
+1. Create `packages/ui/src/components/<component-slug>.tsx` and `packages/ui/src/styles/<component-slug>.module.css`.
+2. Export the component and its `<ComponentName>Props` interface from `packages/ui/src/index.ts`.
+3. Add `registry/components/<component-slug>.json` (description, `controls`, `defaultProps`, `propsApi`, `a11yNotes`, `tailwindExample`, and `collection`) and run `node scripts/build-registry.mjs` — it fills in the source files and regenerates `registry/registry.json` in export order.
+4. Run `pnpm build:ui` to rebuild the package bundle, types, and `dist/styles.css`.
+5. Add unit and accessibility assertions in `tests/motionfoundry.test.mjs` and run `pnpm test`.
+
+```tsx
+# Run the complete validation pipeline locally
+node scripts/build-registry.mjs
+node scripts/build-docs.mjs
+node packages/ui/scripts/build.mjs
+node packages/cli/scripts/build.mjs
+node packages/cli/dist/index.mjs list
+node --test tests/motionfoundry.test.mjs
+```

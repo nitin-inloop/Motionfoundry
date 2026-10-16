@@ -1,0 +1,72 @@
+.stage {
+  display: block;
+  width: 100%;
+}
+
+.card {
+  position: relative;
+  overflow: hidden;
+  border-radius: 0.85rem;
+  border: 1px solid var(--mf-border, #2d2d3a);
+  background-color: var(--mf-surface, #0e0e13);
+  padding: 1.5rem;
+  color: var(--mf-fg, #f4f4f6);
+  will-change: transform;
+}
+
+.holoLayer {
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
+  background-size: 200% 200%;
+  mix-blend-mode: screen;
+  transition: opacity 200ms ease;
+}
+
+.specularGlare {
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
+  transition: opacity 200ms ease;
+}
+
+.depthContent {
+  position: relative;
+  z-index: 1;
+  transform: translateZ(24px);
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+
+.badge {
+  align-self: flex-start;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.68rem;
+  padding: 0.15rem 0.5rem;
+  border-radius: 0.375rem;
+  border: 1px solid var(--mf-border, #323240);
+  background-color: rgba(15, 15, 20, 0.85);
+  color: var(--mf-fg, #d4d4d8);
+}
+
+.title {
+  margin: 0;
+  font-size: 1.05rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+
+.subtitle {
+  margin: 0;
+  font-size: 0.85rem;
+  line-height: 1.55;
+  color: var(--mf-muted, #a1a1aa);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .holoLayer,
+  .specularGlare {
+    opacity: 0 !important;
+  }
+}

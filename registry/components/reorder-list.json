@@ -1,0 +1,100 @@
+{
+  "slug": "reorder-list",
+  "name": "ReorderList",
+  "category": "Developer-Interface Animations",
+  "collection": "studio-kit",
+  "featured": true,
+  "addedAt": "2026-10-16",
+  "version": "2.1.0",
+  "requiresMotion": true,
+  "dependencies": [
+    "motion",
+    "react"
+  ],
+  "description": "A drag-to-reorder list built on motion's Reorder primitives, with springy layout reflow, a lifted drag state, grip handles and full keyboard reordering via Alt+Arrow keys.",
+  "tags": [
+    "reorder",
+    "drag",
+    "sortable",
+    "list",
+    "layout",
+    "keyboard"
+  ],
+  "a11yNotes": "Renders a semantic <ul>/<li>; each item is focusable with an aria-label including its position. Arrow Up/Down moves focus, Alt+Arrow Up/Down moves the item (focus follows it) and an aria-live region announces the new position; usage instructions are linked via aria-describedby. MotionConfig reducedMotion=\"user\" plus a disabled drag scale respect prefers-reduced-motion.",
+  "defaultProps": {
+    "items": [
+      "Design tokens",
+      "Motion primitives",
+      "Component library",
+      "Docs site",
+      "Release v2.1"
+    ],
+    "showHandles": true,
+    "dragScale": 1.04
+  },
+  "controls": [
+    {
+      "prop": "items",
+      "label": "Items (comma separated)",
+      "type": "list"
+    },
+    {
+      "prop": "showHandles",
+      "label": "Show Handles",
+      "type": "boolean"
+    },
+    {
+      "prop": "dragScale",
+      "label": "Drag Scale",
+      "type": "range",
+      "min": 1,
+      "max": 1.12,
+      "step": 0.01
+    }
+  ],
+  "propsApi": [
+    {
+      "name": "items",
+      "type": "string[]",
+      "default": "['Design tokens', 'Motion primitives', 'Component library', 'Docs site', 'Release v2.1']",
+      "description": "Unique string items to reorder; changing the content resets the internal order."
+    },
+    {
+      "name": "onReorder",
+      "type": "(items: string[]) => void",
+      "default": "undefined",
+      "description": "Called with the new order after a drag or keyboard move."
+    },
+    {
+      "name": "showHandles",
+      "type": "boolean",
+      "default": "true",
+      "description": "Show the grip handle icon on each item."
+    },
+    {
+      "name": "dragScale",
+      "type": "number",
+      "default": "1.04",
+      "description": "Scale applied to the item while dragging (ignored under reduced motion)."
+    },
+    {
+      "name": "className",
+      "type": "string",
+      "default": "''",
+      "description": "Additional class merged onto the root element."
+    }
+  ],
+  "files": [
+    {
+      "path": "components/ui/reorder-list.tsx",
+      "type": "registry:component",
+      "content": "\"use client\";\n\nimport * as React from \"react\";\nimport { MotionConfig, Reorder, useReducedMotion } from \"motion/react\";\nimport styles from \"../styles/reorder-list.module.css\";\n\nexport interface ReorderListProps {\n  /** Unique string items to reorder */\n  items?: string[];\n  /** Called with the new order after a drag or keyboard move */\n  onReorder?: (items: string[]) => void;\n  /** Show the grip handle icon on each item */\n  showHandles?: boolean;\n  /** Scale applied to the item while it is being dragged */\n  dragScale?: number;\n  /** Optional className merged onto the root */\n  className?: string;\n}\n\nconst DEFAULT_ITEMS = [\"Design tokens\", \"Motion primitives\", \"Component library\", \"Docs site\", \"Release v2.1\"];\n\nfunction GripIcon() {\n  return (\n    <svg aria-hidden=\"true\" width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"currentColor\">\n      <circle cx=\"9\" cy=\"6\" r=\"1.5\" />\n      <circle cx=\"15\" cy=\"6\" r=\"1.5\" />\n      <circle cx=\"9\" cy=\"12\" r=\"1.5\" />\n      <circle cx=\"15\" cy=\"12\" r=\"1.5\" />\n      <circle cx=\"9\" cy=\"18\" r=\"1.5\" />\n      <circle cx=\"15\" cy=\"18\" r=\"1.5\" />\n    </svg>\n  );\n}\n\nexport function ReorderList({ items = DEFAULT_ITEMS, onReorder, showHandles = true, dragScale = 1.04, className = \"\" }: ReorderListProps) {\n  const prefersReducedMotion = useReducedMotion();\n  const instructionsId = React.useId();\n  const [list, setList] = React.useState<string[]>(items);\n  const [announcement, setAnnouncement] = React.useState(\"\");\n  const refs = React.useRef(new Map<string, HTMLLIElement>());\n  const pendingFocus = React.useRef<string | null>(null);\n  const itemsKey = items.join(\"\\u0000\");\n  const lastKey = React.useRef(itemsKey);\n\n  if (lastKey.current !== itemsKey) {\n    lastKey.current = itemsKey;\n    setList(items);\n  }\n\n  React.useEffect(() => {\n    if (pendingFocus.current === null) return;\n    refs.current.get(pendingFocus.current)?.focus();\n    pendingFocus.current = null;\n  }, [list]);\n\n  const commit = (next: string[]) => {\n    setList(next);\n    onReorder?.(next);\n  };\n\n  const handleKeyDown = (e: React.KeyboardEvent<HTMLLIElement>, index: number) => {\n    if (e.key !== \"ArrowUp\" && e.key !== \"ArrowDown\") return;\n    e.preventDefault();\n    const target = index + (e.key === \"ArrowUp\" ? -1 : 1);\n    if (target < 0 || target >= list.length) return;\n    if (!e.altKey) {\n      refs.current.get(list[target])?.focus();\n      return;\n    }\n    const value = list[index];\n    const next = [...list];\n    next.splice(index, 1);\n    next.splice(target, 0, value);\n    pendingFocus.current = value;\n    setAnnouncement(`Moved ${value} to position ${target + 1} of ${next.length}`);\n    commit(next);\n  };\n\n  return (\n    <MotionConfig reducedMotion=\"user\">\n      <div className={`${styles.root} ${className}`.trim()}>\n        <p id={instructionsId} className={styles.srOnly}>\n          Drag to reorder, or focus an item and press Alt plus Arrow Up or Arrow Down to move it.\n        </p>\n        <Reorder.Group axis=\"y\" values={list} onReorder={commit} className={styles.list} aria-describedby={instructionsId}>\n          {list.map((it, i) => (\n            <Reorder.Item\n              key={it}\n              value={it}\n              ref={(node: HTMLLIElement | null) => {\n                if (node) refs.current.set(it, node);\n                else refs.current.delete(it);\n              }}\n              tabIndex={0}\n              aria-label={`${it}, position ${i + 1} of ${list.length}`}\n              onKeyDown={(e: React.KeyboardEvent<HTMLLIElement>) => handleKeyDown(e, i)}\n              whileDrag={prefersReducedMotion ? undefined : { scale: dragScale }}\n              className={styles.item}\n            >\n              {showHandles && (\n                <span aria-hidden=\"true\" className={styles.handle}>\n                  <GripIcon />\n                </span>\n              )}\n              <span className={styles.label}>{it}</span>\n              <span aria-hidden=\"true\" className={styles.index}>\n                {String(i + 1).padStart(2, \"0\")}\n              </span>\n            </Reorder.Item>\n          ))}\n        </Reorder.Group>\n        <p aria-live=\"polite\" className={styles.srOnly}>\n          {announcement}\n        </p>\n      </div>\n    </MotionConfig>\n  );\n}\n"
+    },
+    {
+      "path": "components/styles/reorder-list.module.css",
+      "type": "registry:style",
+      "content": ".root {\n  position: relative;\n  width: 18rem;\n  max-width: 100%;\n  color: var(--mf-fg, #f4f4f6);\n}\n\n.list {\n  display: flex;\n  flex-direction: column;\n  gap: 0.5rem;\n  margin: 0;\n  padding: 0;\n  list-style: none;\n}\n\n.item {\n  position: relative;\n  display: flex;\n  align-items: center;\n  gap: 0.75rem;\n  padding: 0.75rem 1rem;\n  border-radius: 1rem;\n  border: 1px solid var(--mf-border, #2e2e38);\n  background-color: var(--mf-surface, #141419);\n  font-size: 0.875rem;\n  cursor: grab;\n  user-select: none;\n  touch-action: none;\n  transition: border-color 160ms ease, background-color 160ms ease;\n}\n\n.item:hover {\n  border-color: var(--mf-border-strong, #52525b);\n}\n\n.item:active {\n  cursor: grabbing;\n  background-color: var(--mf-surface-raised, #1b1b22);\n}\n\n.item:focus-visible {\n  outline: 2px solid var(--mf-fg, #e4e4e7);\n  outline-offset: 3px;\n}\n\n.handle {\n  display: inline-flex;\n  color: var(--mf-subtle, #71717a);\n}\n\n.label {\n  flex: 1;\n  min-width: 0;\n}\n\n.index {\n  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;\n  font-size: 0.72rem;\n  color: var(--mf-subtle, #71717a);\n}\n\n.srOnly {\n  position: absolute;\n  width: 1px;\n  height: 1px;\n  margin: -1px;\n  padding: 0;\n  overflow: hidden;\n  clip: rect(0 0 0 0);\n  white-space: nowrap;\n  border: 0;\n}\n\n@media (prefers-reduced-motion: reduce) {\n  .item {\n    transition: none;\n  }\n}\n"
+    }
+  ],
+  "tailwindExample": "\"use client\";\n\nimport { Reorder } from \"motion/react\";\nimport { useState } from \"react\";\n\nexport function ReorderListTailwind({ items = [\"Design tokens\", \"Motion primitives\", \"Component library\", \"Docs site\"] }) {\n  const [list, setList] = useState(items);\n  const move = (i: number, d: number) => {\n    const t = i + d;\n    if (t < 0 || t >= list.length) return;\n    const next = [...list];\n    next.splice(t, 0, next.splice(i, 1)[0]);\n    setList(next);\n  };\n  return (\n    <Reorder.Group axis=\"y\" values={list} onReorder={setList} className=\"w-72 space-y-2\">\n      {list.map((it, i) => (\n        <Reorder.Item\n          key={it}\n          value={it}\n          tabIndex={0}\n          onKeyDown={(e) => { if (e.altKey && e.key === \"ArrowUp\") move(i, -1); if (e.altKey && e.key === \"ArrowDown\") move(i, 1); }}\n          whileDrag={{ scale: 1.04 }}\n          className=\"flex cursor-grab items-center gap-3 rounded-2xl border border-zinc-800 bg-zinc-900 px-4 py-3 text-sm text-zinc-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-zinc-200 active:cursor-grabbing\"\n        >\n          <span aria-hidden className=\"text-zinc-500\">⋮⋮</span>\n          {it}\n        </Reorder.Item>\n      ))}\n    </Reorder.Group>\n  );\n}"
+}

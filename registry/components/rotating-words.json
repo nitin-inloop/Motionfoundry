@@ -1,0 +1,105 @@
+{
+  "slug": "rotating-words",
+  "name": "RotatingWords",
+  "category": "Advanced Text Animations",
+  "collection": "studio-kit",
+  "featured": true,
+  "addedAt": "2026-10-16",
+  "version": "2.1.0",
+  "requiresMotion": true,
+  "dependencies": [
+    "motion",
+    "react"
+  ],
+  "description": "Static prefix followed by a slot that springs through a list of accent-colored words on an interval, reserving the widest word's width so nothing around it shifts.",
+  "tags": [
+    "text",
+    "rotating",
+    "words",
+    "spring",
+    "hero",
+    "headline"
+  ],
+  "a11yNotes": "A visually hidden span reads the prefix and full word list once; the animated slot is aria-hidden. The slot width is reserved by invisible sizer copies, preventing layout shift. Under prefers-reduced-motion the interval is not started and the first word is shown statically.",
+  "defaultProps": {
+    "prefix": "Ship",
+    "words": [
+      "faster",
+      "smoother",
+      "bolder",
+      "today"
+    ],
+    "interval": 2000,
+    "accentColor": "#38bdf8"
+  },
+  "controls": [
+    {
+      "prop": "prefix",
+      "label": "Prefix",
+      "type": "text"
+    },
+    {
+      "prop": "words",
+      "label": "Words (comma separated)",
+      "type": "list"
+    },
+    {
+      "prop": "interval",
+      "label": "Interval (ms)",
+      "type": "range",
+      "min": 800,
+      "max": 5000,
+      "step": 100
+    },
+    {
+      "prop": "accentColor",
+      "label": "Accent",
+      "type": "color"
+    }
+  ],
+  "propsApi": [
+    {
+      "name": "prefix",
+      "type": "string",
+      "default": "'Ship'",
+      "description": "Static text rendered before the rotating word."
+    },
+    {
+      "name": "words",
+      "type": "string[]",
+      "default": "['faster', 'smoother', 'bolder', 'today']",
+      "description": "Words cycled in place."
+    },
+    {
+      "name": "interval",
+      "type": "number",
+      "default": "2000",
+      "description": "Milliseconds each word stays visible."
+    },
+    {
+      "name": "accentColor",
+      "type": "string",
+      "default": "'#38bdf8'",
+      "description": "Color of the rotating word."
+    },
+    {
+      "name": "className",
+      "type": "string",
+      "default": "''",
+      "description": "Additional class merged onto the root element."
+    }
+  ],
+  "files": [
+    {
+      "path": "components/ui/rotating-words.tsx",
+      "type": "registry:component",
+      "content": "\"use client\";\n\nimport * as React from \"react\";\nimport { AnimatePresence, motion, useReducedMotion } from \"motion/react\";\nimport styles from \"../styles/rotating-words.module.css\";\n\nexport interface RotatingWordsProps {\n  /** Static text rendered before the rotating word */\n  prefix?: string;\n  /** Words cycled in place */\n  words?: string[];\n  /** Milliseconds each word stays visible */\n  interval?: number;\n  /** Color of the rotating word */\n  accentColor?: string;\n  /** Optional className */\n  className?: string;\n}\n\nconst DEFAULT_WORDS = [\"faster\", \"smoother\", \"bolder\", \"today\"];\n\nexport function RotatingWords({\n  prefix = \"Ship\",\n  words = DEFAULT_WORDS,\n  interval = 2000,\n  accentColor = \"#38bdf8\",\n  className = \"\",\n}: RotatingWordsProps) {\n  const prefersReducedMotion = useReducedMotion();\n  const list = words.length > 0 ? words : DEFAULT_WORDS;\n  const [index, setIndex] = React.useState(0);\n\n  React.useEffect(() => {\n    if (prefersReducedMotion || list.length < 2) return;\n    const id = setInterval(() => setIndex((n) => (n + 1) % list.length), interval);\n    return () => clearInterval(id);\n  }, [list.length, interval, prefersReducedMotion]);\n\n  const current = list[index % list.length];\n  const label = `${prefix ? `${prefix} ` : \"\"}${list.join(\", \")}`;\n\n  return (\n    <span\n      style={{ \"--mf-rw-accent\": accentColor } as React.CSSProperties}\n      className={`${styles.root} ${className}`.trim()}\n    >\n      <span className={styles.srOnly}>{label}</span>\n      <span aria-hidden=\"true\" className={styles.visual}>\n        {prefix ? <span className={styles.prefix}>{prefix}</span> : null}\n        <span className={styles.slot}>\n          {list.map((word, i) => (\n            <span key={`sizer-${i}`} className={styles.sizer}>\n              {word}\n            </span>\n          ))}\n          <AnimatePresence mode=\"wait\" initial={false}>\n            <motion.span\n              key={`${index}-${current}`}\n              className={styles.word}\n              initial={prefersReducedMotion ? false : { y: \"100%\", opacity: 0 }}\n              animate={{ y: 0, opacity: 1 }}\n              exit={prefersReducedMotion ? undefined : { y: \"-100%\", opacity: 0 }}\n              transition={{ type: \"spring\", stiffness: 300, damping: 25 }}\n            >\n              {current}\n            </motion.span>\n          </AnimatePresence>\n        </span>\n      </span>\n    </span>\n  );\n}\n"
+    },
+    {
+      "path": "components/styles/rotating-words.module.css",
+      "type": "registry:style",
+      "content": ".root {\n  display: inline-block;\n  color: var(--mf-fg, #f4f4f6);\n  font-size: clamp(1.5rem, 4vw, 2.5rem);\n  font-weight: 600;\n  letter-spacing: -0.03em;\n  line-height: 1.2;\n}\n\n.visual {\n  display: inline-flex;\n  align-items: baseline;\n  gap: 0.28em;\n}\n\n.prefix {\n  color: var(--mf-fg, #f4f4f6);\n}\n\n/* All words stack invisibly in one grid cell so the slot reserves the\n   widest word and swapping words never shifts surrounding layout. */\n.slot {\n  position: relative;\n  display: inline-grid;\n  overflow: hidden;\n  padding-bottom: 0.08em;\n  vertical-align: bottom;\n}\n\n.sizer {\n  grid-area: 1 / 1;\n  visibility: hidden;\n  white-space: nowrap;\n}\n\n.word {\n  grid-area: 1 / 1;\n  display: inline-block;\n  white-space: nowrap;\n  color: var(--mf-rw-accent, var(--mf-accent, #38bdf8));\n  will-change: transform, opacity;\n}\n\n.srOnly {\n  position: absolute;\n  width: 1px;\n  height: 1px;\n  padding: 0;\n  margin: -1px;\n  overflow: hidden;\n  clip: rect(0, 0, 0, 0);\n  white-space: nowrap;\n  border: 0;\n}\n\n@media (prefers-reduced-motion: reduce) {\n  .word {\n    transform: none !important;\n    opacity: 1 !important;\n  }\n}\n"
+    }
+  ],
+  "tailwindExample": "\"use client\";\n\nimport { useEffect, useState } from \"react\";\nimport { AnimatePresence, motion } from \"motion/react\";\n\nexport function RotatingWordsTailwind({ prefix = \"Ship\", words = [\"faster\", \"smoother\", \"bolder\", \"today\"] }) {\n  const [i, setI] = useState(0);\n  useEffect(() => {\n    const id = setInterval(() => setI((n) => (n + 1) % words.length), 2000);\n    return () => clearInterval(id);\n  }, [words.length]);\n  return (\n    <span className=\"inline-flex items-baseline gap-[0.28em] text-4xl font-semibold tracking-tight text-zinc-100\">\n      {prefix}\n      <span className=\"inline-grid overflow-hidden pb-[0.08em] align-bottom\">\n        {words.map((w) => (\n          <span key={w} className=\"invisible whitespace-nowrap [grid-area:1/1]\">{w}</span>\n        ))}\n        <AnimatePresence mode=\"wait\" initial={false}>\n          <motion.span\n            key={i}\n            className=\"whitespace-nowrap text-sky-400 [grid-area:1/1]\"\n            initial={{ y: \"100%\", opacity: 0 }}\n            animate={{ y: 0, opacity: 1 }}\n            exit={{ y: \"-100%\", opacity: 0 }}\n            transition={{ type: \"spring\", stiffness: 300, damping: 25 }}\n          >\n            {words[i]}\n          </motion.span>\n        </AnimatePresence>\n      </span>\n    </span>\n  );\n}"
+}

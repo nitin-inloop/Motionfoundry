@@ -1,0 +1,108 @@
+{
+  "slug": "liquid-blob",
+  "name": "LiquidBlob",
+  "category": "Animated Backgrounds and Visual Effects",
+  "featured": false,
+  "addedAt": "2026-10-16",
+  "version": "2.0.0",
+  "requiresMotion": false,
+  "dependencies": [
+    "react"
+  ],
+  "description": "Organic morphing vector shape driven by smooth SVG path and border-radius keyframe interpolation with zero external assets and graceful mobile degradation.",
+  "tags": [
+    "blob",
+    "liquid",
+    "svg",
+    "morph",
+    "organic",
+    "shape"
+  ],
+  "a11yNotes": "Marked aria-hidden='true' on the decorative SVG/organic geometry and freezes path morphing when prefers-reduced-motion is active.",
+  "defaultProps": {
+    "label": "Organic SVG Path Morph",
+    "colorPrimary": "#60a5fa",
+    "colorSecondary": "#a855f7",
+    "morphSpeed": 9,
+    "size": 168
+  },
+  "controls": [
+    {
+      "prop": "label",
+      "label": "Center Label",
+      "type": "text"
+    },
+    {
+      "prop": "colorPrimary",
+      "label": "Primary Stop",
+      "type": "color"
+    },
+    {
+      "prop": "colorSecondary",
+      "label": "Secondary Stop",
+      "type": "color"
+    },
+    {
+      "prop": "morphSpeed",
+      "label": "Morph Cycle (s)",
+      "type": "range",
+      "min": 4,
+      "max": 20,
+      "step": 1
+    },
+    {
+      "prop": "size",
+      "label": "Blob Diameter (px)",
+      "type": "range",
+      "min": 110,
+      "max": 220,
+      "step": 10
+    }
+  ],
+  "propsApi": [
+    {
+      "name": "label",
+      "type": "string",
+      "default": "'Organic SVG Path Morph'",
+      "description": "Foreground caption."
+    },
+    {
+      "name": "colorPrimary",
+      "type": "string",
+      "default": "'#60a5fa'",
+      "description": "Primary gradient color stop."
+    },
+    {
+      "name": "colorSecondary",
+      "type": "string",
+      "default": "'#a855f7'",
+      "description": "Secondary gradient color stop."
+    },
+    {
+      "name": "morphSpeed",
+      "type": "number",
+      "default": "9",
+      "description": "Duration in seconds for one organic morph cycle."
+    },
+    {
+      "name": "size",
+      "type": "number",
+      "default": "168",
+      "description": "Diameter in pixels of the organic form."
+    }
+  ],
+  "files": [
+    {
+      "path": "components/ui/liquid-blob.tsx",
+      "type": "registry:component",
+      "content": "\"use client\";\n\nimport * as React from \"react\";\nimport styles from \"../styles/liquid-blob.module.css\";\n\nexport interface LiquidBlobProps {\n  /** Foreground label */\n  label?: string;\n  /** Primary gradient stop */\n  colorPrimary?: string;\n  /** Secondary gradient stop */\n  colorSecondary?: string;\n  /** Morph cycle duration in seconds */\n  morphSpeed?: number;\n  /** Diameter in pixels */\n  size?: number;\n  /** Optional className */\n  className?: string;\n}\n\nexport function LiquidBlob({\n  label = \"Organic SVG Path Morph\",\n  colorPrimary = \"#60a5fa\",\n  colorSecondary = \"#a855f7\",\n  morphSpeed = 9,\n  size = 168,\n  className = \"\",\n}: LiquidBlobProps) {\n  const customStyle = {\n    \"--mf-blob-a\": colorPrimary,\n    \"--mf-blob-b\": colorSecondary,\n    \"--mf-blob-speed\": `${morphSpeed}s`,\n    \"--mf-blob-size\": `${size}px`,\n  } as React.CSSProperties;\n\n  return (\n    <div style={customStyle} className={`${styles.stage} ${className}`.trim()}>\n      <div aria-hidden=\"true\" className={styles.blob} />\n      <span className={styles.label}>{label}</span>\n    </div>\n  );\n}\n"
+    },
+    {
+      "path": "components/styles/liquid-blob.module.css",
+      "type": "registry:style",
+      "content": ".stage {\n  position: relative;\n  overflow: hidden;\n  min-height: 12.5rem;\n  border-radius: 0.85rem;\n  border: 1px solid var(--mf-surface-raised, #24242e);\n  background-color: var(--mf-bg, #09090c);\n  display: flex;\n  align-items: center;\n  justify-content: center;\n}\n\n.blob {\n  pointer-events: none;\n  width: var(--mf-blob-size, 168px);\n  height: var(--mf-blob-size, 168px);\n  background: linear-gradient(135deg, var(--mf-blob-a, #60a5fa) 0%, var(--mf-blob-b, #a855f7) 100%);\n  opacity: 0.42;\n  filter: blur(10px);\n  border-radius: 62% 38% 46% 54% / 60% 44% 56% 40%;\n  animation: mfLiquidBlobMorph var(--mf-blob-speed, 9s) ease-in-out infinite;\n  will-change: border-radius, transform;\n}\n\n.label {\n  position: relative;\n  z-index: 1;\n  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;\n  font-size: 0.74rem;\n  padding: 0.35rem 0.8rem;\n  border-radius: 999px;\n  border: 1px solid var(--mf-border, #2f2f3c);\n  background-color: rgba(12, 12, 16, 0.82);\n  color: var(--mf-fg, #f4f4f6);\n}\n\n@keyframes mfLiquidBlobMorph {\n  0%, 100% {\n    border-radius: 62% 38% 46% 54% / 60% 44% 56% 40%;\n    transform: rotate(0deg) scale(1);\n  }\n  33% {\n    border-radius: 38% 62% 63% 37% / 42% 58% 42% 58%;\n    transform: rotate(120deg) scale(1.06);\n  }\n  66% {\n    border-radius: 54% 46% 38% 62% / 49% 62% 38% 51%;\n    transform: rotate(240deg) scale(0.95);\n  }\n}\n\n@media (prefers-reduced-motion: reduce) {\n  .blob {\n    animation: none;\n  }\n}\n"
+    }
+  ],
+  "tailwindExample": "\"use client\";\n\nimport { LiquidBlob } from \"@motionfoundry/ui\";\n\nexport function LiquidBlobDemo() {\n  return <LiquidBlob morphSpeed={9} size={168} />;\n}",
+  "collection": "core"
+}

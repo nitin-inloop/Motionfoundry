@@ -1,0 +1,111 @@
+{
+  "slug": "shiny-border-button",
+  "name": "ShinyBorderButton",
+  "category": "Interactive Buttons and Controls",
+  "collection": "studio-kit",
+  "featured": true,
+  "addedAt": "2026-10-16",
+  "version": "2.1.0",
+  "requiresMotion": false,
+  "dependencies": [
+    "react"
+  ],
+  "description": "Dark surface button whose 1.5px border carries a rotating conic light beam, with configurable beam color and orbit duration, implemented with pure CSS.",
+  "tags": [
+    "button",
+    "border",
+    "beam",
+    "conic",
+    "glow",
+    "css"
+  ],
+  "a11yNotes": "Semantic <button type=\"button\"> with a visible :focus-visible outline and native disabled support (beam pauses when disabled). The beam layer is aria-hidden. Under prefers-reduced-motion the beam stops rotating and becomes a static gradient border.",
+  "defaultProps": {
+    "label": "Get early access",
+    "duration": 3,
+    "beamColor": "#38bdf8",
+    "disabled": false
+  },
+  "controls": [
+    {
+      "prop": "label",
+      "label": "Label",
+      "type": "text"
+    },
+    {
+      "prop": "duration",
+      "label": "Orbit Duration (s)",
+      "type": "range",
+      "min": 1,
+      "max": 10,
+      "step": 0.5
+    },
+    {
+      "prop": "beamColor",
+      "label": "Beam Color",
+      "type": "color"
+    },
+    {
+      "prop": "disabled",
+      "label": "Disabled",
+      "type": "boolean"
+    }
+  ],
+  "propsApi": [
+    {
+      "name": "label",
+      "type": "string",
+      "default": "'Get early access'",
+      "description": "Button label (ignored when children are provided)."
+    },
+    {
+      "name": "children",
+      "type": "React.ReactNode",
+      "default": "undefined",
+      "description": "Optional custom button content."
+    },
+    {
+      "name": "duration",
+      "type": "number",
+      "default": "3",
+      "description": "Seconds for the beam to travel once around the border."
+    },
+    {
+      "name": "beamColor",
+      "type": "string",
+      "default": "'#38bdf8'",
+      "description": "Color of the travelling beam."
+    },
+    {
+      "name": "onClick",
+      "type": "(event: React.MouseEvent<HTMLButtonElement>) => void",
+      "default": "undefined",
+      "description": "Click handler."
+    },
+    {
+      "name": "disabled",
+      "type": "boolean",
+      "default": "false",
+      "description": "Disable the button and pause the beam."
+    },
+    {
+      "name": "className",
+      "type": "string",
+      "default": "''",
+      "description": "Additional class merged onto the root element."
+    }
+  ],
+  "files": [
+    {
+      "path": "components/ui/shiny-border-button.tsx",
+      "type": "registry:component",
+      "content": "\"use client\";\n\nimport * as React from \"react\";\nimport styles from \"../styles/shiny-border-button.module.css\";\n\nexport interface ShinyBorderButtonProps {\n  /** Button label (ignored when children are provided) */\n  label?: string;\n  /** Optional custom button content */\n  children?: React.ReactNode;\n  /** Seconds for the light beam to travel once around the border */\n  duration?: number;\n  /** Color of the travelling beam */\n  beamColor?: string;\n  /** Click handler */\n  onClick?: (event: React.MouseEvent<HTMLButtonElement>) => void;\n  /** Disable the button and pause the beam */\n  disabled?: boolean;\n  /** Optional className */\n  className?: string;\n}\n\nexport function ShinyBorderButton({\n  label = \"Get early access\",\n  children,\n  duration = 3,\n  beamColor = \"#38bdf8\",\n  onClick,\n  disabled = false,\n  className = \"\",\n}: ShinyBorderButtonProps) {\n  const styleVars = {\n    \"--mf-sb-duration\": `${duration}s`,\n    \"--mf-sb-beam\": beamColor,\n  } as React.CSSProperties;\n\n  return (\n    <button\n      type=\"button\"\n      onClick={onClick}\n      disabled={disabled}\n      style={styleVars}\n      className={`${styles.root} ${className}`.trim()}\n    >\n      <span aria-hidden=\"true\" className={styles.beam} />\n      <span className={styles.inner}>{children ?? label}</span>\n    </button>\n  );\n}\n"
+    },
+    {
+      "path": "components/styles/shiny-border-button.module.css",
+      "type": "registry:style",
+      "content": ".root {\n  position: relative;\n  display: inline-flex;\n  padding: 1.5px;\n  border: 0;\n  border-radius: 0.625rem;\n  background-color: var(--mf-border, #2e2e38);\n  color: var(--mf-fg, #f4f4f6);\n  font: inherit;\n  font-size: 0.875rem;\n  font-weight: 500;\n  letter-spacing: -0.01em;\n  cursor: pointer;\n  overflow: hidden;\n  isolation: isolate;\n  transition: background-color 160ms ease, transform 160ms ease;\n}\n\n.root:hover {\n  background-color: var(--mf-border-strong, #52525b);\n}\n\n.root:active:not(:disabled) {\n  transform: scale(0.98);\n}\n\n.root:focus-visible {\n  outline: 2px solid var(--mf-fg, #e4e4e7);\n  outline-offset: 3px;\n}\n\n.root:disabled {\n  cursor: not-allowed;\n  opacity: 0.5;\n}\n\n/* Oversized square so the rotating conic beam covers any button aspect ratio. */\n.beam {\n  position: absolute;\n  top: 50%;\n  left: 50%;\n  z-index: -1;\n  width: max(300%, 12rem);\n  aspect-ratio: 1;\n  background: conic-gradient(\n    from 0deg,\n    transparent 0 70%,\n    var(--mf-sb-beam, var(--mf-accent, #38bdf8)) 85%,\n    transparent 100%\n  );\n  transform: translate(-50%, -50%) rotate(0deg);\n  animation: mf-sb-spin var(--mf-sb-duration, 3s) linear infinite;\n  pointer-events: none;\n}\n\n.root:disabled .beam {\n  animation-play-state: paused;\n}\n\n.inner {\n  position: relative;\n  display: inline-flex;\n  align-items: center;\n  gap: 0.5rem;\n  padding: 0.7rem 1.35rem;\n  border-radius: calc(0.625rem - 1.5px);\n  background-color: var(--mf-surface, #141419);\n}\n\n@keyframes mf-sb-spin {\n  to {\n    transform: translate(-50%, -50%) rotate(360deg);\n  }\n}\n\n@media (prefers-reduced-motion: reduce) {\n  .beam {\n    animation: none;\n    background: linear-gradient(135deg, var(--mf-sb-beam, var(--mf-accent, #38bdf8)), transparent 60%);\n  }\n\n  .root:active:not(:disabled) {\n    transform: none;\n  }\n}\n"
+    }
+  ],
+  "tailwindExample": "\"use client\";\n\nimport { motion } from \"motion/react\";\n\nexport function ShinyBorderButtonTailwind({ label = \"Get early access\" }) {\n  return (\n    <button type=\"button\" className=\"relative inline-flex overflow-hidden rounded-lg bg-zinc-800 p-[1.5px] text-sm font-medium text-zinc-100\">\n      <motion.span\n        aria-hidden\n        className=\"absolute left-1/2 top-1/2 aspect-square w-[300%] -translate-x-1/2 -translate-y-1/2 bg-[conic-gradient(from_0deg,transparent_0_70%,#38bdf8_85%,transparent_100%)]\"\n        animate={{ rotate: 360 }}\n        transition={{ duration: 3, repeat: Infinity, ease: \"linear\" }}\n      />\n      <span className=\"relative rounded-[calc(0.5rem-1.5px)] bg-zinc-900 px-5 py-2.5\">{label}</span>\n    </button>\n  );\n}"
+}

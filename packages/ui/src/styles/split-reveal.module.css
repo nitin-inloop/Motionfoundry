@@ -1,0 +1,39 @@
+.root {
+  display: inline;
+  color: var(--mf-fg, #f4f4f6);
+  font-size: clamp(1.5rem, 4vw, 2.5rem);
+  font-weight: 600;
+  letter-spacing: -0.03em;
+  line-height: 1.2;
+}
+
+.mask {
+  display: inline-block;
+  margin-right: 0.25em;
+  padding-bottom: 0.08em;
+  overflow: hidden;
+  vertical-align: bottom;
+}
+
+.word {
+  display: inline-block;
+  will-change: transform;
+}
+
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .word {
+    transform: none !important;
+  }
+}

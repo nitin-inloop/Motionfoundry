@@ -1,0 +1,121 @@
+{
+  "slug": "animated-checkbox",
+  "name": "AnimatedCheckbox",
+  "category": "Interactive Buttons and Controls",
+  "collection": "studio-kit",
+  "featured": false,
+  "addedAt": "2026-10-16",
+  "version": "2.1.0",
+  "requiresMotion": true,
+  "dependencies": [
+    "motion",
+    "react"
+  ],
+  "description": "Checkbox whose check mark draws itself as an SVG path with a squash-and-settle box pop, plus an optional animated strike-through across the label.",
+  "tags": [
+    "checkbox",
+    "todo",
+    "svg",
+    "path",
+    "strike-through",
+    "form"
+  ],
+  "a11yNotes": "Renders a <button role=\"checkbox\"> with aria-checked and the label as accessible name (fallback aria-label \"Checkbox\"); the box, check path and strike line are aria-hidden. Space/Enter toggle natively, and prefers-reduced-motion shows the final state instantly.",
+  "defaultProps": {
+    "defaultChecked": false,
+    "label": "Ship the release notes",
+    "strikeThrough": true,
+    "accentColor": "#38bdf8",
+    "disabled": false
+  },
+  "controls": [
+    {
+      "prop": "label",
+      "label": "Label",
+      "type": "text"
+    },
+    {
+      "prop": "strikeThrough",
+      "label": "Strike Through",
+      "type": "boolean"
+    },
+    {
+      "prop": "accentColor",
+      "label": "Accent",
+      "type": "color"
+    },
+    {
+      "prop": "defaultChecked",
+      "label": "Initially Checked",
+      "type": "boolean"
+    },
+    {
+      "prop": "disabled",
+      "label": "Disabled",
+      "type": "boolean"
+    }
+  ],
+  "propsApi": [
+    {
+      "name": "checked",
+      "type": "boolean",
+      "default": "undefined",
+      "description": "Controlled checked state."
+    },
+    {
+      "name": "defaultChecked",
+      "type": "boolean",
+      "default": "false",
+      "description": "Initial state when uncontrolled."
+    },
+    {
+      "name": "onCheckedChange",
+      "type": "(checked: boolean) => void",
+      "default": "undefined",
+      "description": "Called with the next state when toggled."
+    },
+    {
+      "name": "label",
+      "type": "string",
+      "default": "'Ship the release notes'",
+      "description": "Visible label, also the accessible name."
+    },
+    {
+      "name": "strikeThrough",
+      "type": "boolean",
+      "default": "true",
+      "description": "Draw a strike-through line across the label when checked."
+    },
+    {
+      "name": "accentColor",
+      "type": "string",
+      "default": "'#38bdf8'",
+      "description": "Box fill color when checked."
+    },
+    {
+      "name": "disabled",
+      "type": "boolean",
+      "default": "false",
+      "description": "Disables interaction."
+    },
+    {
+      "name": "className",
+      "type": "string",
+      "default": "''",
+      "description": "Extra class merged onto the root button."
+    }
+  ],
+  "files": [
+    {
+      "path": "components/ui/animated-checkbox.tsx",
+      "type": "registry:component",
+      "content": "\"use client\";\n\nimport * as React from \"react\";\nimport { motion, useReducedMotion } from \"motion/react\";\nimport styles from \"../styles/animated-checkbox.module.css\";\n\nexport interface AnimatedCheckboxProps {\n  /** Controlled checked state */\n  checked?: boolean;\n  /** Initial state when uncontrolled */\n  defaultChecked?: boolean;\n  /** Called with the next state when toggled */\n  onCheckedChange?: (checked: boolean) => void;\n  /** Visible label (also the accessible name) */\n  label?: string;\n  /** Draw a strike-through line across the label when checked */\n  strikeThrough?: boolean;\n  /** Box fill color when checked */\n  accentColor?: string;\n  /** Disable interaction */\n  disabled?: boolean;\n  /** Optional className */\n  className?: string;\n}\n\nexport function AnimatedCheckbox({\n  checked,\n  defaultChecked = false,\n  onCheckedChange,\n  label = \"Ship the release notes\",\n  strikeThrough = true,\n  accentColor = \"#38bdf8\",\n  disabled = false,\n  className = \"\",\n}: AnimatedCheckboxProps) {\n  const prefersReducedMotion = useReducedMotion();\n  const [inner, setInner] = React.useState(defaultChecked);\n  const isControlled = checked !== undefined;\n  const on = isControlled ? checked : inner;\n\n  const toggle = () => {\n    if (disabled) return;\n    const next = !on;\n    if (!isControlled) setInner(next);\n    onCheckedChange?.(next);\n  };\n\n  const ease = [0.65, 0, 0.35, 1] as const;\n\n  return (\n    <button\n      type=\"button\"\n      role=\"checkbox\"\n      aria-checked={on}\n      aria-label={label ? undefined : \"Checkbox\"}\n      disabled={disabled}\n      onClick={toggle}\n      data-state={on ? \"checked\" : \"unchecked\"}\n      style={{ \"--mf-ac-accent\": accentColor } as React.CSSProperties}\n      className={`${styles.root} ${className}`.trim()}\n    >\n      <motion.span\n        aria-hidden=\"true\"\n        className={styles.box}\n        initial={false}\n        animate={prefersReducedMotion ? { scale: 1 } : { scale: on ? [1, 0.82, 1.06, 1] : 1 }}\n        transition={{ duration: prefersReducedMotion ? 0 : 0.35 }}\n      >\n        <svg viewBox=\"0 0 24 24\" className={styles.icon}>\n          <motion.path\n            d=\"M5 12.5 L10 17.5 L19 7\"\n            fill=\"none\"\n            stroke=\"currentColor\"\n            strokeWidth=\"3\"\n            strokeLinecap=\"round\"\n            strokeLinejoin=\"round\"\n            initial={false}\n            animate={{ pathLength: on ? 1 : 0, opacity: on ? 1 : 0 }}\n            transition={{\n              pathLength: { duration: prefersReducedMotion ? 0 : 0.3, ease, delay: on && !prefersReducedMotion ? 0.06 : 0 },\n              opacity: { duration: prefersReducedMotion ? 0 : 0.05, delay: on ? 0 : 0.25 },\n            }}\n          />\n        </svg>\n      </motion.span>\n      {label ? (\n        <span className={styles.label}>\n          {label}\n          {strikeThrough ? (\n            <motion.span\n              aria-hidden=\"true\"\n              className={styles.strike}\n              initial={false}\n              animate={{ scaleX: on ? 1 : 0 }}\n              transition={{ duration: prefersReducedMotion ? 0 : 0.35, ease, delay: on && !prefersReducedMotion ? 0.15 : 0 }}\n            />\n          ) : null}\n        </span>\n      ) : null}\n    </button>\n  );\n}\n"
+    },
+    {
+      "path": "components/styles/animated-checkbox.module.css",
+      "type": "registry:style",
+      "content": ".root {\n  display: inline-flex;\n  align-items: center;\n  gap: 0.75rem;\n  padding: 0;\n  border: 0;\n  background: none;\n  color: var(--mf-fg, #f4f4f6);\n  font: inherit;\n  font-size: 0.9375rem;\n  text-align: left;\n  cursor: pointer;\n  user-select: none;\n  border-radius: 0.375rem;\n}\n\n.root:disabled {\n  opacity: 0.5;\n  cursor: not-allowed;\n}\n\n.root:focus-visible {\n  outline: 2px solid var(--mf-fg, #e4e4e7);\n  outline-offset: 3px;\n}\n\n.box {\n  flex-shrink: 0;\n  display: inline-flex;\n  align-items: center;\n  justify-content: center;\n  width: 1.5rem;\n  height: 1.5rem;\n  border-radius: 0.4rem;\n  border: 2px solid var(--mf-border, #2e2e38);\n  background-color: var(--mf-surface, #141419);\n  color: var(--mf-bg, #09090b);\n  box-sizing: border-box;\n  transition: background-color 200ms ease, border-color 200ms ease;\n}\n\n.root:hover:not(:disabled) .box {\n  border-color: var(--mf-border-strong, #52525b);\n}\n\n.root[data-state=\"checked\"] .box {\n  background-color: var(--mf-ac-accent, var(--mf-accent, #38bdf8));\n  border-color: var(--mf-ac-accent, var(--mf-accent, #38bdf8));\n}\n\n.icon {\n  width: 1rem;\n  height: 1rem;\n  overflow: visible;\n}\n\n.label {\n  position: relative;\n  display: inline-block;\n  transition: color 250ms ease;\n}\n\n.root[data-state=\"checked\"] .label {\n  color: var(--mf-subtle, #71717a);\n}\n\n.strike {\n  position: absolute;\n  left: -0.125rem;\n  right: -0.125rem;\n  top: 50%;\n  height: 2px;\n  margin-top: -1px;\n  border-radius: 2px;\n  background-color: currentColor;\n  transform-origin: left center;\n  pointer-events: none;\n}\n\n@media (prefers-reduced-motion: reduce) {\n  .box,\n  .label {\n    transition: none;\n  }\n}\n"
+    }
+  ],
+  "tailwindExample": "\"use client\";\n\nimport * as React from \"react\";\nimport { motion } from \"motion/react\";\n\nexport function AnimatedCheckboxTailwind({ label = \"Ship the release notes\" }) {\n  const [checked, setChecked] = React.useState(false);\n  return (\n    <button\n      type=\"button\"\n      role=\"checkbox\"\n      aria-checked={checked}\n      onClick={() => setChecked((v) => !v)}\n      className=\"inline-flex items-center gap-3 text-[15px] text-zinc-100\"\n    >\n      <motion.span\n        animate={{ scale: checked ? [1, 0.82, 1.06, 1] : 1 }}\n        className={\"flex h-6 w-6 items-center justify-center rounded-md border-2 text-zinc-950 transition-colors \" + (checked ? \"border-sky-400 bg-sky-400\" : \"border-zinc-700 bg-zinc-900\")}\n      >\n        <svg viewBox=\"0 0 24 24\" className=\"h-4 w-4\">\n          <motion.path d=\"M5 12.5 L10 17.5 L19 7\" fill=\"none\" stroke=\"currentColor\" strokeWidth=\"3\" strokeLinecap=\"round\" strokeLinejoin=\"round\" initial={false} animate={{ pathLength: checked ? 1 : 0 }} />\n        </svg>\n      </motion.span>\n      <span className={\"relative transition-colors \" + (checked ? \"text-zinc-500\" : \"\")}>\n        {label}\n        <motion.span aria-hidden className=\"absolute inset-x-0 top-1/2 h-0.5 origin-left bg-current\" initial={false} animate={{ scaleX: checked ? 1 : 0 }} />\n      </span>\n    </button>\n  );\n}"
+}

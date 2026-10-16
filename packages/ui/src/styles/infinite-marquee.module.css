@@ -1,0 +1,51 @@
+.viewport {
+  position: relative;
+  display: flex;
+  overflow: hidden;
+  user-select: none;
+  gap: var(--mf-mq-gap, 14px);
+  width: 100%;
+  mask-image: linear-gradient(to right, transparent 0%, black 10%, black 90%, transparent 100%);
+}
+
+.track {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  gap: var(--mf-mq-gap, 14px);
+  min-width: 100%;
+  animation: mfMarqueeScroll var(--mf-mq-speed, 22s) linear infinite;
+  animation-direction: var(--mf-mq-dir, normal);
+}
+
+.pauseOnHover:hover .track,
+.pauseOnHover:focus-within .track {
+  animation-play-state: paused;
+}
+
+.pill {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.76rem;
+  padding: 0.45rem 0.85rem;
+  border-radius: 999px;
+  border: 1px solid var(--mf-surface-raised, #272732);
+  background-color: var(--mf-surface, #121218);
+  color: var(--mf-fg, #e4e4e7);
+  white-space: nowrap;
+}
+
+@keyframes mfMarqueeScroll {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(calc(-100% - var(--mf-mq-gap, 14px)), 0, 0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .track {
+    animation: none;
+  }
+}

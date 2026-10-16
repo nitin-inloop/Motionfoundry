@@ -1,0 +1,76 @@
+.root {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 10rem;
+  padding: 0.7rem 1.35rem;
+  overflow: hidden;
+  border-radius: 0.625rem;
+  border: 1px solid var(--mf-fg, #f4f4f6);
+  background-color: var(--mf-fg, #f4f4f6);
+  color: var(--mf-bg, #09090b);
+  font: inherit;
+  font-size: 0.875rem;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  cursor: pointer;
+  user-select: none;
+  transition: background-color 200ms ease, border-color 200ms ease, color 200ms ease;
+}
+
+.root:hover:not(:disabled)[data-phase="idle"] {
+  background-color: #ffffff;
+}
+
+.root[data-phase="loading"] {
+  cursor: progress;
+  background-color: var(--mf-surface-raised, #1b1b22);
+  border-color: var(--mf-border, #2e2e38);
+  color: var(--mf-fg, #f4f4f6);
+}
+
+.root[data-phase="success"] {
+  cursor: default;
+  background-color: var(--mf-accent, #38bdf8);
+  border-color: var(--mf-accent, #38bdf8);
+  color: var(--mf-bg, #09090b);
+}
+
+.root:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.root:focus-visible {
+  outline: 2px solid var(--mf-fg, #e4e4e7);
+  outline-offset: 3px;
+}
+
+.content {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+.spinner {
+  animation: mfLbSpin 0.8s linear infinite;
+}
+
+@keyframes mfLbSpin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .root {
+    transition: none;
+  }
+
+  .spinner {
+    animation-duration: 2.4s;
+  }
+}

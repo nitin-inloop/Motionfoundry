@@ -1,0 +1,124 @@
+{
+  "slug": "notification-stack",
+  "name": "NotificationStack",
+  "category": "Loaders and Feedback",
+  "collection": "studio-kit",
+  "featured": true,
+  "addedAt": "2026-10-16",
+  "version": "2.1.0",
+  "requiresMotion": true,
+  "dependencies": [
+    "motion",
+    "react"
+  ],
+  "description": "A toast stack where each trigger press springs in a new notification that reflows the list via layout animation, auto-dismisses after a timeout and slides out on dismiss.",
+  "tags": [
+    "toast",
+    "notification",
+    "stack",
+    "layout",
+    "spring",
+    "feedback"
+  ],
+  "a11yNotes": "Toasts render in a <ul> with aria-live=\"polite\" so new messages are announced. Every toast has a labelled dismiss <button type=\"button\">, the trigger is a native button with a visible focus ring, and all auto-dismiss timers are cleared on unmount. Under prefers-reduced-motion toasts only fade, with no layout, slide or scale motion.",
+  "defaultProps": {
+    "messages": [
+      "Build succeeded",
+      "New comment on your PR",
+      "Deployed to production",
+      "3 new stars"
+    ],
+    "duration": 3000,
+    "maxVisible": 4,
+    "triggerLabel": "Notify me",
+    "position": "top"
+  },
+  "controls": [
+    {
+      "prop": "messages",
+      "label": "Messages (comma separated)",
+      "type": "list"
+    },
+    {
+      "prop": "duration",
+      "label": "Auto-dismiss (ms)",
+      "type": "range",
+      "min": 0,
+      "max": 10000,
+      "step": 500
+    },
+    {
+      "prop": "maxVisible",
+      "label": "Max Visible",
+      "type": "range",
+      "min": 1,
+      "max": 8,
+      "step": 1
+    },
+    {
+      "prop": "triggerLabel",
+      "label": "Trigger Label",
+      "type": "text"
+    },
+    {
+      "prop": "position",
+      "label": "New Toast Position",
+      "type": "select",
+      "options": [
+        "top",
+        "bottom"
+      ]
+    }
+  ],
+  "propsApi": [
+    {
+      "name": "messages",
+      "type": "string[]",
+      "default": "['Build succeeded', 'New comment on your PR', 'Deployed to production', '3 new stars']",
+      "description": "Messages cycled through on each trigger press."
+    },
+    {
+      "name": "duration",
+      "type": "number",
+      "default": "3000",
+      "description": "Auto-dismiss delay in milliseconds; 0 disables auto-dismiss."
+    },
+    {
+      "name": "maxVisible",
+      "type": "number",
+      "default": "4",
+      "description": "Maximum number of toasts visible at once; oldest are dropped."
+    },
+    {
+      "name": "triggerLabel",
+      "type": "string",
+      "default": "'Notify me'",
+      "description": "Label of the trigger button."
+    },
+    {
+      "name": "position",
+      "type": "'top' | 'bottom'",
+      "default": "'top'",
+      "description": "Whether new toasts appear at the top or bottom of the stack."
+    },
+    {
+      "name": "className",
+      "type": "string",
+      "default": "''",
+      "description": "Additional class merged onto the root element."
+    }
+  ],
+  "files": [
+    {
+      "path": "components/ui/notification-stack.tsx",
+      "type": "registry:component",
+      "content": "\"use client\";\n\nimport * as React from \"react\";\nimport { AnimatePresence, motion, useReducedMotion } from \"motion/react\";\nimport styles from \"../styles/notification-stack.module.css\";\n\nexport interface NotificationStackProps {\n  /** Messages cycled through on each trigger press */\n  messages?: string[];\n  /** Auto-dismiss delay in milliseconds (0 disables auto-dismiss) */\n  duration?: number;\n  /** Maximum number of toasts visible at once */\n  maxVisible?: number;\n  /** Trigger button label */\n  triggerLabel?: string;\n  /** Where new toasts appear relative to the stack */\n  position?: \"top\" | \"bottom\";\n  /** Optional className merged onto the root */\n  className?: string;\n}\n\ninterface Toast {\n  id: number;\n  text: string;\n}\n\nconst DEFAULT_MESSAGES = [\"Build succeeded\", \"New comment on your PR\", \"Deployed to production\", \"3 new stars\"];\n\nfunction BellIcon() {\n  return (\n    <svg aria-hidden=\"true\" width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" strokeWidth=\"2\" strokeLinecap=\"round\" strokeLinejoin=\"round\">\n      <path d=\"M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9\" />\n      <path d=\"M10.3 21a1.94 1.94 0 0 0 3.4 0\" />\n    </svg>\n  );\n}\n\nexport function NotificationStack({\n  messages = DEFAULT_MESSAGES,\n  duration = 3000,\n  maxVisible = 4,\n  triggerLabel = \"Notify me\",\n  position = \"top\",\n  className = \"\",\n}: NotificationStackProps) {\n  const prefersReducedMotion = useReducedMotion();\n  const [items, setItems] = React.useState<Toast[]>([]);\n  const nextId = React.useRef(0);\n  const timers = React.useRef(new Map<number, ReturnType<typeof setTimeout>>());\n\n  React.useEffect(() => {\n    const map = timers.current;\n    return () => {\n      map.forEach((t) => clearTimeout(t));\n      map.clear();\n    };\n  }, []);\n\n  const dismiss = (id: number) => {\n    const t = timers.current.get(id);\n    if (t !== undefined) clearTimeout(t);\n    timers.current.delete(id);\n    setItems((list) => list.filter((x) => x.id !== id));\n  };\n\n  const add = () => {\n    const id = nextId.current++;\n    const pool = messages.length > 0 ? messages : DEFAULT_MESSAGES;\n    const text = pool[id % pool.length] ?? \"Notification\";\n    const limit = Math.max(1, Math.round(maxVisible));\n    setItems((list) => (position === \"top\" ? [{ id, text }, ...list].slice(0, limit) : [...list, { id, text }].slice(-limit)));\n    if (duration > 0) timers.current.set(id, setTimeout(() => dismiss(id), duration));\n  };\n\n  const enterY = position === \"top\" ? -20 : 20;\n\n  return (\n    <div className={`${styles.root} ${className}`.trim()}>\n      <button type=\"button\" onClick={add} className={styles.trigger}>\n        {triggerLabel}\n      </button>\n      <ul aria-live=\"polite\" aria-label=\"Notifications\" className={styles.list}>\n        <AnimatePresence initial={false}>\n          {items.map((it) => (\n            <motion.li\n              key={it.id}\n              layout={!prefersReducedMotion}\n              initial={prefersReducedMotion ? { opacity: 0 } : { opacity: 0, y: enterY, scale: 0.92 }}\n              animate={{ opacity: 1, y: 0, scale: 1 }}\n              exit={prefersReducedMotion ? { opacity: 0 } : { opacity: 0, x: 80 }}\n              transition={prefersReducedMotion ? { duration: 0.15 } : { type: \"spring\", stiffness: 400, damping: 30 }}\n              className={styles.toast}\n            >\n              <span className={styles.icon}>\n                <BellIcon />\n              </span>\n              <span className={styles.text}>{it.text}</span>\n              <button type=\"button\" aria-label={`Dismiss: ${it.text}`} onClick={() => dismiss(it.id)} className={styles.dismiss}>\n                <svg aria-hidden=\"true\" width=\"14\" height=\"14\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" strokeWidth=\"2\" strokeLinecap=\"round\">\n                  <path d=\"M18 6 6 18M6 6l12 12\" />\n                </svg>\n              </button>\n            </motion.li>\n          ))}\n        </AnimatePresence>\n      </ul>\n      {items.length === 0 && <p className={styles.empty}>No notifications yet</p>}\n    </div>\n  );\n}\n"
+    },
+    {
+      "path": "components/styles/notification-stack.module.css",
+      "type": "registry:style",
+      "content": ".root {\n  display: flex;\n  flex-direction: column;\n  align-items: center;\n  gap: 0.75rem;\n  width: 18rem;\n  max-width: 100%;\n  color: var(--mf-fg, #f4f4f6);\n}\n\n.trigger {\n  padding: 0.6rem 1.25rem;\n  border-radius: 0.625rem;\n  border: 1px solid var(--mf-fg, #f4f4f6);\n  background-color: var(--mf-fg, #f4f4f6);\n  color: var(--mf-bg, #09090b);\n  font: inherit;\n  font-size: 0.875rem;\n  font-weight: 500;\n  cursor: pointer;\n  transition: background-color 160ms ease;\n}\n\n.trigger:hover {\n  background-color: #ffffff;\n}\n\n.trigger:focus-visible,\n.dismiss:focus-visible {\n  outline: 2px solid var(--mf-fg, #e4e4e7);\n  outline-offset: 3px;\n}\n\n.list {\n  display: flex;\n  flex-direction: column;\n  gap: 0.5rem;\n  width: 100%;\n  margin: 0;\n  padding: 0;\n  list-style: none;\n}\n\n.toast {\n  display: flex;\n  align-items: center;\n  gap: 0.75rem;\n  padding: 0.7rem 0.6rem 0.7rem 0.9rem;\n  border-radius: 1rem;\n  border: 1px solid var(--mf-border, #2e2e38);\n  background-color: var(--mf-surface, #141419);\n  font-size: 0.875rem;\n  box-shadow: 0 12px 28px -12px rgba(0, 0, 0, 0.7);\n}\n\n.icon {\n  display: inline-flex;\n  color: var(--mf-accent, #38bdf8);\n}\n\n.text {\n  flex: 1;\n  min-width: 0;\n}\n\n.dismiss {\n  display: inline-flex;\n  align-items: center;\n  justify-content: center;\n  width: 1.6rem;\n  height: 1.6rem;\n  border: 0;\n  border-radius: 0.4rem;\n  background: transparent;\n  color: var(--mf-subtle, #71717a);\n  cursor: pointer;\n  transition: color 160ms ease, background-color 160ms ease;\n}\n\n.dismiss:hover {\n  color: var(--mf-fg, #f4f4f6);\n  background-color: var(--mf-surface-raised, #1b1b22);\n}\n\n.empty {\n  margin: 0;\n  font-size: 0.8rem;\n  color: var(--mf-subtle, #71717a);\n}\n\n@media (prefers-reduced-motion: reduce) {\n  .toast {\n    transform: none !important;\n  }\n}\n"
+    }
+  ],
+  "tailwindExample": "\"use client\";\n\nimport { AnimatePresence, motion } from \"motion/react\";\nimport { useEffect, useRef, useState } from \"react\";\n\nconst MESSAGES = [\"Build succeeded\", \"New comment on your PR\", \"Deployed to production\", \"3 new stars\"];\n\nexport function NotificationStackTailwind({ duration = 3000 }) {\n  const [items, setItems] = useState<{ id: number; text: string }[]>([]);\n  const next = useRef(0);\n  const timers = useRef<ReturnType<typeof setTimeout>[]>([]);\n  useEffect(() => () => timers.current.forEach(clearTimeout), []);\n  const dismiss = (id: number) => setItems((l) => l.filter((x) => x.id !== id));\n  const add = () => {\n    const id = next.current++;\n    setItems((l) => [{ id, text: MESSAGES[id % MESSAGES.length] }, ...l].slice(0, 4));\n    timers.current.push(setTimeout(() => dismiss(id), duration));\n  };\n  return (\n    <div className=\"flex w-72 flex-col items-center gap-3\">\n      <button type=\"button\" onClick={add} className=\"rounded-lg bg-zinc-100 px-5 py-2 text-sm font-medium text-zinc-950\">Notify me</button>\n      <ul aria-live=\"polite\" className=\"flex w-full flex-col gap-2\">\n        <AnimatePresence initial={false}>\n          {items.map((it) => (\n            <motion.li key={it.id} layout initial={{ opacity: 0, y: -20, scale: 0.92 }} animate={{ opacity: 1, y: 0, scale: 1 }} exit={{ opacity: 0, x: 80 }} transition={{ type: \"spring\", stiffness: 400, damping: 30 }} className=\"flex items-center gap-3 rounded-2xl border border-zinc-800 bg-zinc-900 px-4 py-3 text-sm text-zinc-100\">\n              <span className=\"flex-1\">{it.text}</span>\n              <button type=\"button\" aria-label={`Dismiss: ${it.text}`} onClick={() => dismiss(it.id)} className=\"text-zinc-500 hover:text-zinc-100\">×</button>\n            </motion.li>\n          ))}\n        </AnimatePresence>\n      </ul>\n    </div>\n  );\n}"
+}

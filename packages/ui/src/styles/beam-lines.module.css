@@ -1,0 +1,93 @@
+.root {
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  width: 100%;
+  min-height: 18rem;
+  border-radius: 1rem;
+  border: 1px solid var(--mf-border, #2e2e38);
+  background-color: var(--mf-bg, #09090b);
+  color: var(--mf-fg, #f4f4f6);
+}
+
+.field {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  mask-image: linear-gradient(to bottom, transparent, black 18%, black 82%, transparent);
+}
+
+.line {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background-color: rgba(46, 46, 56, 0.6);
+}
+
+.beam {
+  position: absolute;
+  inset: 0;
+  animation-name: mfBeamSweep;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+  will-change: transform;
+}
+
+.beam::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: -6rem;
+  width: 1px;
+  height: 6rem;
+  background: linear-gradient(to bottom, transparent, var(--mf-bl-color, var(--mf-accent, #38bdf8)), transparent);
+  box-shadow: 0 0 8px 0 var(--mf-bl-color, var(--mf-accent, #38bdf8));
+}
+
+.content {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex: 1;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+}
+
+.copy {
+  text-align: center;
+}
+
+.eyebrow {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.72rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--mf-bl-color, var(--mf-accent, #38bdf8));
+}
+
+.title {
+  margin: 0.5rem 0 0;
+  padding: 0.25rem 0.75rem;
+  font-size: 1.6rem;
+  font-weight: 600;
+  letter-spacing: -0.03em;
+  background-color: rgba(9, 9, 11, 0.7);
+}
+
+@keyframes mfBeamSweep {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(0, calc(100% + 6rem), 0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .beam {
+    animation: none;
+    transform: translate3d(0, 55%, 0);
+  }
+}

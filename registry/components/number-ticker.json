@@ -1,0 +1,133 @@
+{
+  "slug": "number-ticker",
+  "name": "NumberTicker",
+  "category": "Advanced Text Animations",
+  "collection": "studio-kit",
+  "featured": false,
+  "addedAt": "2026-10-16",
+  "version": "2.1.0",
+  "requiresMotion": true,
+  "dependencies": [
+    "motion",
+    "react"
+  ],
+  "description": "Counts from a start value to a target with an expo-out ease when scrolled into view, with fixed decimals, tabular numerals, and optional prefix and suffix.",
+  "tags": [
+    "text",
+    "number",
+    "counter",
+    "stats",
+    "in-view",
+    "metrics"
+  ],
+  "a11yNotes": "The root exposes the final formatted value (with prefix and suffix) via role=\"img\" and aria-label, so assistive tech never reads intermediate numbers. The server-rendered text is the final value; under prefers-reduced-motion it stays final with no count animation.",
+  "defaultProps": {
+    "value": 12480,
+    "from": 0,
+    "duration": 1.6,
+    "decimals": 0,
+    "prefix": "",
+    "suffix": "+"
+  },
+  "controls": [
+    {
+      "prop": "value",
+      "label": "Value",
+      "type": "range",
+      "min": 0,
+      "max": 100000,
+      "step": 10
+    },
+    {
+      "prop": "from",
+      "label": "From",
+      "type": "range",
+      "min": 0,
+      "max": 10000,
+      "step": 10
+    },
+    {
+      "prop": "duration",
+      "label": "Duration (s)",
+      "type": "range",
+      "min": 0.3,
+      "max": 5,
+      "step": 0.1
+    },
+    {
+      "prop": "decimals",
+      "label": "Decimals",
+      "type": "range",
+      "min": 0,
+      "max": 3,
+      "step": 1
+    },
+    {
+      "prop": "prefix",
+      "label": "Prefix",
+      "type": "text"
+    },
+    {
+      "prop": "suffix",
+      "label": "Suffix",
+      "type": "text"
+    }
+  ],
+  "propsApi": [
+    {
+      "name": "value",
+      "type": "number",
+      "default": "12480",
+      "description": "Target value to count up to."
+    },
+    {
+      "name": "from",
+      "type": "number",
+      "default": "0",
+      "description": "Starting value of the count."
+    },
+    {
+      "name": "duration",
+      "type": "number",
+      "default": "1.6",
+      "description": "Count duration in seconds."
+    },
+    {
+      "name": "decimals",
+      "type": "number",
+      "default": "0",
+      "description": "Number of fraction digits to display."
+    },
+    {
+      "name": "prefix",
+      "type": "string",
+      "default": "''",
+      "description": "Text rendered before the number (e.g. '$')."
+    },
+    {
+      "name": "suffix",
+      "type": "string",
+      "default": "'+'",
+      "description": "Text rendered after the number (e.g. '%')."
+    },
+    {
+      "name": "className",
+      "type": "string",
+      "default": "''",
+      "description": "Additional class merged onto the root element."
+    }
+  ],
+  "files": [
+    {
+      "path": "components/ui/number-ticker.tsx",
+      "type": "registry:component",
+      "content": "\"use client\";\n\nimport * as React from \"react\";\nimport { animate, useInView, useReducedMotion } from \"motion/react\";\nimport styles from \"../styles/number-ticker.module.css\";\n\nexport interface NumberTickerProps {\n  /** Target value to count up to */\n  value?: number;\n  /** Starting value of the count */\n  from?: number;\n  /** Count duration in seconds */\n  duration?: number;\n  /** Number of fraction digits to display */\n  decimals?: number;\n  /** Text rendered before the number */\n  prefix?: string;\n  /** Text rendered after the number */\n  suffix?: string;\n  /** Optional className */\n  className?: string;\n}\n\nfunction format(n: number, decimals: number) {\n  return n.toLocaleString(\"en-US\", {\n    minimumFractionDigits: decimals,\n    maximumFractionDigits: decimals,\n  });\n}\n\nexport function NumberTicker({\n  value = 12480,\n  from = 0,\n  duration = 1.6,\n  decimals = 0,\n  prefix = \"\",\n  suffix = \"+\",\n  className = \"\",\n}: NumberTickerProps) {\n  const rootRef = React.useRef<HTMLSpanElement>(null);\n  const numRef = React.useRef<HTMLSpanElement>(null);\n  const inView = useInView(rootRef, { once: true, margin: \"0px 0px -10% 0px\" });\n  const prefersReducedMotion = useReducedMotion();\n  const finalText = format(value, decimals);\n\n  React.useEffect(() => {\n    const node = numRef.current;\n    if (!node) return;\n    if (prefersReducedMotion) {\n      node.textContent = finalText;\n      return;\n    }\n    if (!inView) {\n      node.textContent = format(from, decimals);\n      return;\n    }\n    const controls = animate(from, value, {\n      duration,\n      ease: [0.16, 1, 0.3, 1],\n      onUpdate: (v) => {\n        node.textContent = format(v, decimals);\n      },\n    });\n    return () => controls.stop();\n  }, [inView, value, from, duration, decimals, prefersReducedMotion, finalText]);\n\n  return (\n    <span\n      ref={rootRef}\n      role=\"img\"\n      aria-label={`${prefix}${finalText}${suffix}`}\n      className={`${styles.root} ${className}`.trim()}\n    >\n      {prefix ? (\n        <span aria-hidden=\"true\" className={styles.affix}>\n          {prefix}\n        </span>\n      ) : null}\n      <span ref={numRef} aria-hidden=\"true\" className={styles.number}>\n        {finalText}\n      </span>\n      {suffix ? (\n        <span aria-hidden=\"true\" className={styles.affix}>\n          {suffix}\n        </span>\n      ) : null}\n    </span>\n  );\n}\n"
+    },
+    {
+      "path": "components/styles/number-ticker.module.css",
+      "type": "registry:style",
+      "content": ".root {\n  display: inline-flex;\n  align-items: baseline;\n  gap: 0.04em;\n  color: var(--mf-fg, #f4f4f6);\n  font-size: clamp(2rem, 6vw, 3.5rem);\n  font-weight: 600;\n  letter-spacing: -0.04em;\n  line-height: 1;\n  font-variant-numeric: tabular-nums;\n}\n\n.number {\n  font-variant-numeric: tabular-nums;\n}\n\n.affix {\n  color: var(--mf-muted, #a1a1aa);\n}\n\n@media (prefers-reduced-motion: reduce) {\n  .number {\n    transition: none !important;\n  }\n}\n"
+    }
+  ],
+  "tailwindExample": "\"use client\";\n\nimport { useEffect, useRef } from \"react\";\nimport { animate, useInView } from \"motion/react\";\n\nexport function NumberTickerTailwind({ value = 12480, suffix = \"+\" }) {\n  const ref = useRef<HTMLSpanElement>(null);\n  const inView = useInView(ref, { once: true });\n  useEffect(() => {\n    if (!inView || !ref.current) return;\n    const node = ref.current;\n    const c = animate(0, value, {\n      duration: 1.6,\n      ease: [0.16, 1, 0.3, 1],\n      onUpdate: (v) => { node.textContent = Math.round(v).toLocaleString(\"en-US\"); },\n    });\n    return () => c.stop();\n  }, [inView, value]);\n  return (\n    <span aria-label={value.toLocaleString(\"en-US\") + suffix} className=\"text-5xl font-semibold tabular-nums tracking-tight text-zinc-100\">\n      <span ref={ref} aria-hidden>{value.toLocaleString(\"en-US\")}</span>\n      <span aria-hidden className=\"text-zinc-400\">{suffix}</span>\n    </span>\n  );\n}"
+}

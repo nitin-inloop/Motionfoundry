@@ -1,0 +1,24 @@
+---
+title: "Performance"
+category: "Quality & Standards"
+summary: "Compositor-friendly properties, zero-re-render pointer tracking, and RAF lifecycle cleanup."
+---
+
+# Performance
+
+MotionFoundry enforces strict performance budgets across all 48 components:
+
+1. **Compositor-Only Keyframes**: Continuous animations animate `transform`, `opacity`, `clip-path`, or `background-position` rather than layout-thrashing properties.
+2. **Zero React State Re-Renders on Pointer Move**: `VelocityButton` and `LiquidGlassCard` update CSS variables (`el.style.setProperty`) directly without calling `setState` on every mousemove frame.
+3. **Deterministic Listener & RAF Cleanup**: `ConstellationCard` and `OrbitingParticles` cap particle counts and cancel `requestAnimationFrame` and `resize` listeners on unmount.
+
+```tsx
+// Zero-re-render pointer tracking in LiquidGlassCard
+const handlePointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
+  const el = cardRef.current;
+  if (!el) return;
+  const rect = el.getBoundingClientRect();
+  el.style.setProperty("--mf-lg-x", `${e.clientX - rect.left}px`);
+  el.style.setProperty("--mf-lg-y", `${e.clientY - rect.top}px`);
+};
+```

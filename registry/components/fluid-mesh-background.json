@@ -1,0 +1,120 @@
+{
+  "slug": "fluid-mesh-background",
+  "name": "FluidMeshBackground",
+  "category": "Animated Backgrounds and Visual Effects",
+  "featured": true,
+  "addedAt": "2026-10-16",
+  "version": "2.0.0",
+  "requiresMotion": false,
+  "dependencies": [
+    "react"
+  ],
+  "description": "GPU-composited multi-field mesh gradient backdrop with configurable color pools, orbital speed, contrast, and low-CPU static fallback.",
+  "tags": [
+    "mesh",
+    "fluid",
+    "background",
+    "gradient",
+    "ambient",
+    "backdrop"
+  ],
+  "a11yNotes": "Marks background mesh orbs aria-hidden='true' and halts orbital keyframe transforms when prefers-reduced-motion is enabled.",
+  "defaultProps": {
+    "headline": "Fluid Multi-Field Mesh Backdrop",
+    "colorA": "#38bdf8",
+    "colorB": "#818cf8",
+    "colorC": "#e4e4e7",
+    "speed": 14,
+    "intensity": 0.28
+  },
+  "controls": [
+    {
+      "prop": "headline",
+      "label": "Foreground Headline",
+      "type": "text"
+    },
+    {
+      "prop": "colorA",
+      "label": "Field A Color",
+      "type": "color"
+    },
+    {
+      "prop": "colorB",
+      "label": "Field B Color",
+      "type": "color"
+    },
+    {
+      "prop": "colorC",
+      "label": "Field C Color",
+      "type": "color"
+    },
+    {
+      "prop": "speed",
+      "label": "Mesh Cycle (s)",
+      "type": "range",
+      "min": 6,
+      "max": 28,
+      "step": 2
+    },
+    {
+      "prop": "intensity",
+      "label": "Field Intensity",
+      "type": "range",
+      "min": 0.1,
+      "max": 0.6,
+      "step": 0.04
+    }
+  ],
+  "propsApi": [
+    {
+      "name": "headline",
+      "type": "string",
+      "default": "'Fluid Multi-Field Mesh Backdrop'",
+      "description": "Optional foreground heading."
+    },
+    {
+      "name": "colorA",
+      "type": "string",
+      "default": "'#38bdf8'",
+      "description": "Primary mesh field color."
+    },
+    {
+      "name": "colorB",
+      "type": "string",
+      "default": "'#818cf8'",
+      "description": "Secondary mesh field color."
+    },
+    {
+      "name": "colorC",
+      "type": "string",
+      "default": "'#e4e4e7'",
+      "description": "Tertiary mesh field color."
+    },
+    {
+      "name": "speed",
+      "type": "number",
+      "default": "14",
+      "description": "Cycle duration in seconds."
+    },
+    {
+      "name": "intensity",
+      "type": "number",
+      "default": "0.28",
+      "description": "Opacity of the moving color fields."
+    }
+  ],
+  "files": [
+    {
+      "path": "components/ui/fluid-mesh-background.tsx",
+      "type": "registry:component",
+      "content": "\"use client\";\n\nimport * as React from \"react\";\nimport styles from \"../styles/fluid-mesh-background.module.css\";\n\nexport interface FluidMeshBackgroundProps extends React.HTMLAttributes<HTMLDivElement> {\n  /** Optional foreground headline */\n  headline?: string;\n  /** Primary mesh color */\n  colorA?: string;\n  /** Secondary mesh color */\n  colorB?: string;\n  /** Tertiary mesh color */\n  colorC?: string;\n  /** Orbit cycle duration in seconds */\n  speed?: number;\n  /** Field opacity (0.1 to 0.6) */\n  intensity?: number;\n}\n\nexport function FluidMeshBackground({\n  headline = \"Fluid Multi-Field Mesh Backdrop\",\n  colorA = \"#38bdf8\",\n  colorB = \"#818cf8\",\n  colorC = \"#e4e4e7\",\n  speed = 14,\n  intensity = 0.28,\n  children,\n  className = \"\",\n  ...rest\n}: FluidMeshBackgroundProps) {\n  const customVars = {\n    \"--mf-fm-a\": colorA,\n    \"--mf-fm-b\": colorB,\n    \"--mf-fm-c\": colorC,\n    \"--mf-fm-speed\": `${speed}s`,\n    \"--mf-fm-opacity\": intensity,\n  } as React.CSSProperties;\n\n  return (\n    <div style={customVars} className={`${styles.stage} ${className}`.trim()} {...rest}>\n      <div aria-hidden=\"true\" className={styles.meshLayer}>\n        <div className={`${styles.field} ${styles.fieldA}`} />\n        <div className={`${styles.field} ${styles.fieldB}`} />\n        <div className={`${styles.field} ${styles.fieldC}`} />\n      </div>\n      <div className={styles.foreground}>\n        {children ?? <h3 className={styles.headline}>{headline}</h3>}\n      </div>\n    </div>\n  );\n}\n"
+    },
+    {
+      "path": "components/styles/fluid-mesh-background.module.css",
+      "type": "registry:style",
+      "content": ".stage {\n  position: relative;\n  overflow: hidden;\n  min-height: 12rem;\n  border-radius: 0.85rem;\n  border: 1px solid var(--mf-surface-raised, #24242e);\n  background-color: var(--mf-bg, #09090b);\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  padding: 2rem;\n  color: var(--mf-fg, #f4f4f6);\n}\n\n.meshLayer {\n  pointer-events: none;\n  position: absolute;\n  inset: 0;\n  filter: blur(52px);\n  opacity: var(--mf-fm-opacity, 0.28);\n}\n\n.field {\n  position: absolute;\n  border-radius: 9999px;\n  will-change: transform;\n}\n\n.fieldA {\n  width: 16rem;\n  height: 16rem;\n  top: -4rem;\n  left: 8%;\n  background: radial-gradient(circle, var(--mf-fm-a, var(--mf-accent, #38bdf8)) 0%, transparent 70%);\n  animation: mfMeshDriftA var(--mf-fm-speed, 14s) ease-in-out infinite alternate;\n}\n\n.fieldB {\n  width: 18rem;\n  height: 18rem;\n  bottom: -5rem;\n  right: 10%;\n  background: radial-gradient(circle, var(--mf-fm-b, #818cf8) 0%, transparent 70%);\n  animation: mfMeshDriftB calc(var(--mf-fm-speed, 14s) * 1.2) ease-in-out infinite alternate-reverse;\n}\n\n.fieldC {\n  width: 14rem;\n  height: 14rem;\n  top: 20%;\n  left: 42%;\n  background: radial-gradient(circle, var(--mf-fm-c, var(--mf-fg, #e4e4e7)) 0%, transparent 70%);\n  animation: mfMeshDriftA calc(var(--mf-fm-speed, 14s) * 0.9) ease-in-out infinite alternate;\n}\n\n.foreground {\n  position: relative;\n  z-index: 1;\n  text-align: center;\n}\n\n.headline {\n  margin: 0;\n  font-size: 1.1rem;\n  font-weight: 600;\n  letter-spacing: -0.02em;\n}\n\n@keyframes mfMeshDriftA {\n  0% {\n    transform: translate3d(-15%, -10%, 0) scale(1);\n  }\n  100% {\n    transform: translate3d(20%, 15%, 0) scale(1.18);\n  }\n}\n\n@keyframes mfMeshDriftB {\n  0% {\n    transform: translate3d(12%, 8%, 0) scale(1.05);\n  }\n  100% {\n    transform: translate3d(-18%, -12%, 0) scale(0.92);\n  }\n}\n\n@media (prefers-reduced-motion: reduce) {\n  .fieldA,\n  .fieldB,\n  .fieldC {\n    animation: none;\n  }\n}\n"
+    }
+  ],
+  "tailwindExample": "export function FluidMeshTailwind() {\n  return (\n    <div className=\"relative flex h-48 items-center justify-center overflow-hidden rounded-xl border border-zinc-800 bg-zinc-950 text-zinc-100\">\n      <div className=\"pointer-events-none absolute -left-8 -top-8 h-48 w-48 rounded-full bg-sky-400/20 blur-3xl\" />\n      <div className=\"pointer-events-none absolute -bottom-8 -right-8 h-48 w-48 rounded-full bg-indigo-400/20 blur-3xl\" />\n      <span className=\"relative z-10 text-sm font-semibold\">Fluid Multi-Field Mesh Backdrop</span>\n    </div>\n  );\n}",
+  "collection": "core"
+}

@@ -1,0 +1,97 @@
+---
+title: "Studio Kit"
+category: "Overview"
+summary: "24 everyday motion patterns — text reveals, feedback buttons, interactive cards, ambient backgrounds, loaders, and list interactions — ported from Swirl Studio Kit."
+---
+
+# Studio Kit
+
+Studio Kit is the second MotionFoundry collection. It brings 24 hand-picked components from the Swirl Studio Kit prototype library into `@motionfoundry/ui`, rebuilt on the same conventions as the Core collection: one `.tsx` file plus one scoped `.module.css` per component, strict TypeScript props with defaults, `prefers-reduced-motion` support, and no Tailwind, shadcn, or icon-library dependencies. Browse them all live on the [Studio Kit collection page](/collections/studio-kit).
+
+### Why these 24
+
+Swirl Studio Kit shipped 62 prototypes. Studio Kit keeps the patterns product teams reach for most and drops anything that overlaps with Core (magnetic button, marquee, dock, tilt card, aurora, scramble text) or that was intentionally retired in v2.0. Every port was reviewed for keyboard access, timer cleanup, and SSR-safe rendering — several gained capabilities the originals lacked, such as keyboard reordering, controlled state, and async-driven loading states.
+
+### Advanced Text Animations
+
+- [`BlurInText`](/components/blur-in-text) (`blur-in-text`) — words resolve from a soft blur in sequence; `as` picks the heading level.
+- [`Typewriter`](/components/typewriter) (`typewriter`) — types, pauses, deletes, and cycles a word list after a static `prefix`.
+- [`NumberTicker`](/components/number-ticker) (`number-ticker`) — counts from `from` to `value` once when scrolled into view; renders the final value on the server.
+- [`SplitReveal`](/components/split-reveal) (`split-reveal`) — words rise (or drop) out of clipping masks.
+- [`RotatingWords`](/components/rotating-words) (`rotating-words`) — springs through `words` in a slot sized to the widest word, so the line never jumps.
+- [`ShimmerText`](/components/shimmer-text) (`shimmer-text`) — a pure-CSS glint for loading or "thinking" copy.
+
+### Interactive Buttons and Controls
+
+- [`ShinyBorderButton`](/components/shiny-border-button) (`shiny-border-button`) — a conic beam orbits the border; pure CSS.
+- [`ConfettiButton`](/components/confetti-button) (`confetti-button`) — radial confetti burst on every click.
+- [`LoadingButton`](/components/loading-button) (`loading-button`) — idle → loading → success; pass `onAction` returning a Promise to drive real work.
+- [`SlideFillButton`](/components/slide-fill-button) (`slide-fill-button`) — a fill sweeps in from any `direction` on hover and keyboard focus.
+- [`ToggleSwitch`](/components/toggle-switch) (`toggle-switch`) — spring-thumb `role="switch"`, controlled or uncontrolled.
+- [`AnimatedCheckbox`](/components/animated-checkbox) (`animated-checkbox`) — self-drawing check mark with an animated strike-through.
+
+### High-End Animated Cards
+
+- [`FlipCard`](/components/flip-card) (`flip-card`) — 3D flip on hover or click, on the X or Y axis; Enter/Space flips it.
+- [`SwipeCards`](/components/swipe-cards) (`swipe-cards`) — Tinder-style drag stack with arrow-key and button fallbacks.
+- [`RevealCard`](/components/reveal-card) (`reveal-card`) — an overlay slides in from any edge on hover or focus.
+- [`DrawBorderCard`](/components/draw-border-card) (`draw-border-card`) — an SVG stroke draws around the card's rounded border.
+
+### Animated Backgrounds and Visual Effects
+
+- [`Meteors`](/components/meteors) (`meteors`) — angled meteor streaks behind your content; pure CSS.
+- [`BeamLines`](/components/beam-lines) (`beam-lines`) — light beams travel down vertical grid lines; pure CSS.
+- [`GridPulse`](/components/grid-pulse) (`grid-pulse`) — cells of a grid pulse on deterministic, seeded delays; pure CSS.
+
+### Loaders and Feedback
+
+- [`OrbitLoader`](/components/orbit-loader) (`orbit-loader`) — counter-rotating orbit rings around a core.
+- [`PulseLoader`](/components/pulse-loader) (`pulse-loader`) — concentric rings radiate from a center dot.
+- [`NotificationStack`](/components/notification-stack) (`notification-stack`) — spring-animated toast stack with auto-dismiss and per-toast close buttons.
+
+### Developer-Interface Animations
+
+- [`ReorderList`](/components/reorder-list) (`reorder-list`) — drag-to-reorder list; Alt+Arrow keys move items for keyboard users.
+- [`ExpandableSearch`](/components/expandable-search) (`expandable-search`) — an icon button that springs open into a search field; Escape collapses it.
+
+### Installing Studio Kit components
+
+Studio Kit uses the same three workflows as Core. With the CLI, each component lands at `components/ui/<slug>.tsx` with its stylesheet at `components/styles/<slug>.module.css`. Run `npx motionfoundry list --collection studio-kit` to print the full collection. Seven Studio Kit components (`ShimmerText`, `ShinyBorderButton`, `Meteors`, `BeamLines`, `GridPulse`, `OrbitLoader`, `PulseLoader`) are pure CSS and need only React; the rest need `motion`.
+
+### Conventions shared by every Studio Kit component
+
+- **Zero-config defaults**: every prop is optional, so `<FlipCard />` or `<NotificationStack />` renders a complete demo. Pass your own copy, items, or children when you ship.
+- **Color props, not theme tokens**: colors are plain props such as `accentColor`, `beamColor`, or `meteorColor` (default sky `#38bdf8`) that map to `--mf-*` CSS custom properties, so the components work without any design-token setup.
+- **Controlled or uncontrolled inputs**: `ToggleSwitch` and `AnimatedCheckbox` accept `checked` + `onCheckedChange` or just `defaultChecked`.
+- **Callbacks for real data**: `LoadingButton` `onAction`, `SwipeCards` `onSwipe`, `ReorderList` `onReorder`, and `ExpandableSearch` `onSearch` connect the motion to your application state.
+- **Accessibility**: split-text effects expose the full sentence to screen readers, loaders use `role="status"`, toasts announce through a polite live region, and every pointer gesture has a keyboard equivalent.
+- **Reduced motion**: Motion-based components read `useReducedMotion()` and render their settled state; CSS-only components switch off their keyframes under `@media (prefers-reduced-motion: reduce)`.
+
+### Migrating from Swirl Studio Kit
+
+The ports keep the original slugs and component names, except `ShinyButton`, which is now `ShinyBorderButton` (`shiny-border-button`). `ToggleSwitch` renamed `defaultOn`/`onChange` to `defaultChecked`/`onCheckedChange` to match `AnimatedCheckbox`, and `FlipCard` no longer requires `front`/`back`. Colors that came from Tailwind theme classes are now explicit color props, and lucide icons are replaced by inline SVGs. Timing props carried over from the originals (`duration`, `stagger`, `interval`, and `Typewriter` `speed`) keep their units.
+
+```tsx
+"use client";
+
+import { useState } from "react";
+import { LoadingButton, NotificationStack, RotatingWords, ToggleSwitch } from "@motionfoundry/ui";
+import "@motionfoundry/ui/styles.css";
+
+export function ReleasePanel() {
+  const [autoDeploy, setAutoDeploy] = useState(true);
+  return (
+    <section>
+      <h2>
+        <RotatingWords prefix="Ship" words={["faster", "safer", "today"]} />
+      </h2>
+      <ToggleSwitch label="Auto-deploy" checked={autoDeploy} onCheckedChange={setAutoDeploy} />
+      <LoadingButton
+        label="Deploy to production"
+        onAction={() => fetch("/api/deploy", { method: "POST" })}
+      />
+      <NotificationStack messages={["Build succeeded", "Deployed to production"]} />
+    </section>
+  );
+}
+```

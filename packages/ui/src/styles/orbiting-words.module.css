@@ -1,0 +1,68 @@
+.stage {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 14.5rem;
+  width: 100%;
+  overflow: hidden;
+  perspective: 800px;
+}
+
+.centerNode {
+  position: relative;
+  z-index: 2;
+  padding: 0.45rem 0.95rem;
+  border-radius: 999px;
+  border: 1px solid var(--mf-border, #3f3f4a);
+  background-color: var(--mf-surface, #14141b);
+  color: var(--mf-fg, #f4f4f6);
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: -0.015em;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.55);
+}
+
+.ring {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transform-style: preserve-3d;
+}
+
+.ringAnimated {
+  animation: mfOrbitRing var(--mf-orbit-duration, 18s) linear infinite;
+}
+
+.ringStatic {
+  animation: none;
+}
+
+.wordTag {
+  position: absolute;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.68rem;
+  padding: 0.2rem 0.55rem;
+  border-radius: 0.375rem;
+  border: 1px solid var(--mf-surface-raised, #272732);
+  background-color: rgba(16, 16, 22, 0.9);
+  color: var(--mf-muted, #a1a1aa);
+  white-space: nowrap;
+}
+
+@keyframes mfOrbitRing {
+  0% {
+    transform: rotateX(var(--mf-orbit-tilt, 22deg)) rotateZ(0deg);
+  }
+  100% {
+    transform: rotateX(var(--mf-orbit-tilt, 22deg)) rotateZ(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ringAnimated {
+    animation: none;
+  }
+}

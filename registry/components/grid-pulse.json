@@ -1,0 +1,111 @@
+{
+  "slug": "grid-pulse",
+  "name": "GridPulse",
+  "category": "Animated Backgrounds and Visual Effects",
+  "collection": "studio-kit",
+  "featured": false,
+  "addedAt": "2026-10-16",
+  "version": "2.1.0",
+  "requiresMotion": false,
+  "dependencies": [
+    "react"
+  ],
+  "description": "A bordered cell grid where individual cells softly flash with an accent color on deterministic, per-cell offsets set through CSS custom properties, under a radial vignette.",
+  "tags": [
+    "background",
+    "grid",
+    "pulse",
+    "cells",
+    "css",
+    "hero"
+  ],
+  "a11yNotes": "The grid layer is aria-hidden and pointer-events: none; children keep their semantics. Per-cell delays come from a seeded rand(n) via --mf-gp-delay, so SSR output is stable. Under prefers-reduced-motion the pulses are disabled and only the static grid lines remain.",
+  "defaultProps": {
+    "cols": 12,
+    "rows": 6,
+    "pulseColor": "#38bdf8",
+    "duration": 3
+  },
+  "controls": [
+    {
+      "prop": "cols",
+      "label": "Columns",
+      "type": "range",
+      "min": 4,
+      "max": 32,
+      "step": 1
+    },
+    {
+      "prop": "rows",
+      "label": "Rows",
+      "type": "range",
+      "min": 2,
+      "max": 16,
+      "step": 1
+    },
+    {
+      "prop": "duration",
+      "label": "Pulse Duration (s)",
+      "type": "range",
+      "min": 1,
+      "max": 8,
+      "step": 0.5
+    },
+    {
+      "prop": "pulseColor",
+      "label": "Pulse Color",
+      "type": "color"
+    }
+  ],
+  "propsApi": [
+    {
+      "name": "cols",
+      "type": "number",
+      "default": "12",
+      "description": "Number of grid columns."
+    },
+    {
+      "name": "rows",
+      "type": "number",
+      "default": "6",
+      "description": "Number of grid rows."
+    },
+    {
+      "name": "pulseColor",
+      "type": "string",
+      "default": "'#38bdf8'",
+      "description": "Fill color of a pulsing cell."
+    },
+    {
+      "name": "duration",
+      "type": "number",
+      "default": "3",
+      "description": "Pulse cycle length in seconds."
+    },
+    {
+      "name": "children",
+      "type": "React.ReactNode",
+      "default": "'Grid Pulse' heading",
+      "description": "Foreground content centered above the grid."
+    },
+    {
+      "name": "className",
+      "type": "string",
+      "default": "''",
+      "description": "Additional class merged onto the root element."
+    }
+  ],
+  "files": [
+    {
+      "path": "components/ui/grid-pulse.tsx",
+      "type": "registry:component",
+      "content": "\"use client\";\n\nimport * as React from \"react\";\nimport styles from \"../styles/grid-pulse.module.css\";\n\nexport interface GridPulseProps {\n  /** Number of grid columns */\n  cols?: number;\n  /** Number of grid rows */\n  rows?: number;\n  /** Cell pulse color */\n  pulseColor?: string;\n  /** Pulse cycle duration in seconds */\n  duration?: number;\n  /** Foreground content rendered above the grid */\n  children?: React.ReactNode;\n  /** Optional className merged onto the root */\n  className?: string;\n}\n\nconst rand = (n: number) => {\n  const x = Math.sin(n * 9301 + 49297) * 233280;\n  return x - Math.floor(x);\n};\n\nexport function GridPulse({\n  cols = 12,\n  rows = 6,\n  pulseColor = \"#38bdf8\",\n  duration = 3,\n  children,\n  className = \"\",\n}: GridPulseProps) {\n  const c = Math.max(1, Math.round(cols));\n  const r = Math.max(1, Math.round(rows));\n  const styleVars = {\n    \"--mf-gp-color\": pulseColor,\n    \"--mf-gp-duration\": `${duration > 0 ? duration : 3}s`,\n    \"--mf-gp-cols\": c,\n    \"--mf-gp-rows\": r,\n  } as React.CSSProperties;\n\n  return (\n    <div style={styleVars} className={`${styles.root} ${className}`.trim()}>\n      <div aria-hidden=\"true\" className={styles.grid}>\n        {Array.from({ length: c * r }, (_, i) => (\n          <span\n            key={i}\n            className={styles.cell}\n            style={{ \"--mf-gp-delay\": `-${(rand(i) * 6).toFixed(2)}s` } as React.CSSProperties}\n          />\n        ))}\n      </div>\n      <div className={styles.content}>\n        {children ?? (\n          <div className={styles.copy}>\n            <h3 className={styles.title}>Grid Pulse</h3>\n            <p className={styles.subtitle}>\n              {c} × {r} cells, CSS-only\n            </p>\n          </div>\n        )}\n      </div>\n    </div>\n  );\n}\n"
+    },
+    {
+      "path": "components/styles/grid-pulse.module.css",
+      "type": "registry:style",
+      "content": ".root {\n  position: relative;\n  overflow: hidden;\n  display: flex;\n  width: 100%;\n  min-height: 18rem;\n  border-radius: 1rem;\n  border: 1px solid var(--mf-border, #2e2e38);\n  background-color: var(--mf-bg, #09090b);\n  color: var(--mf-fg, #f4f4f6);\n}\n\n.grid {\n  position: absolute;\n  inset: 0;\n  display: grid;\n  grid-template-columns: repeat(var(--mf-gp-cols, 12), 1fr);\n  grid-template-rows: repeat(var(--mf-gp-rows, 6), 1fr);\n  pointer-events: none;\n  mask-image: radial-gradient(ellipse at center, black 35%, transparent 85%);\n}\n\n.cell {\n  position: relative;\n  border-right: 1px solid rgba(46, 46, 56, 0.55);\n  border-bottom: 1px solid rgba(46, 46, 56, 0.55);\n}\n\n.cell::after {\n  content: \"\";\n  position: absolute;\n  inset: 0;\n  background-color: var(--mf-gp-color, var(--mf-accent, #38bdf8));\n  opacity: 0;\n  animation: mfGridPulse var(--mf-gp-duration, 3s) ease-in-out infinite;\n  animation-delay: var(--mf-gp-delay, 0s);\n  will-change: opacity;\n}\n\n.content {\n  position: relative;\n  z-index: 1;\n  display: flex;\n  flex: 1;\n  align-items: center;\n  justify-content: center;\n  padding: 2rem;\n}\n\n.copy {\n  text-align: center;\n}\n\n.title {\n  margin: 0;\n  font-size: 1.75rem;\n  font-weight: 600;\n  letter-spacing: -0.03em;\n}\n\n.subtitle {\n  margin: 0.5rem 0 0;\n  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;\n  font-size: 0.78rem;\n  color: var(--mf-muted, #a1a1aa);\n}\n\n@keyframes mfGridPulse {\n  0%,\n  50% {\n    opacity: 0;\n  }\n  70% {\n    opacity: 0.45;\n  }\n  100% {\n    opacity: 0;\n  }\n}\n\n@media (prefers-reduced-motion: reduce) {\n  .cell::after {\n    animation: none;\n    opacity: 0;\n  }\n}\n"
+    }
+  ],
+  "tailwindExample": "\"use client\";\n\nimport { motion } from \"motion/react\";\n\nconst rand = (n: number) => { const x = Math.sin(n * 9301 + 49297) * 233280; return x - Math.floor(x); };\n\nexport function GridPulseTailwind({ cols = 12, rows = 6 }) {\n  return (\n    <div className=\"relative flex min-h-72 w-full items-center justify-center overflow-hidden rounded-2xl border border-zinc-800 bg-zinc-950\">\n      <div aria-hidden className=\"absolute inset-0 grid\" style={{ gridTemplateColumns: `repeat(${cols},1fr)`, gridTemplateRows: `repeat(${rows},1fr)` }}>\n        {Array.from({ length: cols * rows }, (_, i) => (\n          <div key={i} className=\"border-b border-r border-zinc-800/60\">\n            <motion.div\n              className=\"h-full w-full bg-sky-400\"\n              initial={{ opacity: 0 }}\n              animate={{ opacity: [0, 0, 0.45, 0] }}\n              transition={{ duration: 3, repeat: Infinity, delay: rand(i) * 6, times: [0, 0.5, 0.7, 1] }}\n            />\n          </div>\n        ))}\n      </div>\n      <h3 className=\"relative z-10 text-2xl font-semibold text-zinc-100\">Grid Pulse</h3>\n    </div>\n  );\n}"
+}

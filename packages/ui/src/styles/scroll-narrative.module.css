@@ -1,0 +1,122 @@
+.container {
+  width: 100%;
+  border-radius: 0.85rem;
+  border: 1px solid var(--mf-surface-raised, #25252f);
+  background-color: var(--mf-bg, #0d0d12);
+  padding: 1.25rem;
+  color: var(--mf-fg, #f4f4f6);
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.progressHeader {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.progressLabel,
+.progressValue {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.7rem;
+  color: var(--mf-muted, #a1a1aa);
+}
+
+.progressBar {
+  flex: 1;
+  height: 4px;
+  border-radius: 999px;
+  background-color: #1f1f29;
+  overflow: hidden;
+}
+
+.progressFill {
+  height: 100%;
+  background-color: var(--mf-fg, #f4f4f6);
+  transition: width 220ms ease;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  gap: 1rem;
+  align-items: stretch;
+}
+
+.chapterList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+
+.chapterItem {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.15rem;
+  padding: 0.65rem 0.85rem;
+  border-radius: 0.55rem;
+  border: 1px solid var(--mf-surface-raised, #22222c);
+  background-color: var(--mf-surface, #121218);
+  color: var(--mf-muted, #a1a1aa);
+  text-align: left;
+  cursor: pointer;
+}
+
+.chapterActive {
+  border-color: var(--mf-border-strong, #52525b);
+  background-color: #1a1a24;
+  color: var(--mf-fg, #f4f4f6);
+}
+
+.stepTag {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.65rem;
+  color: var(--mf-subtle, #71717a);
+}
+
+.chapterTitle {
+  font-size: 0.82rem;
+  font-weight: 600;
+}
+
+.visualStage {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 0.45rem;
+  padding: 1.15rem;
+  border-radius: 0.65rem;
+  border: 1px solid var(--mf-border, #2b2b36);
+  background-color: #13131b;
+}
+
+.metricPill {
+  align-self: flex-start;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.68rem;
+  padding: 0.15rem 0.5rem;
+  border-radius: 999px;
+  border: 1px solid var(--mf-border, #323240);
+  color: var(--mf-fg, #e4e4e7);
+}
+
+.stageHeadline {
+  margin: 0;
+  font-size: 0.98rem;
+  font-weight: 600;
+}
+
+.stageSummary {
+  margin: 0;
+  font-size: 0.8rem;
+  line-height: 1.5;
+  color: var(--mf-muted, #a1a1aa);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .progressFill {
+    transition: none;
+  }
+}

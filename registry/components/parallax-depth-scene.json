@@ -1,0 +1,97 @@
+{
+  "slug": "parallax-depth-scene",
+  "name": "ParallaxDepthScene",
+  "category": "Reveals and Continuous Motion",
+  "featured": false,
+  "addedAt": "2026-10-16",
+  "version": "2.0.0",
+  "requiresMotion": true,
+  "dependencies": [
+    "motion",
+    "react"
+  ],
+  "description": "Multilevel spatial composition where background, midground, and foreground planes translate at proportional depth intensities in response to pointer or scroll offsets.",
+  "tags": [
+    "parallax",
+    "depth",
+    "scene",
+    "layers",
+    "spatial",
+    "pointer"
+  ],
+  "a11yNotes": "Automatically dampens motion on touch/small viewports and disables layer displacement when prefers-reduced-motion is active.",
+  "defaultProps": {
+    "title": "Tri-Plane Depth Composition",
+    "depthMultiplier": 22,
+    "damping": 22,
+    "showGridLayer": true
+  },
+  "controls": [
+    {
+      "prop": "title",
+      "label": "Foreground Title",
+      "type": "text"
+    },
+    {
+      "prop": "depthMultiplier",
+      "label": "Depth Displacement (px)",
+      "type": "range",
+      "min": 6,
+      "max": 44,
+      "step": 2
+    },
+    {
+      "prop": "damping",
+      "label": "Spring Damping",
+      "type": "range",
+      "min": 12,
+      "max": 36,
+      "step": 2
+    },
+    {
+      "prop": "showGridLayer",
+      "label": "Show Background Horizon Grid",
+      "type": "boolean"
+    }
+  ],
+  "propsApi": [
+    {
+      "name": "title",
+      "type": "string",
+      "default": "'Tri-Plane Depth Composition'",
+      "description": "Foreground layer label."
+    },
+    {
+      "name": "depthMultiplier",
+      "type": "number",
+      "default": "22",
+      "description": "Maximum pixel translation of the foreground plane."
+    },
+    {
+      "name": "damping",
+      "type": "number",
+      "default": "22",
+      "description": "Spring damping constant across depth planes."
+    },
+    {
+      "name": "showGridLayer",
+      "type": "boolean",
+      "default": "true",
+      "description": "Toggle the deep background wireframe grid plane."
+    }
+  ],
+  "files": [
+    {
+      "path": "components/ui/parallax-depth-scene.tsx",
+      "type": "registry:component",
+      "content": "\"use client\";\n\nimport * as React from \"react\";\nimport { motion, useMotionValue, useSpring, useTransform, useReducedMotion } from \"motion/react\";\nimport styles from \"../styles/parallax-depth-scene.module.css\";\n\nexport interface ParallaxDepthSceneProps {\n  /** Foreground card title */\n  title?: string;\n  /** Maximum translation in pixels */\n  depthMultiplier?: number;\n  /** Spring damping */\n  damping?: number;\n  /** Render deep background grid layer */\n  showGridLayer?: boolean;\n  /** Optional className */\n  className?: string;\n}\n\nexport function ParallaxDepthScene({\n  title = \"Tri-Plane Depth Composition\",\n  depthMultiplier = 22,\n  damping = 22,\n  showGridLayer = true,\n  className = \"\",\n}: ParallaxDepthSceneProps) {\n  const prefersReducedMotion = useReducedMotion();\n  const normX = useMotionValue(0);\n  const normY = useMotionValue(0);\n\n  const smoothX = useSpring(normX, { stiffness: 200, damping });\n  const smoothY = useSpring(normY, { stiffness: 200, damping });\n\n  const bgX = useTransform(smoothX, (v) => v * -depthMultiplier * 0.4);\n  const bgY = useTransform(smoothY, (v) => v * -depthMultiplier * 0.4);\n  const midX = useTransform(smoothX, (v) => v * depthMultiplier * 0.65);\n  const midY = useTransform(smoothY, (v) => v * depthMultiplier * 0.65);\n  const fgX = useTransform(smoothX, (v) => v * depthMultiplier);\n  const fgY = useTransform(smoothY, (v) => v * depthMultiplier);\n\n  const handlePointerMove = (e: React.PointerEvent<HTMLDivElement>) => {\n    if (prefersReducedMotion || e.pointerType === \"touch\") return;\n    const rect = e.currentTarget.getBoundingClientRect();\n    const nx = (e.clientX - rect.left) / rect.width - 0.5;\n    const ny = (e.clientY - rect.top) / rect.height - 0.5;\n    normX.set(nx * 2);\n    normY.set(ny * 2);\n  };\n\n  const handlePointerLeave = () => {\n    normX.set(0);\n    normY.set(0);\n  };\n\n  return (\n    <div\n      onPointerMove={handlePointerMove}\n      onPointerLeave={handlePointerLeave}\n      className={`${styles.scene} ${className}`.trim()}\n    >\n      {showGridLayer && (\n        <motion.div\n          aria-hidden=\"true\"\n          style={{ x: prefersReducedMotion ? 0 : bgX, y: prefersReducedMotion ? 0 : bgY }}\n          className={styles.bgLayer}\n        />\n      )}\n      <motion.div\n        aria-hidden=\"true\"\n        style={{ x: prefersReducedMotion ? 0 : midX, y: prefersReducedMotion ? 0 : midY }}\n        className={styles.midLayer}\n      >\n        <span className={styles.planeLabel}>Z-PLANE // MIDGROUND (0.65x)</span>\n      </motion.div>\n      <motion.div\n        style={{ x: prefersReducedMotion ? 0 : fgX, y: prefersReducedMotion ? 0 : fgY }}\n        className={styles.fgLayer}\n      >\n        <span className={styles.planeLabel}>Z-PLANE // FOREGROUND (1.0x)</span>\n        <h4 className={styles.title}>{title}</h4>\n      </motion.div>\n    </div>\n  );\n}\n"
+    },
+    {
+      "path": "components/styles/parallax-depth-scene.module.css",
+      "type": "registry:style",
+      "content": ".scene {\n  position: relative;\n  overflow: hidden;\n  min-height: 13rem;\n  border-radius: 0.85rem;\n  border: 1px solid var(--mf-surface-raised, #25252f);\n  background-color: var(--mf-bg, #09090c);\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  padding: 1.5rem;\n}\n\n.bgLayer {\n  pointer-events: none;\n  position: absolute;\n  inset: -20%;\n  background-image: linear-gradient(to right, rgba(255, 255, 255, 0.04) 1px, transparent 1px),\n    linear-gradient(to bottom, rgba(255, 255, 255, 0.04) 1px, transparent 1px);\n  background-size: 26px 26px;\n}\n\n.midLayer {\n  position: absolute;\n  width: 74%;\n  height: 62%;\n  border-radius: 0.75rem;\n  border: 1px dashed var(--mf-border, #2e2e3c);\n  background-color: rgba(20, 20, 28, 0.55);\n  padding: 0.65rem 0.85rem;\n  display: flex;\n  align-items: flex-end;\n}\n\n.fgLayer {\n  position: relative;\n  z-index: 2;\n  border-radius: 0.75rem;\n  border: 1px solid var(--mf-border, #3f3f4e);\n  background-color: #14141c;\n  padding: 1rem 1.35rem;\n  box-shadow: 0 16px 32px rgba(0, 0, 0, 0.55);\n  color: var(--mf-fg, #f4f4f6);\n}\n\n.planeLabel {\n  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;\n  font-size: 0.65rem;\n  color: var(--mf-muted, #a1a1aa);\n}\n\n.title {\n  margin: 0.25rem 0 0 0;\n  font-size: 0.95rem;\n  font-weight: 600;\n}\n\n@media (prefers-reduced-motion: reduce) {\n  .bgLayer,\n  .midLayer,\n  .fgLayer {\n    transform: none !important;\n  }\n}\n"
+    }
+  ],
+  "tailwindExample": "\"use client\";\n\nimport { ParallaxDepthScene } from \"@motionfoundry/ui\";\n\nexport function ParallaxDepthDemo() {\n  return <ParallaxDepthScene depthMultiplier={22} />;\n}",
+  "collection": "core"
+}

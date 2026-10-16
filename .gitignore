@@ -1,0 +1,26 @@
+# dependencies
+node_modules/
+.pnpm-store/
+
+# build output
+.next/
+out/
+packages/ui/dist/
+packages/cli/dist/
+*.tsbuildinfo
+next-env.d.ts
+
+# environment & OS
+.env*
+!.env.example
+.DS_Store
+Thumbs.db
+*.log
+
+# editor
+.vscode/
+.idea/
+
+# local source material (not part of the published project)
+swirl-studio-kit/
+image.png

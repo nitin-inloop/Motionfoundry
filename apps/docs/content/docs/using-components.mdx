@@ -1,0 +1,34 @@
+---
+title: "Using Components"
+category: "Overview"
+summary: "Importing components, passing typed props, and composing interactive surfaces."
+---
+
+# Using Components
+
+All interactive components in MotionFoundry include the `"use client"` directive at the top of their module boundary so they can be imported directly into Next.js Server Components (`page.tsx` or `layout.tsx`) without wrapping your entire route in a client boundary.
+
+### Combining Multiple Components
+
+Components compose cleanly without z-index collisions or global CSS pollution. For example, you can nest `AuroraHeadline`, `KineticType`, and `MagneticButton` inside a `FluidMeshBackground` or `LiquidGlassCard`.
+
+```tsx
+import { FluidMeshBackground, AuroraHeadline, MagneticButton } from "@motionfoundry/ui";
+import "@motionfoundry/ui/styles.css";
+
+export default function HeroSection() {
+  return (
+    <FluidMeshBackground speed={14} intensity={0.28}>
+      <AuroraHeadline
+        text="Restrained spectral illumination for engineering headlines"
+        shimmerSpeed={6}
+      />
+      <div style={{ marginTop: "1.5rem" }}>
+        <MagneticButton strength={0.36} hoverScale={1.04} variant="solid">
+          Explore 48 Components
+        </MagneticButton>
+      </div>
+    </FluidMeshBackground>
+  );
+}
+```

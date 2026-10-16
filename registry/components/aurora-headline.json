@@ -1,0 +1,121 @@
+{
+  "slug": "aurora-headline",
+  "name": "AuroraHeadline",
+  "category": "Advanced Text Animations",
+  "featured": true,
+  "addedAt": "2026-10-16",
+  "version": "2.0.0",
+  "requiresMotion": true,
+  "dependencies": [
+    "motion",
+    "react"
+  ],
+  "description": "High-contrast display headline combining masked word entrances, flowing spectral gradient illumination, and graceful static fallback.",
+  "tags": [
+    "aurora",
+    "headline",
+    "gradient",
+    "mask",
+    "reveal",
+    "display"
+  ],
+  "a11yNotes": "Maintains WCAG AAA foreground contrast with solid silver fallback text and disables gradient sweep and vertical motion under prefers-reduced-motion.",
+  "defaultProps": {
+    "text": "Restrained spectral illumination for engineering headlines",
+    "accentFrom": "#f4f4f6",
+    "accentVia": "#93c5fd",
+    "accentTo": "#c4b5fd",
+    "shimmerSpeed": 6,
+    "stagger": 0.06
+  },
+  "controls": [
+    {
+      "prop": "text",
+      "label": "Headline Text",
+      "type": "text"
+    },
+    {
+      "prop": "accentFrom",
+      "label": "Primary Stop",
+      "type": "color"
+    },
+    {
+      "prop": "accentVia",
+      "label": "Spectral Midpoint",
+      "type": "color"
+    },
+    {
+      "prop": "accentTo",
+      "label": "Terminal Stop",
+      "type": "color"
+    },
+    {
+      "prop": "shimmerSpeed",
+      "label": "Illumination Cycle (s)",
+      "type": "range",
+      "min": 2,
+      "max": 14,
+      "step": 1
+    },
+    {
+      "prop": "stagger",
+      "label": "Word Stagger (s)",
+      "type": "range",
+      "min": 0.02,
+      "max": 0.15,
+      "step": 0.01
+    }
+  ],
+  "propsApi": [
+    {
+      "name": "text",
+      "type": "string",
+      "default": "'Restrained spectral...'",
+      "description": "Headline string to reveal and illuminate."
+    },
+    {
+      "name": "accentFrom",
+      "type": "string",
+      "default": "'#f4f4f6'",
+      "description": "Leading gradient stop color."
+    },
+    {
+      "name": "accentVia",
+      "type": "string",
+      "default": "'#93c5fd'",
+      "description": "Midpoint aurora illumination color."
+    },
+    {
+      "name": "accentTo",
+      "type": "string",
+      "default": "'#c4b5fd'",
+      "description": "Trailing aurora illumination color."
+    },
+    {
+      "name": "shimmerSpeed",
+      "type": "number",
+      "default": "6",
+      "description": "Duration in seconds for one gradient sweep."
+    },
+    {
+      "name": "stagger",
+      "type": "number",
+      "default": "0.06",
+      "description": "Delay in seconds between sequential word reveals."
+    }
+  ],
+  "files": [
+    {
+      "path": "components/ui/aurora-headline.tsx",
+      "type": "registry:component",
+      "content": "\"use client\";\n\nimport * as React from \"react\";\nimport { motion, useReducedMotion } from \"motion/react\";\nimport styles from \"../styles/aurora-headline.module.css\";\n\nexport interface AuroraHeadlineProps {\n  /** Headline copy */\n  text: string;\n  /** Primary color stop */\n  accentFrom?: string;\n  /** Midpoint color stop */\n  accentVia?: string;\n  /** Terminal color stop */\n  accentTo?: string;\n  /** Gradient sweep speed in seconds */\n  shimmerSpeed?: number;\n  /** Stagger interval between words */\n  stagger?: number;\n  /** Optional className */\n  className?: string;\n}\n\nexport function AuroraHeadline({\n  text,\n  accentFrom = \"#f4f4f6\",\n  accentVia = \"#93c5fd\",\n  accentTo = \"#c4b5fd\",\n  shimmerSpeed = 6,\n  stagger = 0.06,\n  className = \"\",\n}: AuroraHeadlineProps) {\n  const prefersReducedMotion = useReducedMotion();\n  const words = React.useMemo(() => text.split(\" \"), [text]);\n\n  const customVars = {\n    \"--mf-ah-from\": accentFrom,\n    \"--mf-ah-via\": accentVia,\n    \"--mf-ah-to\": accentTo,\n    \"--mf-ah-speed\": `${shimmerSpeed}s`,\n  } as React.CSSProperties;\n\n  return (\n    <h1\n      aria-label={text}\n      style={customVars}\n      className={`${styles.headline} ${className}`.trim()}\n    >\n      <span aria-hidden=\"true\" className={styles.wordWrap}>\n        {words.map((word, idx) => (\n          <span key={`${word}-${idx}`} className={styles.mask}>\n            <motion.span\n              initial={prefersReducedMotion ? false : { y: \"105%\", opacity: 0 }}\n              animate={{ y: \"0%\", opacity: 1 }}\n              transition={{\n                duration: 0.6,\n                delay: prefersReducedMotion ? 0 : idx * stagger,\n                ease: [0.16, 1, 0.3, 1],\n              }}\n              className={styles.word}\n            >\n              {word}&nbsp;\n            </motion.span>\n          </span>\n        ))}\n      </span>\n    </h1>\n  );\n}\n"
+    },
+    {
+      "path": "components/styles/aurora-headline.module.css",
+      "type": "registry:style",
+      "content": ".headline {\n  margin: 0;\n  font-size: 1.65rem;\n  font-weight: 600;\n  letter-spacing: -0.03em;\n  line-height: 1.2;\n  color: var(--mf-fg, #f4f4f6);\n}\n\n.wordWrap {\n  display: inline-flex;\n  flex-wrap: wrap;\n}\n\n.mask {\n  display: inline-block;\n  overflow: hidden;\n  padding-bottom: 0.08em;\n}\n\n.word {\n  display: inline-block;\n  background-image: linear-gradient(\n    110deg,\n    var(--mf-ah-from, var(--mf-fg, #f4f4f6)) 15%,\n    var(--mf-ah-via, #93c5fd) 48%,\n    var(--mf-ah-to, #c4b5fd) 72%,\n    var(--mf-ah-from, var(--mf-fg, #f4f4f6)) 90%\n  );\n  background-size: 240% auto;\n  color: transparent;\n  -webkit-background-clip: text;\n  background-clip: text;\n  animation: mfAuroraHeadlineSweep var(--mf-ah-speed, 6s) linear infinite;\n}\n\n@keyframes mfAuroraHeadlineSweep {\n  0% {\n    background-position: 0% center;\n  }\n  100% {\n    background-position: 240% center;\n  }\n}\n\n@media (prefers-reduced-motion: reduce) {\n  .word {\n    animation: none;\n    background: none;\n    color: var(--mf-fg, #f4f4f6);\n  }\n}\n"
+    }
+  ],
+  "tailwindExample": "\"use client\";\n\nimport { motion } from \"motion/react\";\n\nexport function AuroraHeadlineTailwind({ text = \"Restrained spectral illumination\" }) {\n  return (\n    <h1 className=\"flex flex-wrap text-2xl font-semibold tracking-tight\">\n      {text.split(\" \").map((w, i) => (\n        <span key={i} className=\"mr-2 overflow-hidden pb-1\">\n          <motion.span\n            initial={{ y: \"100%\", opacity: 0 }}\n            animate={{ y: 0, opacity: 1 }}\n            transition={{ duration: 0.55, delay: i * 0.06 }}\n            className=\"inline-block bg-gradient-to-r from-zinc-100 via-sky-200 to-indigo-200 bg-clip-text text-transparent\"\n          >\n            {w}\n          </motion.span>\n        </span>\n      ))}\n    </h1>\n  );\n}",
+  "collection": "core"
+}

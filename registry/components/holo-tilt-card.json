@@ -1,0 +1,107 @@
+{
+  "slug": "holo-tilt-card",
+  "name": "HoloTiltCard",
+  "category": "High-End Animated Cards",
+  "featured": true,
+  "addedAt": "2026-10-16",
+  "version": "2.0.0",
+  "requiresMotion": true,
+  "dependencies": [
+    "motion",
+    "react"
+  ],
+  "description": "Three-dimensional perspective card with layered Z-depth planes, moving specular highlights, and a pointer-driven shifting holographic foil gradient.",
+  "tags": [
+    "holo",
+    "tilt",
+    "3d",
+    "card",
+    "specular",
+    "holographic"
+  ],
+  "a11yNotes": "Smoothly restores the card to its flat resting plane on pointer leave and disables 3D perspective rotation when prefers-reduced-motion is active.",
+  "defaultProps": {
+    "title": "Holographic Foil Surface",
+    "subtitle": "Pointer coordinates drive both 3D perspective pitch/roll and spectral diffraction angle.",
+    "maxTilt": 14,
+    "holoOpacity": 0.24,
+    "perspective": 920
+  },
+  "controls": [
+    {
+      "prop": "title",
+      "label": "Card Title",
+      "type": "text"
+    },
+    {
+      "prop": "maxTilt",
+      "label": "Max 3D Tilt (deg)",
+      "type": "range",
+      "min": 4,
+      "max": 24,
+      "step": 2
+    },
+    {
+      "prop": "holoOpacity",
+      "label": "Hologram Intensity",
+      "type": "range",
+      "min": 0.05,
+      "max": 0.5,
+      "step": 0.03
+    },
+    {
+      "prop": "perspective",
+      "label": "Perspective Depth (px)",
+      "type": "range",
+      "min": 500,
+      "max": 1500,
+      "step": 50
+    }
+  ],
+  "propsApi": [
+    {
+      "name": "title",
+      "type": "string",
+      "default": "'Holographic Foil Surface'",
+      "description": "Card heading."
+    },
+    {
+      "name": "subtitle",
+      "type": "string",
+      "default": "'Pointer coordinates drive...'",
+      "description": "Supporting copy."
+    },
+    {
+      "name": "maxTilt",
+      "type": "number",
+      "default": "14",
+      "description": "Maximum pitch and roll tilt angle in degrees."
+    },
+    {
+      "name": "holoOpacity",
+      "type": "number",
+      "default": "0.24",
+      "description": "Opacity of the shifting holographic gradient layer."
+    },
+    {
+      "name": "perspective",
+      "type": "number",
+      "default": "920",
+      "description": "CSS 3D perspective distance in pixels."
+    }
+  ],
+  "files": [
+    {
+      "path": "components/ui/holo-tilt-card.tsx",
+      "type": "registry:component",
+      "content": "\"use client\";\n\nimport * as React from \"react\";\nimport { motion, useMotionValue, useSpring, useReducedMotion } from \"motion/react\";\nimport styles from \"../styles/holo-tilt-card.module.css\";\n\nexport interface HoloTiltCardProps {\n  /** Card title */\n  title?: string;\n  /** Supporting subtitle */\n  subtitle?: string;\n  /** Maximum tilt angle in degrees */\n  maxTilt?: number;\n  /** Holographic foil opacity (0.05 to 0.5) */\n  holoOpacity?: number;\n  /** CSS perspective distance in pixels */\n  perspective?: number;\n  /** Optional children */\n  children?: React.ReactNode;\n  /** Optional className */\n  className?: string;\n}\n\nexport function HoloTiltCard({\n  title = \"Holographic Foil Surface\",\n  subtitle = \"Pointer coordinates drive both 3D perspective pitch/roll and spectral diffraction angle.\",\n  maxTilt = 14,\n  holoOpacity = 0.24,\n  perspective = 920,\n  children,\n  className = \"\",\n}: HoloTiltCardProps) {\n  const ref = React.useRef<HTMLDivElement>(null);\n  const prefersReducedMotion = useReducedMotion();\n\n  const rawRx = useMotionValue(0);\n  const rawRy = useMotionValue(0);\n  const rotateX = useSpring(rawRx, { stiffness: 240, damping: 22 });\n  const rotateY = useSpring(rawRy, { stiffness: 240, damping: 22 });\n  const [holoState, setHoloState] = React.useState({ x: 50, y: 50, angle: 125, active: false });\n\n  const handlePointerMove = (e: React.PointerEvent<HTMLDivElement>) => {\n    if (prefersReducedMotion || !ref.current) return;\n    const rect = ref.current.getBoundingClientRect();\n    const px = (e.clientX - rect.left) / rect.width;\n    const py = (e.clientY - rect.top) / rect.height;\n    rawRx.set((0.5 - py) * maxTilt * 2);\n    rawRy.set((px - 0.5) * maxTilt * 2);\n    setHoloState({\n      x: px * 100,\n      y: py * 100,\n      angle: 110 + (px - 0.5) * 90,\n      active: true,\n    });\n  };\n\n  const handlePointerLeave = () => {\n    rawRx.set(0);\n    rawRy.set(0);\n    setHoloState((prev) => ({ ...prev, active: false }));\n  };\n\n  return (\n    <div style={{ perspective: `${perspective}px` }} className={styles.stage}>\n      <motion.div\n        ref={ref}\n        onPointerMove={handlePointerMove}\n        onPointerLeave={handlePointerLeave}\n        style={{\n          rotateX: prefersReducedMotion ? 0 : rotateX,\n          rotateY: prefersReducedMotion ? 0 : rotateY,\n          transformStyle: \"preserve-3d\",\n        }}\n        className={`${styles.card} ${className}`.trim()}\n      >\n        <div\n          aria-hidden=\"true\"\n          className={styles.holoLayer}\n          style={{\n            opacity: holoState.active && !prefersReducedMotion ? holoOpacity : 0.06,\n            backgroundImage: `linear-gradient(${holoState.angle}deg, rgba(56,189,248,0.55) 0%, rgba(168,85,247,0.55) 35%, rgba(244,114,182,0.5) 68%, rgba(52,211,153,0.55) 100%)`,\n            backgroundPosition: `${holoState.x}% ${holoState.y}%`,\n          }}\n        />\n        <div\n          aria-hidden=\"true\"\n          className={styles.specularGlare}\n          style={{\n            opacity: holoState.active && !prefersReducedMotion ? 0.18 : 0,\n            background: `radial-gradient(circle at ${holoState.x}% ${holoState.y}%, rgba(255,255,255,0.9), transparent 60%)`,\n          }}\n        />\n        <div className={styles.depthContent}>\n          <span className={styles.badge}>3D Holographic Depth</span>\n          <h3 className={styles.title}>{title}</h3>\n          <p className={styles.subtitle}>{subtitle}</p>\n          {children}\n        </div>\n      </motion.div>\n    </div>\n  );\n}\n"
+    },
+    {
+      "path": "components/styles/holo-tilt-card.module.css",
+      "type": "registry:style",
+      "content": ".stage {\n  display: block;\n  width: 100%;\n}\n\n.card {\n  position: relative;\n  overflow: hidden;\n  border-radius: 0.85rem;\n  border: 1px solid var(--mf-border, #2d2d3a);\n  background-color: var(--mf-surface, #0e0e13);\n  padding: 1.5rem;\n  color: var(--mf-fg, #f4f4f6);\n  will-change: transform;\n}\n\n.holoLayer {\n  pointer-events: none;\n  position: absolute;\n  inset: 0;\n  background-size: 200% 200%;\n  mix-blend-mode: screen;\n  transition: opacity 200ms ease;\n}\n\n.specularGlare {\n  pointer-events: none;\n  position: absolute;\n  inset: 0;\n  transition: opacity 200ms ease;\n}\n\n.depthContent {\n  position: relative;\n  z-index: 1;\n  transform: translateZ(24px);\n  display: flex;\n  flex-direction: column;\n  gap: 0.45rem;\n}\n\n.badge {\n  align-self: flex-start;\n  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;\n  font-size: 0.68rem;\n  padding: 0.15rem 0.5rem;\n  border-radius: 0.375rem;\n  border: 1px solid var(--mf-border, #323240);\n  background-color: rgba(15, 15, 20, 0.85);\n  color: var(--mf-fg, #d4d4d8);\n}\n\n.title {\n  margin: 0;\n  font-size: 1.05rem;\n  font-weight: 600;\n  letter-spacing: -0.02em;\n}\n\n.subtitle {\n  margin: 0;\n  font-size: 0.85rem;\n  line-height: 1.55;\n  color: var(--mf-muted, #a1a1aa);\n}\n\n@media (prefers-reduced-motion: reduce) {\n  .holoLayer,\n  .specularGlare {\n    opacity: 0 !important;\n  }\n}\n"
+    }
+  ],
+  "tailwindExample": "\"use client\";\n\nimport { HoloTiltCard } from \"@motionfoundry/ui\";\n\nexport function HoloTiltDemo() {\n  return <HoloTiltCard maxTilt={14} holoOpacity={0.24} />;\n}",
+  "collection": "core"
+}

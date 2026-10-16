@@ -1,0 +1,39 @@
+name: MotionFoundry CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+      - name: Verify registry is in sync with source
+        run: node scripts/build-registry.mjs --check
+      - name: Verify design systems are in sync with design-md/
+        run: node scripts/build-designs.mjs --check
+      - name: Verify docs content is in sync with MDX
+        run: node scripts/build-docs.mjs --check
+      - name: Build @motionfoundry/ui
+        run: node packages/ui/scripts/build.mjs
+      - name: Build motionfoundry CLI
+        run: node packages/cli/scripts/build.mjs
+      - name: Run Lint & Registry Audit
+        run: node tests/lint-check.mjs
+      - name: Run TypeScript & API Contract Audit
+        run: node tests/typecheck.mjs
+      - name: Run Unit & CLI Integration Tests
+        run: node --test tests/motionfoundry.test.mjs
+      - name: Build docs site
+        run: pnpm --filter @motionfoundry/docs build

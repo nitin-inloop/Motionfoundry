@@ -1,0 +1,58 @@
+.button {
+  --mf-vel-x: 50%;
+  --mf-vel-y: 50%;
+  --mf-vel-opacity: 0;
+  --mf-vel-stretch: 1;
+  --mf-vel-angle: 0deg;
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  padding: 0.72rem 1.4rem;
+  border-radius: 0.625rem;
+  border: 1px solid var(--mf-border, #2e2e38);
+  background-color: var(--mf-surface, #111116);
+  color: var(--mf-fg, #f4f4f6);
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: border-color 180ms ease;
+}
+
+.button:hover {
+  border-color: var(--mf-border-strong, #52525b);
+}
+
+.button:focus-visible {
+  outline: 2px solid var(--mf-fg, #e4e4e7);
+  outline-offset: 2px;
+}
+
+.energyTrail {
+  pointer-events: none;
+  position: absolute;
+  left: var(--mf-vel-x, 50%);
+  top: var(--mf-vel-y, 50%);
+  width: 96px;
+  height: 56px;
+  transform: translate(-50%, -50%) rotate(var(--mf-vel-angle, 0deg)) scaleX(var(--mf-vel-stretch, 1));
+  background: radial-gradient(circle, var(--mf-vel-color, var(--mf-accent, #38bdf8)) 0%, transparent 72%);
+  filter: blur(12px);
+  opacity: var(--mf-vel-opacity, 0);
+  transition: opacity var(--mf-vel-decay, 260ms) ease;
+}
+
+.content {
+  position: relative;
+  z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .energyTrail {
+    display: none;
+  }
+}

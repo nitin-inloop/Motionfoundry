@@ -1,0 +1,24 @@
+---
+title: "Accessibility"
+category: "Quality & Standards"
+summary: "WCAG contrast compliance, keyboard navigation, ARIA semantics, and prefers-reduced-motion behavior."
+---
+
+# Accessibility
+
+Animations should never compromise usability, screen-reader comprehension, or vestibular comfort:
+
+- **`prefers-reduced-motion` Support**: Components using `motion/react` subscribe to `useReducedMotion()`, and CSS/SVG/Canvas components include `@media (prefers-reduced-motion: reduce)` rules and `matchMedia` listeners that disable continuous keyframe loops or instant-settle transitions.
+- **Screen-Reader Integrity**: Split-text components (`KineticType`, `GlyphCascade`, `AuroraHeadline`) expose the full sentence via `aria-label` or `.srOnly` while marking animated glyph tokens `aria-hidden="true"`. `InfiniteMarquee` marks duplicated tracks `aria-hidden="true"`.
+- **Keyboard & Touch Fallbacks**: `MagneticDock` supports `ArrowLeft`/`ArrowRight` focus cycling, `MorphingCommandPalette` supports `ArrowUp`/`ArrowDown`/`Enter`/`Escape`, and `MagneticButton`/`ParallaxDepthScene` ignore pointer displacement on touch devices (`pointerType === 'touch'`).
+
+```tsx
+@media (prefers-reduced-motion: reduce) {
+  .travelingBeam,
+  .ribbonLayer,
+  .blob,
+  .track {
+    animation: none !important;
+  }
+}
+```

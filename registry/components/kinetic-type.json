@@ -1,0 +1,150 @@
+{
+  "slug": "kinetic-type",
+  "name": "KineticType",
+  "category": "Advanced Text Animations",
+  "featured": true,
+  "addedAt": "2026-10-16",
+  "version": "2.0.0",
+  "requiresMotion": true,
+  "dependencies": [
+    "motion",
+    "react"
+  ],
+  "description": "Expressive kinetic typography engine where words and characters animate with coordinated rotation, scale, optical blur, and 3D position trajectories across four presets.",
+  "tags": [
+    "kinetic",
+    "typography",
+    "text",
+    "preset",
+    "stagger",
+    "rotation",
+    "motion"
+  ],
+  "a11yNotes": "Exposes the full unsplit sentence via aria-label on the semantic heading while marking animated glyph wrappers aria-hidden='true'. Renders static text immediately when prefers-reduced-motion is active.",
+  "defaultProps": {
+    "text": "Choreographed kinetic typography for precision interfaces",
+    "preset": "elastic",
+    "splitBy": "words",
+    "stagger": 0.055,
+    "duration": 0.65,
+    "rotationIntensity": 14,
+    "blurStrength": 8
+  },
+  "controls": [
+    {
+      "prop": "text",
+      "label": "Text Copy",
+      "type": "text"
+    },
+    {
+      "prop": "preset",
+      "label": "Kinetic Preset",
+      "type": "select",
+      "options": [
+        "elastic",
+        "wave",
+        "orbit",
+        "snap"
+      ]
+    },
+    {
+      "prop": "splitBy",
+      "label": "Split Unit",
+      "type": "select",
+      "options": [
+        "words",
+        "chars"
+      ]
+    },
+    {
+      "prop": "stagger",
+      "label": "Stagger Timing (s)",
+      "type": "range",
+      "min": 0.015,
+      "max": 0.14,
+      "step": 0.005
+    },
+    {
+      "prop": "duration",
+      "label": "Duration (s)",
+      "type": "range",
+      "min": 0.25,
+      "max": 1.3,
+      "step": 0.05
+    },
+    {
+      "prop": "rotationIntensity",
+      "label": "Rotation Angle (deg)",
+      "type": "range",
+      "min": 0,
+      "max": 32,
+      "step": 2
+    },
+    {
+      "prop": "blurStrength",
+      "label": "Initial Blur (px)",
+      "type": "range",
+      "min": 0,
+      "max": 18,
+      "step": 1
+    }
+  ],
+  "propsApi": [
+    {
+      "name": "text",
+      "type": "string",
+      "default": "'Choreographed kinetic...'",
+      "description": "Headline or display copy to animate."
+    },
+    {
+      "name": "preset",
+      "type": "'elastic' | 'wave' | 'orbit' | 'snap'",
+      "default": "'elastic'",
+      "description": "Coordinated motion trajectory preset."
+    },
+    {
+      "name": "splitBy",
+      "type": "'words' | 'chars'",
+      "default": "'words'",
+      "description": "Tokenization granularity."
+    },
+    {
+      "name": "stagger",
+      "type": "number",
+      "default": "0.055",
+      "description": "Delay in seconds between consecutive tokens."
+    },
+    {
+      "name": "duration",
+      "type": "number",
+      "default": "0.65",
+      "description": "Animation duration per token in seconds."
+    },
+    {
+      "name": "rotationIntensity",
+      "type": "number",
+      "default": "14",
+      "description": "Starting rotation angle in degrees."
+    },
+    {
+      "name": "blurStrength",
+      "type": "number",
+      "default": "8",
+      "description": "Initial Gaussian blur radius in pixels."
+    }
+  ],
+  "files": [
+    {
+      "path": "components/ui/kinetic-type.tsx",
+      "type": "registry:component",
+      "content": "\"use client\";\n\nimport * as React from \"react\";\nimport { motion, useReducedMotion } from \"motion/react\";\nimport styles from \"../styles/kinetic-type.module.css\";\n\nexport interface KineticTypeProps {\n  /** Text string to animate */\n  text: string;\n  /** Coordinated motion preset */\n  preset?: \"elastic\" | \"wave\" | \"orbit\" | \"snap\";\n  /** Split granularity */\n  splitBy?: \"words\" | \"chars\";\n  /** Stagger interval in seconds */\n  stagger?: number;\n  /** Duration per token in seconds */\n  duration?: number;\n  /** Initial rotation angle in degrees */\n  rotationIntensity?: number;\n  /** Initial Gaussian blur in pixels */\n  blurStrength?: number;\n  /** Optional className */\n  className?: string;\n}\n\nexport function KineticType({\n  text,\n  preset = \"elastic\",\n  splitBy = \"words\",\n  stagger = 0.055,\n  duration = 0.65,\n  rotationIntensity = 14,\n  blurStrength = 8,\n  className = \"\",\n}: KineticTypeProps) {\n  const prefersReducedMotion = useReducedMotion();\n  const tokens = React.useMemo(\n    () => (splitBy === \"chars\" ? Array.from(text) : text.split(\" \")),\n    [text, splitBy]\n  );\n\n  if (prefersReducedMotion) {\n    return <h2 className={`${styles.root} ${className}`.trim()}>{text}</h2>;\n  }\n\n  const getInitialState = (index: number) => {\n    const sign = index % 2 === 0 ? 1 : -1;\n    switch (preset) {\n      case \"wave\":\n        return {\n          opacity: 0,\n          y: 26 * sign,\n          rotate: rotationIntensity * sign,\n          scale: 0.86,\n          filter: `blur(${blurStrength}px)`,\n        };\n      case \"orbit\":\n        return {\n          opacity: 0,\n          x: -18 * sign,\n          y: 22,\n          rotate: rotationIntensity * 1.4,\n          scale: 0.72,\n          filter: `blur(${blurStrength}px)`,\n        };\n      case \"snap\":\n        return {\n          opacity: 0,\n          y: 34,\n          rotate: -rotationIntensity * 0.5,\n          scale: 1.18,\n          filter: `blur(${blurStrength}px)`,\n        };\n      case \"elastic\":\n      default:\n        return {\n          opacity: 0,\n          y: 28,\n          rotate: rotationIntensity,\n          scale: 0.8,\n          filter: `blur(${blurStrength}px)`,\n        };\n    }\n  };\n\n  return (\n    <h2 aria-label={text} className={`${styles.root} ${className}`.trim()}>\n      <span aria-hidden=\"true\" className={styles.stage}>\n        {tokens.map((token, idx) => (\n          <motion.span\n            key={`${token}-${idx}`}\n            initial={getInitialState(idx)}\n            animate={{\n              opacity: 1,\n              x: 0,\n              y: 0,\n              rotate: 0,\n              scale: 1,\n              filter: \"blur(0px)\",\n            }}\n            transition={\n              preset === \"elastic\"\n                ? {\n                    type: \"spring\",\n                    stiffness: 260,\n                    damping: 18,\n                    delay: idx * stagger,\n                  }\n                : {\n                    duration,\n                    delay: idx * stagger,\n                    ease: [0.16, 1, 0.3, 1],\n                  }\n            }\n            className={styles.token}\n          >\n            {token === \" \" ? \"\\u00A0\" : token}\n            {splitBy === \"words\" && idx < tokens.length - 1 ? \"\\u00A0\" : \"\"}\n          </motion.span>\n        ))}\n      </span>\n    </h2>\n  );\n}\n"
+    },
+    {
+      "path": "components/styles/kinetic-type.module.css",
+      "type": "registry:style",
+      "content": ".root {\n  margin: 0;\n  font-weight: 600;\n  letter-spacing: -0.03em;\n  line-height: 1.18;\n  color: inherit;\n}\n\n.stage {\n  display: inline-flex;\n  flex-wrap: wrap;\n  perspective: 800px;\n}\n\n.token {\n  display: inline-block;\n  transform-origin: 50% 80%;\n  will-change: transform, opacity, filter;\n}\n\n@media (prefers-reduced-motion: reduce) {\n  .token {\n    transition: none;\n    filter: none;\n    transform: none;\n  }\n}\n"
+    }
+  ],
+  "tailwindExample": "\"use client\";\n\nimport { motion } from \"motion/react\";\n\nexport function KineticTypeTailwind({ text = \"Choreographed kinetic typography\" }) {\n  return (\n    <h2 aria-label={text} className=\"flex flex-wrap text-2xl font-semibold tracking-tight text-zinc-100\">\n      {text.split(\" \").map((word, idx) => (\n        <motion.span\n          key={idx}\n          initial={{ opacity: 0, y: 24, rotate: 12, scale: 0.82, filter: \"blur(8px)\" }}\n          animate={{ opacity: 1, y: 0, rotate: 0, scale: 1, filter: \"blur(0px)\" }}\n          transition={{ type: \"spring\", stiffness: 260, damping: 18, delay: idx * 0.055 }}\n          className=\"mr-2 inline-block origin-bottom\"\n        >\n          {word}\n        </motion.span>\n      ))}\n    </h2>\n  );\n}",
+  "collection": "core"
+}

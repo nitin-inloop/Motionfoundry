@@ -1,0 +1,45 @@
+.root {
+  display: inline-block;
+  color: var(--mf-fg, #f4f4f6);
+  font-size: clamp(1.5rem, 4vw, 2.25rem);
+  font-weight: 600;
+  letter-spacing: -0.03em;
+  line-height: 1.2;
+  white-space: pre;
+}
+
+.prefix {
+  color: var(--mf-fg, #f4f4f6);
+}
+
+.typed {
+  color: var(--mf-tw-accent, var(--mf-accent, #38bdf8));
+}
+
+.cursor {
+  display: inline-block;
+  width: 0.08em;
+  height: 1em;
+  margin-left: 0.06em;
+  vertical-align: -0.12em;
+  border-radius: 1px;
+  background-color: var(--mf-tw-accent, var(--mf-accent, #38bdf8));
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cursor {
+    opacity: 1 !important;
+  }
+}
+
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}

@@ -1,0 +1,105 @@
+{
+  "slug": "staggered-grid-reveal",
+  "name": "StaggeredGridReveal",
+  "category": "Developer-Interface Animations",
+  "featured": false,
+  "addedAt": "2026-10-16",
+  "version": "2.0.0",
+  "requiresMotion": true,
+  "dependencies": [
+    "motion",
+    "react"
+  ],
+  "description": "Reusable responsive grid orchestrator that reveals cells across linear, diagonal-wave, or radial-center stagger patterns with replay and static fallback support.",
+  "tags": [
+    "grid",
+    "stagger",
+    "reveal",
+    "diagonal",
+    "radial",
+    "layout"
+  ],
+  "a11yNotes": "Preserves natural DOM tab order across grid cells regardless of visual stagger pattern and renders cells immediately when prefers-reduced-motion is active.",
+  "defaultProps": {
+    "pattern": "diagonal",
+    "columns": 3,
+    "stagger": 0.055,
+    "duration": 0.48
+  },
+  "controls": [
+    {
+      "prop": "pattern",
+      "label": "Stagger Pattern",
+      "type": "select",
+      "options": [
+        "diagonal",
+        "linear",
+        "radial-center"
+      ]
+    },
+    {
+      "prop": "columns",
+      "label": "Grid Columns (2–4)",
+      "type": "range",
+      "min": 2,
+      "max": 4,
+      "step": 1
+    },
+    {
+      "prop": "stagger",
+      "label": "Base Stagger (s)",
+      "type": "range",
+      "min": 0.02,
+      "max": 0.14,
+      "step": 0.005
+    },
+    {
+      "prop": "duration",
+      "label": "Cell Duration (s)",
+      "type": "range",
+      "min": 0.2,
+      "max": 0.9,
+      "step": 0.04
+    }
+  ],
+  "propsApi": [
+    {
+      "name": "pattern",
+      "type": "'diagonal' | 'linear' | 'radial-center'",
+      "default": "'diagonal'",
+      "description": "Spatial delay calculation mode across grid coordinates."
+    },
+    {
+      "name": "columns",
+      "type": "number",
+      "default": "3",
+      "description": "Number of grid columns on desktop."
+    },
+    {
+      "name": "stagger",
+      "type": "number",
+      "default": "0.055",
+      "description": "Base delay multiplier in seconds."
+    },
+    {
+      "name": "duration",
+      "type": "number",
+      "default": "0.48",
+      "description": "Transition duration per cell in seconds."
+    }
+  ],
+  "files": [
+    {
+      "path": "components/ui/staggered-grid-reveal.tsx",
+      "type": "registry:component",
+      "content": "\"use client\";\n\nimport * as React from \"react\";\nimport { motion, useReducedMotion } from \"motion/react\";\nimport styles from \"../styles/staggered-grid-reveal.module.css\";\n\nexport interface StaggeredGridRevealProps {\n  /** Spatial stagger pattern */\n  pattern?: \"diagonal\" | \"linear\" | \"radial-center\";\n  /** Number of columns */\n  columns?: number;\n  /** Base stagger interval in seconds */\n  stagger?: number;\n  /** Cell transition duration in seconds */\n  duration?: number;\n  /** Optional custom cell labels */\n  cells?: string[];\n  /** Optional className */\n  className?: string;\n}\n\nconst DEFAULT_CELLS = [\n  \"01 // AST\",\n  \"02 // ESM\",\n  \"03 // CSS\",\n  \"04 // CLI\",\n  \"05 // A11Y\",\n  \"06 // SSR\",\n];\n\nexport function StaggeredGridReveal({\n  pattern = \"diagonal\",\n  columns = 3,\n  stagger = 0.055,\n  duration = 0.48,\n  cells = DEFAULT_CELLS,\n  className = \"\",\n}: StaggeredGridRevealProps) {\n  const prefersReducedMotion = useReducedMotion();\n  const safeCols = Math.min(Math.max(columns, 2), 4);\n  const rows = Math.ceil(cells.length / safeCols);\n\n  const computeDelay = (idx: number) => {\n    if (prefersReducedMotion) return 0;\n    const r = Math.floor(idx / safeCols);\n    const c = idx % safeCols;\n    if (pattern === \"diagonal\") {\n      return (r + c) * stagger * 1.4;\n    }\n    if (pattern === \"radial-center\") {\n      const centerR = (rows - 1) / 2;\n      const centerC = (safeCols - 1) / 2;\n      const dist = Math.hypot(r - centerR, c - centerC);\n      return dist * stagger * 1.6;\n    }\n    return idx * stagger;\n  };\n\n  return (\n    <div\n      style={{ gridTemplateColumns: `repeat(${safeCols}, minmax(0, 1fr))` }}\n      className={`${styles.grid} ${className}`.trim()}\n    >\n      {cells.map((label, idx) => (\n        <motion.div\n          key={`${label}-${idx}-${pattern}`}\n          initial={prefersReducedMotion ? false : { opacity: 0, y: 18, scale: 0.92 }}\n          animate={{ opacity: 1, y: 0, scale: 1 }}\n          transition={{\n            duration,\n            delay: computeDelay(idx),\n            ease: [0.16, 1, 0.3, 1],\n          }}\n          className={styles.cell}\n        >\n          <span className={styles.cellLabel}>{label}</span>\n        </motion.div>\n      ))}\n    </div>\n  );\n}\n"
+    },
+    {
+      "path": "components/styles/staggered-grid-reveal.module.css",
+      "type": "registry:style",
+      "content": ".grid {\n  display: grid;\n  gap: 0.6rem;\n  width: 100%;\n}\n\n.cell {\n  border-radius: 0.6rem;\n  border: 1px solid #262632;\n  background-color: var(--mf-surface, #121218);\n  padding: 0.9rem 0.75rem;\n  text-align: center;\n  color: var(--mf-fg, #f4f4f6);\n  will-change: transform, opacity;\n}\n\n.cellLabel {\n  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;\n  font-size: 0.74rem;\n  color: var(--mf-fg, #d4d4d8);\n}\n\n@media (prefers-reduced-motion: reduce) {\n  .cell {\n    transform: none !important;\n    opacity: 1 !important;\n  }\n}\n"
+    }
+  ],
+  "tailwindExample": "\"use client\";\n\nimport { StaggeredGridReveal } from \"@motionfoundry/ui\";\n\nexport function StaggeredGridDemo() {\n  return <StaggeredGridReveal pattern=\"diagonal\" columns={3} />;\n}",
+  "collection": "core"
+}

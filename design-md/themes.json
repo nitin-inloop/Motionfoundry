@@ -1,0 +1,153 @@
+{
+  "$comment": "MotionFoundry theme presets derived from each DESIGN.md. Values map onto the --mf-* CSS variables every component reads (see apps/docs content 'design-systems'). Edit here, then run node scripts/build-designs.mjs.",
+  "source": {
+    "repo": "https://github.com/VoltAgent/awesome-design-md",
+    "commit": "3b605329240ce735b510037cca322f1831fdd7f8",
+    "license": "MIT"
+  },
+  "designs": [
+    {
+      "id": "vercel",
+      "brand": "Vercel",
+      "category": "Developer Platform",
+      "mode": "light",
+      "tagline": "Stark black-and-ink on white, mesh-gradient accents, Geist everywhere.",
+      "theme": {
+        "bg": "#ffffff", "surface": "#fafafa", "surfaceRaised": "#f5f5f5", "fg": "#171717", "muted": "#4d4d4d", "subtle": "#888888",
+        "border": "#ebebeb", "borderStrong": "#a1a1a1", "accent": "#0070f3", "onAccent": "#ffffff", "secondary": "#ff0080",
+        "radius": "100px", "fontDisplay": "Geist, Inter, system-ui, -apple-system, sans-serif", "fontBody": "Geist, Inter, system-ui, -apple-system, sans-serif",
+        "displayWeight": 600, "displayTracking": "-0.05em"
+      }
+    },
+    {
+      "id": "cursor",
+      "brand": "Cursor",
+      "category": "AI Developer Tools",
+      "mode": "light",
+      "tagline": "Warm-cream editorial canvas, warm ink, one Cursor Orange voltage.",
+      "theme": {
+        "bg": "#f7f7f4", "surface": "#ffffff", "surfaceRaised": "#fafaf7", "fg": "#26251e", "muted": "#5a5852", "subtle": "#807d72",
+        "border": "#e6e5e0", "borderStrong": "#cfcdc4", "accent": "#f54e00", "onAccent": "#ffffff", "secondary": "#9fbbe0",
+        "radius": "8px", "fontDisplay": "'CursorGothic', system-ui, 'Helvetica Neue', Helvetica, Arial, sans-serif", "fontBody": "'CursorGothic', system-ui, 'Helvetica Neue', Helvetica, Arial, sans-serif",
+        "displayWeight": 400, "displayTracking": "-0.03em"
+      }
+    },
+    {
+      "id": "claude",
+      "brand": "Claude",
+      "category": "AI Product",
+      "mode": "light",
+      "tagline": "Tinted cream canvas, serif display headlines, warm coral CTAs.",
+      "theme": {
+        "bg": "#faf9f5", "surface": "#f5f0e8", "surfaceRaised": "#efe9de", "fg": "#141413", "muted": "#3d3d3a", "subtle": "#6c6a64",
+        "border": "#e6dfd8", "borderStrong": "#8e8b82", "accent": "#cc785c", "onAccent": "#ffffff", "secondary": "#5db8a6",
+        "radius": "8px", "fontDisplay": "Copernicus, 'Tiempos Headline', ui-serif, Georgia, serif", "fontBody": "ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif",
+        "displayWeight": 400, "displayTracking": "-0.02em"
+      }
+    },
+    {
+      "id": "framer",
+      "brand": "Framer",
+      "category": "Design & Build",
+      "mode": "dark",
+      "tagline": "Pure black artboard, poster-tight white type, white pill CTAs.",
+      "theme": {
+        "bg": "#090909", "surface": "#141414", "surfaceRaised": "#1c1c1c", "fg": "#ffffff", "muted": "#999999", "subtle": "#6b6b6b",
+        "border": "#262626", "borderStrong": "#3a3a3a", "accent": "#0099ff", "onAccent": "#ffffff", "secondary": "#d44df0",
+        "radius": "999px", "fontDisplay": "'GT Walsheim Medium', 'GT Walsheim', Inter, system-ui, sans-serif", "fontBody": "Inter, system-ui, -apple-system, sans-serif",
+        "displayWeight": 500, "displayTracking": "-0.05em"
+      }
+    },
+    {
+      "id": "apple",
+      "brand": "Apple",
+      "category": "Consumer Hardware",
+      "mode": "light",
+      "tagline": "Museum-gallery product tiles, SF Pro headlines, one Action Blue.",
+      "theme": {
+        "bg": "#ffffff", "surface": "#f5f5f7", "surfaceRaised": "#fafafc", "fg": "#1d1d1f", "muted": "#333333", "subtle": "#7a7a7a",
+        "border": "#e0e0e0", "borderStrong": "#d2d2d7", "accent": "#0066cc", "onAccent": "#ffffff", "secondary": "#2997ff",
+        "radius": "980px", "fontDisplay": "'SF Pro Display', system-ui, -apple-system, sans-serif", "fontBody": "'SF Pro Text', system-ui, -apple-system, sans-serif",
+        "displayWeight": 600, "displayTracking": "-0.025em"
+      }
+    },
+    {
+      "id": "airbnb",
+      "brand": "Airbnb",
+      "category": "Consumer Marketplace",
+      "mode": "light",
+      "tagline": "Warm white marketplace, Rausch red voltage, friendly rounded geometry.",
+      "theme": {
+        "bg": "#ffffff", "surface": "#f7f7f7", "surfaceRaised": "#f2f2f2", "fg": "#222222", "muted": "#3f3f3f", "subtle": "#6a6a6a",
+        "border": "#dddddd", "borderStrong": "#c1c1c1", "accent": "#ff385c", "onAccent": "#ffffff", "secondary": "#460479",
+        "radius": "8px", "fontDisplay": "'Airbnb Cereal VF', Circular, -apple-system, system-ui, Roboto, 'Helvetica Neue', sans-serif", "fontBody": "'Airbnb Cereal VF', Circular, -apple-system, system-ui, Roboto, 'Helvetica Neue', sans-serif",
+        "displayWeight": 600, "displayTracking": "-0.01em"
+      }
+    },
+    {
+      "id": "expo",
+      "brand": "Expo",
+      "category": "Developer Platform",
+      "mode": "light",
+      "tagline": "Pure white canvas, sky-blue wash, black CTAs, Inter + JetBrains Mono.",
+      "theme": {
+        "bg": "#ffffff", "surface": "#fafafa", "surfaceRaised": "#f0f0f3", "fg": "#171717", "muted": "#60646c", "subtle": "#999999",
+        "border": "#dcdee0", "borderStrong": "#cccccc", "accent": "#000000", "onAccent": "#ffffff", "secondary": "#0d74ce",
+        "radius": "6px", "fontDisplay": "Inter, -apple-system, system-ui, sans-serif", "fontBody": "Inter, -apple-system, system-ui, sans-serif",
+        "displayWeight": 600, "displayTracking": "-0.03em"
+      }
+    },
+    {
+      "id": "elevenlabs",
+      "brand": "ElevenLabs",
+      "category": "Voice AI",
+      "mode": "light",
+      "tagline": "Editorial off-white print magazine, light serif display, pastel orbs.",
+      "theme": {
+        "bg": "#f5f5f5", "surface": "#ffffff", "surfaceRaised": "#fafafa", "fg": "#0c0a09", "muted": "#4e4e4e", "subtle": "#777169",
+        "border": "#e7e5e4", "borderStrong": "#d6d3d1", "accent": "#292524", "onAccent": "#ffffff", "secondary": "#a7e5d3",
+        "radius": "999px", "fontDisplay": "'Waldenburg', ui-serif, Georgia, 'Times New Roman', serif", "fontBody": "Inter, system-ui, -apple-system, sans-serif",
+        "displayWeight": 300, "displayTracking": "-0.02em"
+      }
+    },
+    {
+      "id": "runwayml",
+      "brand": "Runway",
+      "category": "AI Video",
+      "mode": "dark",
+      "tagline": "Cinematic black, colorless interface, one geometric typeface.",
+      "theme": {
+        "bg": "#000000", "surface": "#1a1a1a", "surfaceRaised": "#262626", "fg": "#ffffff", "muted": "#a7a7a7", "subtle": "#767d88",
+        "border": "#27272a", "borderStrong": "#404040", "accent": "#ffffff", "onAccent": "#000000", "secondary": "#e9ecf2",
+        "radius": "4px", "fontDisplay": "abcNormal, Inter, 'DM Sans', system-ui, sans-serif", "fontBody": "abcNormal, Inter, 'DM Sans', system-ui, sans-serif",
+        "displayWeight": 400, "displayTracking": "-0.025em"
+      }
+    },
+    {
+      "id": "resend",
+      "brand": "Resend",
+      "category": "Developer Platform",
+      "mode": "dark",
+      "tagline": "Pitch-black canvas, serif display, glowing orange/blue/green accents.",
+      "theme": {
+        "bg": "#000000", "surface": "#0a0a0c", "surfaceRaised": "#101012", "fg": "#fcfdff", "muted": "#a1a4a5", "subtle": "#888e90",
+        "border": "rgba(255,255,255,0.1)", "borderStrong": "rgba(255,255,255,0.18)", "accent": "#ff801f", "onAccent": "#000000", "secondary": "#3b9eff",
+        "radius": "8px", "fontDisplay": "'Domaine Display', ui-serif, Georgia, serif", "fontBody": "'ABC Favorit', Inter, system-ui, sans-serif",
+        "displayWeight": 400, "displayTracking": "-0.02em"
+      }
+    },
+    {
+      "id": "spotify",
+      "brand": "Spotify",
+      "category": "Consumer Media",
+      "mode": "dark",
+      "tagline": "Near-black listening room, Spotify Green, pill-and-circle geometry.",
+      "theme": {
+        "bg": "#121212", "surface": "#181818", "surfaceRaised": "#252525", "fg": "#ffffff", "muted": "#b3b3b3", "subtle": "#7c7c7c",
+        "border": "#2a2a2a", "borderStrong": "#4d4d4d", "accent": "#1ed760", "onAccent": "#000000", "secondary": "#539df5",
+        "radius": "9999px", "fontDisplay": "SpotifyMixUITitle, CircularSp, 'Helvetica Neue', Helvetica, Arial, sans-serif", "fontBody": "SpotifyMixUI, CircularSp, 'Helvetica Neue', Helvetica, Arial, sans-serif",
+        "displayWeight": 700, "displayTracking": "-0.01em"
+      }
+    }
+  ]
+}

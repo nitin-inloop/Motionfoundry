@@ -1,0 +1,102 @@
+{
+  "slug": "orbit-loader",
+  "name": "OrbitLoader",
+  "category": "Loaders and Feedback",
+  "collection": "studio-kit",
+  "featured": true,
+  "addedAt": "2026-10-16",
+  "version": "2.1.0",
+  "requiresMotion": false,
+  "dependencies": [
+    "react"
+  ],
+  "description": "A compact loader with two counter-rotating orbit rings carrying satellites around a softly breathing accent core, implemented with CSS keyframes.",
+  "tags": [
+    "loader",
+    "spinner",
+    "orbit",
+    "loading",
+    "css",
+    "status"
+  ],
+  "a11yNotes": "Root uses role=\"status\" with an aria-label (default 'Loading'); all visual parts are aria-hidden. Under prefers-reduced-motion rotation and breathing stop, leaving a static orbit composition.",
+  "defaultProps": {
+    "size": 72,
+    "duration": 1.4,
+    "color": "#38bdf8",
+    "label": "Loading"
+  },
+  "controls": [
+    {
+      "prop": "size",
+      "label": "Size (px)",
+      "type": "range",
+      "min": 32,
+      "max": 160,
+      "step": 4
+    },
+    {
+      "prop": "duration",
+      "label": "Orbit Period (s)",
+      "type": "range",
+      "min": 0.6,
+      "max": 4,
+      "step": 0.1
+    },
+    {
+      "prop": "color",
+      "label": "Accent",
+      "type": "color"
+    },
+    {
+      "prop": "label",
+      "label": "Accessible Label",
+      "type": "text"
+    }
+  ],
+  "propsApi": [
+    {
+      "name": "size",
+      "type": "number",
+      "default": "72",
+      "description": "Loader diameter in pixels."
+    },
+    {
+      "name": "duration",
+      "type": "number",
+      "default": "1.4",
+      "description": "Outer orbit period in seconds; the inner ring runs at twice this, reversed."
+    },
+    {
+      "name": "color",
+      "type": "string",
+      "default": "'#38bdf8'",
+      "description": "Accent color for the core and leading satellite."
+    },
+    {
+      "name": "label",
+      "type": "string",
+      "default": "'Loading'",
+      "description": "Accessible label exposed via aria-label on the status element."
+    },
+    {
+      "name": "className",
+      "type": "string",
+      "default": "''",
+      "description": "Additional class merged onto the root element."
+    }
+  ],
+  "files": [
+    {
+      "path": "components/ui/orbit-loader.tsx",
+      "type": "registry:component",
+      "content": "\"use client\";\n\nimport * as React from \"react\";\nimport styles from \"../styles/orbit-loader.module.css\";\n\nexport interface OrbitLoaderProps {\n  /** Loader diameter in pixels */\n  size?: number;\n  /** Outer orbit period in seconds (inner orbit runs at twice this, reversed) */\n  duration?: number;\n  /** Accent color for the core and leading satellite */\n  color?: string;\n  /** Accessible label announced by assistive technology */\n  label?: string;\n  /** Optional className merged onto the root */\n  className?: string;\n}\n\nexport function OrbitLoader({\n  size = 72,\n  duration = 1.4,\n  color = \"#38bdf8\",\n  label = \"Loading\",\n  className = \"\",\n}: OrbitLoaderProps) {\n  const styleVars = {\n    \"--mf-ol-size\": `${size}px`,\n    \"--mf-ol-duration\": `${duration > 0 ? duration : 1.4}s`,\n    \"--mf-ol-color\": color,\n  } as React.CSSProperties;\n\n  return (\n    <div role=\"status\" aria-label={label} style={styleVars} className={`${styles.root} ${className}`.trim()}>\n      <span aria-hidden=\"true\" className={styles.core} />\n      <span aria-hidden=\"true\" className={`${styles.ring} ${styles.outer}`}>\n        <span className={`${styles.dot} ${styles.accentDot}`} />\n      </span>\n      <span aria-hidden=\"true\" className={`${styles.ring} ${styles.inner}`}>\n        <span className={styles.dot} />\n      </span>\n    </div>\n  );\n}\n"
+    },
+    {
+      "path": "components/styles/orbit-loader.module.css",
+      "type": "registry:style",
+      "content": ".root {\n  position: relative;\n  display: inline-block;\n  flex-shrink: 0;\n  width: var(--mf-ol-size, 72px);\n  height: var(--mf-ol-size, 72px);\n}\n\n.core {\n  position: absolute;\n  inset: 38%;\n  border-radius: 50%;\n  background-color: var(--mf-ol-color, var(--mf-accent, #38bdf8));\n  box-shadow: 0 0 calc(var(--mf-ol-size, 72px) * 0.18) var(--mf-ol-color, var(--mf-accent, #38bdf8));\n  animation: mfOrbitBreathe calc(var(--mf-ol-duration, 1.4s) * 2) ease-in-out infinite;\n}\n\n.ring {\n  position: absolute;\n  border-radius: 50%;\n  border: 1px solid var(--mf-border, #2e2e38);\n  animation: mfOrbitSpin var(--mf-ol-duration, 1.4s) linear infinite;\n  will-change: transform;\n}\n\n.outer {\n  inset: 0;\n}\n\n.inner {\n  inset: calc(var(--mf-ol-size, 72px) * 0.15);\n  animation-duration: calc(var(--mf-ol-duration, 1.4s) * 2);\n  animation-direction: reverse;\n}\n\n.dot {\n  position: absolute;\n  top: -4px;\n  left: 50%;\n  width: 8px;\n  height: 8px;\n  margin-left: -4px;\n  border-radius: 50%;\n  background-color: var(--mf-fg, #f4f4f6);\n}\n\n.accentDot {\n  background-color: var(--mf-ol-color, var(--mf-accent, #38bdf8));\n  box-shadow: 0 0 8px var(--mf-ol-color, var(--mf-accent, #38bdf8));\n}\n\n@keyframes mfOrbitSpin {\n  to {\n    transform: rotate(360deg);\n  }\n}\n\n@keyframes mfOrbitBreathe {\n  0%,\n  100% {\n    transform: scale(1);\n    opacity: 1;\n  }\n  50% {\n    transform: scale(0.82);\n    opacity: 0.75;\n  }\n}\n\n@media (prefers-reduced-motion: reduce) {\n  .core,\n  .ring {\n    animation: none;\n  }\n\n  .inner {\n    transform: rotate(140deg);\n  }\n}\n"
+    }
+  ],
+  "tailwindExample": "\"use client\";\n\nimport { motion } from \"motion/react\";\n\nexport function OrbitLoaderTailwind({ size = 72, duration = 1.4 }) {\n  return (\n    <div role=\"status\" aria-label=\"Loading\" className=\"relative\" style={{ width: size, height: size }}>\n      <span className=\"absolute inset-[38%] rounded-full bg-sky-400 shadow-[0_0_14px] shadow-sky-400\" />\n      {[0, 1].map((i) => (\n        <motion.div\n          key={i}\n          aria-hidden\n          className=\"absolute rounded-full border border-zinc-800\"\n          style={{ inset: i * size * 0.15 }}\n          animate={{ rotate: i ? -360 : 360 }}\n          transition={{ duration: duration * (i + 1), repeat: Infinity, ease: \"linear\" }}\n        >\n          <span className={`absolute -top-1 left-1/2 h-2 w-2 -translate-x-1/2 rounded-full ${i ? \"bg-zinc-100\" : \"bg-sky-400\"}`} />\n        </motion.div>\n      ))}\n    </div>\n  );\n}"
+}

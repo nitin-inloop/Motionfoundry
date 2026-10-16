@@ -1,0 +1,132 @@
+{
+  "slug": "typewriter",
+  "name": "Typewriter",
+  "category": "Advanced Text Animations",
+  "collection": "studio-kit",
+  "featured": false,
+  "addedAt": "2026-10-16",
+  "version": "2.1.0",
+  "requiresMotion": true,
+  "dependencies": [
+    "motion",
+    "react"
+  ],
+  "description": "Types and deletes a rotating list of words after a static prefix, with configurable typing speed, hold pause, accent color, and a blinking caret.",
+  "tags": [
+    "text",
+    "typewriter",
+    "typing",
+    "cursor",
+    "rotating",
+    "hero"
+  ],
+  "a11yNotes": "A visually hidden span announces the prefix and the full word list once; the character-by-character output and caret are aria-hidden so screen readers are not spammed. Under prefers-reduced-motion the first word is shown statically with a steady caret.",
+  "defaultProps": {
+    "words": [
+      "interfaces",
+      "landing pages",
+      "dashboards",
+      "design systems"
+    ],
+    "prefix": "Build",
+    "speed": 70,
+    "pause": 1400,
+    "cursor": true,
+    "accentColor": "#38bdf8"
+  },
+  "controls": [
+    {
+      "prop": "words",
+      "label": "Words (comma separated)",
+      "type": "list"
+    },
+    {
+      "prop": "prefix",
+      "label": "Prefix",
+      "type": "text"
+    },
+    {
+      "prop": "speed",
+      "label": "Typing Speed (ms/char)",
+      "type": "range",
+      "min": 20,
+      "max": 200,
+      "step": 5
+    },
+    {
+      "prop": "pause",
+      "label": "Hold Pause (ms)",
+      "type": "range",
+      "min": 300,
+      "max": 4000,
+      "step": 100
+    },
+    {
+      "prop": "cursor",
+      "label": "Show Cursor",
+      "type": "boolean"
+    },
+    {
+      "prop": "accentColor",
+      "label": "Accent",
+      "type": "color"
+    }
+  ],
+  "propsApi": [
+    {
+      "name": "words",
+      "type": "string[]",
+      "default": "['interfaces', 'landing pages', 'dashboards', 'design systems']",
+      "description": "Words typed and deleted in sequence."
+    },
+    {
+      "name": "prefix",
+      "type": "string",
+      "default": "'Build'",
+      "description": "Static text rendered before the typed word."
+    },
+    {
+      "name": "speed",
+      "type": "number",
+      "default": "70",
+      "description": "Milliseconds per typed character; deleting runs twice as fast."
+    },
+    {
+      "name": "pause",
+      "type": "number",
+      "default": "1400",
+      "description": "Milliseconds to hold a completed word before deleting."
+    },
+    {
+      "name": "cursor",
+      "type": "boolean",
+      "default": "true",
+      "description": "Show the blinking caret."
+    },
+    {
+      "name": "accentColor",
+      "type": "string",
+      "default": "'#38bdf8'",
+      "description": "Color of the typed word and caret."
+    },
+    {
+      "name": "className",
+      "type": "string",
+      "default": "''",
+      "description": "Additional class merged onto the root element."
+    }
+  ],
+  "files": [
+    {
+      "path": "components/ui/typewriter.tsx",
+      "type": "registry:component",
+      "content": "\"use client\";\n\nimport * as React from \"react\";\nimport { motion, useReducedMotion } from \"motion/react\";\nimport styles from \"../styles/typewriter.module.css\";\n\nexport interface TypewriterProps {\n  /** Words typed and deleted in sequence */\n  words?: string[];\n  /** Static text rendered before the typed word */\n  prefix?: string;\n  /** Milliseconds per typed character (deleting runs at twice the speed) */\n  speed?: number;\n  /** Milliseconds to hold a completed word before deleting */\n  pause?: number;\n  /** Show the blinking cursor */\n  cursor?: boolean;\n  /** Color of the typed word and cursor */\n  accentColor?: string;\n  /** Optional className */\n  className?: string;\n}\n\nconst DEFAULT_WORDS = [\"interfaces\", \"landing pages\", \"dashboards\", \"design systems\"];\n\nexport function Typewriter({\n  words = DEFAULT_WORDS,\n  prefix = \"Build\",\n  speed = 70,\n  pause = 1400,\n  cursor = true,\n  accentColor = \"#38bdf8\",\n  className = \"\",\n}: TypewriterProps) {\n  const prefersReducedMotion = useReducedMotion();\n  const list = words.length > 0 ? words : DEFAULT_WORDS;\n  const [index, setIndex] = React.useState(0);\n  const [text, setText] = React.useState(\"\");\n  const [deleting, setDeleting] = React.useState(false);\n  const word = list[index % list.length] ?? \"\";\n\n  React.useEffect(() => {\n    if (prefersReducedMotion) return;\n    let t: ReturnType<typeof setTimeout> | undefined;\n    if (!deleting && text === word) {\n      t = setTimeout(() => setDeleting(true), pause);\n    } else if (deleting && text === \"\") {\n      setDeleting(false);\n      setIndex((i) => (i + 1) % list.length);\n    } else {\n      t = setTimeout(\n        () => setText(deleting ? word.slice(0, text.length - 1) : word.slice(0, text.length + 1)),\n        deleting ? speed / 2 : speed,\n      );\n    }\n    return () => {\n      if (t) clearTimeout(t);\n    };\n  }, [text, deleting, word, list.length, speed, pause, prefersReducedMotion]);\n\n  const shown = prefersReducedMotion ? list[0] : text;\n  const label = `${prefix ? `${prefix} ` : \"\"}${list.join(\", \")}`;\n\n  return (\n    <span\n      style={{ \"--mf-tw-accent\": accentColor } as React.CSSProperties}\n      className={`${styles.root} ${className}`.trim()}\n    >\n      <span className={styles.srOnly}>{label}</span>\n      <span aria-hidden=\"true\">\n        {prefix ? <span className={styles.prefix}>{prefix} </span> : null}\n        <span className={styles.typed}>{shown}</span>\n        {cursor ? (\n          <motion.span\n            className={styles.cursor}\n            animate={prefersReducedMotion ? { opacity: 1 } : { opacity: [1, 0] }}\n            transition={\n              prefersReducedMotion ? undefined : { duration: 0.6, repeat: Infinity, repeatType: \"reverse\" }\n            }\n          />\n        ) : null}\n      </span>\n    </span>\n  );\n}\n"
+    },
+    {
+      "path": "components/styles/typewriter.module.css",
+      "type": "registry:style",
+      "content": ".root {\n  display: inline-block;\n  color: var(--mf-fg, #f4f4f6);\n  font-size: clamp(1.5rem, 4vw, 2.25rem);\n  font-weight: 600;\n  letter-spacing: -0.03em;\n  line-height: 1.2;\n  white-space: pre;\n}\n\n.prefix {\n  color: var(--mf-fg, #f4f4f6);\n}\n\n.typed {\n  color: var(--mf-tw-accent, var(--mf-accent, #38bdf8));\n}\n\n.cursor {\n  display: inline-block;\n  width: 0.08em;\n  height: 1em;\n  margin-left: 0.06em;\n  vertical-align: -0.12em;\n  border-radius: 1px;\n  background-color: var(--mf-tw-accent, var(--mf-accent, #38bdf8));\n}\n\n@media (prefers-reduced-motion: reduce) {\n  .cursor {\n    opacity: 1 !important;\n  }\n}\n\n.srOnly {\n  position: absolute;\n  width: 1px;\n  height: 1px;\n  padding: 0;\n  margin: -1px;\n  overflow: hidden;\n  clip: rect(0, 0, 0, 0);\n  white-space: nowrap;\n  border: 0;\n}\n"
+    }
+  ],
+  "tailwindExample": "\"use client\";\n\nimport { useEffect, useState } from \"react\";\nimport { motion } from \"motion/react\";\n\nexport function TypewriterTailwind({ words = [\"interfaces\", \"landing pages\", \"dashboards\"], prefix = \"Build\" }) {\n  const [i, setI] = useState(0);\n  const [text, setText] = useState(\"\");\n  const [del, setDel] = useState(false);\n  const word = words[i % words.length];\n  useEffect(() => {\n    let t: ReturnType<typeof setTimeout> | undefined;\n    if (!del && text === word) t = setTimeout(() => setDel(true), 1400);\n    else if (del && text === \"\") { setDel(false); setI((n) => n + 1); }\n    else t = setTimeout(() => setText(word.slice(0, text.length + (del ? -1 : 1))), del ? 35 : 70);\n    return () => clearTimeout(t);\n  }, [text, del, word]);\n  return (\n    <span className=\"text-3xl font-semibold tracking-tight text-zinc-100\">\n      {prefix} <span className=\"text-sky-400\">{text}</span>\n      <motion.span\n        aria-hidden\n        className=\"ml-0.5 inline-block h-[1em] w-[0.08em] bg-sky-400 align-middle\"\n        animate={{ opacity: [1, 0] }}\n        transition={{ duration: 0.6, repeat: Infinity, repeatType: \"reverse\" }}\n      />\n    </span>\n  );\n}"
+}

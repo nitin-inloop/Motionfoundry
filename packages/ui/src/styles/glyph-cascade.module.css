@@ -1,0 +1,54 @@
+.root {
+  position: relative;
+  display: inline-block;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  user-select: text;
+}
+
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  border: 0;
+}
+
+.glyphTrack {
+  display: inline-flex;
+  flex-wrap: wrap;
+}
+
+.glyph {
+  display: inline-block;
+  transition: filter 160ms ease, opacity 160ms ease, transform 160ms ease;
+}
+
+.resolved {
+  opacity: 1;
+  transform: translateY(0);
+  color: inherit;
+}
+
+.scrambling {
+  opacity: 0.62;
+  transform: translateY(2px);
+  color: var(--mf-muted, #a1a1aa);
+}
+
+.space {
+  display: inline-block;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .glyph {
+    transition: none;
+    filter: none !important;
+    transform: none !important;
+    opacity: 1 !important;
+  }
+}

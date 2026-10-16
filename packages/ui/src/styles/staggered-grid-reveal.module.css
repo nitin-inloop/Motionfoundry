@@ -1,0 +1,28 @@
+.grid {
+  display: grid;
+  gap: 0.6rem;
+  width: 100%;
+}
+
+.cell {
+  border-radius: 0.6rem;
+  border: 1px solid #262632;
+  background-color: var(--mf-surface, #121218);
+  padding: 0.9rem 0.75rem;
+  text-align: center;
+  color: var(--mf-fg, #f4f4f6);
+  will-change: transform, opacity;
+}
+
+.cellLabel {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.74rem;
+  color: var(--mf-fg, #d4d4d8);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cell {
+    transform: none !important;
+    opacity: 1 !important;
+  }
+}

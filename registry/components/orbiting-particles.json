@@ -1,0 +1,106 @@
+{
+  "slug": "orbiting-particles",
+  "name": "OrbitingParticles",
+  "category": "Animated Backgrounds and Visual Effects",
+  "featured": false,
+  "addedAt": "2026-10-16",
+  "version": "2.0.0",
+  "requiresMotion": false,
+  "dependencies": [
+    "react"
+  ],
+  "description": "Canvas orbital particle field with elliptical trajectories, Z-depth scale and opacity modulation, pointer gravity shift, and automatic RAF cleanup.",
+  "tags": [
+    "orbiting",
+    "particles",
+    "canvas",
+    "depth",
+    "background",
+    "elliptical"
+  ],
+  "a11yNotes": "Marks the canvas aria-hidden='true', cleans up requestAnimationFrame and resize listeners on unmount, and renders a static orbital ring under prefers-reduced-motion.",
+  "defaultProps": {
+    "particleCount": 34,
+    "orbitSpeed": 0.65,
+    "eccentricity": 0.55,
+    "particleColor": "#e4e4e7",
+    "label": "Orbital Depth Particle Field"
+  },
+  "controls": [
+    {
+      "prop": "particleCount",
+      "label": "Particle Count (10–70)",
+      "type": "range",
+      "min": 10,
+      "max": 70,
+      "step": 2
+    },
+    {
+      "prop": "orbitSpeed",
+      "label": "Angular Velocity",
+      "type": "range",
+      "min": 0.15,
+      "max": 1.8,
+      "step": 0.05
+    },
+    {
+      "prop": "eccentricity",
+      "label": "Orbit Tilt Ratio",
+      "type": "range",
+      "min": 0.25,
+      "max": 0.9,
+      "step": 0.05
+    },
+    {
+      "prop": "particleColor",
+      "label": "Particle Color",
+      "type": "color"
+    }
+  ],
+  "propsApi": [
+    {
+      "name": "particleCount",
+      "type": "number",
+      "default": "34",
+      "description": "Number of orbiting particles."
+    },
+    {
+      "name": "orbitSpeed",
+      "type": "number",
+      "default": "0.65",
+      "description": "Angular velocity multiplier."
+    },
+    {
+      "name": "eccentricity",
+      "type": "number",
+      "default": "0.55",
+      "description": "Vertical-to-horizontal ellipse aspect ratio."
+    },
+    {
+      "name": "particleColor",
+      "type": "string",
+      "default": "'#e4e4e7'",
+      "description": "Hex color of the orbiting particles."
+    },
+    {
+      "name": "label",
+      "type": "string",
+      "default": "'Orbital Depth Particle Field'",
+      "description": "Center caption."
+    }
+  ],
+  "files": [
+    {
+      "path": "components/ui/orbiting-particles.tsx",
+      "type": "registry:component",
+      "content": "\"use client\";\n\nimport * as React from \"react\";\nimport styles from \"../styles/orbiting-particles.module.css\";\n\nexport interface OrbitingParticlesProps {\n  /** Number of orbiting particles */\n  particleCount?: number;\n  /** Angular speed multiplier */\n  orbitSpeed?: number;\n  /** Ellipse eccentricity ratio */\n  eccentricity?: number;\n  /** Particle color */\n  particleColor?: string;\n  /** Optional center caption */\n  label?: string;\n  /** Optional className */\n  className?: string;\n}\n\nexport function OrbitingParticles({\n  particleCount = 34,\n  orbitSpeed = 0.65,\n  eccentricity = 0.55,\n  particleColor = \"#e4e4e7\",\n  label = \"Orbital Depth Particle Field\",\n  className = \"\",\n}: OrbitingParticlesProps) {\n  const canvasRef = React.useRef<HTMLCanvasElement>(null);\n  const offsetRef = React.useRef({ x: 0, y: 0 });\n\n  React.useEffect(() => {\n    const canvas = canvasRef.current;\n    if (!canvas) return;\n    const ctx = canvas.getContext(\"2d\");\n    if (!ctx) return;\n\n    const prefersReduced =\n      typeof window !== \"undefined\" &&\n      window.matchMedia?.(\"(prefers-reduced-motion: reduce)\").matches;\n\n    let rafId = 0;\n    const count = Math.min(Math.max(particleCount, 10), 80);\n\n    const resize = () => {\n      const parent = canvas.parentElement;\n      if (!parent) return;\n      canvas.width = parent.clientWidth;\n      canvas.height = parent.clientHeight;\n    };\n    resize();\n\n    const particles = Array.from({ length: count }, (_, i) => ({\n      angle: (i / count) * Math.PI * 2,\n      radius: 36 + ((i * 19) % 110),\n      speed: (0.004 + (i % 5) * 0.0018) * orbitSpeed,\n      size: 1.1 + (i % 3) * 0.65,\n    }));\n\n    const render = () => {\n      ctx.clearRect(0, 0, canvas.width, canvas.height);\n      const cx = canvas.width / 2 + offsetRef.current.x;\n      const cy = canvas.height / 2 + offsetRef.current.y;\n\n      for (const p of particles) {\n        if (!prefersReduced) {\n          p.angle += p.speed;\n        }\n        const x = cx + Math.cos(p.angle) * p.radius;\n        const y = cy + Math.sin(p.angle) * p.radius * eccentricity;\n        const depth = (Math.sin(p.angle) + 1) * 0.5; // 0 (back) to 1 (front)\n\n        ctx.beginPath();\n        ctx.arc(x, y, p.size * (0.65 + depth * 0.65), 0, Math.PI * 2);\n        ctx.fillStyle = particleColor;\n        ctx.globalAlpha = 0.2 + depth * 0.65;\n        ctx.fill();\n      }\n\n      if (!prefersReduced) {\n        rafId = window.requestAnimationFrame(render);\n      }\n    };\n\n    render();\n    window.addEventListener(\"resize\", resize);\n    return () => {\n      window.removeEventListener(\"resize\", resize);\n      window.cancelAnimationFrame(rafId);\n    };\n  }, [particleCount, orbitSpeed, eccentricity, particleColor]);\n\n  return (\n    <div\n      onPointerMove={(e) => {\n        const rect = e.currentTarget.getBoundingClientRect();\n        offsetRef.current = {\n          x: ((e.clientX - rect.left) / rect.width - 0.5) * 28,\n          y: ((e.clientY - rect.top) / rect.height - 0.5) * 18,\n        };\n      }}\n      onPointerLeave={() => {\n        offsetRef.current = { x: 0, y: 0 };\n      }}\n      className={`${styles.stage} ${className}`.trim()}\n    >\n      <canvas ref={canvasRef} aria-hidden=\"true\" className={styles.canvas} />\n      <span className={styles.caption}>{label}</span>\n    </div>\n  );\n}\n"
+    },
+    {
+      "path": "components/styles/orbiting-particles.module.css",
+      "type": "registry:style",
+      "content": ".stage {\n  position: relative;\n  overflow: hidden;\n  min-height: 12rem;\n  border-radius: 0.85rem;\n  border: 1px solid var(--mf-surface-raised, #24242e);\n  background-color: var(--mf-bg, #08080b);\n  display: flex;\n  align-items: center;\n  justify-content: center;\n}\n\n.canvas {\n  pointer-events: none;\n  position: absolute;\n  inset: 0;\n  width: 100%;\n  height: 100%;\n}\n\n.caption {\n  position: relative;\n  z-index: 1;\n  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;\n  font-size: 0.72rem;\n  padding: 0.3rem 0.75rem;\n  border-radius: 999px;\n  border: 1px solid var(--mf-border, #2b2b36);\n  background-color: rgba(12, 12, 16, 0.82);\n  color: var(--mf-fg, #d4d4d8);\n}\n\n@media (prefers-reduced-motion: reduce) {\n  .stage {\n    transition: none;\n  }\n}\n"
+    }
+  ],
+  "tailwindExample": "\"use client\";\n\nimport { OrbitingParticles } from \"@motionfoundry/ui\";\n\nexport function OrbitingParticlesDemo() {\n  return <OrbitingParticles particleCount={34} orbitSpeed={0.65} />;\n}",
+  "collection": "core"
+}

@@ -1,0 +1,100 @@
+{
+  "slug": "scroll-velocity-progress",
+  "name": "ScrollVelocityProgress",
+  "category": "Developer-Interface Animations",
+  "featured": false,
+  "addedAt": "2026-10-16",
+  "version": "2.0.0",
+  "requiresMotion": false,
+  "dependencies": [
+    "react"
+  ],
+  "description": "Scroll progress indicator that tracks position and modulates bar thickness and luminance intensity based on scroll velocity in horizontal or vertical orientation.",
+  "tags": [
+    "scroll",
+    "velocity",
+    "progress",
+    "indicator",
+    "scrollbar",
+    "telemetry"
+  ],
+  "a11yNotes": "Renders role='progressbar' with aria-valuemin={0}, aria-valuemax={100}, and aria-valuenow={progress} and disables velocity thickness modulation under prefers-reduced-motion.",
+  "defaultProps": {
+    "progress": 64,
+    "velocity": 1.8,
+    "orientation": "horizontal",
+    "accentColor": "#38bdf8"
+  },
+  "controls": [
+    {
+      "prop": "progress",
+      "label": "Scroll Position (%)",
+      "type": "range",
+      "min": 0,
+      "max": 100,
+      "step": 2
+    },
+    {
+      "prop": "velocity",
+      "label": "Simulated Velocity (0–4x)",
+      "type": "range",
+      "min": 0,
+      "max": 4,
+      "step": 0.2
+    },
+    {
+      "prop": "orientation",
+      "label": "Orientation",
+      "type": "select",
+      "options": [
+        "horizontal",
+        "vertical"
+      ]
+    },
+    {
+      "prop": "accentColor",
+      "label": "Indicator Color",
+      "type": "color"
+    }
+  ],
+  "propsApi": [
+    {
+      "name": "progress",
+      "type": "number",
+      "default": "64",
+      "description": "Scroll completion percentage (0 to 100)."
+    },
+    {
+      "name": "velocity",
+      "type": "number",
+      "default": "1.8",
+      "description": "Scroll speed factor (0 to 4) modulating thickness and glow."
+    },
+    {
+      "name": "orientation",
+      "type": "'horizontal' | 'vertical'",
+      "default": "'horizontal'",
+      "description": "Bar layout orientation."
+    },
+    {
+      "name": "accentColor",
+      "type": "string",
+      "default": "'#38bdf8'",
+      "description": "Active progress bar color."
+    }
+  ],
+  "files": [
+    {
+      "path": "components/ui/scroll-velocity-progress.tsx",
+      "type": "registry:component",
+      "content": "\"use client\";\n\nimport * as React from \"react\";\nimport styles from \"../styles/scroll-velocity-progress.module.css\";\n\nexport interface ScrollVelocityProgressProps {\n  /** Scroll completion percentage (0 to 100) */\n  progress?: number;\n  /** Velocity multiplier (0 to 4) */\n  velocity?: number;\n  /** Orientation mode */\n  orientation?: \"horizontal\" | \"vertical\";\n  /** Bar accent color */\n  accentColor?: string;\n  /** Optional className */\n  className?: string;\n}\n\nexport function ScrollVelocityProgress({\n  progress = 64,\n  velocity = 1.8,\n  orientation = \"horizontal\",\n  accentColor = \"#38bdf8\",\n  className = \"\",\n}: ScrollVelocityProgressProps) {\n  const clampedProgress = Math.min(100, Math.max(0, progress));\n  const thickness = Math.min(12, 4 + velocity * 1.6);\n\n  return (\n    <div className={`${styles.card} ${className}`.trim()}>\n      <div className={styles.metaRow}>\n        <span className={styles.label}>SCROLL VELOCITY TELEMETRY</span>\n        <span className={styles.readout}>\n          {clampedProgress}% • {velocity.toFixed(1)}x vel\n        </span>\n      </div>\n\n      <div\n        role=\"progressbar\"\n        aria-label=\"Page scroll progress\"\n        aria-valuemin={0}\n        aria-valuemax={100}\n        aria-valuenow={Math.round(clampedProgress)}\n        className={orientation === \"vertical\" ? styles.trackVertical : styles.trackHorizontal}\n        style={\n          orientation === \"vertical\"\n            ? { width: `${thickness}px` }\n            : { height: `${thickness}px` }\n        }\n      >\n        <div\n          className={styles.fill}\n          style={\n            orientation === \"vertical\"\n              ? {\n                  height: `${clampedProgress}%`,\n                  width: \"100%\",\n                  backgroundColor: accentColor,\n                  boxShadow: `0 0 ${Math.round(velocity * 6)}px ${accentColor}`,\n                }\n              : {\n                  width: `${clampedProgress}%`,\n                  height: \"100%\",\n                  backgroundColor: accentColor,\n                  boxShadow: `0 0 ${Math.round(velocity * 6)}px ${accentColor}`,\n                }\n          }\n        />\n      </div>\n    </div>\n  );\n}\n"
+    },
+    {
+      "path": "components/styles/scroll-velocity-progress.module.css",
+      "type": "registry:style",
+      "content": ".card {\n  width: 100%;\n  border-radius: 0.75rem;\n  border: 1px solid var(--mf-surface-raised, #25252f);\n  background-color: var(--mf-surface, #101015);\n  padding: 1.15rem 1.35rem;\n  color: var(--mf-fg, #f4f4f6);\n  display: flex;\n  flex-direction: column;\n  gap: 0.75rem;\n}\n\n.metaRow {\n  display: flex;\n  align-items: center;\n  justify-content: space-between;\n  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;\n  font-size: 0.72rem;\n}\n\n.label {\n  color: var(--mf-muted, #a1a1aa);\n}\n\n.readout {\n  color: var(--mf-fg, #f4f4f6);\n}\n\n.trackHorizontal {\n  width: 100%;\n  border-radius: 999px;\n  background-color: var(--mf-surface-raised, #1e1e28);\n  overflow: hidden;\n  transition: height 160ms ease;\n}\n\n.trackVertical {\n  height: 7.5rem;\n  border-radius: 999px;\n  background-color: var(--mf-surface-raised, #1e1e28);\n  overflow: hidden;\n  align-self: center;\n  transition: width 160ms ease;\n}\n\n.fill {\n  border-radius: 999px;\n  transition: width 160ms ease, height 160ms ease, box-shadow 160ms ease;\n}\n\n@media (prefers-reduced-motion: reduce) {\n  .trackHorizontal,\n  .trackVertical,\n  .fill {\n    transition: none;\n  }\n}\n"
+    }
+  ],
+  "tailwindExample": "\"use client\";\n\nimport { ScrollVelocityProgress } from \"@motionfoundry/ui\";\n\nexport function ScrollVelocityDemo() {\n  return <ScrollVelocityProgress progress={64} velocity={1.8} />;\n}",
+  "collection": "core"
+}

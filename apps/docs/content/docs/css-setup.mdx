@@ -1,0 +1,31 @@
+---
+title: "CSS Setup"
+category: "Configuration"
+summary: "Working with CSS Modules, CSS custom properties, and bundled @motionfoundry/ui/styles.css."
+---
+
+# CSS Setup
+
+Every MotionFoundry component exposes CSS custom properties (such as `--mf-lg-blur`, `--mf-mb-speed`, `--mf-vel-color`, and `--mf-fm-opacity`) so runtime prop changes update CSS variables directly without regenerating stylesheets.
+
+### Using Bundled Styles vs. CSS Modules
+
+- When importing from `@motionfoundry/ui`, import `@motionfoundry/ui/styles.css` once in your root `app/layout.tsx`.
+- When copying components via the CLI (`npx motionfoundry add <name>`) or manual copy-paste, each component colocates its own `<name>.module.css` file.
+
+```tsx
+/* Root CSS custom property overrides (app/globals.css) */
+:root {
+  --mf-surface-bg: #101014;
+  --mf-surface-border: #24242c;
+  --mf-text-primary: #f4f4f6;
+  --mf-text-secondary: #a1a1aa;
+}
+
+.light {
+  --mf-surface-bg: #ffffff;
+  --mf-surface-border: #e4e4e7;
+  --mf-text-primary: #09090b;
+  --mf-text-secondary: #52525b;
+}
+```

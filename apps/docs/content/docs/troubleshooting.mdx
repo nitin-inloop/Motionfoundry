@@ -1,0 +1,21 @@
+---
+title: "Troubleshooting"
+category: "Quality & Standards"
+summary: "Resolving common issues with Next.js Server Components, motion/react imports, and CSS Module bundlers."
+---
+
+# Troubleshooting
+
+### Common Questions & Fixes
+
+- **Error: `import { motion } from "framer-motion"` is deprecated**: MotionFoundry uses the modern `motion` package (`v14+`) and imports strictly from `"motion/react"`. Run `pnpm add motion` rather than `framer-motion`.
+- **Styles appear unstyled when using `@motionfoundry/ui`**: Ensure you have imported `@motionfoundry/ui/styles.css` in your root `app/layout.tsx`.
+- **CLI reports `Conflict detected: file already exists`**: The CLI protects your existing source code by default. Pass `--overwrite` (`npx motionfoundry add kinetic-type --overwrite`) to replace the file with the upstream registry version.
+
+```tsx
+// Correct modern Motion import
+import { motion, AnimatePresence, useReducedMotion } from "motion/react";
+
+// Required stylesheet import when using the @motionfoundry/ui package
+import "@motionfoundry/ui/styles.css";
+```

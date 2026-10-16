@@ -1,0 +1,56 @@
+.stage {
+  position: relative;
+  overflow: hidden;
+  min-height: 12.5rem;
+  border-radius: 0.85rem;
+  border: 1px solid var(--mf-surface-raised, #24242e);
+  background-color: var(--mf-bg, #09090c);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.blob {
+  pointer-events: none;
+  width: var(--mf-blob-size, 168px);
+  height: var(--mf-blob-size, 168px);
+  background: linear-gradient(135deg, var(--mf-blob-a, #60a5fa) 0%, var(--mf-blob-b, #a855f7) 100%);
+  opacity: 0.42;
+  filter: blur(10px);
+  border-radius: 62% 38% 46% 54% / 60% 44% 56% 40%;
+  animation: mfLiquidBlobMorph var(--mf-blob-speed, 9s) ease-in-out infinite;
+  will-change: border-radius, transform;
+}
+
+.label {
+  position: relative;
+  z-index: 1;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.74rem;
+  padding: 0.35rem 0.8rem;
+  border-radius: 999px;
+  border: 1px solid var(--mf-border, #2f2f3c);
+  background-color: rgba(12, 12, 16, 0.82);
+  color: var(--mf-fg, #f4f4f6);
+}
+
+@keyframes mfLiquidBlobMorph {
+  0%, 100% {
+    border-radius: 62% 38% 46% 54% / 60% 44% 56% 40%;
+    transform: rotate(0deg) scale(1);
+  }
+  33% {
+    border-radius: 38% 62% 63% 37% / 42% 58% 42% 58%;
+    transform: rotate(120deg) scale(1.06);
+  }
+  66% {
+    border-radius: 54% 46% 38% 62% / 49% 62% 38% 51%;
+    transform: rotate(240deg) scale(0.95);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .blob {
+    animation: none;
+  }
+}

@@ -1,0 +1,7 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "buildCommand": "node scripts/build-registry.mjs && node scripts/build-designs.mjs && node scripts/build-docs.mjs && pnpm --filter @motionfoundry/docs build",
+  "outputDirectory": "apps/docs/.next",
+  "framework": "nextjs",
+  "installCommand": "pnpm install"
+}

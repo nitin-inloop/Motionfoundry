@@ -1,0 +1,26 @@
+---
+title: "Customization"
+category: "Core Concepts"
+summary: "Overriding styles via className, inline CSS custom properties, and rebranding the library."
+---
+
+# Customization
+
+Every component accepts a standard `className` prop that merges cleanly with its base CSS Module class, plus typed props that map directly to CSS custom properties or Motion spring values.
+
+### Rebranding MotionFoundry
+
+To change the library name from `MotionFoundry` to your organization's design system name:
+1. Update `BRAND_CONFIG` in `apps/docs/lib/brand.ts`.
+2. Update the `"name"` field in `packages/ui/package.json` and `packages/cli/package.json`.
+
+```tsx
+<MorphingBorder
+  title="Custom Branded Perimeter"
+  primaryColor="#34d399"
+  secondaryColor="#38bdf8"
+  speed={3.6}
+  borderRadius={16}
+  borderWidth={2}
+/>
+```

@@ -1,0 +1,45 @@
+.root {
+  position: relative;
+  display: inline-block;
+  flex-shrink: 0;
+  width: var(--mf-pl-size, 64px);
+  height: var(--mf-pl-size, 64px);
+}
+
+.ring {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 2px solid var(--mf-pl-color, var(--mf-accent, #38bdf8));
+  transform: scale(0);
+  opacity: 0;
+  animation: mfPulseRing var(--mf-pl-duration, 1.8s) cubic-bezier(0.22, 1, 0.36, 1) infinite;
+  will-change: transform, opacity;
+}
+
+.core {
+  position: absolute;
+  inset: 40%;
+  border-radius: 50%;
+  background-color: var(--mf-pl-color, var(--mf-accent, #38bdf8));
+  box-shadow: 0 0 calc(var(--mf-pl-size, 64px) * 0.2) var(--mf-pl-color, var(--mf-accent, #38bdf8));
+}
+
+@keyframes mfPulseRing {
+  from {
+    transform: scale(0);
+    opacity: 1;
+  }
+  to {
+    transform: scale(1);
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ring {
+    animation: none;
+    transform: scale(var(--mf-pl-static, 1));
+    opacity: calc(1.1 - var(--mf-pl-static, 1));
+  }
+}

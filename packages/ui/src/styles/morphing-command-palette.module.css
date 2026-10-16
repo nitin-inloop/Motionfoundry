@@ -1,0 +1,117 @@
+.container {
+  width: 100%;
+  max-width: 28rem;
+}
+
+.reopenBtn {
+  padding: 0.55rem 1rem;
+  border-radius: 0.55rem;
+  border: 1px solid var(--mf-border, #2e2e3a);
+  background-color: var(--mf-surface, #14141b);
+  color: var(--mf-fg, #f4f4f6);
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.76rem;
+  cursor: pointer;
+}
+
+.palette {
+  overflow: hidden;
+  border-radius: 0.85rem;
+  border: 1px solid var(--mf-border, #2e2e3c);
+  background-color: var(--mf-surface, #0e0e13);
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.6);
+  color: var(--mf-fg, #f4f4f6);
+}
+
+.inputRow {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  padding: 0.7rem 0.9rem;
+  border-bottom: 1px solid var(--mf-surface-raised, #22222c);
+  background-color: #13131a;
+}
+
+.promptGlyph {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.8rem;
+  color: var(--mf-muted, #a1a1aa);
+}
+
+.input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  color: var(--mf-fg, #f4f4f6);
+  font-size: 0.8rem;
+  outline: none;
+}
+
+.escBadge {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.65rem;
+  padding: 0.15rem 0.4rem;
+  border-radius: 0.3rem;
+  border: 1px solid var(--mf-border, #2d2d3a);
+  background-color: #191922;
+  color: var(--mf-muted, #a1a1aa);
+  cursor: pointer;
+}
+
+.list {
+  padding: 0.4rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.row {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.5rem 0.7rem;
+  border-radius: 0.5rem;
+  border: none;
+  background: transparent;
+  color: var(--mf-fg, #d4d4d8);
+  font-size: 0.76rem;
+  cursor: pointer;
+  text-align: left;
+}
+
+.highlightPill {
+  position: absolute;
+  inset: 0;
+  border-radius: 0.5rem;
+  background-color: #20202b;
+  border: 1px solid var(--mf-border, #363646);
+}
+
+.rowText {
+  position: relative;
+  z-index: 1;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+
+.shortcut {
+  position: relative;
+  z-index: 1;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.68rem;
+  color: var(--mf-muted, #a1a1aa);
+}
+
+.footer {
+  padding: 0.45rem 0.85rem;
+  border-top: 1px solid var(--mf-surface-raised, #1e1e28);
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.68rem;
+  color: #34d399;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .palette {
+    transition: none;
+  }
+}

@@ -1,0 +1,64 @@
+.scene {
+  position: relative;
+  overflow: hidden;
+  min-height: 13rem;
+  border-radius: 0.85rem;
+  border: 1px solid var(--mf-surface-raised, #25252f);
+  background-color: var(--mf-bg, #09090c);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+}
+
+.bgLayer {
+  pointer-events: none;
+  position: absolute;
+  inset: -20%;
+  background-image: linear-gradient(to right, rgba(255, 255, 255, 0.04) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+  background-size: 26px 26px;
+}
+
+.midLayer {
+  position: absolute;
+  width: 74%;
+  height: 62%;
+  border-radius: 0.75rem;
+  border: 1px dashed var(--mf-border, #2e2e3c);
+  background-color: rgba(20, 20, 28, 0.55);
+  padding: 0.65rem 0.85rem;
+  display: flex;
+  align-items: flex-end;
+}
+
+.fgLayer {
+  position: relative;
+  z-index: 2;
+  border-radius: 0.75rem;
+  border: 1px solid var(--mf-border, #3f3f4e);
+  background-color: #14141c;
+  padding: 1rem 1.35rem;
+  box-shadow: 0 16px 32px rgba(0, 0, 0, 0.55);
+  color: var(--mf-fg, #f4f4f6);
+}
+
+.planeLabel {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.65rem;
+  color: var(--mf-muted, #a1a1aa);
+}
+
+.title {
+  margin: 0.25rem 0 0 0;
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bgLayer,
+  .midLayer,
+  .fgLayer {
+    transform: none !important;
+  }
+}

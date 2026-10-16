@@ -1,0 +1,24 @@
+---
+title: "Next.js Integration"
+category: "Configuration"
+summary: "Server vs. Client Component boundaries, SSR hydration safety, and Next.js 16 App Router best practices."
+---
+
+# Next.js Integration
+
+MotionFoundry is purpose-built for the Next.js App Router:
+
+1. **Minimal `"use client"` Boundaries**: Only leaf interactive components mark `"use client"`. Documentation layouts, route metadata, and static copy remain Server Components.
+2. **Zero Hydration Mismatches**: Components never read `window` or `matchMedia` during initial server render. Browser-only APIs (`CanvasRenderingContext2D`, `window.matchMedia`) run strictly inside `useEffect`.
+3. **Transpile Packages in Monorepos**: If consuming `@motionfoundry/ui` from source in a monorepo, add `transpilePackages: ["@motionfoundry/ui"]` to `next.config.mjs`.
+
+```tsx
+// next.config.mjs
+/** @type {import('next').NextConfig} */
+const nextConfig = {
+  reactStrictMode: true,
+  transpilePackages: ["@motionfoundry/ui"],
+};
+
+export default nextConfig;
+```

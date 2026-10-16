@@ -1,0 +1,111 @@
+{
+  "slug": "meteors",
+  "name": "Meteors",
+  "category": "Animated Backgrounds and Visual Effects",
+  "collection": "studio-kit",
+  "featured": true,
+  "addedAt": "2026-10-16",
+  "version": "2.1.0",
+  "requiresMotion": false,
+  "dependencies": [
+    "react"
+  ],
+  "description": "A meteor-shower background of glowing streaks falling at a configurable angle, driven entirely by CSS keyframes with deterministic per-meteor positions and timing.",
+  "tags": [
+    "background",
+    "meteors",
+    "shooting-stars",
+    "css",
+    "hero",
+    "effect"
+  ],
+  "a11yNotes": "The meteor layer is aria-hidden and pointer-events: none; foreground children keep their own semantics. Positions and timings come from a seeded rand(n) so SSR markup is stable. Under prefers-reduced-motion the animation is removed and meteors render as faint static streaks.",
+  "defaultProps": {
+    "count": 14,
+    "speed": 1,
+    "angle": 135,
+    "meteorColor": "#38bdf8"
+  },
+  "controls": [
+    {
+      "prop": "count",
+      "label": "Meteor Count",
+      "type": "range",
+      "min": 2,
+      "max": 40,
+      "step": 1
+    },
+    {
+      "prop": "speed",
+      "label": "Speed Multiplier",
+      "type": "range",
+      "min": 0.25,
+      "max": 3,
+      "step": 0.25
+    },
+    {
+      "prop": "angle",
+      "label": "Angle (deg)",
+      "type": "range",
+      "min": 90,
+      "max": 180,
+      "step": 5
+    },
+    {
+      "prop": "meteorColor",
+      "label": "Meteor Color",
+      "type": "color"
+    }
+  ],
+  "propsApi": [
+    {
+      "name": "count",
+      "type": "number",
+      "default": "14",
+      "description": "Number of meteors in the shower."
+    },
+    {
+      "name": "speed",
+      "type": "number",
+      "default": "1",
+      "description": "Speed multiplier; each meteor's base fall time is 2-5s divided by this value."
+    },
+    {
+      "name": "angle",
+      "type": "number",
+      "default": "135",
+      "description": "Travel direction in degrees, clockwise from pointing right (135 = down-left)."
+    },
+    {
+      "name": "meteorColor",
+      "type": "string",
+      "default": "'#38bdf8'",
+      "description": "Color of the meteor head glow and trail."
+    },
+    {
+      "name": "children",
+      "type": "React.ReactNode",
+      "default": "'Meteor Shower' heading",
+      "description": "Foreground content centered above the shower."
+    },
+    {
+      "name": "className",
+      "type": "string",
+      "default": "''",
+      "description": "Additional class merged onto the root element."
+    }
+  ],
+  "files": [
+    {
+      "path": "components/ui/meteors.tsx",
+      "type": "registry:component",
+      "content": "\"use client\";\n\nimport * as React from \"react\";\nimport styles from \"../styles/meteors.module.css\";\n\nexport interface MeteorsProps {\n  /** Number of meteors in the shower */\n  count?: number;\n  /** Speed multiplier (1 = base 2–5s fall per meteor) */\n  speed?: number;\n  /** Travel direction in degrees, clockwise from pointing right (135 = down-left) */\n  angle?: number;\n  /** Meteor head and trail color */\n  meteorColor?: string;\n  /** Foreground content rendered above the shower */\n  children?: React.ReactNode;\n  /** Optional className merged onto the root */\n  className?: string;\n}\n\nconst rand = (n: number) => {\n  const x = Math.sin(n * 9301 + 49297) * 233280;\n  return x - Math.floor(x);\n};\n\nexport function Meteors({\n  count = 14,\n  speed = 1,\n  angle = 135,\n  meteorColor = \"#38bdf8\",\n  children,\n  className = \"\",\n}: MeteorsProps) {\n  const safeSpeed = speed > 0 ? speed : 1;\n  const total = Math.max(0, Math.round(count));\n  const styleVars = {\n    \"--mf-mt-color\": meteorColor,\n    \"--mf-mt-angle\": `${angle}deg`,\n  } as React.CSSProperties;\n\n  return (\n    <div style={styleVars} className={`${styles.root} ${className}`.trim()}>\n      <div aria-hidden=\"true\" className={styles.sky}>\n        {Array.from({ length: total }, (_, i) => (\n          <span\n            key={i}\n            className={styles.meteor}\n            style={{\n              left: `${(rand(i) * 130 - 10).toFixed(2)}%`,\n              top: `${(rand(i + 7) * 50 - 15).toFixed(2)}%`,\n              animationDuration: `${((2 + rand(i + 1) * 3) / safeSpeed).toFixed(2)}s`,\n              animationDelay: `-${(rand(i + 2) * 5).toFixed(2)}s`,\n            }}\n          />\n        ))}\n      </div>\n      <div className={styles.content}>\n        {children ?? (\n          <div className={styles.copy}>\n            <h3 className={styles.title}>Meteor Shower</h3>\n            <p className={styles.subtitle}>Pure CSS streaks with deterministic timing.</p>\n          </div>\n        )}\n      </div>\n    </div>\n  );\n}\n"
+    },
+    {
+      "path": "components/styles/meteors.module.css",
+      "type": "registry:style",
+      "content": ".root {\n  position: relative;\n  overflow: hidden;\n  display: flex;\n  width: 100%;\n  min-height: 18rem;\n  border-radius: 1rem;\n  border: 1px solid var(--mf-border, #2e2e38);\n  background: radial-gradient(ellipse at 50% 0%, var(--mf-surface-raised, #1b1b22) 0%, var(--mf-surface, #121218) 45%, var(--mf-bg, #09090b) 100%);\n  color: var(--mf-fg, #f4f4f6);\n}\n\n.sky {\n  position: absolute;\n  inset: 0;\n  pointer-events: none;\n}\n\n.meteor {\n  position: absolute;\n  width: 6rem;\n  height: 1px;\n  border-radius: 999px;\n  background: linear-gradient(to left, var(--mf-mt-color, var(--mf-accent, #38bdf8)), transparent);\n  transform-origin: right center;\n  transform: rotate(var(--mf-mt-angle, 135deg)) translateX(0);\n  opacity: 0;\n  animation-name: mfMeteorFall;\n  animation-timing-function: linear;\n  animation-iteration-count: infinite;\n  will-change: transform, opacity;\n}\n\n.meteor::after {\n  content: \"\";\n  position: absolute;\n  right: -1px;\n  top: 50%;\n  width: 3px;\n  height: 3px;\n  border-radius: 50%;\n  transform: translateY(-50%);\n  background-color: var(--mf-fg, #f4f4f6);\n  box-shadow: 0 0 6px 2px var(--mf-mt-color, var(--mf-accent, #38bdf8));\n}\n\n.content {\n  position: relative;\n  z-index: 1;\n  display: flex;\n  flex: 1;\n  align-items: center;\n  justify-content: center;\n  padding: 2rem;\n}\n\n.copy {\n  text-align: center;\n}\n\n.title {\n  margin: 0;\n  font-size: 1.75rem;\n  font-weight: 600;\n  letter-spacing: -0.03em;\n}\n\n.subtitle {\n  margin: 0.5rem 0 0;\n  font-size: 0.875rem;\n  color: var(--mf-muted, #a1a1aa);\n}\n\n@keyframes mfMeteorFall {\n  0% {\n    transform: rotate(var(--mf-mt-angle, 135deg)) translateX(0);\n    opacity: 0;\n  }\n  6% {\n    opacity: 1;\n  }\n  70% {\n    opacity: 1;\n  }\n  100% {\n    transform: rotate(var(--mf-mt-angle, 135deg)) translateX(40rem);\n    opacity: 0;\n  }\n}\n\n@media (prefers-reduced-motion: reduce) {\n  .meteor {\n    animation: none;\n    opacity: 0.5;\n  }\n}\n"
+    }
+  ],
+  "tailwindExample": "\"use client\";\n\nimport { motion } from \"motion/react\";\n\nconst rand = (n: number) => { const x = Math.sin(n * 9301 + 49297) * 233280; return x - Math.floor(x); };\n\nexport function MeteorsTailwind({ count = 14 }) {\n  return (\n    <div className=\"relative flex min-h-72 w-full items-center justify-center overflow-hidden rounded-2xl border border-zinc-800 bg-zinc-950\">\n      {Array.from({ length: count }, (_, i) => (\n        <motion.span\n          key={i}\n          aria-hidden\n          className=\"absolute h-px w-24 bg-gradient-to-r from-sky-400 to-transparent\"\n          style={{ left: `${rand(i) * 120}%`, top: \"-10%\", rotate: -45 }}\n          animate={{ x: [0, -500], y: [0, 500], opacity: [1, 1, 0] }}\n          transition={{ duration: 2 + rand(i + 1) * 3, repeat: Infinity, delay: rand(i + 2) * 5, ease: \"linear\" }}\n        />\n      ))}\n      <h3 className=\"relative z-10 text-2xl font-semibold text-zinc-100\">Meteor Shower</h3>\n    </div>\n  );\n}"
+}

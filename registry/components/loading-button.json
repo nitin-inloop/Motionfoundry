@@ -1,0 +1,145 @@
+{
+  "slug": "loading-button",
+  "name": "LoadingButton",
+  "category": "Interactive Buttons and Controls",
+  "collection": "studio-kit",
+  "featured": false,
+  "addedAt": "2026-10-16",
+  "version": "2.1.0",
+  "requiresMotion": true,
+  "dependencies": [
+    "motion",
+    "react"
+  ],
+  "description": "Solid button that morphs through idle, loading (spinner) and success (check) states with a spring width change and vertical label swap; driven by a timer or by an async onAction promise.",
+  "tags": [
+    "button",
+    "loading",
+    "async",
+    "spinner",
+    "success",
+    "state"
+  ],
+  "a11yNotes": "Semantic <button type=\"button\"> with aria-busy while loading and aria-live=\"polite\" so state labels are announced; repeated clicks are ignored mid-cycle, pending timers are cleared on unmount, and prefers-reduced-motion swaps the slide/width spring for an instant crossfade and slows the spinner.",
+  "defaultProps": {
+    "label": "Deploy to production",
+    "loadingLabel": "Deploying",
+    "successLabel": "Deployed",
+    "duration": 1600,
+    "successHold": 1400,
+    "disabled": false
+  },
+  "controls": [
+    {
+      "prop": "label",
+      "label": "Idle Label",
+      "type": "text"
+    },
+    {
+      "prop": "loadingLabel",
+      "label": "Loading Label",
+      "type": "text"
+    },
+    {
+      "prop": "successLabel",
+      "label": "Success Label",
+      "type": "text"
+    },
+    {
+      "prop": "duration",
+      "label": "Work Duration (ms)",
+      "type": "range",
+      "min": 400,
+      "max": 4000,
+      "step": 100
+    },
+    {
+      "prop": "successHold",
+      "label": "Success Hold (ms)",
+      "type": "range",
+      "min": 400,
+      "max": 3000,
+      "step": 100
+    },
+    {
+      "prop": "disabled",
+      "label": "Disabled",
+      "type": "boolean"
+    }
+  ],
+  "propsApi": [
+    {
+      "name": "label",
+      "type": "string",
+      "default": "'Deploy to production'",
+      "description": "Idle label (ignored when children are provided)."
+    },
+    {
+      "name": "children",
+      "type": "React.ReactNode",
+      "default": "undefined",
+      "description": "Custom idle content."
+    },
+    {
+      "name": "loadingLabel",
+      "type": "string",
+      "default": "'Deploying'",
+      "description": "Text shown next to the spinner while loading."
+    },
+    {
+      "name": "successLabel",
+      "type": "string",
+      "default": "'Deployed'",
+      "description": "Text shown next to the check mark on success."
+    },
+    {
+      "name": "duration",
+      "type": "number",
+      "default": "1600",
+      "description": "Simulated work duration in ms, used when onAction is not provided."
+    },
+    {
+      "name": "successHold",
+      "type": "number",
+      "default": "1400",
+      "description": "How long the success state is held before returning to idle (ms)."
+    },
+    {
+      "name": "disabled",
+      "type": "boolean",
+      "default": "false",
+      "description": "Disables the button."
+    },
+    {
+      "name": "onClick",
+      "type": "(event: React.MouseEvent<HTMLButtonElement>) => void",
+      "default": "undefined",
+      "description": "Called when a new cycle starts."
+    },
+    {
+      "name": "onAction",
+      "type": "() => Promise<unknown>",
+      "default": "undefined",
+      "description": "Async work that drives the loading state; resolve shows success, reject returns to idle."
+    },
+    {
+      "name": "className",
+      "type": "string",
+      "default": "''",
+      "description": "Extra class merged onto the button."
+    }
+  ],
+  "files": [
+    {
+      "path": "components/ui/loading-button.tsx",
+      "type": "registry:component",
+      "content": "\"use client\";\n\nimport * as React from \"react\";\nimport { AnimatePresence, motion, useReducedMotion } from \"motion/react\";\nimport styles from \"../styles/loading-button.module.css\";\n\ntype Phase = \"idle\" | \"loading\" | \"success\";\n\nexport interface LoadingButtonProps {\n  /** Idle label (ignored when children are provided) */\n  label?: string;\n  /** Custom idle content */\n  children?: React.ReactNode;\n  /** Text shown next to the spinner while loading */\n  loadingLabel?: string;\n  /** Text shown next to the check mark on success */\n  successLabel?: string;\n  /** Simulated work duration in milliseconds (used when onAction is not provided) */\n  duration?: number;\n  /** How long the success state is held before returning to idle, in milliseconds */\n  successHold?: number;\n  /** Disable the button */\n  disabled?: boolean;\n  /** Click handler, called when a new cycle starts */\n  onClick?: (event: React.MouseEvent<HTMLButtonElement>) => void;\n  /** Async work that drives the loading state instead of the timer; rejection returns to idle */\n  onAction?: () => Promise<unknown>;\n  /** Optional className */\n  className?: string;\n}\n\nfunction Spinner() {\n  return (\n    <svg className={styles.spinner} viewBox=\"0 0 24 24\" width=\"16\" height=\"16\" aria-hidden=\"true\">\n      <circle cx=\"12\" cy=\"12\" r=\"9\" fill=\"none\" stroke=\"currentColor\" strokeOpacity=\"0.25\" strokeWidth=\"3\" />\n      <path d=\"M21 12a9 9 0 0 0-9-9\" fill=\"none\" stroke=\"currentColor\" strokeWidth=\"3\" strokeLinecap=\"round\" />\n    </svg>\n  );\n}\n\nfunction CheckIcon() {\n  return (\n    <svg viewBox=\"0 0 24 24\" width=\"16\" height=\"16\" aria-hidden=\"true\">\n      <path d=\"M5 12.5l4.5 4.5L19 7.5\" fill=\"none\" stroke=\"currentColor\" strokeWidth=\"2.6\" strokeLinecap=\"round\" strokeLinejoin=\"round\" />\n    </svg>\n  );\n}\n\nexport function LoadingButton({\n  label = \"Deploy to production\",\n  children,\n  loadingLabel = \"Deploying\",\n  successLabel = \"Deployed\",\n  duration = 1600,\n  successHold = 1400,\n  disabled = false,\n  onClick,\n  onAction,\n  className = \"\",\n}: LoadingButtonProps) {\n  const prefersReducedMotion = useReducedMotion();\n  const [phase, setPhase] = React.useState<Phase>(\"idle\");\n  const phaseRef = React.useRef<Phase>(\"idle\");\n  const timers = React.useRef<number[]>([]);\n  const mounted = React.useRef(false);\n\n  React.useEffect(() => {\n    mounted.current = true;\n    const pending = timers.current;\n    return () => {\n      mounted.current = false;\n      pending.forEach((id) => window.clearTimeout(id));\n      pending.length = 0;\n    };\n  }, []);\n\n  const go = (next: Phase) => {\n    if (!mounted.current) return;\n    phaseRef.current = next;\n    setPhase(next);\n  };\n\n  const later = (fn: () => void, ms: number) => {\n    timers.current.push(window.setTimeout(fn, ms));\n  };\n\n  const succeed = () => {\n    go(\"success\");\n    later(() => go(\"idle\"), successHold);\n  };\n\n  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {\n    if (phaseRef.current !== \"idle\" || disabled) return;\n    onClick?.(event);\n    go(\"loading\");\n    if (onAction) {\n      onAction().then(succeed, () => go(\"idle\"));\n    } else {\n      later(succeed, duration);\n    }\n  };\n\n  const content =\n    phase === \"loading\" ? (\n      <>\n        <Spinner />\n        {loadingLabel}\n      </>\n    ) : phase === \"success\" ? (\n      <>\n        <CheckIcon />\n        {successLabel}\n      </>\n    ) : (\n      children ?? label\n    );\n\n  return (\n    <motion.button\n      type=\"button\"\n      layout={!prefersReducedMotion}\n      disabled={disabled}\n      aria-busy={phase === \"loading\"}\n      aria-live=\"polite\"\n      onClick={handleClick}\n      data-phase={phase}\n      transition={{ type: \"spring\", stiffness: 420, damping: 34 }}\n      className={`${styles.root} ${className}`.trim()}\n    >\n      <AnimatePresence mode=\"popLayout\" initial={false}>\n        <motion.span\n          key={phase}\n          className={styles.content}\n          initial={prefersReducedMotion ? { opacity: 0 } : { y: 18, opacity: 0 }}\n          animate={{ y: 0, opacity: 1 }}\n          exit={prefersReducedMotion ? { opacity: 0 } : { y: -18, opacity: 0 }}\n          transition={{ duration: prefersReducedMotion ? 0 : 0.22, ease: [0.22, 1, 0.36, 1] }}\n        >\n          {content}\n        </motion.span>\n      </AnimatePresence>\n    </motion.button>\n  );\n}\n"
+    },
+    {
+      "path": "components/styles/loading-button.module.css",
+      "type": "registry:style",
+      "content": ".root {\n  position: relative;\n  display: inline-flex;\n  align-items: center;\n  justify-content: center;\n  min-width: 10rem;\n  padding: 0.7rem 1.35rem;\n  overflow: hidden;\n  border-radius: 0.625rem;\n  border: 1px solid var(--mf-fg, #f4f4f6);\n  background-color: var(--mf-fg, #f4f4f6);\n  color: var(--mf-bg, #09090b);\n  font: inherit;\n  font-size: 0.875rem;\n  font-weight: 500;\n  letter-spacing: -0.01em;\n  cursor: pointer;\n  user-select: none;\n  transition: background-color 200ms ease, border-color 200ms ease, color 200ms ease;\n}\n\n.root:hover:not(:disabled)[data-phase=\"idle\"] {\n  background-color: #ffffff;\n}\n\n.root[data-phase=\"loading\"] {\n  cursor: progress;\n  background-color: var(--mf-surface-raised, #1b1b22);\n  border-color: var(--mf-border, #2e2e38);\n  color: var(--mf-fg, #f4f4f6);\n}\n\n.root[data-phase=\"success\"] {\n  cursor: default;\n  background-color: var(--mf-accent, #38bdf8);\n  border-color: var(--mf-accent, #38bdf8);\n  color: var(--mf-bg, #09090b);\n}\n\n.root:disabled {\n  opacity: 0.5;\n  cursor: not-allowed;\n}\n\n.root:focus-visible {\n  outline: 2px solid var(--mf-fg, #e4e4e7);\n  outline-offset: 3px;\n}\n\n.content {\n  display: inline-flex;\n  align-items: center;\n  gap: 0.5rem;\n  white-space: nowrap;\n  pointer-events: none;\n}\n\n.spinner {\n  animation: mfLbSpin 0.8s linear infinite;\n}\n\n@keyframes mfLbSpin {\n  to {\n    transform: rotate(360deg);\n  }\n}\n\n@media (prefers-reduced-motion: reduce) {\n  .root {\n    transition: none;\n  }\n\n  .spinner {\n    animation-duration: 2.4s;\n  }\n}\n"
+    }
+  ],
+  "tailwindExample": "\"use client\";\n\nimport * as React from \"react\";\nimport { AnimatePresence, motion } from \"motion/react\";\n\nexport function LoadingButtonTailwind({ label = \"Deploy to production\", duration = 1600 }) {\n  const [phase, setPhase] = React.useState<\"idle\" | \"loading\" | \"success\">(\"idle\");\n  const timers = React.useRef<number[]>([]);\n  React.useEffect(() => () => timers.current.forEach(clearTimeout), []);\n  const run = () => {\n    if (phase !== \"idle\") return;\n    setPhase(\"loading\");\n    timers.current.push(window.setTimeout(() => setPhase(\"success\"), duration));\n    timers.current.push(window.setTimeout(() => setPhase(\"idle\"), duration + 1400));\n  };\n  return (\n    <motion.button\n      type=\"button\"\n      layout\n      onClick={run}\n      aria-busy={phase === \"loading\"}\n      aria-live=\"polite\"\n      className={\"inline-flex min-w-40 items-center justify-center overflow-hidden rounded-lg px-5 py-2.5 text-sm font-medium \" +\n        (phase === \"loading\" ? \"bg-zinc-800 text-zinc-100\" : phase === \"success\" ? \"bg-sky-400 text-zinc-950\" : \"bg-zinc-100 text-zinc-950\")}\n    >\n      <AnimatePresence mode=\"popLayout\" initial={false}>\n        <motion.span key={phase} initial={{ y: 18, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: -18, opacity: 0 }} className=\"inline-flex items-center gap-2\">\n          {phase === \"loading\" ? (\n            <><span className=\"h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent\" />Deploying</>\n          ) : phase === \"success\" ? \"Deployed\" : label}\n        </motion.span>\n      </AnimatePresence>\n    </motion.button>\n  );\n}"
+}

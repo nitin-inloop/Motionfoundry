@@ -1,0 +1,106 @@
+{
+  "slug": "constellation-card",
+  "name": "ConstellationCard",
+  "category": "High-End Animated Cards",
+  "featured": true,
+  "addedAt": "2026-10-16",
+  "version": "2.0.0",
+  "requiresMotion": false,
+  "dependencies": [
+    "react"
+  ],
+  "description": "Interactive graphite card hosting a capped-budget spatial constellation network that links toward the cursor with static fallback behavior.",
+  "tags": [
+    "constellation",
+    "card",
+    "network",
+    "nodes",
+    "canvas",
+    "interactive"
+  ],
+  "a11yNotes": "Marks the interactive node canvas aria-hidden='true' while keeping card headings and copy accessible. Renders a static constellation when prefers-reduced-motion is active.",
+  "defaultProps": {
+    "title": "Distributed Telemetry Mesh",
+    "description": "Capped node network responds to pointer coordinates while maintaining sub-millisecond frame budgets.",
+    "nodeCount": 24,
+    "linkDistance": 88,
+    "nodeSpeed": 0.4
+  },
+  "controls": [
+    {
+      "prop": "title",
+      "label": "Card Title",
+      "type": "text"
+    },
+    {
+      "prop": "nodeCount",
+      "label": "Node Budget (8–48)",
+      "type": "range",
+      "min": 8,
+      "max": 48,
+      "step": 2
+    },
+    {
+      "prop": "linkDistance",
+      "label": "Filament Distance (px)",
+      "type": "range",
+      "min": 45,
+      "max": 140,
+      "step": 5
+    },
+    {
+      "prop": "nodeSpeed",
+      "label": "Drift Speed",
+      "type": "range",
+      "min": 0.1,
+      "max": 1.2,
+      "step": 0.05
+    }
+  ],
+  "propsApi": [
+    {
+      "name": "title",
+      "type": "string",
+      "default": "'Distributed Telemetry Mesh'",
+      "description": "Card title."
+    },
+    {
+      "name": "description",
+      "type": "string",
+      "default": "'Capped node network...'",
+      "description": "Card description."
+    },
+    {
+      "name": "nodeCount",
+      "type": "number",
+      "default": "24",
+      "description": "Number of constellation vertices (capped at 48)."
+    },
+    {
+      "name": "linkDistance",
+      "type": "number",
+      "default": "88",
+      "description": "Maximum pixel threshold for connecting lines."
+    },
+    {
+      "name": "nodeSpeed",
+      "type": "number",
+      "default": "0.4",
+      "description": "Node drift velocity multiplier."
+    }
+  ],
+  "files": [
+    {
+      "path": "components/ui/constellation-card.tsx",
+      "type": "registry:component",
+      "content": "\"use client\";\n\nimport * as React from \"react\";\nimport styles from \"../styles/constellation-card.module.css\";\n\nexport interface ConstellationCardProps {\n  /** Card heading */\n  title?: string;\n  /** Card description */\n  description?: string;\n  /** Number of constellation vertices (capped at 48) */\n  nodeCount?: number;\n  /** Maximum distance in pixels for connecting lines */\n  linkDistance?: number;\n  /** Drift velocity multiplier */\n  nodeSpeed?: number;\n  /** Optional children */\n  children?: React.ReactNode;\n  /** Optional className */\n  className?: string;\n}\n\nexport function ConstellationCard({\n  title = \"Distributed Telemetry Mesh\",\n  description = \"Capped node network responds to pointer coordinates while maintaining sub-millisecond frame budgets.\",\n  nodeCount = 24,\n  linkDistance = 88,\n  nodeSpeed = 0.4,\n  children,\n  className = \"\",\n}: ConstellationCardProps) {\n  const canvasRef = React.useRef<HTMLCanvasElement>(null);\n  const pointerRef = React.useRef<{ x: number | null; y: number | null }>({ x: null, y: null });\n\n  React.useEffect(() => {\n    const canvas = canvasRef.current;\n    if (!canvas) return;\n    const ctx = canvas.getContext(\"2d\");\n    if (!ctx) return;\n\n    const prefersReduced =\n      typeof window !== \"undefined\" &&\n      window.matchMedia?.(\"(prefers-reduced-motion: reduce)\").matches;\n\n    let rafId = 0;\n    const safeCount = Math.min(Math.max(nodeCount, 8), 48);\n\n    const resize = () => {\n      const parent = canvas.parentElement;\n      if (!parent) return;\n      canvas.width = parent.clientWidth;\n      canvas.height = parent.clientHeight;\n    };\n    resize();\n\n    const nodes = Array.from({ length: safeCount }, (_, i) => ({\n      x: ((i * 67) % 100) * 0.01 * (canvas.width || 360),\n      y: ((i * 43) % 100) * 0.01 * (canvas.height || 200),\n      vx: ((((i * 31) % 9) - 4) || 1) * 0.14 * nodeSpeed,\n      vy: ((((i * 59) % 9) - 4) || -1) * 0.14 * nodeSpeed,\n    }));\n\n    const draw = () => {\n      ctx.clearRect(0, 0, canvas.width, canvas.height);\n      for (let i = 0; i < nodes.length; i++) {\n        const a = nodes[i];\n        if (!prefersReduced) {\n          a.x += a.vx;\n          a.y += a.vy;\n          if (a.x < 0 || a.x > canvas.width) a.vx *= -1;\n          if (a.y < 0 || a.y > canvas.height) a.vy *= -1;\n        }\n        ctx.beginPath();\n        ctx.arc(a.x, a.y, 1.5, 0, Math.PI * 2);\n        ctx.fillStyle = \"rgba(244, 244, 246, 0.65)\";\n        ctx.fill();\n\n        for (let j = i + 1; j < nodes.length; j++) {\n          const b = nodes[j];\n          const dist = Math.hypot(a.x - b.x, a.y - b.y);\n          if (dist < linkDistance) {\n            ctx.beginPath();\n            ctx.moveTo(a.x, a.y);\n            ctx.lineTo(b.x, b.y);\n            ctx.strokeStyle = `rgba(228, 228, 231, ${(1 - dist / linkDistance) * 0.2})`;\n            ctx.lineWidth = 0.75;\n            ctx.stroke();\n          }\n        }\n\n        if (pointerRef.current.x !== null && pointerRef.current.y !== null) {\n          const pDist = Math.hypot(a.x - pointerRef.current.x, a.y - pointerRef.current.y);\n          if (pDist < linkDistance * 1.3) {\n            ctx.beginPath();\n            ctx.moveTo(a.x, a.y);\n            ctx.lineTo(pointerRef.current.x, pointerRef.current.y);\n            ctx.strokeStyle = `rgba(244, 244, 246, ${(1 - pDist / (linkDistance * 1.3)) * 0.42})`;\n            ctx.stroke();\n          }\n        }\n      }\n\n      if (!prefersReduced) {\n        rafId = window.requestAnimationFrame(draw);\n      }\n    };\n\n    draw();\n    window.addEventListener(\"resize\", resize);\n    return () => {\n      window.removeEventListener(\"resize\", resize);\n      window.cancelAnimationFrame(rafId);\n    };\n  }, [nodeCount, linkDistance, nodeSpeed]);\n\n  return (\n    <div\n      onPointerMove={(e) => {\n        const rect = e.currentTarget.getBoundingClientRect();\n        pointerRef.current = { x: e.clientX - rect.left, y: e.clientY - rect.top };\n      }}\n      onPointerLeave={() => {\n        pointerRef.current = { x: null, y: null };\n      }}\n      className={`${styles.card} ${className}`.trim()}\n    >\n      <canvas ref={canvasRef} aria-hidden=\"true\" className={styles.canvas} />\n      <div className={styles.content}>\n        <span className={styles.badge}>Constellation Network</span>\n        <h3 className={styles.title}>{title}</h3>\n        <p className={styles.description}>{description}</p>\n        {children}\n      </div>\n    </div>\n  );\n}\n"
+    },
+    {
+      "path": "components/styles/constellation-card.module.css",
+      "type": "registry:style",
+      "content": ".card {\n  position: relative;\n  overflow: hidden;\n  border-radius: 0.85rem;\n  border: 1px solid var(--mf-surface-raised, #25252f);\n  background-color: #0c0c10;\n  padding: 1.5rem;\n  color: var(--mf-fg, #f4f4f6);\n}\n\n.canvas {\n  pointer-events: none;\n  position: absolute;\n  inset: 0;\n  width: 100%;\n  height: 100%;\n}\n\n.content {\n  position: relative;\n  z-index: 1;\n  display: flex;\n  flex-direction: column;\n  gap: 0.5rem;\n}\n\n.badge {\n  align-self: flex-start;\n  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;\n  font-size: 0.68rem;\n  color: var(--mf-muted, #a1a1aa);\n  border: 1px solid var(--mf-border, #2b2b36);\n  background-color: rgba(18, 18, 24, 0.85);\n  padding: 0.15rem 0.5rem;\n  border-radius: 999px;\n}\n\n.title {\n  margin: 0;\n  font-size: 1.05rem;\n  font-weight: 600;\n  letter-spacing: -0.02em;\n}\n\n.description {\n  margin: 0;\n  font-size: 0.85rem;\n  line-height: 1.55;\n  color: var(--mf-muted, #a1a1aa);\n}\n\n@media (prefers-reduced-motion: reduce) {\n  .card {\n    transition: none;\n  }\n}\n"
+    }
+  ],
+  "tailwindExample": "\"use client\";\n\nimport { ConstellationCard } from \"@motionfoundry/ui\";\n\nexport function ConstellationCardDemo() {\n  return <ConstellationCard nodeCount={24} linkDistance={88} />;\n}",
+  "collection": "core"
+}

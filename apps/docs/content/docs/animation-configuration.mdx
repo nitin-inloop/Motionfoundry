@@ -1,0 +1,23 @@
+---
+title: "Animation Configuration"
+category: "Core Concepts"
+summary: "Tuning spring physics (stiffness, damping, mass), clip-path origins, and cubic-bezier easing curves."
+---
+
+# Animation Configuration
+
+MotionFoundry avoids bouncy, distracting consumer animations in favor of critically damped springs and crisp exponential easing (`[0.16, 1, 0.3, 1]`).
+
+### Recommended Spring & Easing Presets
+
+- **Micro-Interactions (`MagneticButton`, `ElasticPressButton`)**: `stiffness: 230–380`, `damping: 14–18`, `mass: 0.4–0.45`.
+- **Spatial Surfaces (`HoloTiltCard`, `ParallaxDepthScene`, `MagneticDock`)**: `stiffness: 200–320`, `damping: 22`.
+- **Command & Layout Indicators (`MorphingCommandPalette`, `TextMorph`)**: `stiffness: 280–360`, `damping: 24–28`.
+
+```tsx
+export const MOTIONFOUNDRY_SPRINGS = {
+  snappy: { type: "spring", stiffness: 320, damping: 24, mass: 0.4 },
+  elasticPress: { type: "spring", stiffness: 380, damping: 14, mass: 0.45 },
+  editorialEase: [0.16, 1, 0.3, 1] as [number, number, number, number],
+};
+```

@@ -1,0 +1,171 @@
+{
+  "slug": "flip-card",
+  "name": "FlipCard",
+  "category": "High-End Animated Cards",
+  "collection": "studio-kit",
+  "featured": true,
+  "addedAt": "2026-10-16",
+  "version": "2.1.0",
+  "requiresMotion": true,
+  "dependencies": [
+    "motion",
+    "react"
+  ],
+  "description": "3D card that flips on a tuned spring around the Y or X axis to reveal a back face, triggered by hover or click and always by Enter/Space.",
+  "tags": [
+    "card",
+    "flip",
+    "3d",
+    "perspective",
+    "spring",
+    "hover"
+  ],
+  "a11yNotes": "Root is a focusable role=\"button\" with aria-pressed reflecting the flipped state; Enter and Space flip it. The hidden face is aria-hidden so only the visible side is read. Hover-trigger cards also flip on touch tap, and prefers-reduced-motion swaps the spring for an instant flip.",
+  "defaultProps": {
+    "frontTitle": "Flip Card",
+    "frontText": "Hover, click or press Enter to turn me over.",
+    "backTitle": "Spring-driven 3D",
+    "backText": "Perspective, backface culling and a tuned spring. Press Enter again to flip back.",
+    "trigger": "hover",
+    "axis": "y",
+    "width": 288,
+    "height": 224
+  },
+  "controls": [
+    {
+      "prop": "frontTitle",
+      "label": "Front Title",
+      "type": "text"
+    },
+    {
+      "prop": "frontText",
+      "label": "Front Text",
+      "type": "text"
+    },
+    {
+      "prop": "backTitle",
+      "label": "Back Title",
+      "type": "text"
+    },
+    {
+      "prop": "backText",
+      "label": "Back Text",
+      "type": "text"
+    },
+    {
+      "prop": "trigger",
+      "label": "Trigger",
+      "type": "select",
+      "options": [
+        "hover",
+        "click"
+      ]
+    },
+    {
+      "prop": "axis",
+      "label": "Axis",
+      "type": "select",
+      "options": [
+        "y",
+        "x"
+      ]
+    },
+    {
+      "prop": "width",
+      "label": "Width (px)",
+      "type": "range",
+      "min": 200,
+      "max": 420,
+      "step": 4
+    },
+    {
+      "prop": "height",
+      "label": "Height (px)",
+      "type": "range",
+      "min": 160,
+      "max": 360,
+      "step": 4
+    }
+  ],
+  "propsApi": [
+    {
+      "name": "front",
+      "type": "React.ReactNode",
+      "default": "undefined",
+      "description": "Custom front face content (overrides frontTitle/frontText)."
+    },
+    {
+      "name": "back",
+      "type": "React.ReactNode",
+      "default": "undefined",
+      "description": "Custom back face content (overrides backTitle/backText)."
+    },
+    {
+      "name": "frontTitle",
+      "type": "string",
+      "default": "'Flip Card'",
+      "description": "Front heading used when front is not provided."
+    },
+    {
+      "name": "frontText",
+      "type": "string",
+      "default": "'Hover, click or press Enter to turn me over.'",
+      "description": "Front text used when front is not provided."
+    },
+    {
+      "name": "backTitle",
+      "type": "string",
+      "default": "'Spring-driven 3D'",
+      "description": "Back heading used when back is not provided."
+    },
+    {
+      "name": "backText",
+      "type": "string",
+      "default": "'Perspective, backface culling and a tuned spring. Press Enter again to flip back.'",
+      "description": "Back text used when back is not provided."
+    },
+    {
+      "name": "trigger",
+      "type": "'hover' | 'click'",
+      "default": "'hover'",
+      "description": "Pointer interaction that flips the card (Enter/Space always flips)."
+    },
+    {
+      "name": "axis",
+      "type": "'y' | 'x'",
+      "default": "'y'",
+      "description": "Rotation axis."
+    },
+    {
+      "name": "width",
+      "type": "number",
+      "default": "288",
+      "description": "Card width in pixels."
+    },
+    {
+      "name": "height",
+      "type": "number",
+      "default": "224",
+      "description": "Card height in pixels."
+    },
+    {
+      "name": "className",
+      "type": "string",
+      "default": "''",
+      "description": "Extra class merged onto the root."
+    }
+  ],
+  "files": [
+    {
+      "path": "components/ui/flip-card.tsx",
+      "type": "registry:component",
+      "content": "\"use client\";\n\nimport * as React from \"react\";\nimport { motion, useReducedMotion } from \"motion/react\";\nimport styles from \"../styles/flip-card.module.css\";\n\nexport interface FlipCardProps {\n  /** Custom front face content (overrides frontTitle/frontText) */\n  front?: React.ReactNode;\n  /** Custom back face content (overrides backTitle/backText) */\n  back?: React.ReactNode;\n  /** Front face heading used when `front` is not provided */\n  frontTitle?: string;\n  /** Front face text used when `front` is not provided */\n  frontText?: string;\n  /** Back face heading used when `back` is not provided */\n  backTitle?: string;\n  /** Back face text used when `back` is not provided */\n  backText?: string;\n  /** What flips the card with a pointer (Enter/Space always flips) */\n  trigger?: \"hover\" | \"click\";\n  /** Rotation axis */\n  axis?: \"y\" | \"x\";\n  /** Card width in pixels */\n  width?: number;\n  /** Card height in pixels */\n  height?: number;\n  /** Optional className */\n  className?: string;\n}\n\nexport function FlipCard({\n  front,\n  back,\n  frontTitle = \"Flip Card\",\n  frontText = \"Hover, click or press Enter to turn me over.\",\n  backTitle = \"Spring-driven 3D\",\n  backText = \"Perspective, backface culling and a tuned spring. Press Enter again to flip back.\",\n  trigger = \"hover\",\n  axis = \"y\",\n  width = 288,\n  height = 224,\n  className = \"\",\n}: FlipCardProps) {\n  const prefersReducedMotion = useReducedMotion();\n  const [flipped, setFlipped] = React.useState(false);\n  const lastPointer = React.useRef(\"mouse\");\n  const rotateKey = axis === \"x\" ? \"rotateX\" : \"rotateY\";\n\n  const onPointerEnter = (e: React.PointerEvent<HTMLDivElement>) => {\n    lastPointer.current = e.pointerType;\n    if (trigger === \"hover\" && e.pointerType !== \"touch\") setFlipped(true);\n  };\n  const onPointerLeave = (e: React.PointerEvent<HTMLDivElement>) => {\n    if (trigger === \"hover\" && e.pointerType !== \"touch\") setFlipped(false);\n  };\n  const onClick = () => {\n    if (trigger === \"click\" || lastPointer.current === \"touch\") setFlipped((f) => !f);\n  };\n  const onKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {\n    if (e.key === \"Enter\" || e.key === \" \") {\n      e.preventDefault();\n      setFlipped((f) => !f);\n    }\n  };\n\n  return (\n    <div\n      role=\"button\"\n      tabIndex={0}\n      aria-pressed={flipped}\n      aria-roledescription=\"flip card\"\n      onPointerEnter={onPointerEnter}\n      onPointerDown={(e) => {\n        lastPointer.current = e.pointerType;\n      }}\n      onPointerLeave={onPointerLeave}\n      onClick={onClick}\n      onKeyDown={onKeyDown}\n      style={\n        {\n          \"--mf-fc-w\": `${width}px`,\n          \"--mf-fc-h\": `${height}px`,\n        } as React.CSSProperties\n      }\n      className={`${styles.root} ${className}`.trim()}\n    >\n      <motion.div\n        className={styles.inner}\n        initial={false}\n        animate={{ [rotateKey]: flipped ? 180 : 0 }}\n        transition={prefersReducedMotion ? { duration: 0 } : { type: \"spring\", stiffness: 120, damping: 16 }}\n      >\n        <div className={`${styles.face} ${styles.front}`} aria-hidden={flipped}>\n          {front ?? (\n            <>\n              <span className={styles.badge} aria-hidden=\"true\">\n                <svg viewBox=\"0 0 24 24\" width=\"18\" height=\"18\">\n                  <path d=\"M4 12a8 8 0 0 1 14-5.3M20 12a8 8 0 0 1-14 5.3M18 3v4h-4M6 21v-4h4\" fill=\"none\" stroke=\"currentColor\" strokeWidth=\"2\" strokeLinecap=\"round\" strokeLinejoin=\"round\" />\n                </svg>\n              </span>\n              <h3 className={styles.title}>{frontTitle}</h3>\n              <p className={styles.text}>{frontText}</p>\n            </>\n          )}\n        </div>\n        <div\n          className={`${styles.face} ${styles.back}`}\n          aria-hidden={!flipped}\n          style={{ transform: axis === \"x\" ? \"rotateX(180deg)\" : \"rotateY(180deg)\" }}\n        >\n          {back ?? (\n            <>\n              <h3 className={styles.title}>{backTitle}</h3>\n              <p className={styles.text}>{backText}</p>\n            </>\n          )}\n        </div>\n      </motion.div>\n    </div>\n  );\n}\n"
+    },
+    {
+      "path": "components/styles/flip-card.module.css",
+      "type": "registry:style",
+      "content": ".root {\n  position: relative;\n  display: inline-block;\n  width: var(--mf-fc-w, 288px);\n  max-width: 100%;\n  height: var(--mf-fc-h, 224px);\n  perspective: 1000px;\n  border-radius: 1rem;\n  cursor: pointer;\n  user-select: none;\n  -webkit-tap-highlight-color: transparent;\n}\n\n.root:focus-visible {\n  outline: 2px solid var(--mf-fg, #e4e4e7);\n  outline-offset: 3px;\n}\n\n.inner {\n  position: relative;\n  width: 100%;\n  height: 100%;\n  transform-style: preserve-3d;\n}\n\n.face {\n  position: absolute;\n  inset: 0;\n  display: flex;\n  flex-direction: column;\n  align-items: center;\n  justify-content: center;\n  gap: 0.5rem;\n  padding: 1.5rem;\n  box-sizing: border-box;\n  border-radius: 1rem;\n  text-align: center;\n  backface-visibility: hidden;\n  -webkit-backface-visibility: hidden;\n  overflow: hidden;\n}\n\n.front {\n  background: radial-gradient(120% 90% at 50% 0%, var(--mf-surface-raised, #1b1b22) 0%, var(--mf-surface, #121218) 70%);\n  border: 1px solid var(--mf-border, #2e2e38);\n  color: var(--mf-fg, #f4f4f6);\n}\n\n.back {\n  background: linear-gradient(140deg, var(--mf-accent, #38bdf8) 0%, #0ea5e9 100%);\n  border: 1px solid var(--mf-accent, #38bdf8);\n  color: var(--mf-bg, #09090b);\n}\n\n.badge {\n  display: inline-flex;\n  align-items: center;\n  justify-content: center;\n  width: 2.25rem;\n  height: 2.25rem;\n  margin-bottom: 0.25rem;\n  border-radius: 0.625rem;\n  border: 1px solid var(--mf-border, #2e2e38);\n  background-color: var(--mf-bg, #09090b);\n  color: var(--mf-accent, #38bdf8);\n}\n\n.title {\n  margin: 0;\n  font-size: 1.25rem;\n  font-weight: 650;\n  letter-spacing: -0.02em;\n}\n\n.text {\n  margin: 0;\n  max-width: 16rem;\n  font-size: 0.875rem;\n  line-height: 1.5;\n  opacity: 0.8;\n}\n\n@media (prefers-reduced-motion: reduce) {\n  .inner {\n    transition: none !important;\n  }\n}\n"
+    }
+  ],
+  "tailwindExample": "\"use client\";\n\nimport * as React from \"react\";\nimport { motion } from \"motion/react\";\n\nexport function FlipCardTailwind() {\n  const [flipped, setFlipped] = React.useState(false);\n  const face = \"absolute inset-0 flex flex-col items-center justify-center gap-2 rounded-2xl p-6 text-center [backface-visibility:hidden]\";\n  return (\n    <div\n      role=\"button\"\n      tabIndex={0}\n      aria-pressed={flipped}\n      onPointerEnter={() => setFlipped(true)}\n      onPointerLeave={() => setFlipped(false)}\n      onKeyDown={(e) => { if (e.key === \"Enter\" || e.key === \" \") { e.preventDefault(); setFlipped((f) => !f); } }}\n      className=\"h-56 w-72 cursor-pointer rounded-2xl [perspective:1000px] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[3px] focus-visible:outline-zinc-200\"\n    >\n      <motion.div className=\"relative h-full w-full [transform-style:preserve-3d]\" animate={{ rotateY: flipped ? 180 : 0 }} transition={{ type: \"spring\", stiffness: 120, damping: 16 }}>\n        <div className={face + \" border border-zinc-800 bg-zinc-900 text-zinc-100\"} aria-hidden={flipped}>\n          <h3 className=\"text-xl font-semibold\">Flip Card</h3>\n          <p className=\"text-sm text-zinc-400\">Hover or press Enter to turn me over.</p>\n        </div>\n        <div className={face + \" bg-sky-400 text-zinc-950 [transform:rotateY(180deg)]\"} aria-hidden={!flipped}>\n          <h3 className=\"text-xl font-semibold\">Spring-driven 3D</h3>\n          <p className=\"text-sm opacity-80\">Perspective and backface culling.</p>\n        </div>\n      </motion.div>\n    </div>\n  );\n}"
+}

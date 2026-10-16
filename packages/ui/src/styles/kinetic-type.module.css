@@ -1,0 +1,27 @@
+.root {
+  margin: 0;
+  font-weight: 600;
+  letter-spacing: -0.03em;
+  line-height: 1.18;
+  color: inherit;
+}
+
+.stage {
+  display: inline-flex;
+  flex-wrap: wrap;
+  perspective: 800px;
+}
+
+.token {
+  display: inline-block;
+  transform-origin: 50% 80%;
+  will-change: transform, opacity, filter;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .token {
+    transition: none;
+    filter: none;
+    transform: none;
+  }
+}

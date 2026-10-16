@@ -1,0 +1,90 @@
+{
+  "slug": "scroll-narrative",
+  "name": "ScrollNarrative",
+  "category": "Reveals and Continuous Motion",
+  "featured": false,
+  "addedAt": "2026-10-16",
+  "version": "2.0.0",
+  "requiresMotion": true,
+  "dependencies": [
+    "motion",
+    "react"
+  ],
+  "description": "Scroll-driven storytelling component that synchronizes narrative chapters and visual telemetry stages with progress-linked transitions and interactive scrubbing.",
+  "tags": [
+    "scroll",
+    "narrative",
+    "storytelling",
+    "progress",
+    "chapters"
+  ],
+  "a11yNotes": "Provides accessible chapter buttons and a progress scrubber so keyboard and reduced-motion users can navigate every narrative stage without mandatory scroll-jacking.",
+  "defaultProps": {
+    "activeChapter": 0,
+    "progress": 35,
+    "pinStage": true
+  },
+  "controls": [
+    {
+      "prop": "activeChapter",
+      "label": "Narrative Chapter (0–2)",
+      "type": "range",
+      "min": 0,
+      "max": 2,
+      "step": 1
+    },
+    {
+      "prop": "progress",
+      "label": "Scroll Progress (%)",
+      "type": "range",
+      "min": 0,
+      "max": 100,
+      "step": 5
+    },
+    {
+      "prop": "pinStage",
+      "label": "Pinned Visual Stage",
+      "type": "boolean"
+    }
+  ],
+  "propsApi": [
+    {
+      "name": "chapters",
+      "type": "ScrollNarrativeChapter[]",
+      "default": "DEFAULT_CHAPTERS",
+      "description": "Ordered storytelling stages with title, copy, and metric."
+    },
+    {
+      "name": "activeChapter",
+      "type": "number",
+      "default": "0",
+      "description": "Active chapter index."
+    },
+    {
+      "name": "progress",
+      "type": "number",
+      "default": "35",
+      "description": "Simulated or scroll-linked percentage (0–100)."
+    },
+    {
+      "name": "pinStage",
+      "type": "boolean",
+      "default": "true",
+      "description": "Whether the visual telemetry stage stays pinned alongside chapters."
+    }
+  ],
+  "files": [
+    {
+      "path": "components/ui/scroll-narrative.tsx",
+      "type": "registry:component",
+      "content": "\"use client\";\n\nimport * as React from \"react\";\nimport { motion, useReducedMotion } from \"motion/react\";\nimport styles from \"../styles/scroll-narrative.module.css\";\n\nexport interface ScrollNarrativeChapter {\n  id: string;\n  step: string;\n  title: string;\n  summary: string;\n  metric: string;\n}\n\nexport interface ScrollNarrativeProps {\n  /** Narrative chapters */\n  chapters?: ScrollNarrativeChapter[];\n  /** Active chapter index (0 to chapters.length - 1) */\n  activeChapter?: number;\n  /** Progress percentage (0 to 100) */\n  progress?: number;\n  /** Pin visual telemetry card */\n  pinStage?: boolean;\n  /** Optional className */\n  className?: string;\n}\n\nconst DEFAULT_CHAPTERS: ScrollNarrativeChapter[] = [\n  {\n    id: \"discover\",\n    step: \"01 // DISCOVER\",\n    title: \"Inspect Live Motion Primitives\",\n    summary: \"Test real spring physics, SVG morphs, and canvas constellations directly in the browser.\",\n    metric: \"24 Verified Primitives\",\n  },\n  {\n    id: \"customize\",\n    step: \"02 // CUSTOMIZE\",\n    title: \"Tune Physics & Tokens\",\n    summary: \"Adjust stiffness, damping, blur, and speed while watching the JSX usage code update live.\",\n    metric: \"Zero Lock-In Source\",\n  },\n  {\n    id: \"ship\",\n    step: \"03 // DEPLOY\",\n    title: \"Install via CLI or Package\",\n    summary: \"Run npx motionfoundry add or import named primitives from @motionfoundry/ui.\",\n    metric: \"100% TypeScript Typed\",\n  },\n];\n\nexport function ScrollNarrative({\n  chapters = DEFAULT_CHAPTERS,\n  activeChapter = 0,\n  progress = 35,\n  pinStage = true,\n  className = \"\",\n}: ScrollNarrativeProps) {\n  const [currentIdx, setCurrentIdx] = React.useState(activeChapter);\n  const prefersReducedMotion = useReducedMotion();\n\n  React.useEffect(() => {\n    setCurrentIdx(Math.min(Math.max(activeChapter, 0), chapters.length - 1));\n  }, [activeChapter, chapters.length]);\n\n  const current = chapters[currentIdx] ?? chapters[0];\n\n  return (\n    <div className={`${styles.container} ${className}`.trim()}>\n      <div className={styles.progressHeader}>\n        <span className={styles.progressLabel}>Narrative Progress</span>\n        <div className={styles.progressBar}>\n          <div\n            className={styles.progressFill}\n            style={{ width: `${Math.min(100, Math.max(0, progress))}%` }}\n          />\n        </div>\n        <span className={styles.progressValue}>{progress}%</span>\n      </div>\n\n      <div className={styles.grid}>\n        <div className={styles.chapterList} role=\"tablist\" aria-label=\"Storytelling chapters\">\n          {chapters.map((ch, idx) => {\n            const active = idx === currentIdx;\n            return (\n              <button\n                key={ch.id}\n                type=\"button\"\n                role=\"tab\"\n                aria-selected={active}\n                onClick={() => setCurrentIdx(idx)}\n                className={`${styles.chapterItem} ${active ? styles.chapterActive : \"\"}`.trim()}\n              >\n                <span className={styles.stepTag}>{ch.step}</span>\n                <span className={styles.chapterTitle}>{ch.title}</span>\n              </button>\n            );\n          })}\n        </div>\n\n        {pinStage && current && (\n          <motion.div\n            key={current.id}\n            initial={prefersReducedMotion ? false : { opacity: 0, y: 12 }}\n            animate={{ opacity: 1, y: 0 }}\n            transition={{ duration: 0.38, ease: [0.16, 1, 0.3, 1] }}\n            className={styles.visualStage}\n          >\n            <span className={styles.metricPill}>{current.metric}</span>\n            <h4 className={styles.stageHeadline}>{current.title}</h4>\n            <p className={styles.stageSummary}>{current.summary}</p>\n          </motion.div>\n        )}\n      </div>\n    </div>\n  );\n}\n"
+    },
+    {
+      "path": "components/styles/scroll-narrative.module.css",
+      "type": "registry:style",
+      "content": ".container {\n  width: 100%;\n  border-radius: 0.85rem;\n  border: 1px solid var(--mf-surface-raised, #25252f);\n  background-color: var(--mf-bg, #0d0d12);\n  padding: 1.25rem;\n  color: var(--mf-fg, #f4f4f6);\n  display: flex;\n  flex-direction: column;\n  gap: 1rem;\n}\n\n.progressHeader {\n  display: flex;\n  align-items: center;\n  gap: 0.75rem;\n}\n\n.progressLabel,\n.progressValue {\n  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;\n  font-size: 0.7rem;\n  color: var(--mf-muted, #a1a1aa);\n}\n\n.progressBar {\n  flex: 1;\n  height: 4px;\n  border-radius: 999px;\n  background-color: #1f1f29;\n  overflow: hidden;\n}\n\n.progressFill {\n  height: 100%;\n  background-color: var(--mf-fg, #f4f4f6);\n  transition: width 220ms ease;\n}\n\n.grid {\n  display: grid;\n  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));\n  gap: 1rem;\n  align-items: stretch;\n}\n\n.chapterList {\n  display: flex;\n  flex-direction: column;\n  gap: 0.45rem;\n}\n\n.chapterItem {\n  display: flex;\n  flex-direction: column;\n  align-items: flex-start;\n  gap: 0.15rem;\n  padding: 0.65rem 0.85rem;\n  border-radius: 0.55rem;\n  border: 1px solid var(--mf-surface-raised, #22222c);\n  background-color: var(--mf-surface, #121218);\n  color: var(--mf-muted, #a1a1aa);\n  text-align: left;\n  cursor: pointer;\n}\n\n.chapterActive {\n  border-color: var(--mf-border-strong, #52525b);\n  background-color: #1a1a24;\n  color: var(--mf-fg, #f4f4f6);\n}\n\n.stepTag {\n  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;\n  font-size: 0.65rem;\n  color: var(--mf-subtle, #71717a);\n}\n\n.chapterTitle {\n  font-size: 0.82rem;\n  font-weight: 600;\n}\n\n.visualStage {\n  display: flex;\n  flex-direction: column;\n  justify-content: center;\n  gap: 0.45rem;\n  padding: 1.15rem;\n  border-radius: 0.65rem;\n  border: 1px solid var(--mf-border, #2b2b36);\n  background-color: #13131b;\n}\n\n.metricPill {\n  align-self: flex-start;\n  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;\n  font-size: 0.68rem;\n  padding: 0.15rem 0.5rem;\n  border-radius: 999px;\n  border: 1px solid var(--mf-border, #323240);\n  color: var(--mf-fg, #e4e4e7);\n}\n\n.stageHeadline {\n  margin: 0;\n  font-size: 0.98rem;\n  font-weight: 600;\n}\n\n.stageSummary {\n  margin: 0;\n  font-size: 0.8rem;\n  line-height: 1.5;\n  color: var(--mf-muted, #a1a1aa);\n}\n\n@media (prefers-reduced-motion: reduce) {\n  .progressFill {\n    transition: none;\n  }\n}\n"
+    }
+  ],
+  "tailwindExample": "\"use client\";\n\nimport { ScrollNarrative } from \"@motionfoundry/ui\";\n\nexport function ScrollNarrativeDemo() {\n  return <ScrollNarrative activeChapter={0} progress={35} />;\n}",
+  "collection": "core"
+}

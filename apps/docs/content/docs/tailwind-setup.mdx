@@ -1,0 +1,41 @@
+---
+title: "Tailwind Setup"
+category: "Configuration"
+summary: "Configuring Tailwind CSS v3.4+ alongside MotionFoundry design tokens and utility classes."
+---
+
+# Tailwind Setup
+
+While `@motionfoundry/ui` components ship with self-contained CSS Modules so they work even without Tailwind CSS, the documentation site and optional Tailwind component variants use a restrained charcoal-black and graphite token palette.
+
+### Adding MotionFoundry Tokens to `tailwind.config.ts`
+
+Extend your `tailwind.config.ts` with our graphite surfaces, silver typography scale, and reduced-motion utilities.
+
+```tsx
+import type { Config } from "tailwindcss";
+
+const config: Config = {
+  darkMode: ["class"],
+  content: [
+    "./app/**/*.{ts,tsx}",
+    "./components/**/*.{ts,tsx}",
+    "../../packages/ui/src/**/*.{ts,tsx}",
+  ],
+  theme: {
+    extend: {
+      colors: {
+        charcoal: "#09090B",
+        graphite: "#121216",
+        surface: "#18181F",
+        borderSubtle: "#24242C",
+        silver: "#F4F4F6",
+        mutedSilver: "#A1A1AA",
+      },
+    },
+  },
+  plugins: [],
+};
+
+export default config;
+```

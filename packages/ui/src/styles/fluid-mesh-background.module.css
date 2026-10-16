@@ -1,0 +1,93 @@
+.stage {
+  position: relative;
+  overflow: hidden;
+  min-height: 12rem;
+  border-radius: 0.85rem;
+  border: 1px solid var(--mf-surface-raised, #24242e);
+  background-color: var(--mf-bg, #09090b);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  color: var(--mf-fg, #f4f4f6);
+}
+
+.meshLayer {
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
+  filter: blur(52px);
+  opacity: var(--mf-fm-opacity, 0.28);
+}
+
+.field {
+  position: absolute;
+  border-radius: 9999px;
+  will-change: transform;
+}
+
+.fieldA {
+  width: 16rem;
+  height: 16rem;
+  top: -4rem;
+  left: 8%;
+  background: radial-gradient(circle, var(--mf-fm-a, var(--mf-accent, #38bdf8)) 0%, transparent 70%);
+  animation: mfMeshDriftA var(--mf-fm-speed, 14s) ease-in-out infinite alternate;
+}
+
+.fieldB {
+  width: 18rem;
+  height: 18rem;
+  bottom: -5rem;
+  right: 10%;
+  background: radial-gradient(circle, var(--mf-fm-b, #818cf8) 0%, transparent 70%);
+  animation: mfMeshDriftB calc(var(--mf-fm-speed, 14s) * 1.2) ease-in-out infinite alternate-reverse;
+}
+
+.fieldC {
+  width: 14rem;
+  height: 14rem;
+  top: 20%;
+  left: 42%;
+  background: radial-gradient(circle, var(--mf-fm-c, var(--mf-fg, #e4e4e7)) 0%, transparent 70%);
+  animation: mfMeshDriftA calc(var(--mf-fm-speed, 14s) * 0.9) ease-in-out infinite alternate;
+}
+
+.foreground {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+}
+
+.headline {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+
+@keyframes mfMeshDriftA {
+  0% {
+    transform: translate3d(-15%, -10%, 0) scale(1);
+  }
+  100% {
+    transform: translate3d(20%, 15%, 0) scale(1.18);
+  }
+}
+
+@keyframes mfMeshDriftB {
+  0% {
+    transform: translate3d(12%, 8%, 0) scale(1.05);
+  }
+  100% {
+    transform: translate3d(-18%, -12%, 0) scale(0.92);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fieldA,
+  .fieldB,
+  .fieldC {
+    animation: none;
+  }
+}

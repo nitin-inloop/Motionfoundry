@@ -1,0 +1,33 @@
+---
+title: "Changelog"
+category: "Open Source"
+summary: "Release history and migration notes for @motionfoundry/ui v2.0.0 and motionfoundry CLI."
+---
+
+# Changelog
+
+### v2.1.0 (2026-10-16) — Studio Kit Collection
+
+- **Added**: 24 Studio Kit components ported from Swirl Studio Kit onto the MotionFoundry conventions (CSS Modules, typed props, reduced-motion support, no Tailwind or icon dependencies): `BlurInText`, `Typewriter`, `NumberTicker`, `SplitReveal`, `RotatingWords`, `ShimmerText`, `ShinyBorderButton`, `ConfettiButton`, `LoadingButton`, `SlideFillButton`, `ToggleSwitch`, `AnimatedCheckbox`, `FlipCard`, `SwipeCards`, `RevealCard`, `DrawBorderCard`, `Meteors`, `BeamLines`, `GridPulse`, `OrbitLoader`, `PulseLoader`, `NotificationStack`, `ReorderList`, `ExpandableSearch`.
+- **Added**: New **Loaders and Feedback** category, registry `collections`, and `npx motionfoundry list --collection <id>`.
+- **Added**: Live previews with prop controls, a generated usage snippet, and Props/Accessibility tabs on every component page; `/collections/studio-kit` showcase.
+- **Fixed**: `@motionfoundry/ui` now ships real compiled components (ESM + CJS), declarations, and a collision-free `styles.css` instead of placeholder exports.
+- **Fixed**: The CLI bundles its registry (works outside this monorepo), runs correctly via `npx` on Windows and symlinked bins, and installs stylesheets to `components/styles/` so component imports resolve.
+
+### v2.0.0 (2026-10-16) — Complete 24-Component Catalog Replacement
+
+- **Replaced**: Complete public catalog replaced with 24 new components across 6 categories:
+  - **Advanced Text Animations**: `KineticType`, `GlyphCascade`, `TextMorph`, `OrbitingWords`, `AuroraHeadline`
+  - **Interactive Buttons and Controls**: `MagneticButton`, `VelocityButton`, `ElasticPressButton`
+  - **High-End Animated Cards**: `ConstellationCard`, `LiquidGlassCard`, `HoloTiltCard`, `MorphingBorder`
+  - **Reveals and Continuous Motion**: `PortalRevealPanel`, `InfiniteMarquee`, `ScrollNarrative`, `ParallaxDepthScene`
+  - **Animated Backgrounds and Visual Effects**: `FluidMeshBackground`, `NoiseAurora`, `OrbitingParticles`, `LiquidBlob`
+  - **Developer-Interface Animations**: `MagneticDock`, `ScrollVelocityProgress`, `MorphingCommandPalette`, `StaggeredGridReveal`
+- **Removed**: All legacy v1 catalog entries removed from `packages/ui`, `registry/registry.json`, and CLI installer.
+- **Added**: Full-preview canvas mode and expanded component-specific customization controls on all 24 component detail pages.
+
+```tsx
+# Check installed CLI and registry version
+node packages/cli/dist/index.mjs --version
+# Output: motionfoundry/2.1.0
+```

@@ -1,0 +1,132 @@
+{
+  "slug": "magnetic-button",
+  "name": "MagneticButton",
+  "category": "Interactive Buttons and Controls",
+  "featured": true,
+  "addedAt": "2026-10-16",
+  "version": "2.0.0",
+  "requiresMotion": true,
+  "dependencies": [
+    "motion",
+    "react"
+  ],
+  "description": "Cursor-reactive button that attracts its surface and inner label toward the pointer with configurable attraction strength, return spring, hover scale, and touch-device fallback.",
+  "tags": [
+    "button",
+    "magnetic",
+    "spring",
+    "cursor",
+    "interactive",
+    "touch"
+  ],
+  "a11yNotes": "Uses a semantic <button>, ignores magnetic displacement on coarse/touch pointers (pointerType === 'touch') and under prefers-reduced-motion, and maintains a visible :focus-visible outline.",
+  "defaultProps": {
+    "label": "Explore 24 Components",
+    "strength": 0.36,
+    "stiffness": 230,
+    "damping": 18,
+    "hoverScale": 1.04,
+    "variant": "solid"
+  },
+  "controls": [
+    {
+      "prop": "label",
+      "label": "Button Label",
+      "type": "text"
+    },
+    {
+      "prop": "strength",
+      "label": "Attraction Strength",
+      "type": "range",
+      "min": 0.1,
+      "max": 0.75,
+      "step": 0.04
+    },
+    {
+      "prop": "stiffness",
+      "label": "Return Spring Stiffness",
+      "type": "range",
+      "min": 120,
+      "max": 400,
+      "step": 20
+    },
+    {
+      "prop": "damping",
+      "label": "Spring Damping",
+      "type": "range",
+      "min": 10,
+      "max": 34,
+      "step": 2
+    },
+    {
+      "prop": "hoverScale",
+      "label": "Hover Scale",
+      "type": "range",
+      "min": 1,
+      "max": 1.12,
+      "step": 0.01
+    },
+    {
+      "prop": "variant",
+      "label": "Surface Variant",
+      "type": "select",
+      "options": [
+        "solid",
+        "outline",
+        "ghost"
+      ]
+    }
+  ],
+  "propsApi": [
+    {
+      "name": "label",
+      "type": "string",
+      "default": "'Explore 24 Components'",
+      "description": "Button label text."
+    },
+    {
+      "name": "strength",
+      "type": "number",
+      "default": "0.36",
+      "description": "Cursor attraction multiplier (0.1–0.75)."
+    },
+    {
+      "name": "stiffness",
+      "type": "number",
+      "default": "230",
+      "description": "Return spring stiffness."
+    },
+    {
+      "name": "damping",
+      "type": "number",
+      "default": "18",
+      "description": "Return spring damping."
+    },
+    {
+      "name": "hoverScale",
+      "type": "number",
+      "default": "1.04",
+      "description": "Scale factor on pointer hover."
+    },
+    {
+      "name": "variant",
+      "type": "'solid' | 'outline' | 'ghost'",
+      "default": "'solid'",
+      "description": "Visual surface style."
+    }
+  ],
+  "files": [
+    {
+      "path": "components/ui/magnetic-button.tsx",
+      "type": "registry:component",
+      "content": "\"use client\";\n\nimport * as React from \"react\";\nimport { motion, useMotionValue, useSpring, useReducedMotion } from \"motion/react\";\nimport styles from \"../styles/magnetic-button.module.css\";\n\n/** Native button attributes whose names collide with Motion's animation and gesture handlers. */\ntype MotionConflictingKeys = \"onAnimationStart\" | \"onDrag\" | \"onDragStart\" | \"onDragEnd\";\n\nexport interface MagneticButtonProps\n  extends Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, MotionConflictingKeys> {\n  /** Button label */\n  label?: string;\n  /** Attraction strength multiplier */\n  strength?: number;\n  /** Return spring stiffness */\n  stiffness?: number;\n  /** Return spring damping */\n  damping?: number;\n  /** Hover scale multiplier */\n  hoverScale?: number;\n  /** Visual variant */\n  variant?: \"solid\" | \"outline\" | \"ghost\";\n}\n\nexport function MagneticButton({\n  children,\n  label = \"Explore 24 Components\",\n  strength = 0.36,\n  stiffness = 230,\n  damping = 18,\n  hoverScale = 1.04,\n  variant = \"solid\",\n  className = \"\",\n  ...rest\n}: MagneticButtonProps) {\n  const ref = React.useRef<HTMLButtonElement>(null);\n  const prefersReducedMotion = useReducedMotion();\n\n  const rawX = useMotionValue(0);\n  const rawY = useMotionValue(0);\n  const x = useSpring(rawX, { stiffness, damping, mass: 0.4 });\n  const y = useSpring(rawY, { stiffness, damping, mass: 0.4 });\n\n  const handlePointerMove = (e: React.PointerEvent<HTMLButtonElement>) => {\n    if (prefersReducedMotion || e.pointerType === \"touch\" || !ref.current) return;\n    const rect = ref.current.getBoundingClientRect();\n    const dx = (e.clientX - (rect.left + rect.width / 2)) * strength;\n    const dy = (e.clientY - (rect.top + rect.height / 2)) * strength;\n    rawX.set(dx);\n    rawY.set(dy);\n  };\n\n  const handlePointerLeave = () => {\n    rawX.set(0);\n    rawY.set(0);\n  };\n\n  return (\n    <motion.button\n      ref={ref}\n      type=\"button\"\n      onPointerMove={handlePointerMove}\n      onPointerLeave={handlePointerLeave}\n      whileHover={prefersReducedMotion ? undefined : { scale: hoverScale }}\n      whileTap={prefersReducedMotion ? undefined : { scale: 0.97 }}\n      style={{\n        x: prefersReducedMotion ? 0 : x,\n        y: prefersReducedMotion ? 0 : y,\n      }}\n      className={`${styles.button} ${styles[variant]} ${className}`.trim()}\n      {...rest}\n    >\n      <span className={styles.label}>{children ?? label}</span>\n    </motion.button>\n  );\n}\n"
+    },
+    {
+      "path": "components/styles/magnetic-button.module.css",
+      "type": "registry:style",
+      "content": ".button {\n  position: relative;\n  display: inline-flex;\n  align-items: center;\n  justify-content: center;\n  padding: 0.7rem 1.35rem;\n  border-radius: 0.625rem;\n  font-size: 0.875rem;\n  font-weight: 500;\n  letter-spacing: -0.01em;\n  cursor: pointer;\n  user-select: none;\n  will-change: transform;\n  transition: background-color 160ms ease, border-color 160ms ease, color 160ms ease;\n}\n\n.button:focus-visible {\n  outline: 2px solid var(--mf-fg, #e4e4e7);\n  outline-offset: 3px;\n}\n\n.solid {\n  background-color: var(--mf-fg, #f4f4f6);\n  color: var(--mf-bg, #09090b);\n  border: 1px solid var(--mf-fg, #f4f4f6);\n}\n\n.solid:hover {\n  background-color: #ffffff;\n}\n\n.outline {\n  background-color: var(--mf-surface, #141419);\n  color: var(--mf-fg, #f4f4f6);\n  border: 1px solid var(--mf-border, #2e2e38);\n}\n\n.outline:hover {\n  border-color: var(--mf-border-strong, #52525b);\n}\n\n.ghost {\n  background-color: transparent;\n  color: var(--mf-fg, #d4d4d8);\n  border: 1px solid transparent;\n}\n\n.ghost:hover {\n  background-color: rgba(39, 39, 42, 0.5);\n}\n\n.label {\n  display: inline-flex;\n  align-items: center;\n  gap: 0.5rem;\n  pointer-events: none;\n}\n\n@media (prefers-reduced-motion: reduce) {\n  .button {\n    transform: none !important;\n  }\n}\n"
+    }
+  ],
+  "tailwindExample": "\"use client\";\n\nimport * as React from \"react\";\nimport { motion, useMotionValue, useSpring } from \"motion/react\";\n\nexport function MagneticButtonTailwind({ label = \"Explore 24 Components\" }) {\n  const x = useSpring(useMotionValue(0), { stiffness: 230, damping: 18 });\n  const y = useSpring(useMotionValue(0), { stiffness: 230, damping: 18 });\n  return (\n    <motion.button\n      type=\"button\"\n      style={{ x, y }}\n      onPointerMove={(e) => {\n        if (e.pointerType === \"touch\") return;\n        const r = e.currentTarget.getBoundingClientRect();\n        x.set((e.clientX - (r.left + r.width / 2)) * 0.36);\n        y.set((e.clientY - (r.top + r.height / 2)) * 0.36);\n      }}\n      onPointerLeave={() => { x.set(0); y.set(0); }}\n      className=\"rounded-lg bg-zinc-100 px-5 py-2.5 text-sm font-medium text-zinc-950\"\n    >\n      {label}\n    </motion.button>\n  );\n}",
+  "collection": "core"
+}

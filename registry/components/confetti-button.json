@@ -1,0 +1,127 @@
+{
+  "slug": "confetti-button",
+  "name": "ConfettiButton",
+  "category": "Interactive Buttons and Controls",
+  "collection": "studio-kit",
+  "featured": true,
+  "addedAt": "2026-10-16",
+  "version": "2.1.0",
+  "requiresMotion": true,
+  "dependencies": [
+    "motion",
+    "react"
+  ],
+  "description": "Solid button that fires a radial burst of spinning two-tone confetti from its center on every press, with configurable piece count, spread distance, and colors.",
+  "tags": [
+    "button",
+    "confetti",
+    "burst",
+    "celebration",
+    "particles",
+    "feedback"
+  ],
+  "a11yNotes": "Semantic <button type=\"button\"> with a visible :focus-visible outline, fully keyboard operable (Enter/Space trigger onClick and the burst). Confetti layers are aria-hidden and removed after one second; pending timeouts are cleared on unmount. Under prefers-reduced-motion onClick still fires but no confetti or press scale is rendered.",
+  "defaultProps": {
+    "label": "Celebrate",
+    "count": 16,
+    "spread": 70,
+    "accentColor": "#38bdf8",
+    "secondaryColor": "#a78bfa"
+  },
+  "controls": [
+    {
+      "prop": "label",
+      "label": "Label",
+      "type": "text"
+    },
+    {
+      "prop": "count",
+      "label": "Pieces",
+      "type": "range",
+      "min": 4,
+      "max": 48,
+      "step": 1
+    },
+    {
+      "prop": "spread",
+      "label": "Spread (px)",
+      "type": "range",
+      "min": 20,
+      "max": 160,
+      "step": 5
+    },
+    {
+      "prop": "accentColor",
+      "label": "Accent",
+      "type": "color"
+    },
+    {
+      "prop": "secondaryColor",
+      "label": "Secondary",
+      "type": "color"
+    }
+  ],
+  "propsApi": [
+    {
+      "name": "label",
+      "type": "string",
+      "default": "'Celebrate'",
+      "description": "Button label (ignored when children are provided)."
+    },
+    {
+      "name": "children",
+      "type": "React.ReactNode",
+      "default": "undefined",
+      "description": "Optional custom button content."
+    },
+    {
+      "name": "count",
+      "type": "number",
+      "default": "16",
+      "description": "Number of confetti pieces per burst."
+    },
+    {
+      "name": "spread",
+      "type": "number",
+      "default": "70",
+      "description": "Base travel distance of the burst in pixels."
+    },
+    {
+      "name": "accentColor",
+      "type": "string",
+      "default": "'#38bdf8'",
+      "description": "Primary confetti color."
+    },
+    {
+      "name": "secondaryColor",
+      "type": "string",
+      "default": "'#a78bfa'",
+      "description": "Secondary confetti color."
+    },
+    {
+      "name": "onClick",
+      "type": "(event: React.MouseEvent<HTMLButtonElement>) => void",
+      "default": "undefined",
+      "description": "Click handler, called on every press."
+    },
+    {
+      "name": "className",
+      "type": "string",
+      "default": "''",
+      "description": "Additional class merged onto the root element."
+    }
+  ],
+  "files": [
+    {
+      "path": "components/ui/confetti-button.tsx",
+      "type": "registry:component",
+      "content": "\"use client\";\n\nimport * as React from \"react\";\nimport { motion, useReducedMotion } from \"motion/react\";\nimport styles from \"../styles/confetti-button.module.css\";\n\nexport interface ConfettiButtonProps {\n  /** Button label (ignored when children are provided) */\n  label?: string;\n  /** Optional custom button content */\n  children?: React.ReactNode;\n  /** Number of confetti pieces per burst */\n  count?: number;\n  /** Base travel distance of the burst in pixels */\n  spread?: number;\n  /** Primary confetti color */\n  accentColor?: string;\n  /** Secondary confetti color */\n  secondaryColor?: string;\n  /** Click handler, called on every press */\n  onClick?: (event: React.MouseEvent<HTMLButtonElement>) => void;\n  /** Optional className */\n  className?: string;\n}\n\nconst BURST_MS = 1000;\n\nexport function ConfettiButton({\n  label = \"Celebrate\",\n  children,\n  count = 16,\n  spread = 70,\n  accentColor = \"#38bdf8\",\n  secondaryColor = \"#a78bfa\",\n  onClick,\n  className = \"\",\n}: ConfettiButtonProps) {\n  const prefersReducedMotion = useReducedMotion();\n  const [bursts, setBursts] = React.useState<number[]>([]);\n  const nextId = React.useRef(0);\n  const timers = React.useRef(new Set<ReturnType<typeof setTimeout>>());\n\n  React.useEffect(() => {\n    const pending = timers.current;\n    return () => {\n      pending.forEach(clearTimeout);\n      pending.clear();\n    };\n  }, []);\n\n  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {\n    onClick?.(event);\n    if (prefersReducedMotion) return;\n    const id = nextId.current++;\n    setBursts((b) => [...b, id]);\n    const t = setTimeout(() => {\n      timers.current.delete(t);\n      setBursts((b) => b.filter((x) => x !== id));\n    }, BURST_MS);\n    timers.current.add(t);\n  };\n\n  const pieces = Math.max(1, Math.round(count));\n\n  return (\n    <motion.button\n      type=\"button\"\n      onClick={handleClick}\n      whileTap={prefersReducedMotion ? undefined : { scale: 0.92 }}\n      className={`${styles.root} ${className}`.trim()}\n    >\n      <span className={styles.label}>{children ?? label}</span>\n      {bursts.map((id) => (\n        <span key={id} aria-hidden=\"true\" className={styles.burst}>\n          {Array.from({ length: pieces }, (_, i) => {\n            const angle = (i / pieces) * Math.PI * 2;\n            const distance = spread * (0.85 + (i % 3) * 0.3);\n            return (\n              <motion.span\n                key={i}\n                className={styles.piece}\n                style={{ backgroundColor: i % 2 ? accentColor : secondaryColor }}\n                initial={{ x: 0, y: 0, opacity: 1, rotate: 0, scale: 1 }}\n                animate={{\n                  x: Math.cos(angle) * distance,\n                  y: Math.sin(angle) * distance,\n                  opacity: 0,\n                  rotate: 270,\n                  scale: 0.6,\n                }}\n                transition={{ duration: 0.9, ease: \"easeOut\" }}\n              />\n            );\n          })}\n        </span>\n      ))}\n    </motion.button>\n  );\n}\n"
+    },
+    {
+      "path": "components/styles/confetti-button.module.css",
+      "type": "registry:style",
+      "content": ".root {\n  position: relative;\n  display: inline-flex;\n  align-items: center;\n  justify-content: center;\n  padding: 0.7rem 1.35rem;\n  border: 1px solid var(--mf-fg, #f4f4f6);\n  border-radius: 0.625rem;\n  background-color: var(--mf-fg, #f4f4f6);\n  color: var(--mf-bg, #09090b);\n  font: inherit;\n  font-size: 0.875rem;\n  font-weight: 500;\n  letter-spacing: -0.01em;\n  cursor: pointer;\n  user-select: none;\n  overflow: visible;\n  transition: background-color 160ms ease;\n}\n\n.root:hover {\n  background-color: #ffffff;\n}\n\n.root:focus-visible {\n  outline: 2px solid var(--mf-fg, #e4e4e7);\n  outline-offset: 3px;\n}\n\n.label {\n  display: inline-flex;\n  align-items: center;\n  gap: 0.5rem;\n  pointer-events: none;\n}\n\n.burst {\n  position: absolute;\n  top: 50%;\n  left: 50%;\n  width: 0;\n  height: 0;\n  pointer-events: none;\n}\n\n.piece {\n  position: absolute;\n  top: -0.25rem;\n  left: -0.25rem;\n  width: 0.5rem;\n  height: 0.5rem;\n  border-radius: 2px;\n  will-change: transform, opacity;\n}\n\n@media (prefers-reduced-motion: reduce) {\n  .root {\n    transform: none !important;\n  }\n\n  .burst {\n    display: none;\n  }\n}\n"
+    }
+  ],
+  "tailwindExample": "\"use client\";\n\nimport { useRef, useState } from \"react\";\nimport { motion } from \"motion/react\";\n\nexport function ConfettiButtonTailwind({ label = \"Celebrate\", count = 16 }) {\n  const [bursts, setBursts] = useState<number[]>([]);\n  const nextId = useRef(0);\n  const fire = () => {\n    const id = nextId.current++;\n    setBursts((b) => [...b, id]);\n    setTimeout(() => setBursts((b) => b.filter((x) => x !== id)), 1000);\n  };\n  return (\n    <motion.button type=\"button\" onClick={fire} whileTap={{ scale: 0.92 }} className=\"relative rounded-lg bg-zinc-100 px-5 py-2.5 text-sm font-medium text-zinc-950\">\n      {label}\n      {bursts.map((id) => (\n        <span key={id} aria-hidden className=\"pointer-events-none absolute left-1/2 top-1/2\">\n          {Array.from({ length: count }, (_, i) => {\n            const a = (i / count) * Math.PI * 2;\n            const d = 70 * (0.85 + (i % 3) * 0.3);\n            return (\n              <motion.span\n                key={i}\n                className={\"absolute -left-1 -top-1 h-2 w-2 rounded-sm \" + (i % 2 ? \"bg-sky-400\" : \"bg-violet-400\")}\n                initial={{ x: 0, y: 0, opacity: 1, rotate: 0 }}\n                animate={{ x: Math.cos(a) * d, y: Math.sin(a) * d, opacity: 0, rotate: 270 }}\n                transition={{ duration: 0.9, ease: \"easeOut\" }}\n              />\n            );\n          })}\n        </span>\n      ))}\n    </motion.button>\n  );\n}"
+}

@@ -1,0 +1,79 @@
+.root {
+  position: relative;
+  display: inline-block;
+  flex-shrink: 0;
+  width: var(--mf-ol-size, 72px);
+  height: var(--mf-ol-size, 72px);
+}
+
+.core {
+  position: absolute;
+  inset: 38%;
+  border-radius: 50%;
+  background-color: var(--mf-ol-color, var(--mf-accent, #38bdf8));
+  box-shadow: 0 0 calc(var(--mf-ol-size, 72px) * 0.18) var(--mf-ol-color, var(--mf-accent, #38bdf8));
+  animation: mfOrbitBreathe calc(var(--mf-ol-duration, 1.4s) * 2) ease-in-out infinite;
+}
+
+.ring {
+  position: absolute;
+  border-radius: 50%;
+  border: 1px solid var(--mf-border, #2e2e38);
+  animation: mfOrbitSpin var(--mf-ol-duration, 1.4s) linear infinite;
+  will-change: transform;
+}
+
+.outer {
+  inset: 0;
+}
+
+.inner {
+  inset: calc(var(--mf-ol-size, 72px) * 0.15);
+  animation-duration: calc(var(--mf-ol-duration, 1.4s) * 2);
+  animation-direction: reverse;
+}
+
+.dot {
+  position: absolute;
+  top: -4px;
+  left: 50%;
+  width: 8px;
+  height: 8px;
+  margin-left: -4px;
+  border-radius: 50%;
+  background-color: var(--mf-fg, #f4f4f6);
+}
+
+.accentDot {
+  background-color: var(--mf-ol-color, var(--mf-accent, #38bdf8));
+  box-shadow: 0 0 8px var(--mf-ol-color, var(--mf-accent, #38bdf8));
+}
+
+@keyframes mfOrbitSpin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes mfOrbitBreathe {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(0.82);
+    opacity: 0.75;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .core,
+  .ring {
+    animation: none;
+  }
+
+  .inner {
+    transform: rotate(140deg);
+  }
+}

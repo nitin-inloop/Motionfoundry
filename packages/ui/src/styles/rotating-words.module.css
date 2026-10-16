@@ -1,0 +1,61 @@
+.root {
+  display: inline-block;
+  color: var(--mf-fg, #f4f4f6);
+  font-size: clamp(1.5rem, 4vw, 2.5rem);
+  font-weight: 600;
+  letter-spacing: -0.03em;
+  line-height: 1.2;
+}
+
+.visual {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.28em;
+}
+
+.prefix {
+  color: var(--mf-fg, #f4f4f6);
+}
+
+/* All words stack invisibly in one grid cell so the slot reserves the
+   widest word and swapping words never shifts surrounding layout. */
+.slot {
+  position: relative;
+  display: inline-grid;
+  overflow: hidden;
+  padding-bottom: 0.08em;
+  vertical-align: bottom;
+}
+
+.sizer {
+  grid-area: 1 / 1;
+  visibility: hidden;
+  white-space: nowrap;
+}
+
+.word {
+  grid-area: 1 / 1;
+  display: inline-block;
+  white-space: nowrap;
+  color: var(--mf-rw-accent, var(--mf-accent, #38bdf8));
+  will-change: transform, opacity;
+}
+
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .word {
+    transform: none !important;
+    opacity: 1 !important;
+  }
+}

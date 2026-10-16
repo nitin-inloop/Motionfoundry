@@ -1,0 +1,99 @@
+{
+  "slug": "noise-aurora",
+  "name": "NoiseAurora",
+  "category": "Animated Backgrounds and Visual Effects",
+  "featured": false,
+  "addedAt": "2026-10-16",
+  "version": "2.0.0",
+  "requiresMotion": false,
+  "dependencies": [
+    "react"
+  ],
+  "description": "Atmospheric aurora backdrop combining slow-drifting spectral ribbons with an inline procedural SVG fractal-noise film grain layer and zero external image assets.",
+  "tags": [
+    "noise",
+    "aurora",
+    "grain",
+    "atmosphere",
+    "background",
+    "svg"
+  ],
+  "a11yNotes": "Uses an inline SVG feTurbulence noise filter marked aria-hidden='true' with zero network requests and pauses ribbon drift under prefers-reduced-motion.",
+  "defaultProps": {
+    "label": "Procedural Film-Grain Aurora",
+    "grainOpacity": 0.16,
+    "auroraSpeed": 16,
+    "ribbonOpacity": 0.34
+  },
+  "controls": [
+    {
+      "prop": "label",
+      "label": "Overlay Label",
+      "type": "text"
+    },
+    {
+      "prop": "grainOpacity",
+      "label": "Noise Grain Opacity",
+      "type": "range",
+      "min": 0.04,
+      "max": 0.35,
+      "step": 0.02
+    },
+    {
+      "prop": "auroraSpeed",
+      "label": "Ribbon Drift Speed (s)",
+      "type": "range",
+      "min": 8,
+      "max": 30,
+      "step": 2
+    },
+    {
+      "prop": "ribbonOpacity",
+      "label": "Ribbon Luminance",
+      "type": "range",
+      "min": 0.12,
+      "max": 0.65,
+      "step": 0.04
+    }
+  ],
+  "propsApi": [
+    {
+      "name": "label",
+      "type": "string",
+      "default": "'Procedural Film-Grain Aurora'",
+      "description": "Foreground caption."
+    },
+    {
+      "name": "grainOpacity",
+      "type": "number",
+      "default": "0.16",
+      "description": "Opacity of the procedural SVG fractal noise overlay."
+    },
+    {
+      "name": "auroraSpeed",
+      "type": "number",
+      "default": "16",
+      "description": "Duration in seconds of the aurora ribbon drift."
+    },
+    {
+      "name": "ribbonOpacity",
+      "type": "number",
+      "default": "0.34",
+      "description": "Luminance opacity of the aurora curtains."
+    }
+  ],
+  "files": [
+    {
+      "path": "components/ui/noise-aurora.tsx",
+      "type": "registry:component",
+      "content": "\"use client\";\n\nimport * as React from \"react\";\nimport styles from \"../styles/noise-aurora.module.css\";\n\nexport interface NoiseAuroraProps {\n  /** Foreground label */\n  label?: string;\n  /** SVG noise grain opacity */\n  grainOpacity?: number;\n  /** Ribbon drift cycle speed in seconds */\n  auroraSpeed?: number;\n  /** Aurora ribbon opacity */\n  ribbonOpacity?: number;\n  /** Optional children */\n  children?: React.ReactNode;\n  /** Optional className */\n  className?: string;\n}\n\nexport function NoiseAurora({\n  label = \"Procedural Film-Grain Aurora\",\n  grainOpacity = 0.16,\n  auroraSpeed = 16,\n  ribbonOpacity = 0.34,\n  children,\n  className = \"\",\n}: NoiseAuroraProps) {\n  const filterId = React.useId();\n\n  return (\n    <div\n      style={\n        {\n          \"--mf-na-speed\": `${auroraSpeed}s`,\n          \"--mf-na-ribbon\": ribbonOpacity,\n          \"--mf-na-grain\": grainOpacity,\n        } as React.CSSProperties\n      }\n      className={`${styles.container} ${className}`.trim()}\n    >\n      <div aria-hidden=\"true\" className={styles.ribbonLayer} />\n      <svg aria-hidden=\"true\" className={styles.noiseSvg}>\n        <filter id={filterId}>\n          <feTurbulence\n            type=\"fractalNoise\"\n            baseFrequency=\"0.8\"\n            numOctaves={3}\n            stitchTiles=\"stitch\"\n          />\n        </filter>\n        <rect width=\"100%\" height=\"100%\" filter={`url(#${filterId})`} />\n      </svg>\n      <div className={styles.foreground}>\n        {children ?? <span className={styles.badge}>{label}</span>}\n      </div>\n    </div>\n  );\n}\n"
+    },
+    {
+      "path": "components/styles/noise-aurora.module.css",
+      "type": "registry:style",
+      "content": ".container {\n  position: relative;\n  overflow: hidden;\n  min-height: 12rem;\n  border-radius: 0.85rem;\n  border: 1px solid var(--mf-surface-raised, #25252f);\n  background-color: var(--mf-bg, #08080b);\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  padding: 2rem;\n  color: var(--mf-fg, #f4f4f6);\n}\n\n.ribbonLayer {\n  pointer-events: none;\n  position: absolute;\n  inset: -40%;\n  background: conic-gradient(\n    from 180deg at 50% 50%,\n    rgba(56, 189, 248, 0.5) 0deg,\n    rgba(161, 161, 170, 0.2) 120deg,\n    rgba(168, 85, 247, 0.45) 240deg,\n    rgba(56, 189, 248, 0.5) 360deg\n  );\n  filter: blur(48px);\n  opacity: var(--mf-na-ribbon, 0.34);\n  animation: mfNoiseAuroraDrift var(--mf-na-speed, 16s) ease-in-out infinite alternate;\n}\n\n.noiseSvg {\n  pointer-events: none;\n  position: absolute;\n  inset: 0;\n  width: 100%;\n  height: 100%;\n  opacity: var(--mf-na-grain, 0.16);\n  mix-blend-mode: overlay;\n}\n\n.foreground {\n  position: relative;\n  z-index: 1;\n}\n\n.badge {\n  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;\n  font-size: 0.75rem;\n  padding: 0.35rem 0.8rem;\n  border-radius: 999px;\n  border: 1px solid var(--mf-border, #2e2e3a);\n  background-color: rgba(10, 10, 14, 0.82);\n  color: var(--mf-fg, #e4e4e7);\n}\n\n@keyframes mfNoiseAuroraDrift {\n  0% {\n    transform: translate3d(-8%, -6%, 0) rotate(-6deg);\n  }\n  100% {\n    transform: translate3d(8%, 6%, 0) rotate(8deg);\n  }\n}\n\n@media (prefers-reduced-motion: reduce) {\n  .ribbonLayer {\n    animation: none;\n  }\n}\n"
+    }
+  ],
+  "tailwindExample": "\"use client\";\n\nimport { NoiseAurora } from \"@motionfoundry/ui\";\n\nexport function NoiseAuroraDemo() {\n  return <NoiseAurora grainOpacity={0.16} auroraSpeed={16} />;\n}",
+  "collection": "core"
+}

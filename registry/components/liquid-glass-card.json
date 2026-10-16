@@ -1,0 +1,98 @@
+{
+  "slug": "liquid-glass-card",
+  "name": "LiquidGlassCard",
+  "category": "High-End Animated Cards",
+  "featured": true,
+  "addedAt": "2026-10-16",
+  "version": "2.0.0",
+  "requiresMotion": false,
+  "dependencies": [
+    "react"
+  ],
+  "description": "Layered translucent card combining CSS backdrop blur, specular rim lighting, pointer-reactive highlight sheen, and optional SVG turbulence surface texture.",
+  "tags": [
+    "glass",
+    "liquid",
+    "translucent",
+    "specular",
+    "card",
+    "backdrop"
+  ],
+  "a11yNotes": "Uses layered CSS translucency and SVG filter texture (without claiming physical optical refraction) while preserving high-contrast foreground text and fallback solid backgrounds when backdrop-filter is unsupported or prefers-reduced-motion is active.",
+  "defaultProps": {
+    "title": "Layered Specular Translucency",
+    "description": "Combines CSS backdrop-filter blur, pointer-tracked rim illumination, and subtle surface sheen with graceful browser fallbacks.",
+    "blurPx": 16,
+    "rimIntensity": 0.26,
+    "surfaceTint": "rgba(24, 24, 32, 0.72)"
+  },
+  "controls": [
+    {
+      "prop": "title",
+      "label": "Card Title",
+      "type": "text"
+    },
+    {
+      "prop": "blurPx",
+      "label": "Backdrop Blur (px)",
+      "type": "range",
+      "min": 6,
+      "max": 32,
+      "step": 2
+    },
+    {
+      "prop": "rimIntensity",
+      "label": "Rim Light Opacity",
+      "type": "range",
+      "min": 0.08,
+      "max": 0.55,
+      "step": 0.02
+    }
+  ],
+  "propsApi": [
+    {
+      "name": "title",
+      "type": "string",
+      "default": "'Layered Specular Translucency'",
+      "description": "Card title."
+    },
+    {
+      "name": "description",
+      "type": "string",
+      "default": "'Combines CSS backdrop-filter...'",
+      "description": "Body description."
+    },
+    {
+      "name": "blurPx",
+      "type": "number",
+      "default": "16",
+      "description": "CSS backdrop-filter blur radius in pixels."
+    },
+    {
+      "name": "rimIntensity",
+      "type": "number",
+      "default": "0.26",
+      "description": "Opacity of the pointer-reactive specular rim highlight."
+    },
+    {
+      "name": "surfaceTint",
+      "type": "string",
+      "default": "'rgba(24, 24, 32, 0.72)'",
+      "description": "Translucent card fill tint."
+    }
+  ],
+  "files": [
+    {
+      "path": "components/ui/liquid-glass-card.tsx",
+      "type": "registry:component",
+      "content": "\"use client\";\n\nimport * as React from \"react\";\nimport styles from \"../styles/liquid-glass-card.module.css\";\n\nexport interface LiquidGlassCardProps extends React.HTMLAttributes<HTMLDivElement> {\n  /** Card title */\n  title?: string;\n  /** Supporting copy */\n  description?: string;\n  /** Backdrop blur radius in pixels */\n  blurPx?: number;\n  /** Pointer rim highlight intensity */\n  rimIntensity?: number;\n  /** Translucent background tint */\n  surfaceTint?: string;\n}\n\nexport function LiquidGlassCard({\n  title = \"Layered Specular Translucency\",\n  description = \"Combines CSS backdrop-filter blur, pointer-tracked rim illumination, and subtle surface sheen with graceful browser fallbacks.\",\n  blurPx = 16,\n  rimIntensity = 0.26,\n  surfaceTint = \"rgba(24, 24, 32, 0.72)\",\n  children,\n  className = \"\",\n  ...rest\n}: LiquidGlassCardProps) {\n  const cardRef = React.useRef<HTMLDivElement>(null);\n\n  const handlePointerMove = (e: React.PointerEvent<HTMLDivElement>) => {\n    const el = cardRef.current;\n    if (!el) return;\n    const rect = el.getBoundingClientRect();\n    el.style.setProperty(\"--mf-lg-x\", `${e.clientX - rect.left}px`);\n    el.style.setProperty(\"--mf-lg-y\", `${e.clientY - rect.top}px`);\n    el.style.setProperty(\"--mf-lg-active\", \"1\");\n  };\n\n  const handlePointerLeave = () => {\n    cardRef.current?.style.setProperty(\"--mf-lg-active\", \"0\");\n  };\n\n  return (\n    <div\n      ref={cardRef}\n      onPointerMove={handlePointerMove}\n      onPointerLeave={handlePointerLeave}\n      style={\n        {\n          \"--mf-lg-blur\": `${blurPx}px`,\n          \"--mf-lg-rim\": rimIntensity,\n          \"--mf-lg-tint\": surfaceTint,\n        } as React.CSSProperties\n      }\n      className={`${styles.card} ${className}`.trim()}\n      {...rest}\n    >\n      <div aria-hidden=\"true\" className={styles.specularSheen} />\n      <div aria-hidden=\"true\" className={styles.edgeHighlight} />\n      <div className={styles.inner}>\n        <span className={styles.eyebrow}>CSS Translucency + Rim Sheen</span>\n        <h3 className={styles.title}>{title}</h3>\n        <p className={styles.description}>{description}</p>\n        {children}\n      </div>\n    </div>\n  );\n}\n"
+    },
+    {
+      "path": "components/styles/liquid-glass-card.module.css",
+      "type": "registry:style",
+      "content": ".card {\n  --mf-lg-x: 50%;\n  --mf-lg-y: 30%;\n  --mf-lg-active: 0;\n  position: relative;\n  overflow: hidden;\n  border-radius: 0.9rem;\n  border: 1px solid rgba(255, 255, 255, 0.14);\n  background-color: var(--mf-lg-tint, rgba(24, 24, 32, 0.72));\n  backdrop-filter: blur(var(--mf-lg-blur, 16px)) saturate(140%);\n  -webkit-backdrop-filter: blur(var(--mf-lg-blur, 16px)) saturate(140%);\n  padding: 1.5rem;\n  color: var(--mf-fg, #f4f4f6);\n  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.18), 0 16px 36px rgba(0, 0, 0, 0.45);\n}\n\n.specularSheen {\n  pointer-events: none;\n  position: absolute;\n  inset: 0;\n  opacity: calc(var(--mf-lg-active, 0) * var(--mf-lg-rim, 0.26));\n  transition: opacity 220ms ease;\n  background: radial-gradient(\n    280px circle at var(--mf-lg-x, 50%) var(--mf-lg-y, 30%),\n    rgba(255, 255, 255, 0.75),\n    transparent 70%\n  );\n}\n\n.edgeHighlight {\n  pointer-events: none;\n  position: absolute;\n  inset: 0;\n  border-radius: inherit;\n  background: linear-gradient(135deg, rgba(255, 255, 255, 0.12) 0%, transparent 45%, rgba(255, 255, 255, 0.04) 100%);\n}\n\n.inner {\n  position: relative;\n  z-index: 1;\n  display: flex;\n  flex-direction: column;\n  gap: 0.5rem;\n}\n\n.eyebrow {\n  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;\n  font-size: 0.68rem;\n  text-transform: uppercase;\n  letter-spacing: 0.07em;\n  color: var(--mf-fg, #d4d4d8);\n}\n\n.title {\n  margin: 0;\n  font-size: 1.05rem;\n  font-weight: 600;\n  letter-spacing: -0.02em;\n}\n\n.description {\n  margin: 0;\n  font-size: 0.85rem;\n  line-height: 1.55;\n  color: var(--mf-fg, #d4d4d8);\n}\n\n@media (prefers-reduced-motion: reduce) {\n  .specularSheen {\n    transition: none;\n  }\n}\n"
+    }
+  ],
+  "tailwindExample": "export function LiquidGlassCardTailwind({ title = \"Layered Specular Translucency\" }) {\n  return (\n    <div className=\"relative overflow-hidden rounded-2xl border border-white/15 bg-zinc-900/70 p-6 text-zinc-100 shadow-2xl backdrop-blur-md\">\n      <div className=\"pointer-events-none absolute inset-0 bg-gradient-to-br from-white/10 via-transparent to-white/5\" />\n      <h3 className=\"relative z-10 text-base font-semibold\">{title}</h3>\n    </div>\n  );\n}",
+  "collection": "core"
+}

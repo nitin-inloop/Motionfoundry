@@ -1,0 +1,117 @@
+{
+  "slug": "pulse-loader",
+  "name": "PulseLoader",
+  "category": "Loaders and Feedback",
+  "collection": "studio-kit",
+  "featured": false,
+  "addedAt": "2026-10-16",
+  "version": "2.1.0",
+  "requiresMotion": false,
+  "dependencies": [
+    "react"
+  ],
+  "description": "Concentric rings that expand and fade outward from a glowing core in an evenly staggered sequence, with configurable ring count, size and period.",
+  "tags": [
+    "loader",
+    "pulse",
+    "ripple",
+    "rings",
+    "loading",
+    "css"
+  ],
+  "a11yNotes": "Root uses role=\"status\" with an aria-label (default 'Loading'); rings and core are aria-hidden. Under prefers-reduced-motion the ripple stops and rings are shown as static concentric circles of decreasing opacity.",
+  "defaultProps": {
+    "size": 64,
+    "duration": 1.8,
+    "rings": 3,
+    "color": "#38bdf8",
+    "label": "Loading"
+  },
+  "controls": [
+    {
+      "prop": "size",
+      "label": "Size (px)",
+      "type": "range",
+      "min": 32,
+      "max": 160,
+      "step": 4
+    },
+    {
+      "prop": "duration",
+      "label": "Ripple Duration (s)",
+      "type": "range",
+      "min": 0.6,
+      "max": 4,
+      "step": 0.1
+    },
+    {
+      "prop": "rings",
+      "label": "Rings",
+      "type": "range",
+      "min": 1,
+      "max": 6,
+      "step": 1
+    },
+    {
+      "prop": "color",
+      "label": "Color",
+      "type": "color"
+    },
+    {
+      "prop": "label",
+      "label": "Accessible Label",
+      "type": "text"
+    }
+  ],
+  "propsApi": [
+    {
+      "name": "size",
+      "type": "number",
+      "default": "64",
+      "description": "Loader diameter in pixels."
+    },
+    {
+      "name": "duration",
+      "type": "number",
+      "default": "1.8",
+      "description": "Duration of one ring expansion in seconds."
+    },
+    {
+      "name": "rings",
+      "type": "number",
+      "default": "3",
+      "description": "Number of evenly staggered rings."
+    },
+    {
+      "name": "color",
+      "type": "string",
+      "default": "'#38bdf8'",
+      "description": "Ring and core color."
+    },
+    {
+      "name": "label",
+      "type": "string",
+      "default": "'Loading'",
+      "description": "Accessible label exposed via aria-label on the status element."
+    },
+    {
+      "name": "className",
+      "type": "string",
+      "default": "''",
+      "description": "Additional class merged onto the root element."
+    }
+  ],
+  "files": [
+    {
+      "path": "components/ui/pulse-loader.tsx",
+      "type": "registry:component",
+      "content": "\"use client\";\n\nimport * as React from \"react\";\nimport styles from \"../styles/pulse-loader.module.css\";\n\nexport interface PulseLoaderProps {\n  /** Loader diameter in pixels */\n  size?: number;\n  /** Duration of one ring expansion in seconds */\n  duration?: number;\n  /** Number of staggered rings */\n  rings?: number;\n  /** Ring and core color */\n  color?: string;\n  /** Accessible label announced by assistive technology */\n  label?: string;\n  /** Optional className merged onto the root */\n  className?: string;\n}\n\nexport function PulseLoader({\n  size = 64,\n  duration = 1.8,\n  rings = 3,\n  color = \"#38bdf8\",\n  label = \"Loading\",\n  className = \"\",\n}: PulseLoaderProps) {\n  const total = Math.max(1, Math.round(rings));\n  const safeDuration = duration > 0 ? duration : 1.8;\n  const styleVars = {\n    \"--mf-pl-size\": `${size}px`,\n    \"--mf-pl-duration\": `${safeDuration}s`,\n    \"--mf-pl-color\": color,\n  } as React.CSSProperties;\n\n  return (\n    <div role=\"status\" aria-label={label} style={styleVars} className={`${styles.root} ${className}`.trim()}>\n      {Array.from({ length: total }, (_, i) => (\n        <span\n          key={i}\n          aria-hidden=\"true\"\n          className={styles.ring}\n          style={\n            {\n              animationDelay: `-${((i * safeDuration) / total).toFixed(3)}s`,\n              \"--mf-pl-static\": ((i + 1) / total).toFixed(3),\n            } as React.CSSProperties\n          }\n        />\n      ))}\n      <span aria-hidden=\"true\" className={styles.core} />\n    </div>\n  );\n}\n"
+    },
+    {
+      "path": "components/styles/pulse-loader.module.css",
+      "type": "registry:style",
+      "content": ".root {\n  position: relative;\n  display: inline-block;\n  flex-shrink: 0;\n  width: var(--mf-pl-size, 64px);\n  height: var(--mf-pl-size, 64px);\n}\n\n.ring {\n  position: absolute;\n  inset: 0;\n  border-radius: 50%;\n  border: 2px solid var(--mf-pl-color, var(--mf-accent, #38bdf8));\n  transform: scale(0);\n  opacity: 0;\n  animation: mfPulseRing var(--mf-pl-duration, 1.8s) cubic-bezier(0.22, 1, 0.36, 1) infinite;\n  will-change: transform, opacity;\n}\n\n.core {\n  position: absolute;\n  inset: 40%;\n  border-radius: 50%;\n  background-color: var(--mf-pl-color, var(--mf-accent, #38bdf8));\n  box-shadow: 0 0 calc(var(--mf-pl-size, 64px) * 0.2) var(--mf-pl-color, var(--mf-accent, #38bdf8));\n}\n\n@keyframes mfPulseRing {\n  from {\n    transform: scale(0);\n    opacity: 1;\n  }\n  to {\n    transform: scale(1);\n    opacity: 0;\n  }\n}\n\n@media (prefers-reduced-motion: reduce) {\n  .ring {\n    animation: none;\n    transform: scale(var(--mf-pl-static, 1));\n    opacity: calc(1.1 - var(--mf-pl-static, 1));\n  }\n}\n"
+    }
+  ],
+  "tailwindExample": "\"use client\";\n\nimport { motion } from \"motion/react\";\n\nexport function PulseLoaderTailwind({ size = 64, duration = 1.8 }) {\n  return (\n    <div role=\"status\" aria-label=\"Loading\" className=\"relative\" style={{ width: size, height: size }}>\n      {[0, 1, 2].map((i) => (\n        <motion.span\n          key={i}\n          aria-hidden\n          className=\"absolute inset-0 rounded-full border-2 border-sky-400\"\n          initial={{ scale: 0, opacity: 1 }}\n          animate={{ scale: 1, opacity: 0 }}\n          transition={{ duration, repeat: Infinity, delay: (i * duration) / 3, ease: \"easeOut\" }}\n        />\n      ))}\n      <span aria-hidden className=\"absolute inset-[40%] rounded-full bg-sky-400\" />\n    </div>\n  );\n}"
+}

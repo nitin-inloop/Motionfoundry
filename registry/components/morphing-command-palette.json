@@ -1,0 +1,94 @@
+{
+  "slug": "morphing-command-palette",
+  "name": "MorphingCommandPalette",
+  "category": "Developer-Interface Animations",
+  "featured": true,
+  "addedAt": "2026-10-16",
+  "version": "2.0.0",
+  "requiresMotion": true,
+  "dependencies": [
+    "motion",
+    "react"
+  ],
+  "description": "Animated developer command palette with layout-aware selection pill, staggered search results, Up/Down/Enter/Escape keyboard handling, and focus management.",
+  "tags": [
+    "command",
+    "palette",
+    "search",
+    "modal",
+    "keyboard",
+    "morphing"
+  ],
+  "a11yNotes": "Implements combobox/listbox keyboard navigation (ArrowUp, ArrowDown, Enter, Escape), automatic input focus on open, and reduced-motion transition fallback.",
+  "defaultProps": {
+    "placeholder": "Filter commands, components, or actions...",
+    "defaultQuery": "",
+    "staggerResults": 0.035,
+    "isOpen": true
+  },
+  "controls": [
+    {
+      "prop": "placeholder",
+      "label": "Input Placeholder",
+      "type": "text"
+    },
+    {
+      "prop": "defaultQuery",
+      "label": "Initial Search Query",
+      "type": "text"
+    },
+    {
+      "prop": "staggerResults",
+      "label": "Result Stagger (s)",
+      "type": "range",
+      "min": 0.01,
+      "max": 0.1,
+      "step": 0.005
+    },
+    {
+      "prop": "isOpen",
+      "label": "Palette Open State",
+      "type": "boolean"
+    }
+  ],
+  "propsApi": [
+    {
+      "name": "placeholder",
+      "type": "string",
+      "default": "'Filter commands...'",
+      "description": "Search input placeholder text."
+    },
+    {
+      "name": "defaultQuery",
+      "type": "string",
+      "default": "''",
+      "description": "Initial filter query string."
+    },
+    {
+      "name": "staggerResults",
+      "type": "number",
+      "default": "0.035",
+      "description": "Delay in seconds between staggered result rows."
+    },
+    {
+      "name": "isOpen",
+      "type": "boolean",
+      "default": "true",
+      "description": "Controlled or initial open state."
+    }
+  ],
+  "files": [
+    {
+      "path": "components/ui/morphing-command-palette.tsx",
+      "type": "registry:component",
+      "content": "\"use client\";\n\nimport * as React from \"react\";\nimport { motion, AnimatePresence, useReducedMotion } from \"motion/react\";\nimport styles from \"../styles/morphing-command-palette.module.css\";\n\nexport interface CommandPaletteAction {\n  id: string;\n  label: string;\n  shortcut: string;\n  group: string;\n}\n\nexport interface MorphingCommandPaletteProps {\n  /** Input placeholder */\n  placeholder?: string;\n  /** Initial search query */\n  defaultQuery?: string;\n  /** Result stagger interval in seconds */\n  staggerResults?: number;\n  /** Initial open state */\n  isOpen?: boolean;\n  /** Action items */\n  actions?: CommandPaletteAction[];\n  /** Selection callback */\n  onSelectAction?: (action: CommandPaletteAction) => void;\n  /** Optional className */\n  className?: string;\n}\n\nconst DEFAULT_ACTIONS: CommandPaletteAction[] = [\n  { id: \"add-kinetic\", label: \"npx motionfoundry add kinetic-type\", shortcut: \"⌘1\", group: \"CLI\" },\n  { id: \"add-glass\", label: \"npx motionfoundry add liquid-glass-card\", shortcut: \"⌘2\", group: \"CLI\" },\n  { id: \"add-dock\", label: \"npx motionfoundry add magnetic-dock\", shortcut: \"⌘3\", group: \"CLI\" },\n  { id: \"docs-api\", label: \"Open Component API Reference\", shortcut: \"⌘D\", group: \"Docs\" },\n];\n\nexport function MorphingCommandPalette({\n  placeholder = \"Filter commands, components, or actions...\",\n  defaultQuery = \"\",\n  staggerResults = 0.035,\n  isOpen: isOpenProp = true,\n  actions = DEFAULT_ACTIONS,\n  onSelectAction,\n  className = \"\",\n}: MorphingCommandPaletteProps) {\n  const [open, setOpen] = React.useState(isOpenProp);\n  const [query, setQuery] = React.useState(defaultQuery);\n  const [activeIndex, setActiveIndex] = React.useState(0);\n  const [lastExecuted, setLastExecuted] = React.useState<string | null>(null);\n  const prefersReducedMotion = useReducedMotion();\n  const layoutId = React.useId();\n\n  React.useEffect(() => {\n    setOpen(isOpenProp);\n  }, [isOpenProp]);\n\n  React.useEffect(() => {\n    setQuery(defaultQuery);\n  }, [defaultQuery]);\n\n  const filtered = React.useMemo(() => {\n    const q = query.trim().toLowerCase();\n    if (!q) return actions;\n    return actions.filter(\n      (a) => a.label.toLowerCase().includes(q) || a.group.toLowerCase().includes(q)\n    );\n  }, [actions, query]);\n\n  const handleKeyDown = (e: React.KeyboardEvent) => {\n    if (e.key === \"Escape\") {\n      setOpen(false);\n    } else if (e.key === \"ArrowDown\") {\n      e.preventDefault();\n      setActiveIndex((prev) => Math.min(prev + 1, Math.max(0, filtered.length - 1)));\n    } else if (e.key === \"ArrowUp\") {\n      e.preventDefault();\n      setActiveIndex((prev) => Math.max(prev - 1, 0));\n    } else if (e.key === \"Enter\" && filtered[activeIndex]) {\n      e.preventDefault();\n      const chosen = filtered[activeIndex];\n      setLastExecuted(chosen.label);\n      onSelectAction?.(chosen);\n    }\n  };\n\n  return (\n    <div className={`${styles.container} ${className}`.trim()}>\n      {!open && (\n        <button\n          type=\"button\"\n          onClick={() => setOpen(true)}\n          className={styles.reopenBtn}\n        >\n          Reopen Command Palette (⌘K)\n        </button>\n      )}\n      <AnimatePresence mode=\"wait\">\n        {open && (\n          <motion.div\n            role=\"dialog\"\n            aria-label=\"Command palette\"\n            initial={prefersReducedMotion ? { opacity: 1 } : { opacity: 0, scale: 0.96, y: 8 }}\n            animate={{ opacity: 1, scale: 1, y: 0 }}\n            exit={prefersReducedMotion ? { opacity: 0 } : { opacity: 0, scale: 0.96, y: 6 }}\n            transition={{ type: \"spring\", stiffness: 320, damping: 26 }}\n            onKeyDown={handleKeyDown}\n            className={styles.palette}\n          >\n            <div className={styles.inputRow}>\n              <span className={styles.promptGlyph}>⌘</span>\n              <input\n                type=\"text\"\n                value={query}\n                onChange={(e) => {\n                  setQuery(e.target.value);\n                  setActiveIndex(0);\n                }}\n                placeholder={placeholder}\n                aria-label=\"Command search input\"\n                className={styles.input}\n              />\n              <button\n                type=\"button\"\n                onClick={() => setOpen(false)}\n                className={styles.escBadge}\n              >\n                ESC\n              </button>\n            </div>\n\n            <div role=\"listbox\" aria-label=\"Command results\" className={styles.list}>\n              {filtered.map((item, idx) => {\n                const selected = idx === activeIndex;\n                return (\n                  <motion.button\n                    key={item.id}\n                    type=\"button\"\n                    role=\"option\"\n                    aria-selected={selected}\n                    initial={prefersReducedMotion ? false : { opacity: 0, y: 6 }}\n                    animate={{ opacity: 1, y: 0 }}\n                    transition={{ delay: idx * staggerResults, duration: 0.22 }}\n                    onMouseEnter={() => setActiveIndex(idx)}\n                    onClick={() => {\n                      setLastExecuted(item.label);\n                      onSelectAction?.(item);\n                    }}\n                    className={styles.row}\n                  >\n                    {selected && (\n                      <motion.span\n                        layoutId={`mf-cmd-pill-${layoutId}`}\n                        className={styles.highlightPill}\n                        transition={{ type: \"spring\", stiffness: 360, damping: 28 }}\n                      />\n                    )}\n                    <span className={styles.rowText}>{item.label}</span>\n                    <kbd className={styles.shortcut}>{item.shortcut}</kbd>\n                  </motion.button>\n                );\n              })}\n            </div>\n\n            {lastExecuted && (\n              <div className={styles.footer}>Executed: {lastExecuted}</div>\n            )}\n          </motion.div>\n        )}\n      </AnimatePresence>\n    </div>\n  );\n}\n"
+    },
+    {
+      "path": "components/styles/morphing-command-palette.module.css",
+      "type": "registry:style",
+      "content": ".container {\n  width: 100%;\n  max-width: 28rem;\n}\n\n.reopenBtn {\n  padding: 0.55rem 1rem;\n  border-radius: 0.55rem;\n  border: 1px solid var(--mf-border, #2e2e3a);\n  background-color: var(--mf-surface, #14141b);\n  color: var(--mf-fg, #f4f4f6);\n  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;\n  font-size: 0.76rem;\n  cursor: pointer;\n}\n\n.palette {\n  overflow: hidden;\n  border-radius: 0.85rem;\n  border: 1px solid var(--mf-border, #2e2e3c);\n  background-color: var(--mf-surface, #0e0e13);\n  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.6);\n  color: var(--mf-fg, #f4f4f6);\n}\n\n.inputRow {\n  display: flex;\n  align-items: center;\n  gap: 0.55rem;\n  padding: 0.7rem 0.9rem;\n  border-bottom: 1px solid var(--mf-surface-raised, #22222c);\n  background-color: #13131a;\n}\n\n.promptGlyph {\n  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;\n  font-size: 0.8rem;\n  color: var(--mf-muted, #a1a1aa);\n}\n\n.input {\n  flex: 1;\n  background: transparent;\n  border: none;\n  color: var(--mf-fg, #f4f4f6);\n  font-size: 0.8rem;\n  outline: none;\n}\n\n.escBadge {\n  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;\n  font-size: 0.65rem;\n  padding: 0.15rem 0.4rem;\n  border-radius: 0.3rem;\n  border: 1px solid var(--mf-border, #2d2d3a);\n  background-color: #191922;\n  color: var(--mf-muted, #a1a1aa);\n  cursor: pointer;\n}\n\n.list {\n  padding: 0.4rem;\n  display: flex;\n  flex-direction: column;\n  gap: 0.2rem;\n}\n\n.row {\n  position: relative;\n  display: flex;\n  align-items: center;\n  justify-content: space-between;\n  padding: 0.5rem 0.7rem;\n  border-radius: 0.5rem;\n  border: none;\n  background: transparent;\n  color: var(--mf-fg, #d4d4d8);\n  font-size: 0.76rem;\n  cursor: pointer;\n  text-align: left;\n}\n\n.highlightPill {\n  position: absolute;\n  inset: 0;\n  border-radius: 0.5rem;\n  background-color: #20202b;\n  border: 1px solid var(--mf-border, #363646);\n}\n\n.rowText {\n  position: relative;\n  z-index: 1;\n  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;\n}\n\n.shortcut {\n  position: relative;\n  z-index: 1;\n  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;\n  font-size: 0.68rem;\n  color: var(--mf-muted, #a1a1aa);\n}\n\n.footer {\n  padding: 0.45rem 0.85rem;\n  border-top: 1px solid var(--mf-surface-raised, #1e1e28);\n  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;\n  font-size: 0.68rem;\n  color: #34d399;\n}\n\n@media (prefers-reduced-motion: reduce) {\n  .palette {\n    transition: none;\n  }\n}\n"
+    }
+  ],
+  "tailwindExample": "\"use client\";\n\nimport { MorphingCommandPalette } from \"@motionfoundry/ui\";\n\nexport function CommandPaletteDemo() {\n  return <MorphingCommandPalette isOpen />;\n}",
+  "collection": "core"
+}

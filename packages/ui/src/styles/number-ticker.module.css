@@ -1,0 +1,25 @@
+.root {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.04em;
+  color: var(--mf-fg, #f4f4f6);
+  font-size: clamp(2rem, 6vw, 3.5rem);
+  font-weight: 600;
+  letter-spacing: -0.04em;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+
+.number {
+  font-variant-numeric: tabular-nums;
+}
+
+.affix {
+  color: var(--mf-muted, #a1a1aa);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .number {
+    transition: none !important;
+  }
+}

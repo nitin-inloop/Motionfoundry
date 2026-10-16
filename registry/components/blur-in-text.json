@@ -1,0 +1,124 @@
+{
+  "slug": "blur-in-text",
+  "name": "BlurInText",
+  "category": "Advanced Text Animations",
+  "collection": "studio-kit",
+  "featured": true,
+  "addedAt": "2026-10-16",
+  "version": "2.1.0",
+  "requiresMotion": true,
+  "dependencies": [
+    "motion",
+    "react"
+  ],
+  "description": "Headline that resolves word by word from a soft blur, fading and lifting each word into focus with a configurable stagger and initial blur radius.",
+  "tags": [
+    "text",
+    "blur",
+    "reveal",
+    "stagger",
+    "headline",
+    "entrance"
+  ],
+  "a11yNotes": "Renders a semantic h1/h2/h3/p carrying the full sentence in aria-label while the per-word spans are aria-hidden. Under prefers-reduced-motion words render in their final, unblurred state with no animation.",
+  "defaultProps": {
+    "text": "Motion that feels considered, not decorated.",
+    "duration": 0.6,
+    "stagger": 0.08,
+    "blur": 12,
+    "as": "h2"
+  },
+  "controls": [
+    {
+      "prop": "text",
+      "label": "Text",
+      "type": "text"
+    },
+    {
+      "prop": "duration",
+      "label": "Duration (s)",
+      "type": "range",
+      "min": 0.2,
+      "max": 2,
+      "step": 0.1
+    },
+    {
+      "prop": "stagger",
+      "label": "Stagger (s)",
+      "type": "range",
+      "min": 0,
+      "max": 0.3,
+      "step": 0.01
+    },
+    {
+      "prop": "blur",
+      "label": "Initial Blur (px)",
+      "type": "range",
+      "min": 0,
+      "max": 30,
+      "step": 1
+    },
+    {
+      "prop": "as",
+      "label": "Element",
+      "type": "select",
+      "options": [
+        "h1",
+        "h2",
+        "h3",
+        "p"
+      ]
+    }
+  ],
+  "propsApi": [
+    {
+      "name": "text",
+      "type": "string",
+      "default": "'Motion that feels considered, not decorated.'",
+      "description": "Text revealed word by word."
+    },
+    {
+      "name": "duration",
+      "type": "number",
+      "default": "0.6",
+      "description": "Per-word animation duration in seconds."
+    },
+    {
+      "name": "stagger",
+      "type": "number",
+      "default": "0.08",
+      "description": "Delay between consecutive words in seconds."
+    },
+    {
+      "name": "blur",
+      "type": "number",
+      "default": "12",
+      "description": "Initial blur radius in pixels."
+    },
+    {
+      "name": "as",
+      "type": "'h1' | 'h2' | 'h3' | 'p'",
+      "default": "'h2'",
+      "description": "Semantic element to render."
+    },
+    {
+      "name": "className",
+      "type": "string",
+      "default": "''",
+      "description": "Additional class merged onto the root element."
+    }
+  ],
+  "files": [
+    {
+      "path": "components/ui/blur-in-text.tsx",
+      "type": "registry:component",
+      "content": "\"use client\";\n\nimport * as React from \"react\";\nimport { motion, useReducedMotion } from \"motion/react\";\nimport styles from \"../styles/blur-in-text.module.css\";\n\nexport interface BlurInTextProps {\n  /** Text to reveal word by word */\n  text?: string;\n  /** Per-word animation duration in seconds */\n  duration?: number;\n  /** Delay between consecutive words in seconds */\n  stagger?: number;\n  /** Initial blur radius in pixels */\n  blur?: number;\n  /** Semantic element to render */\n  as?: \"h1\" | \"h2\" | \"h3\" | \"p\";\n  /** Optional className */\n  className?: string;\n}\n\nexport function BlurInText({\n  text = \"Motion that feels considered, not decorated.\",\n  duration = 0.6,\n  stagger = 0.08,\n  blur = 12,\n  as = \"h2\",\n  className = \"\",\n}: BlurInTextProps) {\n  const prefersReducedMotion = useReducedMotion();\n  const words = text.split(\" \").filter(Boolean);\n  const Tag = as;\n\n  return (\n    <Tag aria-label={text} className={`${styles.root} ${className}`.trim()}>\n      {words.map((word, i) => (\n        <motion.span\n          key={`${word}-${i}`}\n          aria-hidden=\"true\"\n          className={styles.word}\n          initial={prefersReducedMotion ? false : { opacity: 0, filter: `blur(${blur}px)`, y: 8 }}\n          animate={{ opacity: 1, filter: \"blur(0px)\", y: 0 }}\n          transition={{ duration, delay: i * stagger, ease: \"easeOut\" }}\n        >\n          {word}\n          {i < words.length - 1 ? \" \" : null}\n        </motion.span>\n      ))}\n    </Tag>\n  );\n}\n"
+    },
+    {
+      "path": "components/styles/blur-in-text.module.css",
+      "type": "registry:style",
+      "content": ".root {\n  margin: 0;\n  color: var(--mf-fg, #f4f4f6);\n  font-size: clamp(1.5rem, 4vw, 2.5rem);\n  font-weight: 600;\n  line-height: 1.15;\n  letter-spacing: -0.03em;\n  text-wrap: balance;\n}\n\n.word {\n  display: inline-block;\n  will-change: filter, opacity, transform;\n}\n\n@media (prefers-reduced-motion: reduce) {\n  .word {\n    filter: none !important;\n    opacity: 1 !important;\n    transform: none !important;\n  }\n}\n"
+    }
+  ],
+  "tailwindExample": "\"use client\";\n\nimport { motion } from \"motion/react\";\n\nexport function BlurInTextTailwind({ text = \"Motion that feels considered, not decorated.\" }) {\n  const words = text.split(\" \");\n  return (\n    <h2 aria-label={text} className=\"text-4xl font-semibold tracking-tight text-zinc-100\">\n      {words.map((w, i) => (\n        <motion.span\n          key={i}\n          aria-hidden\n          className=\"inline-block\"\n          initial={{ opacity: 0, filter: \"blur(12px)\", y: 8 }}\n          animate={{ opacity: 1, filter: \"blur(0px)\", y: 0 }}\n          transition={{ duration: 0.6, delay: i * 0.08, ease: \"easeOut\" }}\n        >\n          {w}\n          {i < words.length - 1 && \"\\u00A0\"}\n        </motion.span>\n      ))}\n    </h2>\n  );\n}"
+}

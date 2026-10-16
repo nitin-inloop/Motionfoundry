@@ -1,0 +1,94 @@
+{
+  "slug": "magnetic-dock",
+  "name": "MagneticDock",
+  "category": "Developer-Interface Animations",
+  "featured": true,
+  "addedAt": "2026-10-16",
+  "version": "2.0.0",
+  "requiresMotion": true,
+  "dependencies": [
+    "motion",
+    "react"
+  ],
+  "description": "Developer launcher dock with smooth Gaussian proximity magnification, non-clipping headroom padding, tooltips, and Left/Right arrow keyboard navigation.",
+  "tags": [
+    "dock",
+    "magnetic",
+    "magnification",
+    "toolbar",
+    "navigation",
+    "developer"
+  ],
+  "a11yNotes": "Renders a semantic <nav> with Left/Right arrow key focus cycling, accessible aria-label on every dock button, and overflow-visible headroom so magnified items never clip.",
+  "defaultProps": {
+    "maxScale": 1.42,
+    "proximity": 115,
+    "baseSize": 42
+  },
+  "controls": [
+    {
+      "prop": "maxScale",
+      "label": "Peak Magnification",
+      "type": "range",
+      "min": 1.1,
+      "max": 1.75,
+      "step": 0.04
+    },
+    {
+      "prop": "proximity",
+      "label": "Proximity Radius (px)",
+      "type": "range",
+      "min": 65,
+      "max": 180,
+      "step": 5
+    },
+    {
+      "prop": "baseSize",
+      "label": "Base Icon Size (px)",
+      "type": "range",
+      "min": 36,
+      "max": 52,
+      "step": 2
+    }
+  ],
+  "propsApi": [
+    {
+      "name": "items",
+      "type": "MagneticDockItem[]",
+      "default": "DEFAULT_DOCK_ITEMS",
+      "description": "Dock launcher items."
+    },
+    {
+      "name": "maxScale",
+      "type": "number",
+      "default": "1.42",
+      "description": "Peak magnification multiplier under the pointer."
+    },
+    {
+      "name": "proximity",
+      "type": "number",
+      "default": "115",
+      "description": "Gaussian influence radius in pixels."
+    },
+    {
+      "name": "baseSize",
+      "type": "number",
+      "default": "42",
+      "description": "Resting button dimension in pixels."
+    }
+  ],
+  "files": [
+    {
+      "path": "components/ui/magnetic-dock.tsx",
+      "type": "registry:component",
+      "content": "\"use client\";\n\nimport * as React from \"react\";\nimport { motion, useReducedMotion } from \"motion/react\";\nimport styles from \"../styles/magnetic-dock.module.css\";\n\nexport interface MagneticDockItem {\n  id: string;\n  label: string;\n  glyph: string;\n}\n\nexport interface MagneticDockProps {\n  /** Dock launcher items */\n  items?: MagneticDockItem[];\n  /** Peak magnification multiplier */\n  maxScale?: number;\n  /** Proximity radius in pixels */\n  proximity?: number;\n  /** Base button size in pixels */\n  baseSize?: number;\n  /** Selection callback */\n  onSelect?: (id: string) => void;\n  /** Optional className */\n  className?: string;\n}\n\nconst DEFAULT_DOCK_ITEMS: MagneticDockItem[] = [\n  { id: \"terminal\", label: \"CLI Runner\", glyph: \"❯_\" },\n  { id: \"registry\", label: \"Registry AST\", glyph: \"◈\" },\n  { id: \"inspector\", label: \"Prop Inspector\", glyph: \"⌘\" },\n  { id: \"profiler\", label: \"120Hz Profiler\", glyph: \"◎\" },\n  { id: \"bundle\", label: \"ESM Bundle\", glyph: \"▤\" },\n];\n\nexport function MagneticDock({\n  items = DEFAULT_DOCK_ITEMS,\n  maxScale = 1.42,\n  proximity = 115,\n  baseSize = 42,\n  onSelect,\n  className = \"\",\n}: MagneticDockProps) {\n  const [pointerX, setPointerX] = React.useState<number | null>(null);\n  const [activeId, setActiveId] = React.useState(items[0]?.id ?? \"terminal\");\n  const btnRefs = React.useRef<(HTMLButtonElement | null)[]>([]);\n  const prefersReducedMotion = useReducedMotion();\n\n  const computeScale = (idx: number) => {\n    if (prefersReducedMotion || pointerX === null) return 1;\n    const el = btnRefs.current[idx];\n    if (!el) return 1;\n    const rect = el.getBoundingClientRect();\n    const center = rect.left + rect.width / 2;\n    const dist = Math.abs(pointerX - center);\n    if (dist >= proximity) return 1;\n    const factor = Math.cos((dist / proximity) * (Math.PI / 2));\n    return 1 + (maxScale - 1) * factor;\n  };\n\n  const handleKeyDown = (e: React.KeyboardEvent, idx: number) => {\n    if (e.key === \"ArrowRight\") {\n      e.preventDefault();\n      btnRefs.current[(idx + 1) % items.length]?.focus();\n    } else if (e.key === \"ArrowLeft\") {\n      e.preventDefault();\n      btnRefs.current[(idx - 1 + items.length) % items.length]?.focus();\n    }\n  };\n\n  return (\n    <div className={styles.safeZone}>\n      <nav\n        aria-label=\"Developer magnetic dock\"\n        onPointerMove={(e) => setPointerX(e.clientX)}\n        onPointerLeave={() => setPointerX(null)}\n        className={`${styles.dock} ${className}`.trim()}\n      >\n        {items.map((item, idx) => {\n          const scale = computeScale(idx);\n          const isSelected = item.id === activeId;\n          return (\n            <motion.button\n              key={item.id}\n              ref={(el) => {\n                btnRefs.current[idx] = el;\n              }}\n              type=\"button\"\n              aria-label={item.label}\n              aria-current={isSelected ? \"page\" : undefined}\n              onClick={() => {\n                setActiveId(item.id);\n                onSelect?.(item.id);\n              }}\n              onKeyDown={(e) => handleKeyDown(e, idx)}\n              animate={{ scale, y: scale > 1.05 ? -(scale - 1) * 14 : 0 }}\n              transition={{ type: \"spring\", stiffness: 320, damping: 22 }}\n              style={{ width: `${baseSize}px`, height: `${baseSize}px` }}\n              className={`${styles.item} ${isSelected ? styles.itemActive : \"\"}`.trim()}\n            >\n              <span className={styles.glyph}>{item.glyph}</span>\n              <span className={styles.tooltip}>{item.label}</span>\n              {isSelected && <span aria-hidden=\"true\" className={styles.indicator} />}\n            </motion.button>\n          );\n        })}\n      </nav>\n    </div>\n  );\n}\n"
+    },
+    {
+      "path": "components/styles/magnetic-dock.module.css",
+      "type": "registry:style",
+      "content": ".safeZone {\n  padding-top: 2.25rem;\n  padding-bottom: 0.5rem;\n  display: inline-flex;\n  justify-content: center;\n  overflow: visible;\n}\n\n.dock {\n  display: inline-flex;\n  align-items: center;\n  gap: 0.65rem;\n  padding: 0.6rem 0.9rem;\n  border-radius: 1rem;\n  border: 1px solid var(--mf-border, #2b2b36);\n  background-color: rgba(16, 16, 22, 0.92);\n  box-shadow: 0 14px 34px rgba(0, 0, 0, 0.55);\n  overflow: visible;\n}\n\n.item {\n  position: relative;\n  display: inline-flex;\n  align-items: center;\n  justify-content: center;\n  border-radius: 0.65rem;\n  border: 1px solid var(--mf-border, #2d2d39);\n  background-color: #181820;\n  color: var(--mf-fg, #e4e4e7);\n  cursor: pointer;\n  transform-origin: bottom center;\n  will-change: transform;\n}\n\n.item:hover .tooltip,\n.item:focus-visible .tooltip {\n  opacity: 1;\n  transform: translateX(-50%) translateY(-4px);\n}\n\n.item:focus-visible {\n  outline: 2px solid var(--mf-fg, #f4f4f6);\n  outline-offset: 2px;\n}\n\n.itemActive {\n  border-color: var(--mf-border-strong, #52525b);\n  background-color: #242430;\n  color: #ffffff;\n}\n\n.glyph {\n  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;\n  font-size: 0.82rem;\n  font-weight: 600;\n}\n\n.tooltip {\n  pointer-events: none;\n  position: absolute;\n  bottom: 100%;\n  left: 50%;\n  transform: translateX(-50%) translateY(2px);\n  margin-bottom: 0.5rem;\n  padding: 0.2rem 0.5rem;\n  border-radius: 0.375rem;\n  border: 1px solid var(--mf-border, #323240);\n  background-color: var(--mf-bg, #09090b);\n  color: var(--mf-fg, #f4f4f6);\n  font-size: 0.68rem;\n  white-space: nowrap;\n  opacity: 0;\n  transition: opacity 140ms ease, transform 140ms ease;\n}\n\n.indicator {\n  position: absolute;\n  bottom: -5px;\n  width: 4px;\n  height: 4px;\n  border-radius: 9999px;\n  background-color: var(--mf-fg, #f4f4f6);\n}\n\n@media (prefers-reduced-motion: reduce) {\n  .item {\n    transform: none !important;\n  }\n}\n"
+    }
+  ],
+  "tailwindExample": "\"use client\";\n\nimport { MagneticDock } from \"@motionfoundry/ui\";\n\nexport function MagneticDockDemo() {\n  return <MagneticDock maxScale={1.42} proximity={115} />;\n}",
+  "collection": "core"
+}

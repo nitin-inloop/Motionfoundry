@@ -1,0 +1,63 @@
+{
+  "name": "@motionfoundry/ui",
+  "version": "2.1.0",
+  "description": "Production-ready animated React components (48 across Core + Studio Kit) powered by Motion, SVG, Canvas, and scoped CSS Modules.",
+  "license": "MIT",
+  "sideEffects": [
+    "*.css"
+  ],
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.cjs"
+    },
+    "./styles.css": "./dist/styles.css",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist",
+    "src",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "node ./scripts/build.mjs",
+    "typecheck": "tsc --noEmit -p tsconfig.json"
+  },
+  "peerDependencies": {
+    "react": "^18.0.0 || ^19.0.0",
+    "react-dom": "^18.0.0 || ^19.0.0",
+    "motion": "^12.0.0 || ^14.0.0"
+  },
+  "devDependencies": {
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "motion": "^14.0.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "typescript": "^5.7.3",
+    "esbuild": "^0.28.2"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nitin-inloop/Motionfoundry.git",
+    "directory": "packages/ui"
+  },
+  "homepage": "https://github.com/nitin-inloop/Motionfoundry#readme",
+  "bugs": {
+    "url": "https://github.com/nitin-inloop/Motionfoundry/issues"
+  },
+  "keywords": [
+    "react",
+    "animation",
+    "motion",
+    "components",
+    "nextjs",
+    "css-modules",
+    "ui"
+  ]
+}

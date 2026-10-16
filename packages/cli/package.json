@@ -1,0 +1,37 @@
+{
+  "name": "motionfoundry",
+  "version": "2.1.0",
+  "description": "Official CLI for installing MotionFoundry animated React components (Core + Studio Kit) and their CSS Modules into your project.",
+  "license": "MIT",
+  "type": "module",
+  "bin": {
+    "motionfoundry": "./dist/index.mjs"
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "node ./scripts/build.mjs"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nitin-inloop/Motionfoundry.git",
+    "directory": "packages/cli"
+  },
+  "homepage": "https://github.com/nitin-inloop/Motionfoundry#readme",
+  "bugs": {
+    "url": "https://github.com/nitin-inloop/Motionfoundry/issues"
+  },
+  "keywords": [
+    "cli",
+    "react",
+    "animation",
+    "components",
+    "motion",
+    "shadcn-style"
+  ]
+}

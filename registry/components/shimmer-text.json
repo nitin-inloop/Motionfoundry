@@ -1,0 +1,99 @@
+{
+  "slug": "shimmer-text",
+  "name": "ShimmerText",
+  "category": "Advanced Text Animations",
+  "collection": "studio-kit",
+  "featured": false,
+  "addedAt": "2026-10-16",
+  "version": "2.1.0",
+  "requiresMotion": false,
+  "dependencies": [
+    "react"
+  ],
+  "description": "Text with a soft highlight band sweeping across it on a loop, built with a pure CSS background-clip gradient animation and configurable base and shimmer colors.",
+  "tags": [
+    "text",
+    "shimmer",
+    "shine",
+    "loading",
+    "gradient",
+    "css"
+  ],
+  "a11yNotes": "Renders plain inline text, so screen readers read it normally; the gradient is purely visual. Under prefers-reduced-motion the sweep animation is removed and the text renders in the solid base color.",
+  "defaultProps": {
+    "text": "Generating your preview...",
+    "duration": 2.5,
+    "baseColor": "#71717a",
+    "shimmerColor": "#f4f4f6"
+  },
+  "controls": [
+    {
+      "prop": "text",
+      "label": "Text",
+      "type": "text"
+    },
+    {
+      "prop": "duration",
+      "label": "Sweep Duration (s)",
+      "type": "range",
+      "min": 0.8,
+      "max": 6,
+      "step": 0.1
+    },
+    {
+      "prop": "baseColor",
+      "label": "Base Color",
+      "type": "color"
+    },
+    {
+      "prop": "shimmerColor",
+      "label": "Shimmer Color",
+      "type": "color"
+    }
+  ],
+  "propsApi": [
+    {
+      "name": "text",
+      "type": "string",
+      "default": "'Generating your preview...'",
+      "description": "Text the highlight sweeps across."
+    },
+    {
+      "name": "duration",
+      "type": "number",
+      "default": "2.5",
+      "description": "Duration of one sweep in seconds."
+    },
+    {
+      "name": "baseColor",
+      "type": "string",
+      "default": "'#71717a'",
+      "description": "Resting text color."
+    },
+    {
+      "name": "shimmerColor",
+      "type": "string",
+      "default": "'#f4f4f6'",
+      "description": "Color of the moving highlight."
+    },
+    {
+      "name": "className",
+      "type": "string",
+      "default": "''",
+      "description": "Additional class merged onto the root element."
+    }
+  ],
+  "files": [
+    {
+      "path": "components/ui/shimmer-text.tsx",
+      "type": "registry:component",
+      "content": "\"use client\";\n\nimport * as React from \"react\";\nimport styles from \"../styles/shimmer-text.module.css\";\n\nexport interface ShimmerTextProps {\n  /** Text the highlight sweeps across */\n  text?: string;\n  /** Duration of one sweep in seconds */\n  duration?: number;\n  /** Resting text color */\n  baseColor?: string;\n  /** Color of the moving highlight */\n  shimmerColor?: string;\n  /** Optional className */\n  className?: string;\n}\n\nexport function ShimmerText({\n  text = \"Generating your preview...\",\n  duration = 2.5,\n  baseColor = \"#71717a\",\n  shimmerColor = \"#f4f4f6\",\n  className = \"\",\n}: ShimmerTextProps) {\n  const styleVars = {\n    \"--mf-sh-duration\": `${duration}s`,\n    \"--mf-sh-base\": baseColor,\n    \"--mf-sh-shine\": shimmerColor,\n  } as React.CSSProperties;\n\n  return (\n    <span style={styleVars} className={`${styles.root} ${className}`.trim()}>\n      {text}\n    </span>\n  );\n}\n"
+    },
+    {
+      "path": "components/styles/shimmer-text.module.css",
+      "type": "registry:style",
+      "content": ".root {\n  display: inline-block;\n  font-size: 1.125rem;\n  font-weight: 500;\n  letter-spacing: -0.01em;\n  color: var(--mf-sh-base, var(--mf-subtle, #71717a));\n  background-image: linear-gradient(\n    110deg,\n    var(--mf-sh-base, var(--mf-subtle, #71717a)) 35%,\n    var(--mf-sh-shine, var(--mf-fg, #f4f4f6)) 50%,\n    var(--mf-sh-base, var(--mf-subtle, #71717a)) 65%\n  );\n  background-size: 250% 100%;\n  background-position: 100% 0;\n  -webkit-background-clip: text;\n  background-clip: text;\n  -webkit-text-fill-color: transparent;\n  animation: mf-sh-sweep var(--mf-sh-duration, 2.5s) linear infinite;\n}\n\n@keyframes mf-sh-sweep {\n  from {\n    background-position: 100% 0;\n  }\n  to {\n    background-position: -150% 0;\n  }\n}\n\n@media (prefers-reduced-motion: reduce) {\n  .root {\n    animation: none;\n    background-image: none;\n    -webkit-text-fill-color: currentColor;\n  }\n}\n"
+    }
+  ],
+  "tailwindExample": "\"use client\";\n\nimport { motion } from \"motion/react\";\n\nexport function ShimmerTextTailwind({ text = \"Generating your preview...\" }) {\n  return (\n    <motion.span\n      className=\"inline-block bg-[linear-gradient(110deg,#71717a_35%,#f4f4f6_50%,#71717a_65%)] bg-[length:250%_100%] bg-clip-text text-lg font-medium text-transparent\"\n      animate={{ backgroundPosition: [\"100% 0%\", \"-150% 0%\"] }}\n      transition={{ duration: 2.5, repeat: Infinity, ease: \"linear\" }}\n    >\n      {text}\n    </motion.span>\n  );\n}"
+}

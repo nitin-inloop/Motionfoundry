@@ -1,0 +1,142 @@
+{
+  "slug": "slide-fill-button",
+  "name": "SlideFillButton",
+  "category": "Interactive Buttons and Controls",
+  "collection": "studio-kit",
+  "featured": false,
+  "addedAt": "2026-10-16",
+  "version": "2.1.0",
+  "requiresMotion": true,
+  "dependencies": [
+    "motion",
+    "react"
+  ],
+  "description": "Outline button whose solid fill slides in from a chosen edge on hover or keyboard focus while the label inverts color, with configurable fill color and timing.",
+  "tags": [
+    "button",
+    "hover",
+    "fill",
+    "slide",
+    "outline",
+    "focus"
+  ],
+  "a11yNotes": "Semantic <button type=\"button\">; the fill layer is aria-hidden and decorative. The fill also plays on :focus-visible keyboard focus (not on mouse focus), touch taps do not leave a sticky fill, and prefers-reduced-motion makes the fill and color change instant.",
+  "defaultProps": {
+    "label": "Get started",
+    "direction": "left",
+    "fillColor": "#f4f4f6",
+    "fillTextColor": "#09090b",
+    "duration": 0.35,
+    "disabled": false
+  },
+  "controls": [
+    {
+      "prop": "label",
+      "label": "Label",
+      "type": "text"
+    },
+    {
+      "prop": "direction",
+      "label": "Fill From",
+      "type": "select",
+      "options": [
+        "left",
+        "right",
+        "up",
+        "down"
+      ]
+    },
+    {
+      "prop": "fillColor",
+      "label": "Fill Color",
+      "type": "color"
+    },
+    {
+      "prop": "fillTextColor",
+      "label": "Filled Text Color",
+      "type": "color"
+    },
+    {
+      "prop": "duration",
+      "label": "Duration (s)",
+      "type": "range",
+      "min": 0.15,
+      "max": 1.2,
+      "step": 0.05
+    },
+    {
+      "prop": "disabled",
+      "label": "Disabled",
+      "type": "boolean"
+    }
+  ],
+  "propsApi": [
+    {
+      "name": "label",
+      "type": "string",
+      "default": "'Get started'",
+      "description": "Button label (ignored when children are provided)."
+    },
+    {
+      "name": "children",
+      "type": "React.ReactNode",
+      "default": "undefined",
+      "description": "Custom button content."
+    },
+    {
+      "name": "direction",
+      "type": "'left' | 'right' | 'up' | 'down'",
+      "default": "'left'",
+      "description": "Edge the fill slides in from."
+    },
+    {
+      "name": "fillColor",
+      "type": "string",
+      "default": "'#f4f4f6'",
+      "description": "Fill color."
+    },
+    {
+      "name": "fillTextColor",
+      "type": "string",
+      "default": "'#09090b'",
+      "description": "Label color while filled."
+    },
+    {
+      "name": "duration",
+      "type": "number",
+      "default": "0.35",
+      "description": "Fill transition duration in seconds."
+    },
+    {
+      "name": "disabled",
+      "type": "boolean",
+      "default": "false",
+      "description": "Disables the button."
+    },
+    {
+      "name": "onClick",
+      "type": "(event: React.MouseEvent<HTMLButtonElement>) => void",
+      "default": "undefined",
+      "description": "Click handler."
+    },
+    {
+      "name": "className",
+      "type": "string",
+      "default": "''",
+      "description": "Extra class merged onto the button."
+    }
+  ],
+  "files": [
+    {
+      "path": "components/ui/slide-fill-button.tsx",
+      "type": "registry:component",
+      "content": "\"use client\";\n\nimport * as React from \"react\";\nimport { motion, useReducedMotion } from \"motion/react\";\nimport styles from \"../styles/slide-fill-button.module.css\";\n\nexport interface SlideFillButtonProps {\n  /** Button label (ignored when children are provided) */\n  label?: string;\n  /** Custom button content */\n  children?: React.ReactNode;\n  /** Edge the fill slides in from */\n  direction?: \"left\" | \"right\" | \"up\" | \"down\";\n  /** Fill color */\n  fillColor?: string;\n  /** Label color while filled */\n  fillTextColor?: string;\n  /** Fill transition duration in seconds */\n  duration?: number;\n  /** Disable the button */\n  disabled?: boolean;\n  /** Click handler */\n  onClick?: (event: React.MouseEvent<HTMLButtonElement>) => void;\n  /** Optional className */\n  className?: string;\n}\n\nconst OFFSETS: Record<NonNullable<SlideFillButtonProps[\"direction\"]>, { x: string; y: string }> = {\n  left: { x: \"-101%\", y: \"0%\" },\n  right: { x: \"101%\", y: \"0%\" },\n  up: { x: \"0%\", y: \"101%\" },\n  down: { x: \"0%\", y: \"-101%\" },\n};\n\nexport function SlideFillButton({\n  label = \"Get started\",\n  children,\n  direction = \"left\",\n  fillColor = \"#f4f4f6\",\n  fillTextColor = \"#09090b\",\n  duration = 0.35,\n  disabled = false,\n  onClick,\n  className = \"\",\n}: SlideFillButtonProps) {\n  const prefersReducedMotion = useReducedMotion();\n  const [hovered, setHovered] = React.useState(false);\n  const [focused, setFocused] = React.useState(false);\n  const active = !disabled && (hovered || focused);\n  const from = OFFSETS[direction] ?? OFFSETS.left;\n\n  const handleFocus = (event: React.FocusEvent<HTMLButtonElement>) => {\n    let visible = true;\n    try {\n      visible = event.currentTarget.matches(\":focus-visible\");\n    } catch {\n      visible = true;\n    }\n    setFocused(visible);\n  };\n\n  const transition = prefersReducedMotion\n    ? { duration: 0 }\n    : { duration, ease: [0.22, 1, 0.36, 1] as const };\n\n  return (\n    <button\n      type=\"button\"\n      disabled={disabled}\n      onClick={onClick}\n      onPointerEnter={(e) => e.pointerType !== \"touch\" && setHovered(true)}\n      onPointerLeave={() => setHovered(false)}\n      onFocus={handleFocus}\n      onBlur={() => setFocused(false)}\n      data-active={active || undefined}\n      style={\n        {\n          \"--mf-sf-fill\": fillColor,\n          \"--mf-sf-fill-text\": fillTextColor,\n          \"--mf-sf-duration\": `${prefersReducedMotion ? 0 : duration}s`,\n        } as React.CSSProperties\n      }\n      className={`${styles.root} ${className}`.trim()}\n    >\n      <motion.span\n        aria-hidden=\"true\"\n        className={styles.fill}\n        initial={false}\n        animate={active ? { x: \"0%\", y: \"0%\" } : from}\n        transition={transition}\n      />\n      <span className={styles.label}>{children ?? label}</span>\n    </button>\n  );\n}\n"
+    },
+    {
+      "path": "components/styles/slide-fill-button.module.css",
+      "type": "registry:style",
+      "content": ".root {\n  position: relative;\n  display: inline-flex;\n  align-items: center;\n  justify-content: center;\n  padding: 0.7rem 1.35rem;\n  overflow: hidden;\n  isolation: isolate;\n  border-radius: 0.625rem;\n  border: 1px solid var(--mf-border, #2e2e38);\n  background-color: var(--mf-surface, #141419);\n  color: var(--mf-fg, #f4f4f6);\n  font: inherit;\n  font-size: 0.875rem;\n  font-weight: 500;\n  letter-spacing: -0.01em;\n  cursor: pointer;\n  user-select: none;\n  transition: border-color var(--mf-sf-duration, 0.35s) ease;\n}\n\n.root[data-active] {\n  border-color: var(--mf-sf-fill, var(--mf-fg, #f4f4f6));\n}\n\n.root:disabled {\n  opacity: 0.5;\n  cursor: not-allowed;\n}\n\n.root:focus-visible {\n  outline: 2px solid var(--mf-fg, #e4e4e7);\n  outline-offset: 3px;\n}\n\n.fill {\n  position: absolute;\n  inset: 0;\n  z-index: 0;\n  background-color: var(--mf-sf-fill, var(--mf-fg, #f4f4f6));\n  transform: translateX(-101%);\n  pointer-events: none;\n}\n\n.label {\n  position: relative;\n  z-index: 1;\n  display: inline-flex;\n  align-items: center;\n  gap: 0.5rem;\n  pointer-events: none;\n  transition: color var(--mf-sf-duration, 0.35s) cubic-bezier(0.22, 1, 0.36, 1);\n}\n\n.root[data-active] .label {\n  color: var(--mf-sf-fill-text, var(--mf-bg, #09090b));\n}\n\n@media (prefers-reduced-motion: reduce) {\n  .root,\n  .label {\n    transition: none;\n  }\n}\n"
+    }
+  ],
+  "tailwindExample": "\"use client\";\n\nimport { motion } from \"motion/react\";\n\nexport function SlideFillButtonTailwind({ label = \"Get started\" }) {\n  return (\n    <motion.button\n      type=\"button\"\n      initial=\"rest\"\n      animate=\"rest\"\n      whileHover=\"active\"\n      whileFocus=\"active\"\n      className=\"relative overflow-hidden rounded-lg border border-zinc-700 bg-zinc-900 px-5 py-2.5 text-sm font-medium text-zinc-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[3px] focus-visible:outline-zinc-200\"\n    >\n      <motion.span\n        aria-hidden\n        className=\"absolute inset-0 bg-zinc-100\"\n        variants={{ rest: { x: \"-101%\" }, active: { x: 0 } }}\n        transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}\n      />\n      <motion.span className=\"relative\" variants={{ rest: { color: \"#f4f4f5\" }, active: { color: \"#09090b\" } }}>\n        {label}\n      </motion.span>\n    </motion.button>\n  );\n}"
+}

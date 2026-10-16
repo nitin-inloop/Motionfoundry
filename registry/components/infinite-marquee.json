@@ -1,0 +1,114 @@
+{
+  "slug": "infinite-marquee",
+  "name": "InfiniteMarquee",
+  "category": "Reveals and Continuous Motion",
+  "featured": false,
+  "addedAt": "2026-10-16",
+  "version": "2.0.0",
+  "requiresMotion": false,
+  "dependencies": [
+    "react"
+  ],
+  "description": "Seamless looping ticker marquee supporting configurable direction, speed, gap spacing, pause-on-hover, and aria-hidden track duplication without layout jumps.",
+  "tags": [
+    "marquee",
+    "ticker",
+    "loop",
+    "infinite",
+    "carousel",
+    "continuous"
+  ],
+  "a11yNotes": "Marks the duplicated second track aria-hidden='true' so screen readers only read the item list once, and pauses translation automatically on hover, focus-within, or prefers-reduced-motion.",
+  "defaultProps": {
+    "items": [
+      "KineticType",
+      "GlyphCascade",
+      "LiquidGlassCard",
+      "HoloTiltCard",
+      "MagneticDock",
+      "MorphingCommandPalette"
+    ],
+    "direction": "left",
+    "speed": 22,
+    "gap": 14,
+    "pauseOnHover": true
+  },
+  "controls": [
+    {
+      "prop": "direction",
+      "label": "Scroll Direction",
+      "type": "select",
+      "options": [
+        "left",
+        "right"
+      ]
+    },
+    {
+      "prop": "speed",
+      "label": "Loop Duration (s)",
+      "type": "range",
+      "min": 8,
+      "max": 45,
+      "step": 2
+    },
+    {
+      "prop": "gap",
+      "label": "Item Spacing (px)",
+      "type": "range",
+      "min": 8,
+      "max": 32,
+      "step": 2
+    },
+    {
+      "prop": "pauseOnHover",
+      "label": "Pause on Hover",
+      "type": "boolean"
+    }
+  ],
+  "propsApi": [
+    {
+      "name": "items",
+      "type": "string[]",
+      "default": "['KineticType', ...]",
+      "description": "Array of labels or badges to scroll seamlessly."
+    },
+    {
+      "name": "direction",
+      "type": "'left' | 'right'",
+      "default": "'left'",
+      "description": "Horizontal travel direction."
+    },
+    {
+      "name": "speed",
+      "type": "number",
+      "default": "22",
+      "description": "Duration in seconds for one complete loop."
+    },
+    {
+      "name": "gap",
+      "type": "number",
+      "default": "14",
+      "description": "Gap in pixels between consecutive items."
+    },
+    {
+      "name": "pauseOnHover",
+      "type": "boolean",
+      "default": "true",
+      "description": "Pauses the marquee when hovered or focused."
+    }
+  ],
+  "files": [
+    {
+      "path": "components/ui/infinite-marquee.tsx",
+      "type": "registry:component",
+      "content": "\"use client\";\n\nimport * as React from \"react\";\nimport styles from \"../styles/infinite-marquee.module.css\";\n\nexport interface InfiniteMarqueeProps {\n  /** String items to display in the marquee */\n  items?: string[];\n  /** Scroll direction */\n  direction?: \"left\" | \"right\";\n  /** Loop cycle duration in seconds */\n  speed?: number;\n  /** Gap between items in pixels */\n  gap?: number;\n  /** Pause animation on pointer hover */\n  pauseOnHover?: boolean;\n  /** Optional className */\n  className?: string;\n}\n\nconst DEFAULT_ITEMS = [\n  \"KineticType\",\n  \"GlyphCascade\",\n  \"LiquidGlassCard\",\n  \"HoloTiltCard\",\n  \"MagneticDock\",\n  \"MorphingCommandPalette\",\n];\n\nexport function InfiniteMarquee({\n  items = DEFAULT_ITEMS,\n  direction = \"left\",\n  speed = 22,\n  gap = 14,\n  pauseOnHover = true,\n  className = \"\",\n}: InfiniteMarqueeProps) {\n  const safeItems = items.length > 0 ? items : DEFAULT_ITEMS;\n  const styleVars = {\n    \"--mf-mq-speed\": `${speed}s`,\n    \"--mf-mq-gap\": `${gap}px`,\n    \"--mf-mq-dir\": direction === \"right\" ? \"reverse\" : \"normal\",\n  } as React.CSSProperties;\n\n  return (\n    <div\n      style={styleVars}\n      className={`${styles.viewport} ${pauseOnHover ? styles.pauseOnHover : \"\"} ${className}`.trim()}\n    >\n      <div className={styles.track}>\n        {safeItems.map((item, idx) => (\n          <span key={`primary-${idx}`} className={styles.pill}>\n            {item}\n          </span>\n        ))}\n      </div>\n      <div aria-hidden=\"true\" className={styles.track}>\n        {safeItems.map((item, idx) => (\n          <span key={`clone-${idx}`} className={styles.pill}>\n            {item}\n          </span>\n        ))}\n      </div>\n    </div>\n  );\n}\n"
+    },
+    {
+      "path": "components/styles/infinite-marquee.module.css",
+      "type": "registry:style",
+      "content": ".viewport {\n  position: relative;\n  display: flex;\n  overflow: hidden;\n  user-select: none;\n  gap: var(--mf-mq-gap, 14px);\n  width: 100%;\n  mask-image: linear-gradient(to right, transparent 0%, black 10%, black 90%, transparent 100%);\n}\n\n.track {\n  flex-shrink: 0;\n  display: flex;\n  align-items: center;\n  justify-content: space-around;\n  gap: var(--mf-mq-gap, 14px);\n  min-width: 100%;\n  animation: mfMarqueeScroll var(--mf-mq-speed, 22s) linear infinite;\n  animation-direction: var(--mf-mq-dir, normal);\n}\n\n.pauseOnHover:hover .track,\n.pauseOnHover:focus-within .track {\n  animation-play-state: paused;\n}\n\n.pill {\n  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;\n  font-size: 0.76rem;\n  padding: 0.45rem 0.85rem;\n  border-radius: 999px;\n  border: 1px solid var(--mf-surface-raised, #272732);\n  background-color: var(--mf-surface, #121218);\n  color: var(--mf-fg, #e4e4e7);\n  white-space: nowrap;\n}\n\n@keyframes mfMarqueeScroll {\n  from {\n    transform: translate3d(0, 0, 0);\n  }\n  to {\n    transform: translate3d(calc(-100% - var(--mf-mq-gap, 14px)), 0, 0);\n  }\n}\n\n@media (prefers-reduced-motion: reduce) {\n  .track {\n    animation: none;\n  }\n}\n"
+    }
+  ],
+  "tailwindExample": "\"use client\";\n\nimport { InfiniteMarquee } from \"@motionfoundry/ui\";\n\nexport function InfiniteMarqueeDemo() {\n  return <InfiniteMarquee speed={20} pauseOnHover />;\n}",
+  "collection": "core"
+}

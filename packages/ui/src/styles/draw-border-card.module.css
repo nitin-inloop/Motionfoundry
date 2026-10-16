@@ -1,0 +1,51 @@
+.root {
+  position: relative;
+  display: block;
+  width: 18rem;
+  max-width: 100%;
+  padding: 1.5rem;
+  box-sizing: border-box;
+  border-radius: var(--mf-db-radius, 16px);
+  border: 1px solid var(--mf-border, #2e2e38);
+  background: radial-gradient(120% 90% at 50% 0%, var(--mf-surface-raised, #1b1b22) 0%, var(--mf-surface, #121218) 75%);
+  color: var(--mf-fg, #f4f4f6);
+}
+
+.root:focus-visible {
+  outline: 2px solid var(--mf-fg, #e4e4e7);
+  outline-offset: 3px;
+}
+
+/* Covers the border box so the stroke sits exactly on the rounded edge. */
+.outline {
+  position: absolute;
+  inset: -1px;
+  width: calc(100% + 2px);
+  height: calc(100% + 2px);
+  overflow: visible;
+  pointer-events: none;
+}
+
+.content {
+  position: relative;
+}
+
+.title {
+  margin: 0 0 0.5rem;
+  font-size: 1.15rem;
+  font-weight: 650;
+  letter-spacing: -0.02em;
+}
+
+.body {
+  margin: 0;
+  font-size: 0.875rem;
+  line-height: 1.55;
+  color: var(--mf-muted, #a1a1aa);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .outline rect {
+    transition: none;
+  }
+}

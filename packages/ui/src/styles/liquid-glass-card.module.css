@@ -1,0 +1,72 @@
+.card {
+  --mf-lg-x: 50%;
+  --mf-lg-y: 30%;
+  --mf-lg-active: 0;
+  position: relative;
+  overflow: hidden;
+  border-radius: 0.9rem;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background-color: var(--mf-lg-tint, rgba(24, 24, 32, 0.72));
+  backdrop-filter: blur(var(--mf-lg-blur, 16px)) saturate(140%);
+  -webkit-backdrop-filter: blur(var(--mf-lg-blur, 16px)) saturate(140%);
+  padding: 1.5rem;
+  color: var(--mf-fg, #f4f4f6);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.18), 0 16px 36px rgba(0, 0, 0, 0.45);
+}
+
+.specularSheen {
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
+  opacity: calc(var(--mf-lg-active, 0) * var(--mf-lg-rim, 0.26));
+  transition: opacity 220ms ease;
+  background: radial-gradient(
+    280px circle at var(--mf-lg-x, 50%) var(--mf-lg-y, 30%),
+    rgba(255, 255, 255, 0.75),
+    transparent 70%
+  );
+}
+
+.edgeHighlight {
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.12) 0%, transparent 45%, rgba(255, 255, 255, 0.04) 100%);
+}
+
+.inner {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.eyebrow {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--mf-fg, #d4d4d8);
+}
+
+.title {
+  margin: 0;
+  font-size: 1.05rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+
+.description {
+  margin: 0;
+  font-size: 0.85rem;
+  line-height: 1.55;
+  color: var(--mf-fg, #d4d4d8);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .specularSheen {
+    transition: none;
+  }
+}

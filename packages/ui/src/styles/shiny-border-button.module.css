@@ -1,0 +1,85 @@
+.root {
+  position: relative;
+  display: inline-flex;
+  padding: 1.5px;
+  border: 0;
+  border-radius: 0.625rem;
+  background-color: var(--mf-border, #2e2e38);
+  color: var(--mf-fg, #f4f4f6);
+  font: inherit;
+  font-size: 0.875rem;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  cursor: pointer;
+  overflow: hidden;
+  isolation: isolate;
+  transition: background-color 160ms ease, transform 160ms ease;
+}
+
+.root:hover {
+  background-color: var(--mf-border-strong, #52525b);
+}
+
+.root:active:not(:disabled) {
+  transform: scale(0.98);
+}
+
+.root:focus-visible {
+  outline: 2px solid var(--mf-fg, #e4e4e7);
+  outline-offset: 3px;
+}
+
+.root:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+/* Oversized square so the rotating conic beam covers any button aspect ratio. */
+.beam {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  z-index: -1;
+  width: max(300%, 12rem);
+  aspect-ratio: 1;
+  background: conic-gradient(
+    from 0deg,
+    transparent 0 70%,
+    var(--mf-sb-beam, var(--mf-accent, #38bdf8)) 85%,
+    transparent 100%
+  );
+  transform: translate(-50%, -50%) rotate(0deg);
+  animation: mf-sb-spin var(--mf-sb-duration, 3s) linear infinite;
+  pointer-events: none;
+}
+
+.root:disabled .beam {
+  animation-play-state: paused;
+}
+
+.inner {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.7rem 1.35rem;
+  border-radius: calc(0.625rem - 1.5px);
+  background-color: var(--mf-surface, #141419);
+}
+
+@keyframes mf-sb-spin {
+  to {
+    transform: translate(-50%, -50%) rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .beam {
+    animation: none;
+    background: linear-gradient(135deg, var(--mf-sb-beam, var(--mf-accent, #38bdf8)), transparent 60%);
+  }
+
+  .root:active:not(:disabled) {
+    transform: none;
+  }
+}

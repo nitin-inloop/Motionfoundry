@@ -1,0 +1,96 @@
+{
+  "slug": "beam-lines",
+  "name": "BeamLines",
+  "category": "Animated Backgrounds and Visual Effects",
+  "collection": "studio-kit",
+  "featured": false,
+  "addedAt": "2026-10-16",
+  "version": "2.1.0",
+  "requiresMotion": false,
+  "dependencies": [
+    "react"
+  ],
+  "description": "Evenly spaced vertical guide lines with glowing light beams sweeping down each one at staggered, deterministic speeds, rendered with CSS transforms only.",
+  "tags": [
+    "background",
+    "beams",
+    "lines",
+    "grid",
+    "css",
+    "hero"
+  ],
+  "a11yNotes": "The beam field is aria-hidden and non-interactive; children render in a normal content layer. Timings use a seeded rand(n) for hydration-safe markup. prefers-reduced-motion stops the sweep and parks each beam mid-line.",
+  "defaultProps": {
+    "lines": 8,
+    "beamColor": "#38bdf8",
+    "speed": 1
+  },
+  "controls": [
+    {
+      "prop": "lines",
+      "label": "Line Count",
+      "type": "range",
+      "min": 2,
+      "max": 20,
+      "step": 1
+    },
+    {
+      "prop": "speed",
+      "label": "Speed Multiplier",
+      "type": "range",
+      "min": 0.25,
+      "max": 3,
+      "step": 0.25
+    },
+    {
+      "prop": "beamColor",
+      "label": "Beam Color",
+      "type": "color"
+    }
+  ],
+  "propsApi": [
+    {
+      "name": "lines",
+      "type": "number",
+      "default": "8",
+      "description": "Number of vertical guide lines."
+    },
+    {
+      "name": "beamColor",
+      "type": "string",
+      "default": "'#38bdf8'",
+      "description": "Color of the travelling beam and its glow."
+    },
+    {
+      "name": "speed",
+      "type": "number",
+      "default": "1",
+      "description": "Speed multiplier; base sweep time is 2.5-4.5s divided by this value."
+    },
+    {
+      "name": "children",
+      "type": "React.ReactNode",
+      "default": "'Beams in the grid' heading",
+      "description": "Foreground content centered above the beams."
+    },
+    {
+      "name": "className",
+      "type": "string",
+      "default": "''",
+      "description": "Additional class merged onto the root element."
+    }
+  ],
+  "files": [
+    {
+      "path": "components/ui/beam-lines.tsx",
+      "type": "registry:component",
+      "content": "\"use client\";\n\nimport * as React from \"react\";\nimport styles from \"../styles/beam-lines.module.css\";\n\nexport interface BeamLinesProps {\n  /** Number of vertical guide lines */\n  lines?: number;\n  /** Beam glow color */\n  beamColor?: string;\n  /** Speed multiplier (1 = base 2.5–4.5s per sweep) */\n  speed?: number;\n  /** Foreground content rendered above the beams */\n  children?: React.ReactNode;\n  /** Optional className merged onto the root */\n  className?: string;\n}\n\nconst rand = (n: number) => {\n  const x = Math.sin(n * 9301 + 49297) * 233280;\n  return x - Math.floor(x);\n};\n\nexport function BeamLines({\n  lines = 8,\n  beamColor = \"#38bdf8\",\n  speed = 1,\n  children,\n  className = \"\",\n}: BeamLinesProps) {\n  const safeSpeed = speed > 0 ? speed : 1;\n  const total = Math.max(0, Math.round(lines));\n  const styleVars = { \"--mf-bl-color\": beamColor } as React.CSSProperties;\n\n  return (\n    <div style={styleVars} className={`${styles.root} ${className}`.trim()}>\n      <div aria-hidden=\"true\" className={styles.field}>\n        {Array.from({ length: total }, (_, i) => (\n          <div key={i} className={styles.line} style={{ left: `${((i + 1) / (total + 1)) * 100}%` }}>\n            <span\n              className={styles.beam}\n              style={{\n                animationDuration: `${((2.5 + rand(i) * 2) / safeSpeed).toFixed(2)}s`,\n                animationDelay: `-${(rand(i + 1) * 3).toFixed(2)}s`,\n              }}\n            />\n          </div>\n        ))}\n      </div>\n      <div className={styles.content}>\n        {children ?? (\n          <div className={styles.copy}>\n            <span className={styles.eyebrow}>Signal</span>\n            <h3 className={styles.title}>Beams in the grid</h3>\n          </div>\n        )}\n      </div>\n    </div>\n  );\n}\n"
+    },
+    {
+      "path": "components/styles/beam-lines.module.css",
+      "type": "registry:style",
+      "content": ".root {\n  position: relative;\n  overflow: hidden;\n  display: flex;\n  width: 100%;\n  min-height: 18rem;\n  border-radius: 1rem;\n  border: 1px solid var(--mf-border, #2e2e38);\n  background-color: var(--mf-bg, #09090b);\n  color: var(--mf-fg, #f4f4f6);\n}\n\n.field {\n  position: absolute;\n  inset: 0;\n  pointer-events: none;\n  mask-image: linear-gradient(to bottom, transparent, black 18%, black 82%, transparent);\n}\n\n.line {\n  position: absolute;\n  top: 0;\n  bottom: 0;\n  width: 1px;\n  background-color: rgba(46, 46, 56, 0.6);\n}\n\n.beam {\n  position: absolute;\n  inset: 0;\n  animation-name: mfBeamSweep;\n  animation-timing-function: linear;\n  animation-iteration-count: infinite;\n  will-change: transform;\n}\n\n.beam::before {\n  content: \"\";\n  position: absolute;\n  left: 0;\n  top: -6rem;\n  width: 1px;\n  height: 6rem;\n  background: linear-gradient(to bottom, transparent, var(--mf-bl-color, var(--mf-accent, #38bdf8)), transparent);\n  box-shadow: 0 0 8px 0 var(--mf-bl-color, var(--mf-accent, #38bdf8));\n}\n\n.content {\n  position: relative;\n  z-index: 1;\n  display: flex;\n  flex: 1;\n  align-items: center;\n  justify-content: center;\n  padding: 2rem;\n}\n\n.copy {\n  text-align: center;\n}\n\n.eyebrow {\n  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;\n  font-size: 0.72rem;\n  letter-spacing: 0.18em;\n  text-transform: uppercase;\n  color: var(--mf-bl-color, var(--mf-accent, #38bdf8));\n}\n\n.title {\n  margin: 0.5rem 0 0;\n  padding: 0.25rem 0.75rem;\n  font-size: 1.6rem;\n  font-weight: 600;\n  letter-spacing: -0.03em;\n  background-color: rgba(9, 9, 11, 0.7);\n}\n\n@keyframes mfBeamSweep {\n  from {\n    transform: translate3d(0, 0, 0);\n  }\n  to {\n    transform: translate3d(0, calc(100% + 6rem), 0);\n  }\n}\n\n@media (prefers-reduced-motion: reduce) {\n  .beam {\n    animation: none;\n    transform: translate3d(0, 55%, 0);\n  }\n}\n"
+    }
+  ],
+  "tailwindExample": "\"use client\";\n\nimport { motion } from \"motion/react\";\n\nconst rand = (n: number) => { const x = Math.sin(n * 9301 + 49297) * 233280; return x - Math.floor(x); };\n\nexport function BeamLinesTailwind({ lines = 8 }) {\n  return (\n    <div className=\"relative flex min-h-72 w-full items-center justify-center overflow-hidden rounded-2xl border border-zinc-800 bg-zinc-950\">\n      {Array.from({ length: lines }, (_, i) => (\n        <div key={i} aria-hidden className=\"absolute inset-y-0 w-px bg-zinc-800/60\" style={{ left: `${((i + 1) / (lines + 1)) * 100}%` }}>\n          <motion.div\n            className=\"absolute h-24 w-px bg-gradient-to-b from-transparent via-sky-400 to-transparent\"\n            animate={{ top: [\"-25%\", \"120%\"] }}\n            transition={{ duration: 2.5 + rand(i) * 2, repeat: Infinity, delay: rand(i + 1) * 3, ease: \"linear\" }}\n          />\n        </div>\n      ))}\n      <h3 className=\"relative z-10 bg-zinc-950/70 px-3 text-2xl font-semibold text-zinc-100\">Beams in the grid</h3>\n    </div>\n  );\n}"
+}

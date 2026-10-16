@@ -1,0 +1,107 @@
+{
+  "slug": "split-reveal",
+  "name": "SplitReveal",
+  "category": "Advanced Text Animations",
+  "collection": "studio-kit",
+  "featured": false,
+  "addedAt": "2026-10-16",
+  "version": "2.1.0",
+  "requiresMotion": true,
+  "dependencies": [
+    "motion",
+    "react"
+  ],
+  "description": "Masked word-by-word reveal where each word slides up (or down) out of its own clipping line with a staggered expo-out ease.",
+  "tags": [
+    "text",
+    "split",
+    "mask",
+    "reveal",
+    "stagger",
+    "headline"
+  ],
+  "a11yNotes": "The full sentence is provided in a visually hidden span while the masked word spans are aria-hidden. Under prefers-reduced-motion words render in place with no slide.",
+  "defaultProps": {
+    "text": "Every pixel earns its place.",
+    "stagger": 0.1,
+    "duration": 0.6,
+    "direction": "up"
+  },
+  "controls": [
+    {
+      "prop": "text",
+      "label": "Text",
+      "type": "text"
+    },
+    {
+      "prop": "stagger",
+      "label": "Stagger (s)",
+      "type": "range",
+      "min": 0,
+      "max": 0.4,
+      "step": 0.02
+    },
+    {
+      "prop": "duration",
+      "label": "Duration (s)",
+      "type": "range",
+      "min": 0.2,
+      "max": 2,
+      "step": 0.1
+    },
+    {
+      "prop": "direction",
+      "label": "Direction",
+      "type": "select",
+      "options": [
+        "up",
+        "down"
+      ]
+    }
+  ],
+  "propsApi": [
+    {
+      "name": "text",
+      "type": "string",
+      "default": "'Every pixel earns its place.'",
+      "description": "Text revealed word by word from behind a mask."
+    },
+    {
+      "name": "stagger",
+      "type": "number",
+      "default": "0.1",
+      "description": "Delay between consecutive words in seconds."
+    },
+    {
+      "name": "duration",
+      "type": "number",
+      "default": "0.6",
+      "description": "Per-word reveal duration in seconds."
+    },
+    {
+      "name": "direction",
+      "type": "'up' | 'down'",
+      "default": "'up'",
+      "description": "Direction words travel in from."
+    },
+    {
+      "name": "className",
+      "type": "string",
+      "default": "''",
+      "description": "Additional class merged onto the root element."
+    }
+  ],
+  "files": [
+    {
+      "path": "components/ui/split-reveal.tsx",
+      "type": "registry:component",
+      "content": "\"use client\";\n\nimport * as React from \"react\";\nimport { motion, useReducedMotion } from \"motion/react\";\nimport styles from \"../styles/split-reveal.module.css\";\n\nexport interface SplitRevealProps {\n  /** Text revealed word by word from behind a mask */\n  text?: string;\n  /** Delay between consecutive words in seconds */\n  stagger?: number;\n  /** Per-word reveal duration in seconds */\n  duration?: number;\n  /** Direction words travel in from */\n  direction?: \"up\" | \"down\";\n  /** Optional className */\n  className?: string;\n}\n\nexport function SplitReveal({\n  text = \"Every pixel earns its place.\",\n  stagger = 0.1,\n  duration = 0.6,\n  direction = \"up\",\n  className = \"\",\n}: SplitRevealProps) {\n  const prefersReducedMotion = useReducedMotion();\n  const words = text.split(\" \").filter(Boolean);\n  const offset = direction === \"up\" ? \"110%\" : \"-110%\";\n\n  return (\n    <span className={`${styles.root} ${className}`.trim()}>\n      <span className={styles.srOnly}>{text}</span>\n      {words.map((word, i) => (\n        <span key={`${word}-${i}`} aria-hidden=\"true\" className={styles.mask}>\n          <motion.span\n            className={styles.word}\n            initial={prefersReducedMotion ? false : { y: offset }}\n            animate={{ y: 0 }}\n            transition={{ delay: i * stagger, duration, ease: [0.22, 1, 0.36, 1] }}\n          >\n            {word}\n          </motion.span>\n        </span>\n      ))}\n    </span>\n  );\n}\n"
+    },
+    {
+      "path": "components/styles/split-reveal.module.css",
+      "type": "registry:style",
+      "content": ".root {\n  display: inline;\n  color: var(--mf-fg, #f4f4f6);\n  font-size: clamp(1.5rem, 4vw, 2.5rem);\n  font-weight: 600;\n  letter-spacing: -0.03em;\n  line-height: 1.2;\n}\n\n.mask {\n  display: inline-block;\n  margin-right: 0.25em;\n  padding-bottom: 0.08em;\n  overflow: hidden;\n  vertical-align: bottom;\n}\n\n.word {\n  display: inline-block;\n  will-change: transform;\n}\n\n.srOnly {\n  position: absolute;\n  width: 1px;\n  height: 1px;\n  padding: 0;\n  margin: -1px;\n  overflow: hidden;\n  clip: rect(0, 0, 0, 0);\n  white-space: nowrap;\n  border: 0;\n}\n\n@media (prefers-reduced-motion: reduce) {\n  .word {\n    transform: none !important;\n  }\n}\n"
+    }
+  ],
+  "tailwindExample": "\"use client\";\n\nimport { motion } from \"motion/react\";\n\nexport function SplitRevealTailwind({ text = \"Every pixel earns its place.\" }) {\n  return (\n    <span aria-label={text} className=\"text-4xl font-semibold tracking-tight text-zinc-100\">\n      {text.split(\" \").map((w, i) => (\n        <span key={i} aria-hidden className=\"mr-[0.25em] inline-block overflow-hidden pb-[0.08em] align-bottom\">\n          <motion.span\n            className=\"inline-block\"\n            initial={{ y: \"110%\" }}\n            animate={{ y: 0 }}\n            transition={{ delay: i * 0.1, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}\n          >\n            {w}\n          </motion.span>\n        </span>\n      ))}\n    </span>\n  );\n}"
+}

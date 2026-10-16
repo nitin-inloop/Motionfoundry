@@ -1,0 +1,35 @@
+{
+  "name": "motionfoundry-monorepo",
+  "version": "2.1.0",
+  "private": true,
+  "description": "MotionFoundry — Production-ready open-source animated React component library, CLI, and documentation ecosystem.",
+  "license": "MIT",
+  "packageManager": "pnpm@9.12.0",
+  "scripts": {
+    "dev": "pnpm --filter @motionfoundry/docs dev",
+    "build": "node scripts/build-registry.mjs && node scripts/build-designs.mjs && node scripts/build-docs.mjs && node packages/ui/scripts/build.mjs && node packages/cli/scripts/build.mjs && pnpm --filter @motionfoundry/docs build",
+    "build:registry": "node scripts/build-registry.mjs",
+    "build:ui": "node packages/ui/scripts/build.mjs",
+    "build:cli": "node packages/cli/scripts/build.mjs",
+    "test": "node --test tests/motionfoundry.test.mjs",
+    "lint": "node tests/lint-check.mjs",
+    "typecheck": "node tests/typecheck.mjs",
+    "build:docs-content": "node scripts/build-docs.mjs",
+    "build:designs": "node scripts/build-designs.mjs",
+    "start": "pnpm --filter @motionfoundry/docs start",
+    "check": "node scripts/build-registry.mjs --check && node scripts/build-designs.mjs --check && node scripts/build-docs.mjs --check && node tests/lint-check.mjs && node tests/typecheck.mjs && node --test tests/motionfoundry.test.mjs"
+  },
+  "devDependencies": {
+    "typescript": "^5.7.3",
+    "vitest": "^5.0.0",
+    "yaml": "^2.6.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nitin-inloop/Motionfoundry.git"
+  },
+  "homepage": "https://github.com/nitin-inloop/Motionfoundry#readme",
+  "bugs": {
+    "url": "https://github.com/nitin-inloop/Motionfoundry/issues"
+  }
+}

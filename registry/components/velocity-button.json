@@ -1,0 +1,96 @@
+{
+  "slug": "velocity-button",
+  "name": "VelocityButton",
+  "category": "Interactive Buttons and Controls",
+  "featured": false,
+  "addedAt": "2026-10-16",
+  "version": "2.0.0",
+  "requiresMotion": false,
+  "dependencies": [
+    "react"
+  ],
+  "description": "Interactive button with a directional energy trail and perimeter glow that responds to pointer velocity without expensive particle emitters.",
+  "tags": [
+    "velocity",
+    "button",
+    "trail",
+    "energy",
+    "glow",
+    "pointer"
+  ],
+  "a11yNotes": "Updates CSS custom properties directly on the DOM node for zero React re-renders during pointer movement and disables the directional trail when prefers-reduced-motion is enabled.",
+  "defaultProps": {
+    "label": "Execute Edge Deployment",
+    "trailColor": "#38bdf8",
+    "trailIntensity": 0.45,
+    "decayMs": 260
+  },
+  "controls": [
+    {
+      "prop": "label",
+      "label": "Button Label",
+      "type": "text"
+    },
+    {
+      "prop": "trailColor",
+      "label": "Energy Trail Color",
+      "type": "color"
+    },
+    {
+      "prop": "trailIntensity",
+      "label": "Glow Intensity",
+      "type": "range",
+      "min": 0.15,
+      "max": 0.85,
+      "step": 0.05
+    },
+    {
+      "prop": "decayMs",
+      "label": "Trail Decay (ms)",
+      "type": "range",
+      "min": 120,
+      "max": 600,
+      "step": 20
+    }
+  ],
+  "propsApi": [
+    {
+      "name": "label",
+      "type": "string",
+      "default": "'Execute Edge Deployment'",
+      "description": "Button text label."
+    },
+    {
+      "name": "trailColor",
+      "type": "string",
+      "default": "'#38bdf8'",
+      "description": "Color of the velocity-reactive energy trail."
+    },
+    {
+      "name": "trailIntensity",
+      "type": "number",
+      "default": "0.45",
+      "description": "Maximum opacity multiplier of the energy trail."
+    },
+    {
+      "name": "decayMs",
+      "type": "number",
+      "default": "260",
+      "description": "Trail fade-out duration in milliseconds."
+    }
+  ],
+  "files": [
+    {
+      "path": "components/ui/velocity-button.tsx",
+      "type": "registry:component",
+      "content": "\"use client\";\n\nimport * as React from \"react\";\nimport styles from \"../styles/velocity-button.module.css\";\n\nexport interface VelocityButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {\n  /** Button label */\n  label?: string;\n  /** Energy trail color */\n  trailColor?: string;\n  /** Maximum opacity multiplier (0.15 to 0.85) */\n  trailIntensity?: number;\n  /** Decay duration in milliseconds */\n  decayMs?: number;\n}\n\nexport function VelocityButton({\n  children,\n  label = \"Execute Edge Deployment\",\n  trailColor = \"#38bdf8\",\n  trailIntensity = 0.45,\n  decayMs = 260,\n  className = \"\",\n  ...rest\n}: VelocityButtonProps) {\n  const btnRef = React.useRef<HTMLButtonElement>(null);\n  const lastPoint = React.useRef<{ x: number; y: number; t: number } | null>(null);\n\n  const handlePointerMove = (e: React.PointerEvent<HTMLButtonElement>) => {\n    const el = btnRef.current;\n    if (!el) return;\n    const rect = el.getBoundingClientRect();\n    const x = e.clientX - rect.left;\n    const y = e.clientY - rect.top;\n    const now = performance.now();\n\n    let stretch = 1;\n    let angle = 0;\n    if (lastPoint.current) {\n      const dx = x - lastPoint.current.x;\n      const dy = y - lastPoint.current.y;\n      const dt = Math.max(8, now - lastPoint.current.t);\n      const speed = Math.min(2.4, Math.hypot(dx, dy) / dt);\n      stretch = 1 + speed * 0.65;\n      angle = Math.atan2(dy, dx) * (180 / Math.PI);\n    }\n    lastPoint.current = { x, y, t: now };\n\n    el.style.setProperty(\"--mf-vel-x\", `${x}px`);\n    el.style.setProperty(\"--mf-vel-y\", `${y}px`);\n    el.style.setProperty(\"--mf-vel-stretch\", stretch.toFixed(2));\n    el.style.setProperty(\"--mf-vel-angle\", `${angle.toFixed(1)}deg`);\n    el.style.setProperty(\"--mf-vel-opacity\", String(trailIntensity));\n  };\n\n  const handlePointerLeave = () => {\n    lastPoint.current = null;\n    btnRef.current?.style.setProperty(\"--mf-vel-opacity\", \"0\");\n  };\n\n  return (\n    <button\n      ref={btnRef}\n      type=\"button\"\n      onPointerMove={handlePointerMove}\n      onPointerLeave={handlePointerLeave}\n      style={\n        {\n          \"--mf-vel-color\": trailColor,\n          \"--mf-vel-decay\": `${decayMs}ms`,\n        } as React.CSSProperties\n      }\n      className={`${styles.button} ${className}`.trim()}\n      {...rest}\n    >\n      <span aria-hidden=\"true\" className={styles.energyTrail} />\n      <span className={styles.content}>{children ?? label}</span>\n    </button>\n  );\n}\n"
+    },
+    {
+      "path": "components/styles/velocity-button.module.css",
+      "type": "registry:style",
+      "content": ".button {\n  --mf-vel-x: 50%;\n  --mf-vel-y: 50%;\n  --mf-vel-opacity: 0;\n  --mf-vel-stretch: 1;\n  --mf-vel-angle: 0deg;\n  position: relative;\n  display: inline-flex;\n  align-items: center;\n  justify-content: center;\n  overflow: hidden;\n  padding: 0.72rem 1.4rem;\n  border-radius: 0.625rem;\n  border: 1px solid var(--mf-border, #2e2e38);\n  background-color: var(--mf-surface, #111116);\n  color: var(--mf-fg, #f4f4f6);\n  font-size: 0.875rem;\n  font-weight: 500;\n  cursor: pointer;\n  transition: border-color 180ms ease;\n}\n\n.button:hover {\n  border-color: var(--mf-border-strong, #52525b);\n}\n\n.button:focus-visible {\n  outline: 2px solid var(--mf-fg, #e4e4e7);\n  outline-offset: 2px;\n}\n\n.energyTrail {\n  pointer-events: none;\n  position: absolute;\n  left: var(--mf-vel-x, 50%);\n  top: var(--mf-vel-y, 50%);\n  width: 96px;\n  height: 56px;\n  transform: translate(-50%, -50%) rotate(var(--mf-vel-angle, 0deg)) scaleX(var(--mf-vel-stretch, 1));\n  background: radial-gradient(circle, var(--mf-vel-color, var(--mf-accent, #38bdf8)) 0%, transparent 72%);\n  filter: blur(12px);\n  opacity: var(--mf-vel-opacity, 0);\n  transition: opacity var(--mf-vel-decay, 260ms) ease;\n}\n\n.content {\n  position: relative;\n  z-index: 1;\n  display: inline-flex;\n  align-items: center;\n  gap: 0.5rem;\n}\n\n@media (prefers-reduced-motion: reduce) {\n  .energyTrail {\n    display: none;\n  }\n}\n"
+    }
+  ],
+  "tailwindExample": "\"use client\";\n\nimport * as React from \"react\";\n\nexport function VelocityButtonTailwind({ label = \"Execute Edge Deployment\" }) {\n  const ref = React.useRef<HTMLButtonElement>(null);\n  return (\n    <button\n      ref={ref}\n      type=\"button\"\n      onPointerMove={(e) => {\n        const r = e.currentTarget.getBoundingClientRect();\n        e.currentTarget.style.setProperty(\"--x\", `${e.clientX - r.left}px`);\n        e.currentTarget.style.setProperty(\"--y\", `${e.clientY - r.top}px`);\n      }}\n      className=\"group relative overflow-hidden rounded-lg border border-zinc-700 bg-zinc-900 px-5 py-2.5 text-sm font-medium text-zinc-100\"\n    >\n      <span\n        className=\"pointer-events-none absolute inset-0 opacity-0 transition-opacity group-hover:opacity-100\"\n        style={{ background: \"radial-gradient(90px circle at var(--x, 50%) var(--y, 50%), rgba(56,189,248,0.28), transparent 70%)\" }}\n      />\n      <span className=\"relative z-10\">{label}</span>\n    </button>\n  );\n}",
+  "collection": "core"
+}

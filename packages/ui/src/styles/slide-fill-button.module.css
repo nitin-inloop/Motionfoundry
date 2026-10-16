@@ -1,0 +1,64 @@
+.root {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.7rem 1.35rem;
+  overflow: hidden;
+  isolation: isolate;
+  border-radius: 0.625rem;
+  border: 1px solid var(--mf-border, #2e2e38);
+  background-color: var(--mf-surface, #141419);
+  color: var(--mf-fg, #f4f4f6);
+  font: inherit;
+  font-size: 0.875rem;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  cursor: pointer;
+  user-select: none;
+  transition: border-color var(--mf-sf-duration, 0.35s) ease;
+}
+
+.root[data-active] {
+  border-color: var(--mf-sf-fill, var(--mf-fg, #f4f4f6));
+}
+
+.root:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.root:focus-visible {
+  outline: 2px solid var(--mf-fg, #e4e4e7);
+  outline-offset: 3px;
+}
+
+.fill {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background-color: var(--mf-sf-fill, var(--mf-fg, #f4f4f6));
+  transform: translateX(-101%);
+  pointer-events: none;
+}
+
+.label {
+  position: relative;
+  z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  pointer-events: none;
+  transition: color var(--mf-sf-duration, 0.35s) cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.root[data-active] .label {
+  color: var(--mf-sf-fill-text, var(--mf-bg, #09090b));
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .root,
+  .label {
+    transition: none;
+  }
+}

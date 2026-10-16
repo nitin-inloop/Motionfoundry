@@ -1,0 +1,56 @@
+.card {
+  position: relative;
+  overflow: hidden;
+  border-radius: 0.85rem;
+  border: 1px solid var(--mf-surface-raised, #25252f);
+  background-color: #0c0c10;
+  padding: 1.5rem;
+  color: var(--mf-fg, #f4f4f6);
+}
+
+.canvas {
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.content {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.badge {
+  align-self: flex-start;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.68rem;
+  color: var(--mf-muted, #a1a1aa);
+  border: 1px solid var(--mf-border, #2b2b36);
+  background-color: rgba(18, 18, 24, 0.85);
+  padding: 0.15rem 0.5rem;
+  border-radius: 999px;
+}
+
+.title {
+  margin: 0;
+  font-size: 1.05rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+
+.description {
+  margin: 0;
+  font-size: 0.85rem;
+  line-height: 1.55;
+  color: var(--mf-muted, #a1a1aa);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card {
+    transition: none;
+  }
+}

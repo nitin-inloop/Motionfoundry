@@ -1,0 +1,38 @@
+---
+title: "Installation"
+category: "Overview"
+summary: "Choose between the CLI source installer, workspace/npm package imports, or direct copy-and-paste."
+---
+
+# Installation
+
+MotionFoundry supports three first-class distribution workflows depending on whether you want full ownership of the component source files in your repository or a versioned package dependency.
+
+### Workflow A — CLI Source Installation (Recommended)
+
+Run the `motionfoundry` CLI to copy selected components and their scoped `.module.css` files directly into your project's `components/ui/` directory (stylesheets land in `components/styles/`, matching each component's `../styles/<slug>.module.css` import):
+
+- Detects Next.js App Router (`src/app` or `app`), Next.js Pages Router, or Vite/React projects automatically.
+- Checks for existing files before writing and preserves your custom edits unless `--overwrite` is passed.
+- Prints exact peer dependencies (`motion`) required by the selected components.
+- Filter the catalog by collection with `npx motionfoundry list --collection studio-kit`.
+
+### Workflow B — Package Imports (`@motionfoundry/ui`)
+
+Inside a pnpm monorepo workspace (or once published to an npm registry), install `@motionfoundry/ui` alongside `motion` and import named components directly. Note: in this repository, `@motionfoundry/ui` is configured as a local workspace package (`workspace:*`) ready for `npm publish`.
+
+### Workflow C — Direct Copy and Paste
+
+Open any of the 48 component detail pages, switch to the **Component** and **CSS Module** tabs, and click **Copy** to drop the standalone `.tsx` and `.module.css` files into your codebase.
+
+```tsx
+# Workflow A: Install individual component source files via CLI
+npx motionfoundry add kinetic-type liquid-glass-card magnetic-dock
+npx motionfoundry add rotating-words confetti-button flip-card
+
+# Workflow B: Workspace / npm package installation
+pnpm add @motionfoundry/ui motion
+
+# Workflow C: Verify installed files
+ls -la components/ui/ components/styles/
+```

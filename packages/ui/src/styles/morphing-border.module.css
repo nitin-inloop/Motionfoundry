@@ -1,0 +1,67 @@
+.outer {
+  position: relative;
+  overflow: hidden;
+  padding: var(--mf-mb-width, 1.5px);
+  border-radius: var(--mf-mb-radius, 14px);
+  background-color: #252530;
+  animation: mfMorphRadius calc(var(--mf-mb-speed, 4.2s) * 1.5) ease-in-out infinite alternate;
+}
+
+.travelingBeam {
+  pointer-events: none;
+  position: absolute;
+  inset: -120%;
+  background: conic-gradient(
+    from 0deg,
+    transparent 0deg 230deg,
+    var(--mf-mb-secondary, #60a5fa) 295deg,
+    var(--mf-mb-primary, var(--mf-fg, #f4f4f6)) 348deg,
+    transparent 360deg
+  );
+  animation: mfBorderOrbit var(--mf-mb-speed, 4.2s) linear infinite;
+}
+
+.inner {
+  position: relative;
+  z-index: 1;
+  border-radius: calc(var(--mf-mb-radius, 14px) - var(--mf-mb-width, 1.5px));
+  background-color: var(--mf-bg, #0d0d12);
+  padding: 1.45rem;
+  color: var(--mf-fg, #f4f4f6);
+}
+
+.title {
+  margin: 0 0 0.45rem 0;
+  font-size: 1.025rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+
+.subtitle {
+  margin: 0;
+  font-size: 0.85rem;
+  line-height: 1.55;
+  color: var(--mf-muted, #a1a1aa);
+}
+
+@keyframes mfBorderOrbit {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes mfMorphRadius {
+  0% {
+    border-radius: var(--mf-mb-radius, 14px);
+  }
+  100% {
+    border-radius: calc(var(--mf-mb-radius, 14px) + 6px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .outer,
+  .travelingBeam {
+    animation: none;
+  }
+}
