@@ -121,7 +121,7 @@ const UI_TILES: { slug: string; fallback: string; className: string; render: Rea
   { slug: "copy-button", fallback: "Copy Button", className: "", render: <CopyButton /> },
   { slug: "combobox", fallback: "Combobox", className: "", render: <Combobox /> },
   { slug: "tag-input", fallback: "Tag Input", className: "", render: <TagInput /> },
-  { slug: "carousel", fallback: "Carousel", className: "sm:col-span-2", render: <div className="w-full origin-center scale-[0.78]"><Carousel /></div> },
+  { slug: "carousel", fallback: "Carousel", className: "sm:col-span-2", render: <div className="w-full origin-center scale-[0.64]"><Carousel /></div> },
   { slug: "button-group", fallback: "Button Group", className: "", render: <ButtonGroup /> },
   { slug: "password-input", fallback: "Password Input", className: "", render: <div className="w-full origin-center scale-[0.82]"><PasswordInput /></div> },
   { slug: "popover", fallback: "Popover", className: "", render: <Popover /> },
