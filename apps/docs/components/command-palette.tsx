@@ -7,16 +7,21 @@ import type { NavIndex } from "../lib/nav";
 
 type Item = { href: string; label: string; group: string; hint: string };
 
+/** Docs, design systems, and components from LISTED collections only (nav.components is pre-filtered). */
 function toItems(nav: NavIndex): Item[] {
+  const collectionNames = new Map(nav.collections.map((col) => [col.id, col.name]));
   return [
     ...nav.docs.map((d) => ({ href: `/docs/${d.slug}`, label: d.title, group: "Docs", hint: d.category })),
+    ...nav.collections.map((col) => ({ href: `/collections/${col.id}`, label: `${col.name} collection`, group: "Collections", hint: `${col.count} components` })),
+    ...nav.components
+      .filter((c) => collectionNames.has(c.collection))
+      .map((c) => ({
+        href: `/components/${c.slug}`,
+        label: c.name,
+        group: collectionNames.get(c.collection) ?? "Components",
+        hint: c.category,
+      })),
     ...nav.designs.map((d) => ({ href: `/designs/${d.id}`, label: `${d.brand} design system`, group: "Designs", hint: d.category })),
-    ...nav.components.map((c) => ({
-      href: `/components/${c.slug}`,
-      label: c.name,
-      group: "Components",
-      hint: nav.collections.find((col) => col.id === c.collection)?.name ?? c.collection,
-    })),
   ];
 }
 
@@ -44,7 +49,7 @@ export function CommandPalette({ open, onOpenChange, nav }: { open: boolean; onO
   if (!open) return null;
 
   const q = query.trim().toLowerCase();
-  const results = items.filter((i) => !q || i.label.toLowerCase().includes(q) || i.hint.toLowerCase().includes(q)).slice(0, 40);
+  const results = items.filter((i) => !q || i.label.toLowerCase().includes(q) || i.hint.toLowerCase().includes(q) || i.group.toLowerCase().includes(q)).slice(0, 40);
   const activeIndex = Math.min(active, Math.max(results.length - 1, 0));
   const go = (item?: Item) => {
     if (!item) return;

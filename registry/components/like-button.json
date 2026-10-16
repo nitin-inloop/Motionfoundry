@@ -1,0 +1,208 @@
+{
+  "slug": "like-button",
+  "name": "LikeButton",
+  "category": "Interactive Buttons and Controls",
+  "collection": "ui",
+  "featured": false,
+  "addedAt": "2026-10-16",
+  "version": "2.3.0",
+  "requiresMotion": true,
+  "dependencies": [
+    "motion",
+    "react"
+  ],
+  "description": "A like toggle whose heart squashes and pops as it fills, firing a shockwave ring and a burst of particles while the counter rolls to the next number. Works as a pill with a count, a ghost button, or a bare icon.",
+  "tags": [
+    "like",
+    "heart",
+    "toggle",
+    "particles",
+    "counter",
+    "ui"
+  ],
+  "a11yNotes": "Native toggle <button> with aria-pressed. Its aria-label combines `label` and the current count (e.g. \"Like, 129\"); the visual icon, counter and particles are aria-hidden. Particles use a seeded layout, so server and client markup match. Under prefers-reduced-motion the pop, burst and rolling digits are replaced by an instant fill and a cross-fade.",
+  "defaultProps": {
+    "defaultLiked": false,
+    "count": 128,
+    "showCount": true,
+    "label": "Like",
+    "icon": "heart",
+    "variant": "pill",
+    "size": "md",
+    "accentColor": "#f43f5e",
+    "particleCount": 12,
+    "disabled": false
+  },
+  "controls": [
+    {
+      "prop": "defaultLiked",
+      "label": "Start liked",
+      "type": "boolean"
+    },
+    {
+      "prop": "count",
+      "label": "Count",
+      "type": "range",
+      "min": 0,
+      "max": 20000,
+      "step": 1
+    },
+    {
+      "prop": "showCount",
+      "label": "Show count",
+      "type": "boolean"
+    },
+    {
+      "prop": "label",
+      "label": "Accessible label",
+      "type": "text"
+    },
+    {
+      "prop": "icon",
+      "label": "Icon",
+      "type": "select",
+      "options": [
+        "heart",
+        "star",
+        "thumb"
+      ]
+    },
+    {
+      "prop": "variant",
+      "label": "Variant",
+      "type": "select",
+      "options": [
+        "pill",
+        "ghost",
+        "icon"
+      ]
+    },
+    {
+      "prop": "size",
+      "label": "Size",
+      "type": "select",
+      "options": [
+        "sm",
+        "md",
+        "lg"
+      ]
+    },
+    {
+      "prop": "accentColor",
+      "label": "Accent color",
+      "type": "color"
+    },
+    {
+      "prop": "particleCount",
+      "label": "Particles",
+      "type": "range",
+      "min": 0,
+      "max": 24,
+      "step": 1
+    },
+    {
+      "prop": "disabled",
+      "label": "Disabled",
+      "type": "boolean"
+    }
+  ],
+  "propsApi": [
+    {
+      "name": "liked",
+      "type": "boolean",
+      "default": "undefined",
+      "description": "Controlled liked state."
+    },
+    {
+      "name": "defaultLiked",
+      "type": "boolean",
+      "default": "false",
+      "description": "Initial liked state when uncontrolled."
+    },
+    {
+      "name": "onLikedChange",
+      "type": "(liked: boolean) => void",
+      "default": "undefined",
+      "description": "Called with the next liked state."
+    },
+    {
+      "name": "count",
+      "type": "number",
+      "default": "128",
+      "description": "Like count excluding the current user's like; the displayed number adds 1 while liked."
+    },
+    {
+      "name": "showCount",
+      "type": "boolean",
+      "default": "true",
+      "description": "Show the rolling counter (ignored for the icon variant)."
+    },
+    {
+      "name": "label",
+      "type": "string",
+      "default": "'Like'",
+      "description": "Accessible label of the button."
+    },
+    {
+      "name": "icon",
+      "type": "'heart' | 'star' | 'thumb'",
+      "default": "'heart'",
+      "description": "Icon shape."
+    },
+    {
+      "name": "variant",
+      "type": "'pill' | 'ghost' | 'icon'",
+      "default": "'pill'",
+      "description": "Bordered pill, borderless ghost, or round icon-only button."
+    },
+    {
+      "name": "size",
+      "type": "'sm' | 'md' | 'lg'",
+      "default": "'md'",
+      "description": "Size preset."
+    },
+    {
+      "name": "accentColor",
+      "type": "string",
+      "default": "'#f43f5e'",
+      "description": "Color of the filled icon, ring and particles."
+    },
+    {
+      "name": "particleCount",
+      "type": "number",
+      "default": "12",
+      "description": "Number of burst particles (0 disables the burst, max 32)."
+    },
+    {
+      "name": "disabled",
+      "type": "boolean",
+      "default": "false",
+      "description": "Disable the button."
+    },
+    {
+      "name": "className",
+      "type": "string",
+      "default": "''",
+      "description": "Additional class merged onto the root element."
+    },
+    {
+      "name": "style",
+      "type": "React.CSSProperties",
+      "default": "undefined",
+      "description": "Inline styles merged onto the root element."
+    }
+  ],
+  "files": [
+    {
+      "path": "components/ui/like-button.tsx",
+      "type": "registry:component",
+      "content": "\"use client\";\n\nimport * as React from \"react\";\nimport { AnimatePresence, motion, useReducedMotion } from \"motion/react\";\nimport styles from \"../styles/like-button.module.css\";\n\nexport interface LikeButtonProps {\n  /** Controlled liked state */\n  liked?: boolean;\n  /** Initial liked state when uncontrolled */\n  defaultLiked?: boolean;\n  /** Called with the next liked state */\n  onLikedChange?: (liked: boolean) => void;\n  /** Like count excluding the current user's like */\n  count?: number;\n  /** Show the rolling counter */\n  showCount?: boolean;\n  /** Accessible label of the button */\n  label?: string;\n  /** Icon shape */\n  icon?: \"heart\" | \"star\" | \"thumb\";\n  /** Visual style */\n  variant?: \"pill\" | \"ghost\" | \"icon\";\n  /** Size preset */\n  size?: \"sm\" | \"md\" | \"lg\";\n  /** Color of the filled icon and particles */\n  accentColor?: string;\n  /** Number of burst particles (0 disables the burst) */\n  particleCount?: number;\n  /** Disable the button */\n  disabled?: boolean;\n  /** Optional className merged onto the root */\n  className?: string;\n  /** Optional inline styles merged onto the root */\n  style?: React.CSSProperties;\n}\n\nconst ICONS = {\n  heart: \"M19 14c1.5-1.5 3-3.2 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.8 0-3 .5-4.5 2-1.5-1.5-2.7-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4 3 5.5l7 7z\",\n  star: \"M12 2.5l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 17.4l-5.9 3.1 1.2-6.5-4.8-4.6 6.6-.9z\",\n  thumb: \"M7 10v11M2 12v7a2 2 0 0 0 2 2h12.4a2 2 0 0 0 2-1.6l1.4-7A2 2 0 0 0 17.8 10H14V5a3 3 0 0 0-3-3l-4 8H4a2 2 0 0 0-2 2z\",\n} as const;\n\nconst rand = (n: number) => {\n  const x = Math.sin(n * 127.1 + 311.7) * 43758.5453;\n  return x - Math.floor(x);\n};\n\nconst fmt = (n: number) => (n >= 10000 ? `${(n / 1000).toFixed(n >= 100000 ? 0 : 1)}k` : n.toLocaleString(\"en-US\"));\n\nexport function LikeButton({\n  liked: likedProp,\n  defaultLiked = false,\n  onLikedChange,\n  count = 128,\n  showCount = true,\n  label = \"Like\",\n  icon = \"heart\",\n  variant = \"pill\",\n  size = \"md\",\n  accentColor = \"#f43f5e\",\n  particleCount = 12,\n  disabled = false,\n  className = \"\",\n  style,\n}: LikeButtonProps) {\n  const reduce = useReducedMotion();\n  const [inner, setInner] = React.useState(defaultLiked);\n  const liked = likedProp ?? inner;\n  const [burst, setBurst] = React.useState(0);\n  const total = Math.max(0, count) + (liked ? 1 : 0);\n  const withCount = showCount && variant !== \"icon\";\n\n  const toggle = () => {\n    if (disabled) return;\n    const next = !liked;\n    if (likedProp === undefined) setInner(next);\n    if (next) setBurst((b) => b + 1);\n    onLikedChange?.(next);\n  };\n\n  const n = Math.max(0, Math.min(32, Math.round(particleCount)));\n  const particles = Array.from({ length: n }, (_, i) => {\n    const angle = (i / Math.max(1, n)) * Math.PI * 2 + rand(i) * 0.4;\n    const dist = 22 + rand(i + 50) * 14;\n    return { x: Math.cos(angle) * dist, y: Math.sin(angle) * dist, s: 3 + rand(i + 99) * 3, alt: i % 3 === 0 };\n  });\n\n  return (\n    <button\n      type=\"button\"\n      aria-pressed={liked}\n      aria-label={withCount ? `${label}, ${total.toLocaleString(\"en-US\")}` : label}\n      disabled={disabled}\n      onClick={toggle}\n      data-liked={liked || undefined}\n      className={[styles.root, styles[variant], styles[size], className].filter(Boolean).join(\" \")}\n      style={{ \"--mf-lb-accent\": accentColor, ...style } as React.CSSProperties}\n    >\n      <span className={styles.iconWrap} aria-hidden=\"true\">\n        {!reduce && burst > 0 && liked ? (\n          <span key={`b-${burst}`} className={styles.burst}>\n            <motion.span\n              className={styles.ring}\n              initial={{ scale: 0.2, opacity: 0.9 }}\n              animate={{ scale: 1.6, opacity: 0 }}\n              transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}\n            />\n            {particles.map((p, i) => (\n              <motion.span\n                key={i}\n                className={`${styles.particle} ${p.alt ? styles.alt : \"\"}`.trim()}\n                style={{ width: p.s, height: p.s, marginLeft: -p.s / 2, marginTop: -p.s / 2 }}\n                initial={{ x: 0, y: 0, scale: 0, opacity: 1 }}\n                animate={{ x: p.x, y: p.y, scale: [0, 1.2, 0], opacity: [1, 1, 0] }}\n                transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1], delay: 0.04 }}\n              />\n            ))}\n          </span>\n        ) : null}\n        <motion.svg\n          viewBox=\"0 0 24 24\"\n          strokeWidth=\"2\"\n          strokeLinecap=\"round\"\n          strokeLinejoin=\"round\"\n          initial={false}\n          animate={reduce ? { scale: 1 } : liked ? { scale: [1, 0.7, 1.25, 1] } : { scale: [1, 0.85, 1] }}\n          transition={{ duration: reduce ? 0 : liked ? 0.45 : 0.25, ease: \"easeOut\" }}\n        >\n          <path d={ICONS[icon] ?? ICONS.heart} />\n        </motion.svg>\n      </span>\n      {withCount ? (\n        <span className={styles.count} aria-hidden=\"true\">\n          <AnimatePresence initial={false} mode=\"popLayout\" custom={liked}>\n            <motion.span\n              key={total}\n              className={styles.num}\n              custom={liked}\n              variants={{\n                enter: (up: boolean) => (reduce ? { opacity: 0 } : { y: up ? \"100%\" : \"-100%\", opacity: 0 }),\n                center: { y: \"0%\", opacity: 1 },\n                exit: (up: boolean) => (reduce ? { opacity: 0 } : { y: up ? \"-100%\" : \"100%\", opacity: 0 }),\n              }}\n              initial=\"enter\"\n              animate=\"center\"\n              exit=\"exit\"\n              transition={reduce ? { duration: 0.1 } : { type: \"spring\", stiffness: 500, damping: 32 }}\n            >\n              {fmt(total)}\n            </motion.span>\n          </AnimatePresence>\n        </span>\n      ) : null}\n    </button>\n  );\n}\n"
+    },
+    {
+      "path": "components/styles/like-button.module.css",
+      "type": "registry:style",
+      "content": ".root {\n  --mf-lb-h: 2.5rem;\n  --mf-lb-icon: 1.25rem;\n  position: relative;\n  display: inline-flex;\n  align-items: center;\n  justify-content: center;\n  gap: 0.5rem;\n  height: var(--mf-lb-h);\n  padding: 0 1rem 0 0.875rem;\n  border: 1px solid transparent;\n  border-radius: 999px;\n  font: inherit;\n  font-size: 0.875rem;\n  font-weight: 600;\n  font-variant-numeric: tabular-nums;\n  color: var(--mf-muted, #a1a1aa);\n  cursor: pointer;\n  user-select: none;\n  -webkit-tap-highlight-color: transparent;\n  transition: background-color 180ms ease, border-color 180ms ease, color 180ms ease, transform 180ms cubic-bezier(0.34, 1.56, 0.64, 1);\n}\n\n.root:active:not(:disabled) {\n  transform: scale(0.96);\n}\n\n.root:focus-visible {\n  outline: 2px solid var(--mf-fg, #e4e4e7);\n  outline-offset: 2px;\n}\n\n.root:disabled {\n  opacity: 0.5;\n  cursor: not-allowed;\n}\n\n.sm {\n  --mf-lb-h: 2rem;\n  --mf-lb-icon: 1rem;\n  font-size: 0.8125rem;\n}\n\n.md {\n  --mf-lb-h: 2.5rem;\n  --mf-lb-icon: 1.25rem;\n}\n\n.lg {\n  --mf-lb-h: 3rem;\n  --mf-lb-icon: 1.5rem;\n  font-size: 0.9375rem;\n}\n\n.pill {\n  background-color: var(--mf-surface, #141419);\n  border-color: var(--mf-border, #2e2e38);\n}\n\n.pill:hover:not(:disabled) {\n  border-color: var(--mf-border-strong, #52525b);\n  color: var(--mf-fg, #f4f4f6);\n}\n\n.root.pill[data-liked] {\n  color: var(--mf-lb-accent, #f43f5e);\n  border-color: color-mix(in srgb, var(--mf-lb-accent, #f43f5e) 40%, transparent);\n  background-color: color-mix(in srgb, var(--mf-lb-accent, #f43f5e) 10%, var(--mf-surface, #141419));\n}\n\n.ghost {\n  background-color: transparent;\n  padding: 0 0.75rem 0 0.5rem;\n}\n\n.ghost:hover:not(:disabled) {\n  background-color: var(--mf-surface-raised, #1b1b22);\n  color: var(--mf-fg, #f4f4f6);\n}\n\n.icon {\n  width: var(--mf-lb-h);\n  padding: 0;\n  background-color: transparent;\n}\n\n.icon:hover:not(:disabled) {\n  background-color: color-mix(in srgb, var(--mf-lb-accent, #f43f5e) 12%, transparent);\n  color: var(--mf-lb-accent, #f43f5e);\n}\n\n.root[data-liked] {\n  color: var(--mf-lb-accent, #f43f5e);\n}\n\n.iconWrap {\n  position: relative;\n  display: inline-grid;\n  place-items: center;\n  width: var(--mf-lb-icon);\n  height: var(--mf-lb-icon);\n}\n\n.iconWrap > svg {\n  width: 100%;\n  height: 100%;\n  overflow: visible;\n  fill: transparent;\n  stroke: currentColor;\n  transition: fill 160ms ease;\n}\n\n.root[data-liked] .iconWrap > svg {\n  fill: var(--mf-lb-accent, #f43f5e);\n  stroke: var(--mf-lb-accent, #f43f5e);\n}\n\n.burst {\n  position: absolute;\n  inset: 0;\n  pointer-events: none;\n}\n\n.ring {\n  position: absolute;\n  inset: -10%;\n  border-radius: 999px;\n  border: 2px solid var(--mf-lb-accent, #f43f5e);\n}\n\n.particle {\n  position: absolute;\n  left: 50%;\n  top: 50%;\n  border-radius: 999px;\n  background-color: var(--mf-lb-accent, #f43f5e);\n}\n\n.alt {\n  background-color: color-mix(in srgb, var(--mf-lb-accent, #f43f5e) 45%, #fbbf24);\n}\n\n.count {\n  position: relative;\n  display: inline-flex;\n  overflow: hidden;\n  min-width: 1.5ch;\n  height: 1.25em;\n  line-height: 1.25em;\n}\n\n.num {\n  display: inline-block;\n}\n\n@media (prefers-reduced-motion: reduce) {\n  .root,\n  .iconWrap > svg {\n    transition: none;\n  }\n\n  .root:active:not(:disabled) {\n    transform: none;\n  }\n\n  .burst {\n    display: none;\n  }\n}\n"
+    }
+  ],
+  "tailwindExample": "\"use client\";\n\nimport { AnimatePresence, motion } from \"motion/react\";\nimport { useState } from \"react\";\n\nexport function LikeButtonTailwind({ count = 128 }) {\n  const [liked, setLiked] = useState(false);\n  const [burst, setBurst] = useState(0);\n  const total = count + (liked ? 1 : 0);\n  return (\n    <button type=\"button\" aria-pressed={liked} aria-label={`Like, ${total}`} onClick={() => { setLiked(!liked); if (!liked) setBurst(burst + 1); }} className={`inline-flex h-10 items-center gap-2 rounded-full border px-4 text-sm font-semibold tabular-nums transition active:scale-95 ${liked ? \"border-rose-500/40 bg-rose-500/10 text-rose-500\" : \"border-zinc-800 bg-zinc-900 text-zinc-400\"}`}>\n      <span aria-hidden=\"true\" className=\"relative grid size-5 place-items-center\">\n        {liked && burst > 0 && Array.from({ length: 10 }, (_, i) => (\n          <motion.span key={`${burst}-${i}`} initial={{ x: 0, y: 0, scale: 0 }} animate={{ x: Math.cos(i * 0.628) * 26, y: Math.sin(i * 0.628) * 26, scale: [0, 1.2, 0] }} transition={{ duration: 0.6 }} className=\"absolute size-1.5 rounded-full bg-rose-500\" />\n        ))}\n        <motion.svg animate={liked ? { scale: [1, 0.7, 1.25, 1] } : { scale: 1 }} viewBox=\"0 0 24 24\" className={`size-5 ${liked ? \"fill-rose-500\" : \"fill-transparent\"}`} stroke=\"currentColor\" strokeWidth=\"2\"><path d=\"M19 14c1.5-1.5 3-3.2 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.8 0-3 .5-4.5 2-1.5-1.5-2.7-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4 3 5.5l7 7z\" /></motion.svg>\n      </span>\n      <span aria-hidden=\"true\" className=\"relative h-5 overflow-hidden\">\n        <AnimatePresence initial={false} mode=\"popLayout\">\n          <motion.span key={total} initial={{ y: liked ? \"100%\" : \"-100%\" }} animate={{ y: 0 }} exit={{ y: liked ? \"-100%\" : \"100%\" }} className=\"block\">{total}</motion.span>\n        </AnimatePresence>\n      </span>\n    </button>\n  );\n}"
+}

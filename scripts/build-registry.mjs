@@ -30,33 +30,58 @@ const CATEGORIES = [
   "Loaders and Feedback",
   "Gradient Backgrounds",
   "Scroll Animations",
+  "Forms and Inputs",
+  "Overlays and Menus",
+  "Navigation",
+  "Data Display",
 ];
 
+/**
+ * `order` is the site's display order; `listed: false` keeps a collection in the package and
+ * reachable by URL, but out of the docs navigation and catalog.
+ */
 const COLLECTIONS = [
   {
-    id: "core",
-    name: "Core",
-    description: "The original 24 precision primitives: kinetic type, spatial cards, canvas networks, and developer-interface choreography.",
+    id: "scroll",
+    name: "Scroll",
+    order: 1,
+    listed: true,
+    description: "Lenis-style smooth-scroll animations built from scratch: lerped scrolling, parallax, scroll-linked text, horizontal tracks, stacking cards, coverflow, pinned steps, path drawing, and more.",
   },
   {
-    id: "studio-kit",
-    name: "Studio Kit",
-    description: "24 hand-picked everyday motion patterns ported from Swirl Studio Kit: text reveals, feedback buttons, interactive cards, ambient backgrounds, loaders, and list interactions.",
+    id: "shaders",
+    name: "Shaders",
+    order: 2,
+    listed: true,
+    description: "Living shader and gradient backgrounds — mesh, aurora, conic, liquid, waves, orbs, grain, spotlight, and deep dark nebula, plasma, silk, ember, and eclipse — with every color, speed, and texture exposed as a prop.",
   },
   {
-    id: "gradients",
-    name: "Gradients",
-    description: "8 living gradient backgrounds — mesh, aurora ribbons, conic spin, liquid, waves, orbs, grain, and pointer spotlight — with every color, speed, and texture exposed as a prop.",
+    id: "ui",
+    name: "UI",
+    order: 3,
+    listed: true,
+    description: "Animated UI primitives built from scratch with no Radix or shadcn dependency: buttons, inputs, selects, dialogs, menus, tabs, toasts, tables, charts, and more — accessible and keyboard friendly.",
   },
   {
     id: "text-fx",
     name: "Text FX",
-    description: "8 GSAP-style text animations built from scratch: split-text staggers, mask wipes, elastic letters, text on a path, rolling hovers, marker highlights, scatter, and cube-flip words.",
+    order: 4,
+    listed: false,
+    description: "GSAP-style text animations built from scratch: split-text staggers, mask wipes, elastic letters, text on a path, rolling hovers, marker highlights, scatter, and cube-flip words.",
   },
   {
-    id: "scroll",
-    name: "Scroll",
-    description: "8 Lenis-style smooth-scroll animations built from scratch: lerped scrolling, parallax layers, scroll-linked text, horizontal tracks, stacking cards, velocity marquees, zoom reveals, and timelines.",
+    id: "studio-kit",
+    name: "Studio Kit",
+    order: 5,
+    listed: false,
+    description: "Hand-picked everyday motion patterns ported from Swirl Studio Kit: text reveals, feedback buttons, interactive cards, ambient backgrounds, loaders, and list interactions.",
+  },
+  {
+    id: "core",
+    name: "Core",
+    order: 6,
+    listed: false,
+    description: "The original precision primitives: kinetic type, spatial cards, canvas networks, and developer-interface choreography.",
   },
 ];
 

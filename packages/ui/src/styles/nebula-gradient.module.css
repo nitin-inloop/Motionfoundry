@@ -1,0 +1,100 @@
+.root {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  display: flex;
+  width: 100%;
+  border: 1px solid var(--mf-border, #2e2e38);
+  background: var(--mf-nb-bg, #05040b);
+  color: #f5f5f7;
+}
+
+.canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  pointer-events: none;
+}
+
+.fallback {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.clouds {
+  position: absolute;
+  inset: -25%;
+  background: var(--mf-nb-clouds);
+  filter: blur(28px) saturate(1.2);
+  animation: mf-nb-drift var(--mf-nb-dur, 28s) ease-in-out infinite alternate;
+}
+
+.stars {
+  position: absolute;
+  inset: 0;
+  background: var(--mf-nb-stars);
+  animation: mf-nb-twinkle 4.5s ease-in-out infinite alternate;
+}
+
+.paused .clouds,
+.paused .stars {
+  animation-play-state: paused;
+}
+
+@keyframes mf-nb-drift {
+  0% {
+    transform: rotate(0deg) scale(1);
+  }
+  100% {
+    transform: rotate(18deg) scale(1.15) translateX(3%);
+  }
+}
+
+@keyframes mf-nb-twinkle {
+  0% {
+    opacity: 0.55;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+.content {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex: 1;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+}
+
+.copy {
+  text-align: center;
+  text-shadow: 0 2px 28px rgba(0, 0, 0, 0.55);
+}
+
+.title {
+  margin: 0;
+  font-size: 2rem;
+  font-weight: 700;
+  letter-spacing: -0.035em;
+  color: #f8f8fb;
+}
+
+.subtitle {
+  margin: 0.5rem 0 0;
+  font-size: 0.9375rem;
+  color: rgba(240, 240, 248, 0.78);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .clouds,
+  .stars {
+    animation: none;
+  }
+}

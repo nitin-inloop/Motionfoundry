@@ -1,0 +1,171 @@
+{
+  "slug": "button-group",
+  "name": "ButtonGroup",
+  "category": "Interactive Buttons and Controls",
+  "collection": "ui",
+  "featured": false,
+  "addedAt": "2026-10-16",
+  "version": "2.3.0",
+  "requiresMotion": false,
+  "dependencies": [
+    "react"
+  ],
+  "description": "An attached single-select button group (segmented control) whose active indicator springs between options, measured from the real button widths. Supports pill, solid and underline indicators and full arrow-key navigation.",
+  "tags": [
+    "button-group",
+    "segmented-control",
+    "radio-group",
+    "tabs",
+    "indicator",
+    "ui"
+  ],
+  "a11yNotes": "Follows the WAI-ARIA radio group pattern: role=\"radiogroup\" labelled by `label`, each option is role=\"radio\" with aria-checked. Roving tabindex makes the group a single Tab stop; Arrow keys move focus and select (wrapping), Home/End jump to the first/last option. The sliding indicator is aria-hidden. Under prefers-reduced-motion the indicator jumps without a transition.",
+  "defaultProps": {
+    "options": [
+      "Daily",
+      "Weekly",
+      "Monthly",
+      "Yearly"
+    ],
+    "label": "Reporting period",
+    "size": "md",
+    "indicator": "pill",
+    "accentColor": "#6366f1",
+    "fullWidth": false,
+    "disabled": false
+  },
+  "controls": [
+    {
+      "prop": "options",
+      "label": "Options (comma separated)",
+      "type": "list"
+    },
+    {
+      "prop": "label",
+      "label": "Accessible label",
+      "type": "text"
+    },
+    {
+      "prop": "size",
+      "label": "Size",
+      "type": "select",
+      "options": [
+        "sm",
+        "md",
+        "lg"
+      ]
+    },
+    {
+      "prop": "indicator",
+      "label": "Indicator",
+      "type": "select",
+      "options": [
+        "pill",
+        "solid",
+        "underline"
+      ]
+    },
+    {
+      "prop": "accentColor",
+      "label": "Accent color",
+      "type": "color"
+    },
+    {
+      "prop": "fullWidth",
+      "label": "Full width",
+      "type": "boolean"
+    },
+    {
+      "prop": "disabled",
+      "label": "Disabled",
+      "type": "boolean"
+    }
+  ],
+  "propsApi": [
+    {
+      "name": "options",
+      "type": "string[]",
+      "default": "['Daily', 'Weekly', 'Monthly', 'Yearly']",
+      "description": "Option labels; each label is also its value."
+    },
+    {
+      "name": "value",
+      "type": "string",
+      "default": "undefined",
+      "description": "Controlled selected option."
+    },
+    {
+      "name": "defaultValue",
+      "type": "string",
+      "default": "options[1]",
+      "description": "Initially selected option when uncontrolled."
+    },
+    {
+      "name": "onValueChange",
+      "type": "(value: string) => void",
+      "default": "undefined",
+      "description": "Called with the newly selected option."
+    },
+    {
+      "name": "label",
+      "type": "string",
+      "default": "'Reporting period'",
+      "description": "Accessible name of the radiogroup."
+    },
+    {
+      "name": "size",
+      "type": "'sm' | 'md' | 'lg'",
+      "default": "'md'",
+      "description": "Size preset."
+    },
+    {
+      "name": "indicator",
+      "type": "'pill' | 'solid' | 'underline'",
+      "default": "'pill'",
+      "description": "Raised neutral pill, accent-filled pill, or accent underline."
+    },
+    {
+      "name": "accentColor",
+      "type": "string",
+      "default": "'#6366f1'",
+      "description": "Accent color for the solid and underline indicators."
+    },
+    {
+      "name": "fullWidth",
+      "type": "boolean",
+      "default": "false",
+      "description": "Fill the container and split options evenly."
+    },
+    {
+      "name": "disabled",
+      "type": "boolean",
+      "default": "false",
+      "description": "Disable the whole group."
+    },
+    {
+      "name": "className",
+      "type": "string",
+      "default": "''",
+      "description": "Additional class merged onto the root element."
+    },
+    {
+      "name": "style",
+      "type": "React.CSSProperties",
+      "default": "undefined",
+      "description": "Inline styles merged onto the root element."
+    }
+  ],
+  "files": [
+    {
+      "path": "components/ui/button-group.tsx",
+      "type": "registry:component",
+      "content": "\"use client\";\n\nimport * as React from \"react\";\nimport styles from \"../styles/button-group.module.css\";\n\nexport interface ButtonGroupProps {\n  /** Option labels (each label is also its value) */\n  options?: string[];\n  /** Controlled selected option */\n  value?: string;\n  /** Initially selected option when uncontrolled (defaults to the second option) */\n  defaultValue?: string;\n  /** Called with the newly selected option */\n  onValueChange?: (value: string) => void;\n  /** Accessible name of the group */\n  label?: string;\n  /** Size preset */\n  size?: \"sm\" | \"md\" | \"lg\";\n  /** Active indicator style */\n  indicator?: \"pill\" | \"solid\" | \"underline\";\n  /** Accent color for the solid / underline indicator */\n  accentColor?: string;\n  /** Stretch to fill the container, splitting options evenly */\n  fullWidth?: boolean;\n  /** Disable the whole group */\n  disabled?: boolean;\n  /** Optional className merged onto the root */\n  className?: string;\n  /** Optional inline styles merged onto the root */\n  style?: React.CSSProperties;\n}\n\nconst DEFAULT_OPTIONS = [\"Daily\", \"Weekly\", \"Monthly\", \"Yearly\"];\nconst useIsoLayoutEffect = typeof window !== \"undefined\" ? React.useLayoutEffect : React.useEffect;\n\nexport function ButtonGroup({\n  options = DEFAULT_OPTIONS,\n  value: valueProp,\n  defaultValue,\n  onValueChange,\n  label = \"Reporting period\",\n  size = \"md\",\n  indicator = \"pill\",\n  accentColor = \"#6366f1\",\n  fullWidth = false,\n  disabled = false,\n  className = \"\",\n  style,\n}: ButtonGroupProps) {\n  const items = options.length > 0 ? options : DEFAULT_OPTIONS;\n  const [inner, setInner] = React.useState(defaultValue ?? items[Math.min(1, items.length - 1)]);\n  const value = valueProp !== undefined ? valueProp : inner;\n  const activeIndex = items.indexOf(value);\n  const listRef = React.useRef<HTMLDivElement>(null);\n  const btnRefs = React.useRef<(HTMLButtonElement | null)[]>([]);\n  const [box, setBox] = React.useState<{ x: number; w: number } | null>(null);\n  const [animate, setAnimate] = React.useState(false);\n\n  const select = (next: string) => {\n    if (disabled || next === value) return;\n    if (valueProp === undefined) setInner(next);\n    onValueChange?.(next);\n  };\n\n  const measure = React.useCallback(() => {\n    const el = btnRefs.current[activeIndex];\n    setBox(el ? { x: el.offsetLeft, w: el.offsetWidth } : null);\n  }, [activeIndex]);\n\n  useIsoLayoutEffect(() => {\n    measure();\n  }, [measure, items.join(\"|\"), size, fullWidth]);\n\n  React.useEffect(() => {\n    const id = requestAnimationFrame(() => setAnimate(true));\n    const ro = typeof ResizeObserver !== \"undefined\" && listRef.current ? new ResizeObserver(() => measure()) : null;\n    if (ro && listRef.current) ro.observe(listRef.current);\n    return () => {\n      cancelAnimationFrame(id);\n      ro?.disconnect();\n    };\n  }, [measure]);\n\n  const onKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {\n    const current = Math.max(0, btnRefs.current.findIndex((b) => b === document.activeElement));\n    let next = -1;\n    if (e.key === \"ArrowRight\" || e.key === \"ArrowDown\") next = (current + 1) % items.length;\n    else if (e.key === \"ArrowLeft\" || e.key === \"ArrowUp\") next = (current - 1 + items.length) % items.length;\n    else if (e.key === \"Home\") next = 0;\n    else if (e.key === \"End\") next = items.length - 1;\n    if (next < 0) return;\n    e.preventDefault();\n    btnRefs.current[next]?.focus();\n    select(items[next]);\n  };\n\n  const rootStyle = {\n    \"--mf-bgp-accent\": accentColor,\n    \"--mf-bgp-x\": box ? `${box.x}px` : \"0px\",\n    \"--mf-bgp-w\": box ? `${box.w}px` : \"0px\",\n    ...style,\n  } as React.CSSProperties;\n\n  return (\n    <div\n      ref={listRef}\n      role=\"radiogroup\"\n      aria-label={label}\n      aria-disabled={disabled || undefined}\n      onKeyDown={onKeyDown}\n      data-indicator={indicator}\n      data-animate={animate || undefined}\n      className={[styles.root, styles[size], fullWidth ? styles.full : \"\", className].filter(Boolean).join(\" \")}\n      style={rootStyle}\n    >\n      {box ? <span className={styles.indicator} aria-hidden=\"true\" /> : null}\n      {items.map((opt, i) => {\n        const checked = i === activeIndex;\n        const focusable = activeIndex === -1 ? i === 0 : checked;\n        return (\n          <button\n            key={`${opt}-${i}`}\n            ref={(el) => {\n              btnRefs.current[i] = el;\n            }}\n            type=\"button\"\n            role=\"radio\"\n            aria-checked={checked}\n            tabIndex={focusable ? 0 : -1}\n            disabled={disabled}\n            data-state={checked ? \"on\" : \"off\"}\n            className={styles.item}\n            onClick={() => select(opt)}\n          >\n            {opt}\n          </button>\n        );\n      })}\n    </div>\n  );\n}\n"
+    },
+    {
+      "path": "components/styles/button-group.module.css",
+      "type": "registry:style",
+      "content": ".root {\n  --mf-bgp-h: 2.25rem;\n  position: relative;\n  display: inline-flex;\n  align-items: stretch;\n  padding: 0.1875rem;\n  gap: 0.125rem;\n  border-radius: 0.625rem;\n  border: 1px solid var(--mf-border, #2e2e38);\n  background-color: var(--mf-surface, #141419);\n  color: var(--mf-fg, #f4f4f6);\n  isolation: isolate;\n}\n\n.sm {\n  --mf-bgp-h: 1.875rem;\n  font-size: 0.8125rem;\n}\n\n.md {\n  --mf-bgp-h: 2.25rem;\n  font-size: 0.875rem;\n}\n\n.lg {\n  --mf-bgp-h: 2.625rem;\n  font-size: 0.9375rem;\n}\n\n.full {\n  display: flex;\n  width: 100%;\n}\n\n.full .item {\n  flex: 1 1 0;\n}\n\n.root[aria-disabled=\"true\"] {\n  opacity: 0.5;\n}\n\n.item {\n  position: relative;\n  z-index: 1;\n  display: inline-flex;\n  align-items: center;\n  justify-content: center;\n  height: var(--mf-bgp-h);\n  padding: 0 0.875em;\n  border: 0;\n  border-radius: 0.4375rem;\n  background: transparent;\n  color: var(--mf-muted, #a1a1aa);\n  font: inherit;\n  font-weight: 500;\n  white-space: nowrap;\n  cursor: pointer;\n  -webkit-tap-highlight-color: transparent;\n  transition: color 180ms ease, transform 160ms ease;\n}\n\n.item:hover:not(:disabled) {\n  color: var(--mf-fg, #f4f4f6);\n}\n\n.item:active:not(:disabled) {\n  transform: scale(0.97);\n}\n\n.item[data-state=\"on\"] {\n  color: var(--mf-fg, #f4f4f6);\n}\n\n.item:disabled {\n  cursor: not-allowed;\n}\n\n.item:focus-visible {\n  outline: 2px solid var(--mf-fg, #e4e4e7);\n  outline-offset: 1px;\n}\n\n.indicator {\n  position: absolute;\n  z-index: 0;\n  top: 0.1875rem;\n  left: 0;\n  height: var(--mf-bgp-h);\n  width: var(--mf-bgp-w, 0px);\n  transform: translateX(var(--mf-bgp-x, 0px));\n  border-radius: 0.4375rem;\n  background-color: var(--mf-surface-raised, #1b1b22);\n  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.25), inset 0 0 0 1px var(--mf-border, #2e2e38);\n  pointer-events: none;\n}\n\n.root[data-animate] .indicator {\n  transition: transform 320ms cubic-bezier(0.34, 1.32, 0.64, 1), width 320ms cubic-bezier(0.34, 1.32, 0.64, 1),\n    background-color 200ms ease;\n}\n\n.root[data-indicator=\"solid\"] .indicator {\n  background-color: var(--mf-bgp-accent, #6366f1);\n  box-shadow: 0 4px 14px -6px var(--mf-bgp-accent, #6366f1);\n}\n\n.root[data-indicator=\"solid\"] .item[data-state=\"on\"] {\n  color: #ffffff;\n}\n\n.root[data-indicator=\"underline\"] {\n  border-color: transparent;\n  background-color: transparent;\n  border-radius: 0;\n  box-shadow: inset 0 -1px 0 var(--mf-border, #2e2e38);\n}\n\n.root[data-indicator=\"underline\"] .indicator {\n  top: auto;\n  bottom: 0;\n  height: 2px;\n  border-radius: 2px;\n  background-color: var(--mf-bgp-accent, #6366f1);\n  box-shadow: none;\n}\n\n@media (prefers-reduced-motion: reduce) {\n  .item {\n    transition: none;\n  }\n\n  .item:active:not(:disabled) {\n    transform: none;\n  }\n\n  .root[data-animate] .indicator {\n    transition: none;\n  }\n}\n"
+    }
+  ],
+  "tailwindExample": "\"use client\";\n\nimport { motion } from \"motion/react\";\nimport { useId, useRef, useState } from \"react\";\n\nexport function ButtonGroupTailwind({ options = [\"Daily\", \"Weekly\", \"Monthly\", \"Yearly\"] }) {\n  const [value, setValue] = useState(options[1]);\n  const id = useId();\n  const refs = useRef<(HTMLButtonElement | null)[]>([]);\n  const onKeyDown = (e: React.KeyboardEvent) => {\n    const i = options.indexOf(value);\n    const n = e.key === \"ArrowRight\" ? (i + 1) % options.length : e.key === \"ArrowLeft\" ? (i - 1 + options.length) % options.length : -1;\n    if (n < 0) return;\n    e.preventDefault();\n    setValue(options[n]);\n    refs.current[n]?.focus();\n  };\n  return (\n    <div role=\"radiogroup\" aria-label=\"Reporting period\" onKeyDown={onKeyDown} className=\"inline-flex gap-0.5 rounded-xl border border-zinc-800 bg-zinc-900 p-[3px]\">\n      {options.map((o, i) => (\n        <button key={o} ref={(el) => { refs.current[i] = el; }} type=\"button\" role=\"radio\" aria-checked={o === value} tabIndex={o === value ? 0 : -1} onClick={() => setValue(o)} className={`relative h-9 rounded-lg px-3.5 text-sm font-medium ${o === value ? \"text-zinc-100\" : \"text-zinc-400 hover:text-zinc-100\"}`}>\n          {o === value && <motion.span layoutId={id} transition={{ type: \"spring\", stiffness: 500, damping: 34 }} className=\"absolute inset-0 rounded-lg bg-zinc-800 ring-1 ring-zinc-700\" />}\n          <span className=\"relative\">{o}</span>\n        </button>\n      ))}\n    </div>\n  );\n}"
+}

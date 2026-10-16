@@ -1,0 +1,198 @@
+{
+  "slug": "bottom-sheet",
+  "name": "BottomSheet",
+  "category": "Overlays and Menus",
+  "collection": "ui",
+  "featured": false,
+  "addedAt": "2026-10-16",
+  "version": "2.3.0",
+  "requiresMotion": true,
+  "dependencies": [
+    "motion",
+    "react"
+  ],
+  "description": "A mobile-style modal sheet that springs up from the bottom edge with a drag handle and snap points. Drag (with velocity projection) to resize between snaps or flick down to dismiss; the handle is also a keyboard-operable button.",
+  "tags": [
+    "bottom-sheet",
+    "sheet",
+    "drawer",
+    "snap-points",
+    "drag",
+    "mobile",
+    "modal",
+    "ui"
+  ],
+  "a11yNotes": "role=\"dialog\" with aria-modal, aria-labelledby (title) and aria-describedby (description); the trigger exposes aria-haspopup=\"dialog\" and aria-expanded. The drag handle is a real button labelled \"Expand sheet\" / \"Collapse sheet\": Enter/Space toggles between the lowest and highest snap, ArrowUp/ArrowDown step between snaps (ArrowDown at the lowest snap closes when dismissible), Home/End jump to the extremes. Focus is trapped inside while open, Escape closes, focus returns to the trigger and body scroll is locked. Under prefers-reduced-motion the sheet snaps without springing.",
+  "defaultProps": {
+    "triggerLabel": "Share project",
+    "title": "Share project",
+    "description": "Anyone with the link can view. Drag the handle or use the arrow keys to resize.",
+    "defaultSnap": 0,
+    "accentColor": "#6366f1",
+    "backdropBlur": 2,
+    "dismissible": true,
+    "maxWidth": 640
+  },
+  "controls": [
+    {
+      "prop": "triggerLabel",
+      "label": "Trigger label",
+      "type": "text"
+    },
+    {
+      "prop": "title",
+      "label": "Title",
+      "type": "text"
+    },
+    {
+      "prop": "description",
+      "label": "Description",
+      "type": "text"
+    },
+    {
+      "prop": "defaultSnap",
+      "label": "Opening snap index",
+      "type": "range",
+      "min": 0,
+      "max": 1,
+      "step": 1
+    },
+    {
+      "prop": "accentColor",
+      "label": "Accent color",
+      "type": "color"
+    },
+    {
+      "prop": "backdropBlur",
+      "label": "Backdrop blur (px)",
+      "type": "range",
+      "min": 0,
+      "max": 16,
+      "step": 1
+    },
+    {
+      "prop": "dismissible",
+      "label": "Dismissible (drag down / backdrop)",
+      "type": "boolean"
+    },
+    {
+      "prop": "maxWidth",
+      "label": "Max width (px)",
+      "type": "range",
+      "min": 360,
+      "max": 960,
+      "step": 20
+    }
+  ],
+  "propsApi": [
+    {
+      "name": "open",
+      "type": "boolean",
+      "default": "undefined",
+      "description": "Controlled open state."
+    },
+    {
+      "name": "defaultOpen",
+      "type": "boolean",
+      "default": "false",
+      "description": "Initial open state when uncontrolled."
+    },
+    {
+      "name": "onOpenChange",
+      "type": "(open: boolean) => void",
+      "default": "undefined",
+      "description": "Called whenever the sheet requests to open or close."
+    },
+    {
+      "name": "snapPoints",
+      "type": "number[]",
+      "default": "[0.45, 0.88]",
+      "description": "Snap heights as fractions of the viewport height (clamped to 0.1 to 1, sorted ascending)."
+    },
+    {
+      "name": "defaultSnap",
+      "type": "number",
+      "default": "0",
+      "description": "Index of the snap point the sheet opens at."
+    },
+    {
+      "name": "onSnapChange",
+      "type": "(index: number) => void",
+      "default": "undefined",
+      "description": "Called when the sheet moves to a different snap index."
+    },
+    {
+      "name": "triggerLabel",
+      "type": "string",
+      "default": "'Share project'",
+      "description": "Label of the trigger button."
+    },
+    {
+      "name": "title",
+      "type": "string",
+      "default": "'Share project'",
+      "description": "Sheet title, used as the accessible name."
+    },
+    {
+      "name": "description",
+      "type": "string",
+      "default": "'Anyone with the link can view. Drag the handle or use the arrow keys to resize.'",
+      "description": "Supporting text under the title, used as the accessible description."
+    },
+    {
+      "name": "children",
+      "type": "React.ReactNode",
+      "default": "share sheet",
+      "description": "Sheet content; defaults to share actions and a people list."
+    },
+    {
+      "name": "accentColor",
+      "type": "string",
+      "default": "'#6366f1'",
+      "description": "Accent for the focused handle, action hovers and avatars."
+    },
+    {
+      "name": "backdropBlur",
+      "type": "number",
+      "default": "2",
+      "description": "Backdrop blur radius in pixels; the backdrop fades with the drag position."
+    },
+    {
+      "name": "dismissible",
+      "type": "boolean",
+      "default": "true",
+      "description": "Allow closing by flicking/dragging below the lowest snap or clicking the backdrop."
+    },
+    {
+      "name": "maxWidth",
+      "type": "number",
+      "default": "640",
+      "description": "Maximum sheet width in pixels; centered on wide screens."
+    },
+    {
+      "name": "className",
+      "type": "string",
+      "default": "''",
+      "description": "Additional class merged onto the root element."
+    },
+    {
+      "name": "style",
+      "type": "React.CSSProperties",
+      "default": "undefined",
+      "description": "Inline styles merged onto the root element."
+    }
+  ],
+  "files": [
+    {
+      "path": "components/ui/bottom-sheet.tsx",
+      "type": "registry:component",
+      "content": "\"use client\";\n\nimport * as React from \"react\";\nimport { createPortal } from \"react-dom\";\nimport { animate, motion, useMotionValue, useReducedMotion, useTransform } from \"motion/react\";\nimport styles from \"../styles/bottom-sheet.module.css\";\n\nexport interface BottomSheetProps {\n  /** Controlled open state */\n  open?: boolean;\n  /** Initial open state when uncontrolled */\n  defaultOpen?: boolean;\n  /** Called whenever the sheet requests to open or close */\n  onOpenChange?: (open: boolean) => void;\n  /** Snap heights as fractions of the viewport height (0.1 to 1), e.g. [0.45, 0.9] */\n  snapPoints?: number[];\n  /** Index of the snap point the sheet opens at */\n  defaultSnap?: number;\n  /** Called after the sheet settles on a new snap index */\n  onSnapChange?: (index: number) => void;\n  /** Label of the trigger button */\n  triggerLabel?: string;\n  /** Sheet title (accessible name) */\n  title?: string;\n  /** Supporting description under the title */\n  description?: string;\n  /** Sheet content; defaults to a share sheet */\n  children?: React.ReactNode;\n  /** Accent color for highlights and focus */\n  accentColor?: string;\n  /** Backdrop blur in pixels */\n  backdropBlur?: number;\n  /** Allow closing by dragging down past the lowest snap point or clicking the backdrop */\n  dismissible?: boolean;\n  /** Maximum sheet width in pixels (centered on wide screens) */\n  maxWidth?: number;\n  /** Optional className merged onto the root */\n  className?: string;\n  /** Optional inline styles merged onto the root */\n  style?: React.CSSProperties;\n}\n\nconst THEME_TOKENS = [\"--mf-bg\", \"--mf-fg\", \"--mf-surface\", \"--mf-surface-raised\", \"--mf-muted\", \"--mf-subtle\", \"--mf-border\", \"--mf-border-strong\", \"--mf-accent\"];\nconst FOCUSABLE = 'a[href],button:not([disabled]),input:not([disabled]),select:not([disabled]),textarea:not([disabled]),[tabindex]:not([tabindex=\"-1\"])';\nconst useIsoLayoutEffect = typeof window !== \"undefined\" ? React.useLayoutEffect : React.useEffect;\nconst SPRING = { type: \"spring\", stiffness: 420, damping: 42, mass: 0.9 } as const;\n\nfunction readThemeVars(el: Element | null): Record<string, string> {\n  const out: Record<string, string> = {};\n  if (!el) return out;\n  const cs = getComputedStyle(el);\n  for (const t of THEME_TOKENS) {\n    const v = cs.getPropertyValue(t).trim();\n    if (v) out[t] = v;\n  }\n  return out;\n}\n\nconst ACTIONS = [\n  { label: \"Copy link\", d: \"M10 13a5 5 0 0 0 7.5.5l3-3a5 5 0 0 0-7-7l-1.7 1.7M14 11a5 5 0 0 0-7.5-.5l-3 3a5 5 0 0 0 7 7l1.7-1.7\" },\n  { label: \"Email\", d: \"M3 6h18v12H3zM3 7l9 6 9-6\" },\n  { label: \"Message\", d: \"M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12z\" },\n  { label: \"Export\", d: \"M12 3v12M7 8l5-5 5 5M5 15v4a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-4\" },\n];\nconst PEOPLE = [\n  { name: \"Olivia Martin\", mail: \"olivia@acme.dev\", role: \"Owner\" },\n  { name: \"Jackson Lee\", mail: \"jackson@acme.dev\", role: \"Can edit\" },\n  { name: \"Isabella Nguyen\", mail: \"isabella@acme.dev\", role: \"Can view\" },\n  { name: \"William Kim\", mail: \"will@acme.dev\", role: \"Can view\" },\n];\n\nfunction DefaultContent() {\n  return (\n    <>\n      <div className={styles.actions}>\n        {ACTIONS.map((a) => (\n          <button key={a.label} type=\"button\" className={styles.action}>\n            <svg aria-hidden=\"true\" width=\"20\" height=\"20\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" strokeWidth=\"1.8\" strokeLinecap=\"round\" strokeLinejoin=\"round\">\n              <path d={a.d} />\n            </svg>\n            {a.label}\n          </button>\n        ))}\n      </div>\n      <p className={styles.section}>People with access</p>\n      <ul className={styles.people}>\n        {PEOPLE.map((p) => (\n          <li key={p.mail} className={styles.person}>\n            <span aria-hidden=\"true\" className={styles.avatar}>\n              {p.name.split(\" \").map((s) => s[0]).join(\"\")}\n            </span>\n            <span className={styles.who}>\n              <span className={styles.name}>{p.name}</span>\n              <span className={styles.mail}>{p.mail}</span>\n            </span>\n            <span className={styles.role}>{p.role}</span>\n          </li>\n        ))}\n      </ul>\n    </>\n  );\n}\n\nexport function BottomSheet({\n  open: openProp,\n  defaultOpen = false,\n  onOpenChange,\n  snapPoints = [0.45, 0.88],\n  defaultSnap = 0,\n  onSnapChange,\n  triggerLabel = \"Share project\",\n  title = \"Share project\",\n  description = \"Anyone with the link can view. Drag the handle or use the arrow keys to resize.\",\n  children,\n  accentColor = \"#6366f1\",\n  backdropBlur = 2,\n  dismissible = true,\n  maxWidth = 640,\n  className = \"\",\n  style,\n}: BottomSheetProps) {\n  const reduce = useReducedMotion();\n  const [inner, setInner] = React.useState(defaultOpen);\n  const open = openProp !== undefined ? openProp : inner;\n  const setOpen = React.useCallback(\n    (v: boolean) => {\n      if (openProp === undefined) setInner(v);\n      onOpenChange?.(v);\n    },\n    [openProp, onOpenChange],\n  );\n  const snaps = React.useMemo(() => {\n    const s = snapPoints.map((p) => Math.min(1, Math.max(0.1, p))).sort((a, b) => a - b);\n    return s.length ? s : [0.5];\n  }, [snapPoints]);\n  const last = snaps.length - 1;\n  const startSnap = Math.min(last, Math.max(0, Math.round(defaultSnap)));\n  const [present, setPresent] = React.useState(false);\n  const [snap, setSnap] = React.useState(startSnap);\n  const [vh, setVh] = React.useState(800);\n  const [themeVars, setThemeVars] = React.useState<Record<string, string>>({});\n  const rootRef = React.useRef<HTMLDivElement>(null);\n  const triggerRef = React.useRef<HTMLButtonElement>(null);\n  const panelRef = React.useRef<HTMLDivElement>(null);\n  const drag = React.useRef<{ y0: number; off0: number; ly: number; lt: number; v: number; moved: boolean } | null>(null);\n  const dragged = React.useRef(false);\n  const id = React.useId();\n  const y = useMotionValue(4000);\n  const geo = React.useRef({ low: 0, closed: 1 });\n  const offsetFor = (i: number, h = vh) => (snaps[last] - snaps[i]) * h;\n  geo.current = { low: offsetFor(0), closed: snaps[last] * vh + 24 };\n  const backdrop = useTransform(y, (v) => 1 - Math.min(1, Math.max(0, (v - geo.current.low) / (geo.current.closed - geo.current.low))));\n  const setOpenRef = React.useRef(setOpen);\n  setOpenRef.current = setOpen;\n  const tween = reduce ? { duration: 0 } : SPRING;\n\n  useIsoLayoutEffect(() => {\n    if (open) {\n      const h = window.innerHeight;\n      setThemeVars(readThemeVars(rootRef.current));\n      setVh(h);\n      setSnap(startSnap);\n      setPresent(true);\n      if (y.get() > snaps[last] * h) y.set(snaps[last] * h + 24);\n      const ctrl = animate(y, (snaps[last] - snaps[startSnap]) * h, tween);\n      return () => ctrl.stop();\n    }\n    if (!present) return;\n    const ctrl = animate(y, geo.current.closed, { ...(reduce ? { duration: 0 } : { duration: 0.24, ease: [0.32, 0, 0.67, 0] }), onComplete: () => setPresent(false) });\n    return () => ctrl.stop();\n  }, [open]);\n\n  const goTo = (i: number) => {\n    const k = Math.min(last, Math.max(0, i));\n    if (k !== snap) onSnapChange?.(k);\n    setSnap(k);\n    animate(y, offsetFor(k), tween);\n  };\n\n  // Scroll lock, Escape, resize, focus in / restore.\n  React.useEffect(() => {\n    if (!open) return;\n    const body = document.body;\n    const prev = body.style.overflow;\n    body.style.overflow = \"hidden\";\n    const onKey = (e: KeyboardEvent) => {\n      if (e.key === \"Escape\") {\n        e.preventDefault();\n        setOpenRef.current(false);\n      }\n    };\n    const onResize = () => setVh(window.innerHeight);\n    document.addEventListener(\"keydown\", onKey);\n    window.addEventListener(\"resize\", onResize);\n    const raf = requestAnimationFrame(() => (panelRef.current?.querySelector<HTMLElement>(FOCUSABLE) ?? panelRef.current)?.focus());\n    const trigger = triggerRef.current;\n    return () => {\n      cancelAnimationFrame(raf);\n      document.removeEventListener(\"keydown\", onKey);\n      window.removeEventListener(\"resize\", onResize);\n      body.style.overflow = prev;\n      trigger?.focus();\n    };\n  }, [open]);\n\n  React.useEffect(() => {\n    if (open && !drag.current) y.set(offsetFor(snap));\n  }, [vh]);\n\n  const trapFocus = (e: React.KeyboardEvent<HTMLDivElement>) => {\n    if (e.key !== \"Tab\" || !panelRef.current) return;\n    const nodes = Array.from(panelRef.current.querySelectorAll<HTMLElement>(FOCUSABLE));\n    if (!nodes.length) return e.preventDefault();\n    const [first, end] = [nodes[0], nodes[nodes.length - 1]];\n    if (e.shiftKey && (document.activeElement === first || document.activeElement === panelRef.current)) {\n      e.preventDefault();\n      end.focus();\n    } else if (!e.shiftKey && document.activeElement === end) {\n      e.preventDefault();\n      first.focus();\n    }\n  };\n\n  const onPointerDown = (e: React.PointerEvent<HTMLDivElement>) => {\n    if (e.button !== 0) return;\n    drag.current = { y0: e.clientY, off0: y.get(), ly: e.clientY, lt: e.timeStamp, v: 0, moved: false };\n    dragged.current = false;\n  };\n  const onPointerMove = (e: React.PointerEvent<HTMLDivElement>) => {\n    const d = drag.current;\n    if (!d) return;\n    const dy = e.clientY - d.y0;\n    if (!d.moved && Math.abs(dy) > 4) {\n      d.moved = dragged.current = true;\n      e.currentTarget.setPointerCapture(e.pointerId);\n    }\n    if (!d.moved) return;\n    let next = d.off0 + dy;\n    if (next < 0) next *= 0.25;\n    if (!dismissible && next > geo.current.low) next = geo.current.low + (next - geo.current.low) * 0.25;\n    y.set(next);\n    const dt = Math.max(1, e.timeStamp - d.lt);\n    d.v = (e.clientY - d.ly) / dt;\n    d.ly = e.clientY;\n    d.lt = e.timeStamp;\n  };\n  const onPointerUp = () => {\n    const d = drag.current;\n    drag.current = null;\n    if (!d || !d.moved) return;\n    const projected = y.get() + d.v * 160;\n    if (dismissible && projected > geo.current.low + (geo.current.closed - geo.current.low) * 0.45) return setOpen(false);\n    let best = 0;\n    snaps.forEach((_, i) => {\n      if (Math.abs(offsetFor(i) - projected) < Math.abs(offsetFor(best) - projected)) best = i;\n    });\n    goTo(best);\n  };\n\n  const onHandleKey = (e: React.KeyboardEvent<HTMLButtonElement>) => {\n    if (e.key === \"ArrowUp\" || e.key === \"End\") {\n      e.preventDefault();\n      goTo(e.key === \"End\" ? last : snap + 1);\n    } else if (e.key === \"ArrowDown\" || e.key === \"Home\") {\n      e.preventDefault();\n      if (e.key === \"ArrowDown\" && snap === 0 && dismissible) setOpen(false);\n      else goTo(e.key === \"Home\" ? 0 : snap - 1);\n    }\n  };\n\n  const expanded = snap === last;\n\n  return (\n    <div ref={rootRef} className={`${styles.root} ${className}`.trim()} style={{ \"--mf-bs-accent\": accentColor, ...style } as React.CSSProperties}>\n      <button ref={triggerRef} type=\"button\" aria-haspopup=\"dialog\" aria-expanded={open} className={styles.trigger} onClick={() => setOpen(true)}>\n        {triggerLabel}\n      </button>\n      {present &&\n        createPortal(\n          <div className={styles.layer} style={{ ...themeVars, \"--mf-bs-accent\": accentColor, \"--mf-bs-blur\": `${Math.max(0, backdropBlur)}px`, \"--mf-bs-max-w\": `${maxWidth}px` } as React.CSSProperties}>\n            <motion.div aria-hidden=\"true\" className={styles.backdrop} style={{ opacity: backdrop }} onPointerDown={() => dismissible && setOpen(false)} />\n            <motion.div\n              ref={panelRef}\n              role=\"dialog\"\n              aria-modal=\"true\"\n              aria-labelledby={`${id}-title`}\n              aria-describedby={description ? `${id}-desc` : undefined}\n              tabIndex={-1}\n              className={styles.panel}\n              style={{ y, height: snaps[last] * vh, paddingBottom: offsetFor(snap) }}\n              onKeyDown={trapFocus}\n            >\n              <div className={styles.grab} onPointerDown={onPointerDown} onPointerMove={onPointerMove} onPointerUp={onPointerUp} onPointerCancel={onPointerUp}>\n                <button\n                  type=\"button\"\n                  className={styles.handle}\n                  aria-label={expanded ? \"Collapse sheet\" : \"Expand sheet\"}\n                  aria-keyshortcuts=\"ArrowUp ArrowDown\"\n                  onKeyDown={onHandleKey}\n                  onClick={() => {\n                    if (dragged.current) return;\n                    goTo(expanded ? 0 : last);\n                  }}\n                >\n                  <span aria-hidden=\"true\" className={styles.bar} />\n                </button>\n                <div className={styles.header}>\n                  <h2 id={`${id}-title`} className={styles.title}>\n                    {title}\n                  </h2>\n                  {description && (\n                    <p id={`${id}-desc`} className={styles.description}>\n                      {description}\n                    </p>\n                  )}\n                </div>\n                <button type=\"button\" aria-label=\"Close\" className={styles.close} onClick={() => setOpen(false)}>\n                  <svg aria-hidden=\"true\" width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" strokeWidth=\"2\" strokeLinecap=\"round\">\n                    <path d=\"M18 6 6 18M6 6l12 12\" />\n                  </svg>\n                </button>\n              </div>\n              <div className={styles.body}>\n                {children ?? <DefaultContent />}\n              </div>\n            </motion.div>\n          </div>,\n          document.body,\n        )}\n    </div>\n  );\n}\n"
+    },
+    {
+      "path": "components/styles/bottom-sheet.module.css",
+      "type": "registry:style",
+      "content": ".root {\n  display: inline-flex;\n  color: var(--mf-fg, #f4f4f6);\n}\n\n.trigger {\n  display: inline-flex;\n  align-items: center;\n  justify-content: center;\n  height: 2.375rem;\n  padding: 0 1rem;\n  border-radius: 0.5rem;\n  border: 1px solid var(--mf-border, #2e2e38);\n  background-color: var(--mf-surface, #141419);\n  color: var(--mf-fg, #f4f4f6);\n  font: inherit;\n  font-size: 0.875rem;\n  font-weight: 500;\n  cursor: pointer;\n  transition: background-color 150ms ease, border-color 150ms ease, transform 150ms ease;\n}\n\n.trigger:hover {\n  background-color: var(--mf-surface-raised, #1b1b22);\n  border-color: var(--mf-border-strong, #52525b);\n}\n\n.trigger:active,\n.action:active {\n  transform: scale(0.98);\n}\n\n.trigger:focus-visible,\n.handle:focus-visible,\n.close:focus-visible,\n.action:focus-visible {\n  outline: 2px solid var(--mf-fg, #e4e4e7);\n  outline-offset: 2px;\n}\n\n.layer {\n  position: fixed;\n  inset: 0;\n  z-index: 1000;\n  overflow: hidden;\n  color: var(--mf-fg, #f4f4f6);\n}\n\n.backdrop {\n  position: absolute;\n  inset: 0;\n  background-color: rgba(9, 9, 11, 0.55);\n  backdrop-filter: blur(var(--mf-bs-blur, 2px));\n  -webkit-backdrop-filter: blur(var(--mf-bs-blur, 2px));\n}\n\n.panel {\n  position: absolute;\n  left: 0;\n  right: 0;\n  bottom: 0;\n  box-sizing: border-box;\n  display: flex;\n  flex-direction: column;\n  width: 100%;\n  max-width: var(--mf-bs-max-w, 640px);\n  margin: 0 auto;\n  border: 1px solid var(--mf-border, #2e2e38);\n  border-bottom: 0;\n  border-radius: 1rem 1rem 0 0;\n  background-color: var(--mf-surface, #141419);\n  color: var(--mf-fg, #f4f4f6);\n  box-shadow: 0 -16px 48px -16px rgba(0, 0, 0, 0.5);\n  outline: none;\n  will-change: transform;\n}\n\n.grab {\n  position: relative;\n  flex-shrink: 0;\n  padding: 0 1.25rem 1rem;\n  touch-action: none;\n  cursor: grab;\n  user-select: none;\n}\n\n.grab:active {\n  cursor: grabbing;\n}\n\n.handle {\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  width: 4rem;\n  height: 1.5rem;\n  margin: 0.25rem auto 0.25rem;\n  padding: 0;\n  border: 0;\n  border-radius: 0.5rem;\n  background: transparent;\n  cursor: inherit;\n}\n\n.bar {\n  width: 2.5rem;\n  height: 0.3125rem;\n  border-radius: 999px;\n  background-color: var(--mf-border-strong, #52525b);\n  transition: background-color 150ms ease, width 200ms ease;\n}\n\n.handle:hover .bar,\n.handle:focus-visible .bar {\n  width: 3rem;\n  background-color: var(--mf-bs-accent, #6366f1);\n}\n\n.header {\n  display: grid;\n  gap: 0.25rem;\n  padding-right: 2rem;\n}\n\n.title {\n  margin: 0;\n  font-size: 1.0625rem;\n  font-weight: 600;\n  letter-spacing: -0.01em;\n}\n\n.description {\n  margin: 0;\n  font-size: 0.8125rem;\n  line-height: 1.5;\n  color: var(--mf-muted, #a1a1aa);\n}\n\n.close {\n  position: absolute;\n  top: 1.75rem;\n  right: 1rem;\n  display: inline-flex;\n  align-items: center;\n  justify-content: center;\n  width: 1.75rem;\n  height: 1.75rem;\n  border: 0;\n  border-radius: 0.375rem;\n  background: transparent;\n  color: var(--mf-subtle, #71717a);\n  cursor: pointer;\n  transition: color 150ms ease, background-color 150ms ease;\n}\n\n.close:hover {\n  color: var(--mf-fg, #f4f4f6);\n  background-color: var(--mf-surface-raised, #1b1b22);\n}\n\n.body {\n  flex: 1;\n  min-height: 0;\n  overflow-y: auto;\n  overscroll-behavior: contain;\n  padding: 0 1.25rem 1.25rem;\n  font-size: 0.875rem;\n}\n\n.actions {\n  display: grid;\n  grid-template-columns: repeat(4, minmax(0, 1fr));\n  gap: 0.5rem;\n}\n\n.action {\n  display: flex;\n  flex-direction: column;\n  align-items: center;\n  gap: 0.375rem;\n  padding: 0.75rem 0.25rem;\n  border: 1px solid var(--mf-border, #2e2e38);\n  border-radius: 0.625rem;\n  background-color: var(--mf-bg, #09090b);\n  color: var(--mf-fg, #f4f4f6);\n  font: inherit;\n  font-size: 0.75rem;\n  cursor: pointer;\n  transition: border-color 150ms ease, color 150ms ease, transform 150ms ease;\n}\n\n.action:hover {\n  border-color: var(--mf-bs-accent, #6366f1);\n  color: var(--mf-bs-accent, #6366f1);\n}\n\n.section {\n  margin: 1.25rem 0 0.5rem;\n  font-size: 0.75rem;\n  font-weight: 600;\n  letter-spacing: 0.04em;\n  text-transform: uppercase;\n  color: var(--mf-subtle, #71717a);\n}\n\n.people {\n  display: grid;\n  gap: 0.25rem;\n  margin: 0;\n  padding: 0;\n  list-style: none;\n}\n\n.person {\n  display: flex;\n  align-items: center;\n  gap: 0.75rem;\n  padding: 0.5rem 0;\n}\n\n.avatar {\n  display: grid;\n  place-items: center;\n  flex-shrink: 0;\n  width: 2.25rem;\n  height: 2.25rem;\n  border-radius: 50%;\n  background-color: color-mix(in srgb, var(--mf-bs-accent, #6366f1) 18%, transparent);\n  color: var(--mf-bs-accent, #6366f1);\n  font-size: 0.75rem;\n  font-weight: 600;\n}\n\n.who {\n  display: grid;\n  flex: 1;\n  min-width: 0;\n}\n\n.name {\n  font-weight: 500;\n}\n\n.mail {\n  font-size: 0.8125rem;\n  color: var(--mf-muted, #a1a1aa);\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n}\n\n.role {\n  font-size: 0.8125rem;\n  color: var(--mf-muted, #a1a1aa);\n}\n\n@media (prefers-reduced-motion: reduce) {\n  .trigger,\n  .bar,\n  .close,\n  .action {\n    transition: none;\n  }\n}\n"
+    }
+  ],
+  "tailwindExample": "\"use client\";\n\nimport { AnimatePresence, motion } from \"motion/react\";\nimport { useEffect, useState } from \"react\";\n\nconst SNAPS = [0.45, 0.88];\n\nexport function BottomSheetTailwind() {\n  const [open, setOpen] = useState(false);\n  const [snap, setSnap] = useState(0);\n  const [vh, setVh] = useState(800);\n  useEffect(() => {\n    if (!open) return;\n    setVh(window.innerHeight);\n    setSnap(0);\n    const onKey = (e: KeyboardEvent) => e.key === \"Escape\" && setOpen(false);\n    document.addEventListener(\"keydown\", onKey);\n    return () => document.removeEventListener(\"keydown\", onKey);\n  }, [open]);\n  const max = SNAPS[SNAPS.length - 1] * vh;\n  const offset = (i: number) => max - SNAPS[i] * vh;\n  return (\n    <>\n      <button onClick={() => setOpen(true)} className=\"h-9 rounded-lg border border-zinc-800 bg-zinc-900 px-4 text-sm font-medium text-zinc-100\">Share project</button>\n      <AnimatePresence>\n        {open && (\n          <div className=\"fixed inset-0 z-50\">\n            <motion.div className=\"absolute inset-0 bg-black/50\" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setOpen(false)} />\n            <motion.div role=\"dialog\" aria-modal=\"true\" aria-label=\"Share project\" style={{ height: max }} className=\"absolute inset-x-0 bottom-0 mx-auto max-w-xl rounded-t-2xl border border-zinc-800 bg-zinc-950 px-5 text-zinc-100\"\n              initial={{ y: max }} animate={{ y: offset(snap) }} exit={{ y: max }} transition={{ type: \"spring\", stiffness: 420, damping: 42 }}\n              drag=\"y\" dragConstraints={{ top: 0, bottom: max }} dragElastic={0.1}\n              onDragEnd={(_, info) => {\n                const projected = offset(snap) + info.offset.y + info.velocity.y * 0.2;\n                if (projected > offset(0) + 120) return setOpen(false);\n                setSnap(Math.abs(projected - offset(0)) < Math.abs(projected - offset(1)) ? 0 : 1);\n              }}>\n              <button aria-label={snap ? \"Collapse sheet\" : \"Expand sheet\"} onClick={() => setSnap(snap ? 0 : 1)} className=\"mx-auto my-2 flex h-6 w-16 items-center justify-center\"><span className=\"h-1.5 w-10 rounded-full bg-zinc-600\" /></button>\n              <h2 className=\"text-lg font-semibold\">Share project</h2>\n              <p className=\"text-sm text-zinc-400\">Drag the handle to resize.</p>\n            </motion.div>\n          </div>\n        )}\n      </AnimatePresence>\n    </>\n  );\n}\n"
+}

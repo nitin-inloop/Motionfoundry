@@ -1,0 +1,192 @@
+{
+  "slug": "badge",
+  "name": "Badge",
+  "category": "Data Display",
+  "collection": "ui",
+  "featured": false,
+  "addedAt": "2026-10-16",
+  "version": "2.3.0",
+  "requiresMotion": true,
+  "dependencies": [
+    "motion",
+    "react"
+  ],
+  "description": "A compact status badge in six variants (default, secondary, outline, success, warning, destructive) that springs in on mount, with an optional pulsing status dot and a remove button that animates the badge out.",
+  "tags": [
+    "badge",
+    "tag",
+    "chip",
+    "status",
+    "label",
+    "ui"
+  ],
+  "a11yNotes": "Renders an inline span whose text is the accessible content; the status dot is aria-hidden decoration. The optional remove control is a native button labelled 'Remove <label>' with a visible focus ring. Under prefers-reduced-motion the pop-in, exit scale and dot pulse are disabled.",
+  "defaultProps": {
+    "label": "In review",
+    "variant": "default",
+    "size": "md",
+    "shape": "pill",
+    "dot": true,
+    "pulse": true,
+    "removable": true,
+    "accentColor": "#6366f1",
+    "animateIn": true
+  },
+  "controls": [
+    {
+      "prop": "label",
+      "label": "Label",
+      "type": "text"
+    },
+    {
+      "prop": "variant",
+      "label": "Variant",
+      "type": "select",
+      "options": [
+        "default",
+        "secondary",
+        "outline",
+        "success",
+        "warning",
+        "destructive"
+      ]
+    },
+    {
+      "prop": "size",
+      "label": "Size",
+      "type": "select",
+      "options": [
+        "sm",
+        "md",
+        "lg"
+      ]
+    },
+    {
+      "prop": "shape",
+      "label": "Shape",
+      "type": "select",
+      "options": [
+        "pill",
+        "rounded"
+      ]
+    },
+    {
+      "prop": "dot",
+      "label": "Status dot",
+      "type": "boolean"
+    },
+    {
+      "prop": "pulse",
+      "label": "Pulse dot",
+      "type": "boolean"
+    },
+    {
+      "prop": "removable",
+      "label": "Removable",
+      "type": "boolean"
+    },
+    {
+      "prop": "accentColor",
+      "label": "Accent color",
+      "type": "color"
+    },
+    {
+      "prop": "animateIn",
+      "label": "Animate in",
+      "type": "boolean"
+    }
+  ],
+  "propsApi": [
+    {
+      "name": "label",
+      "type": "string",
+      "default": "'In review'",
+      "description": "Badge text (ignored when children are provided)."
+    },
+    {
+      "name": "children",
+      "type": "React.ReactNode",
+      "default": "undefined",
+      "description": "Custom badge content."
+    },
+    {
+      "name": "variant",
+      "type": "'default' | 'secondary' | 'outline' | 'success' | 'warning' | 'destructive'",
+      "default": "'default'",
+      "description": "Visual variant."
+    },
+    {
+      "name": "size",
+      "type": "'sm' | 'md' | 'lg'",
+      "default": "'md'",
+      "description": "Height, padding and font-size preset."
+    },
+    {
+      "name": "shape",
+      "type": "'pill' | 'rounded'",
+      "default": "'pill'",
+      "description": "Fully rounded pill or a 6px rounded rectangle."
+    },
+    {
+      "name": "dot",
+      "type": "boolean",
+      "default": "true",
+      "description": "Show a leading status dot."
+    },
+    {
+      "name": "pulse",
+      "type": "boolean",
+      "default": "true",
+      "description": "Animate the dot with a radiating pulse."
+    },
+    {
+      "name": "removable",
+      "type": "boolean",
+      "default": "true",
+      "description": "Show a remove button; the badge animates out when pressed."
+    },
+    {
+      "name": "onRemove",
+      "type": "() => void",
+      "default": "undefined",
+      "description": "Called after the remove button is pressed."
+    },
+    {
+      "name": "accentColor",
+      "type": "string",
+      "default": "'#6366f1'",
+      "description": "Fill of the default variant and dot color of secondary/outline."
+    },
+    {
+      "name": "animateIn",
+      "type": "boolean",
+      "default": "true",
+      "description": "Pop in with a small spring on mount."
+    },
+    {
+      "name": "className",
+      "type": "string",
+      "default": "''",
+      "description": "Additional class merged onto the root element."
+    },
+    {
+      "name": "style",
+      "type": "React.CSSProperties",
+      "default": "undefined",
+      "description": "Inline styles merged onto the root element."
+    }
+  ],
+  "files": [
+    {
+      "path": "components/ui/badge.tsx",
+      "type": "registry:component",
+      "content": "\"use client\";\n\nimport * as React from \"react\";\nimport { AnimatePresence, motion, useReducedMotion } from \"motion/react\";\nimport styles from \"../styles/badge.module.css\";\n\nexport interface BadgeProps {\n  /** Badge text (ignored when children are provided) */\n  label?: string;\n  /** Custom badge content */\n  children?: React.ReactNode;\n  /** Visual variant */\n  variant?: \"default\" | \"secondary\" | \"outline\" | \"success\" | \"warning\" | \"destructive\";\n  /** Size preset */\n  size?: \"sm\" | \"md\" | \"lg\";\n  /** Corner style */\n  shape?: \"pill\" | \"rounded\";\n  /** Show a leading status dot */\n  dot?: boolean;\n  /** Animate the dot with a soft radiating pulse */\n  pulse?: boolean;\n  /** Show a remove (x) button; the badge animates out when pressed */\n  removable?: boolean;\n  /** Called after the remove button is pressed */\n  onRemove?: () => void;\n  /** Fill color of the default variant */\n  accentColor?: string;\n  /** Pop in with a small spring on mount */\n  animateIn?: boolean;\n  /** Optional className merged onto the root */\n  className?: string;\n  /** Optional inline styles merged onto the root */\n  style?: React.CSSProperties;\n}\n\nexport function Badge({\n  label = \"In review\",\n  children,\n  variant = \"default\",\n  size = \"md\",\n  shape = \"pill\",\n  dot = true,\n  pulse = true,\n  removable = true,\n  onRemove,\n  accentColor = \"#6366f1\",\n  animateIn = true,\n  className = \"\",\n  style,\n}: BadgeProps) {\n  const reduce = useReducedMotion();\n  const [visible, setVisible] = React.useState(true);\n  const text = typeof children === \"string\" ? children : label;\n\n  const remove = () => {\n    setVisible(false);\n    onRemove?.();\n  };\n\n  return (\n    <AnimatePresence initial={animateIn && !reduce}>\n      {visible && (\n        <motion.span\n          key=\"badge\"\n          className={`${styles.root} ${className}`.trim()}\n          data-variant={variant}\n          data-size={size}\n          data-shape={shape}\n          style={{ \"--mf-bd-accent\": accentColor, ...style } as React.CSSProperties}\n          initial={{ opacity: 0, scale: 0.8, y: 2 }}\n          animate={{ opacity: 1, scale: 1, y: 0 }}\n          exit={{ opacity: 0, scale: reduce ? 1 : 0.8 }}\n          transition={reduce ? { duration: 0.1 } : { type: \"spring\", stiffness: 520, damping: 30 }}\n        >\n          {dot && (\n            <span aria-hidden=\"true\" className={styles.dot} data-pulse={pulse && !reduce ? \"\" : undefined} />\n          )}\n          <span className={styles.label}>{children ?? label}</span>\n          {removable && (\n            <button type=\"button\" className={styles.remove} aria-label={`Remove ${text}`} onClick={remove}>\n              <svg aria-hidden=\"true\" width=\"10\" height=\"10\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" strokeWidth=\"3\" strokeLinecap=\"round\">\n                <path d=\"M18 6 6 18M6 6l12 12\" />\n              </svg>\n            </button>\n          )}\n        </motion.span>\n      )}\n    </AnimatePresence>\n  );\n}\n"
+    },
+    {
+      "path": "components/styles/badge.module.css",
+      "type": "registry:style",
+      "content": ".root {\n  --mf-bd-h: 1.5rem;\n  --mf-bd-fs: 0.75rem;\n  --mf-bd-px: 0.625rem;\n  --mf-bd-bg: var(--mf-bd-accent, #6366f1);\n  --mf-bd-fg: #ffffff;\n  --mf-bd-border: transparent;\n  --mf-bd-dot: currentColor;\n  display: inline-flex;\n  align-items: center;\n  gap: 0.375rem;\n  height: var(--mf-bd-h);\n  padding: 0 var(--mf-bd-px);\n  border-radius: 999px;\n  border: 1px solid var(--mf-bd-border);\n  background-color: var(--mf-bd-bg);\n  color: var(--mf-bd-fg);\n  font-size: var(--mf-bd-fs);\n  font-weight: 600;\n  line-height: 1;\n  letter-spacing: 0.01em;\n  white-space: nowrap;\n  vertical-align: middle;\n  transition: background-color 160ms ease, color 160ms ease, border-color 160ms ease;\n}\n\n.root[data-size=\"sm\"] {\n  --mf-bd-h: 1.25rem;\n  --mf-bd-fs: 0.6875rem;\n  --mf-bd-px: 0.5rem;\n}\n\n.root[data-size=\"lg\"] {\n  --mf-bd-h: 1.875rem;\n  --mf-bd-fs: 0.875rem;\n  --mf-bd-px: 0.8125rem;\n}\n\n.root[data-shape=\"rounded\"] {\n  border-radius: 0.375rem;\n}\n\n.root[data-variant=\"secondary\"] {\n  --mf-bd-bg: var(--mf-surface-raised, #1b1b22);\n  --mf-bd-fg: var(--mf-fg, #f4f4f6);\n  --mf-bd-border: var(--mf-border, #2e2e38);\n  --mf-bd-dot: var(--mf-bd-accent, #6366f1);\n}\n\n.root[data-variant=\"outline\"] {\n  --mf-bd-bg: transparent;\n  --mf-bd-fg: var(--mf-fg, #f4f4f6);\n  --mf-bd-border: var(--mf-border-strong, #52525b);\n  --mf-bd-dot: var(--mf-bd-accent, #6366f1);\n}\n\n.root[data-variant=\"success\"] {\n  --mf-bd-bg: color-mix(in srgb, #22c55e 16%, transparent);\n  --mf-bd-fg: #22c55e;\n  --mf-bd-border: color-mix(in srgb, #22c55e 35%, transparent);\n}\n\n.root[data-variant=\"warning\"] {\n  --mf-bd-bg: color-mix(in srgb, #f59e0b 16%, transparent);\n  --mf-bd-fg: #f59e0b;\n  --mf-bd-border: color-mix(in srgb, #f59e0b 35%, transparent);\n}\n\n.root[data-variant=\"destructive\"] {\n  --mf-bd-bg: #ef4444;\n  --mf-bd-fg: #ffffff;\n}\n\n.label {\n  display: inline-flex;\n  align-items: center;\n}\n\n.dot {\n  position: relative;\n  flex-shrink: 0;\n  width: 0.4375rem;\n  height: 0.4375rem;\n  border-radius: 999px;\n  background-color: var(--mf-bd-dot);\n}\n\n.dot[data-pulse]::after {\n  content: \"\";\n  position: absolute;\n  inset: 0;\n  border-radius: inherit;\n  background-color: var(--mf-bd-dot);\n  animation: mf-bd-pulse 1.8s cubic-bezier(0, 0, 0.2, 1) infinite;\n}\n\n.remove {\n  display: inline-flex;\n  align-items: center;\n  justify-content: center;\n  width: calc(var(--mf-bd-h) - 0.5rem);\n  height: calc(var(--mf-bd-h) - 0.5rem);\n  margin-right: calc(var(--mf-bd-px) * -0.5);\n  padding: 0;\n  border: 0;\n  border-radius: 999px;\n  background-color: transparent;\n  color: inherit;\n  opacity: 0.7;\n  cursor: pointer;\n  transition: opacity 150ms ease, background-color 150ms ease, transform 150ms ease;\n}\n\n.remove:hover {\n  opacity: 1;\n  background-color: color-mix(in srgb, currentColor 18%, transparent);\n}\n\n.remove:active {\n  transform: scale(0.88);\n}\n\n.remove:focus-visible {\n  opacity: 1;\n  outline: 2px solid var(--mf-fg, #e4e4e7);\n  outline-offset: 1px;\n}\n\n@keyframes mf-bd-pulse {\n  0% {\n    opacity: 0.75;\n    transform: scale(1);\n  }\n  75%,\n  100% {\n    opacity: 0;\n    transform: scale(2.6);\n  }\n}\n\n@media (prefers-reduced-motion: reduce) {\n  .root,\n  .remove {\n    transition: none;\n  }\n  .dot::after {\n    animation: none;\n    display: none;\n  }\n}\n"
+    }
+  ],
+  "tailwindExample": "\"use client\";\n\nimport { useState } from \"react\";\n\nconst variants = {\n  default: \"bg-indigo-500 text-white border-transparent\",\n  secondary: \"bg-zinc-800 text-zinc-100 border-zinc-700\",\n  outline: \"bg-transparent text-zinc-100 border-zinc-600\",\n  success: \"bg-emerald-500/15 text-emerald-500 border-emerald-500/35\",\n  warning: \"bg-amber-500/15 text-amber-500 border-amber-500/35\",\n  destructive: \"bg-red-500 text-white border-transparent\",\n};\n\nexport function BadgeTailwind({ label = \"In review\", variant = \"default\" as keyof typeof variants }) {\n  const [shown, setShown] = useState(true);\n  if (!shown) return null;\n  return (\n    <span className={`inline-flex h-6 items-center gap-1.5 rounded-full border px-2.5 text-xs font-semibold animate-in zoom-in-90 ${variants[variant]}`}>\n      <span aria-hidden className=\"relative size-1.5 rounded-full bg-current\"><span className=\"absolute inset-0 animate-ping rounded-full bg-current\" /></span>\n      {label}\n      <button type=\"button\" aria-label={`Remove ${label}`} onClick={() => setShown(false)} className=\"-mr-1 grid size-4 place-items-center rounded-full opacity-70 hover:bg-current/20 hover:opacity-100\">×</button>\n    </span>\n  );\n}"
+}

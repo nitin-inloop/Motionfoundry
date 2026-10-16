@@ -1,0 +1,171 @@
+{
+  "slug": "radio-cards",
+  "name": "RadioCards",
+  "category": "Forms and Inputs",
+  "collection": "ui",
+  "featured": false,
+  "addedAt": "2026-10-16",
+  "version": "2.3.0",
+  "requiresMotion": true,
+  "dependencies": [
+    "motion",
+    "react"
+  ],
+  "description": "Selectable option cards that behave as a single radio group. The accent border springs from card to card and a check mark draws itself into the selected card's indicator.",
+  "tags": [
+    "radio",
+    "radio-group",
+    "cards",
+    "plan-picker",
+    "form",
+    "ui"
+  ],
+  "a11yNotes": "Implements the WAI-ARIA radio group pattern: role=\"radiogroup\" labelled by the visible group label, each card is role=\"radio\" with aria-checked and aria-describedby pointing to its description. Roving tabindex keeps a single Tab stop; Arrow keys move and select (wrapping, skipping disabled cards), Home/End jump to the ends, Space/Enter select. Disabled cards expose aria-disabled. Under prefers-reduced-motion the highlight and check change instantly.",
+  "defaultProps": {
+    "label": "Choose a plan",
+    "columns": 3,
+    "size": "md",
+    "accentColor": "#6366f1",
+    "showDescriptions": true,
+    "slidingHighlight": true,
+    "disabled": false
+  },
+  "controls": [
+    {
+      "prop": "label",
+      "label": "Group label",
+      "type": "text"
+    },
+    {
+      "prop": "columns",
+      "label": "Columns",
+      "type": "range",
+      "min": 1,
+      "max": 4,
+      "step": 1
+    },
+    {
+      "prop": "size",
+      "label": "Size",
+      "type": "select",
+      "options": [
+        "sm",
+        "md",
+        "lg"
+      ]
+    },
+    {
+      "prop": "accentColor",
+      "label": "Accent color",
+      "type": "color"
+    },
+    {
+      "prop": "showDescriptions",
+      "label": "Show descriptions",
+      "type": "boolean"
+    },
+    {
+      "prop": "slidingHighlight",
+      "label": "Sliding highlight",
+      "type": "boolean"
+    },
+    {
+      "prop": "disabled",
+      "label": "Disabled",
+      "type": "boolean"
+    }
+  ],
+  "propsApi": [
+    {
+      "name": "options",
+      "type": "{ value: string; label: string; description?: string; meta?: string; disabled?: boolean }[]",
+      "default": "Starter / Pro / Team plans",
+      "description": "Options rendered as cards."
+    },
+    {
+      "name": "value",
+      "type": "string",
+      "default": "undefined",
+      "description": "Controlled selected value."
+    },
+    {
+      "name": "defaultValue",
+      "type": "string",
+      "default": "second option",
+      "description": "Initial selected value when uncontrolled (falls back to the second, then first option)."
+    },
+    {
+      "name": "onValueChange",
+      "type": "(value: string) => void",
+      "default": "undefined",
+      "description": "Called with the newly selected value."
+    },
+    {
+      "name": "label",
+      "type": "string",
+      "default": "'Choose a plan'",
+      "description": "Visible group label, used as the radiogroup's accessible name."
+    },
+    {
+      "name": "columns",
+      "type": "number",
+      "default": "3",
+      "description": "Number of grid columns (1-4); collapses to one column on narrow screens."
+    },
+    {
+      "name": "size",
+      "type": "'sm' | 'md' | 'lg'",
+      "default": "'md'",
+      "description": "Card padding and type size preset."
+    },
+    {
+      "name": "accentColor",
+      "type": "string",
+      "default": "'#6366f1'",
+      "description": "Color of the highlight border, tint and check indicator."
+    },
+    {
+      "name": "showDescriptions",
+      "type": "boolean",
+      "default": "true",
+      "description": "Show the description line of each option."
+    },
+    {
+      "name": "slidingHighlight",
+      "type": "boolean",
+      "default": "true",
+      "description": "Spring the highlight border between cards; when false it fades in place."
+    },
+    {
+      "name": "disabled",
+      "type": "boolean",
+      "default": "false",
+      "description": "Disable the whole group."
+    },
+    {
+      "name": "className",
+      "type": "string",
+      "default": "''",
+      "description": "Additional class merged onto the root element."
+    },
+    {
+      "name": "style",
+      "type": "React.CSSProperties",
+      "default": "undefined",
+      "description": "Inline styles merged onto the root element."
+    }
+  ],
+  "files": [
+    {
+      "path": "components/ui/radio-cards.tsx",
+      "type": "registry:component",
+      "content": "\"use client\";\n\nimport * as React from \"react\";\nimport { motion, useReducedMotion } from \"motion/react\";\nimport styles from \"../styles/radio-cards.module.css\";\n\nexport interface RadioCardOption {\n  /** Unique value of the option */\n  value: string;\n  /** Main label */\n  label: string;\n  /** Secondary line under the label */\n  description?: string;\n  /** Short meta text shown on the right (e.g. a price) */\n  meta?: string;\n  /** Disable just this option */\n  disabled?: boolean;\n}\n\nexport interface RadioCardsProps {\n  /** Options to render as cards */\n  options?: RadioCardOption[];\n  /** Controlled selected value */\n  value?: string;\n  /** Initial selected value when uncontrolled */\n  defaultValue?: string;\n  /** Called with the newly selected value */\n  onValueChange?: (value: string) => void;\n  /** Visible group label (accessible name of the radiogroup) */\n  label?: string;\n  /** Number of grid columns */\n  columns?: number;\n  /** Card size preset */\n  size?: \"sm\" | \"md\" | \"lg\";\n  /** Accent color for the highlight border and check */\n  accentColor?: string;\n  /** Show option descriptions */\n  showDescriptions?: boolean;\n  /** Slide the highlight border between cards instead of fading it */\n  slidingHighlight?: boolean;\n  /** Disable the whole group */\n  disabled?: boolean;\n  /** Optional className merged onto the root */\n  className?: string;\n  /** Optional inline styles merged onto the root */\n  style?: React.CSSProperties;\n}\n\nconst DEFAULT_OPTIONS: RadioCardOption[] = [\n  { value: \"starter\", label: \"Starter\", description: \"For side projects and prototypes.\", meta: \"$0/mo\" },\n  { value: \"pro\", label: \"Pro\", description: \"Unlimited projects and priority builds.\", meta: \"$19/mo\" },\n  { value: \"team\", label: \"Team\", description: \"Shared workspaces, roles and SSO.\", meta: \"$49/mo\" },\n];\n\nexport function RadioCards({\n  options = DEFAULT_OPTIONS,\n  value: valueProp,\n  defaultValue,\n  onValueChange,\n  label = \"Choose a plan\",\n  columns = 3,\n  size = \"md\",\n  accentColor = \"#6366f1\",\n  showDescriptions = true,\n  slidingHighlight = true,\n  disabled = false,\n  className = \"\",\n  style,\n}: RadioCardsProps) {\n  const reduce = useReducedMotion();\n  const groupId = React.useId();\n  const [inner, setInner] = React.useState<string | undefined>(defaultValue ?? options[1]?.value ?? options[0]?.value);\n  const controlled = valueProp !== undefined;\n  const selected = controlled ? valueProp : inner;\n  const refs = React.useRef<Array<HTMLDivElement | null>>([]);\n\n  const enabled = options.map((o) => !disabled && !o.disabled);\n  const selectedIndex = options.findIndex((o) => o.value === selected);\n  const firstEnabled = enabled.indexOf(true);\n  const tabStop = selectedIndex >= 0 && enabled[selectedIndex] ? selectedIndex : firstEnabled;\n\n  const select = (i: number) => {\n    const opt = options[i];\n    if (!opt || !enabled[i]) return;\n    if (!controlled) setInner(opt.value);\n    if (opt.value !== selected) onValueChange?.(opt.value);\n  };\n\n  const move = (from: number, dir: 1 | -1 | \"first\" | \"last\") => {\n    const n = options.length;\n    let i = dir === \"first\" ? -1 : dir === \"last\" ? n : from;\n    const step = dir === \"first\" ? 1 : dir === \"last\" ? -1 : dir;\n    for (let k = 0; k < n; k++) {\n      i = (i + step + n) % n;\n      if (enabled[i]) {\n        select(i);\n        refs.current[i]?.focus();\n        return;\n      }\n    }\n  };\n\n  const onKeyDown = (e: React.KeyboardEvent<HTMLDivElement>, i: number) => {\n    const keys: Record<string, 1 | -1 | \"first\" | \"last\"> = { ArrowRight: 1, ArrowDown: 1, ArrowLeft: -1, ArrowUp: -1, Home: \"first\", End: \"last\" };\n    if (e.key in keys) {\n      e.preventDefault();\n      move(i, keys[e.key]);\n    } else if (e.key === \" \" || e.key === \"Enter\") {\n      e.preventDefault();\n      select(i);\n    }\n  };\n\n  const spring = reduce ? { duration: 0 } : { type: \"spring\" as const, stiffness: 500, damping: 38 };\n  const cols = Math.max(1, Math.min(4, Math.round(columns)));\n\n  return (\n    <div\n      className={`${styles.root} ${styles[size] ?? \"\"} ${className}`.trim()}\n      style={{ \"--mf-rc-accent\": accentColor, \"--mf-rc-cols\": cols, ...style } as React.CSSProperties}\n    >\n      {label && (\n        <div id={`${groupId}-label`} className={styles.groupLabel}>\n          {label}\n        </div>\n      )}\n      <div role=\"radiogroup\" aria-labelledby={label ? `${groupId}-label` : undefined} aria-label={label ? undefined : \"Options\"} aria-disabled={disabled || undefined} className={styles.grid}>\n        {options.map((opt, i) => {\n          const checked = opt.value === selected;\n          const descId = opt.description && showDescriptions ? `${groupId}-d${i}` : undefined;\n          return (\n            <div\n              key={opt.value}\n              ref={(el) => {\n                refs.current[i] = el;\n              }}\n              role=\"radio\"\n              aria-checked={checked}\n              aria-disabled={!enabled[i] || undefined}\n              aria-describedby={descId}\n              tabIndex={i === tabStop ? 0 : -1}\n              data-state={checked ? \"checked\" : \"unchecked\"}\n              className={styles.card}\n              onClick={() => select(i)}\n              onKeyDown={(e) => onKeyDown(e, i)}\n            >\n              {checked &&\n                (slidingHighlight ? (\n                  <motion.span aria-hidden=\"true\" layoutId={`${groupId}-ring`} className={styles.ring} transition={spring} />\n                ) : (\n                  <motion.span aria-hidden=\"true\" className={styles.ring} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: reduce ? 0 : 0.18 }} />\n                ))}\n              <span className={styles.head}>\n                <span className={styles.title}>{opt.label}</span>\n                <span className={styles.indicator} aria-hidden=\"true\">\n                  <motion.svg viewBox=\"0 0 16 16\" width=\"12\" height=\"12\" initial={false} animate={{ scale: checked ? 1 : 0.4, opacity: checked ? 1 : 0 }} transition={spring}>\n                    <motion.path\n                      d=\"M3.5 8.5l3 3 6-7\"\n                      fill=\"none\"\n                      stroke=\"currentColor\"\n                      strokeWidth=\"2.2\"\n                      strokeLinecap=\"round\"\n                      strokeLinejoin=\"round\"\n                      initial={false}\n                      animate={{ pathLength: checked ? 1 : 0 }}\n                      transition={reduce ? { duration: 0 } : { duration: 0.25, ease: \"easeOut\", delay: checked ? 0.05 : 0 }}\n                    />\n                  </motion.svg>\n                </span>\n              </span>\n              {descId && (\n                <span id={descId} className={styles.description}>\n                  {opt.description}\n                </span>\n              )}\n              {opt.meta && <span className={styles.meta}>{opt.meta}</span>}\n            </div>\n          );\n        })}\n      </div>\n    </div>\n  );\n}\n"
+    },
+    {
+      "path": "components/styles/radio-cards.module.css",
+      "type": "registry:style",
+      "content": ".root {\n  display: grid;\n  gap: 0.75rem;\n  width: 100%;\n  max-width: 44rem;\n  color: var(--mf-fg, #f4f4f6);\n  font-size: 0.875rem;\n}\n\n.groupLabel {\n  font-size: 0.875rem;\n  font-weight: 600;\n  color: var(--mf-fg, #f4f4f6);\n}\n\n.grid {\n  display: grid;\n  grid-template-columns: repeat(var(--mf-rc-cols, 3), minmax(0, 1fr));\n  gap: 0.75rem;\n}\n\n.card {\n  position: relative;\n  display: flex;\n  flex-direction: column;\n  gap: 0.375rem;\n  padding: 1rem;\n  border-radius: 0.75rem;\n  border: 1px solid var(--mf-border, #2e2e38);\n  background-color: var(--mf-surface, #141419);\n  cursor: pointer;\n  user-select: none;\n  outline: none;\n  transition: border-color 150ms ease, background-color 150ms ease, transform 150ms ease;\n}\n\n.card:hover:not([aria-disabled=\"true\"]) {\n  border-color: var(--mf-border-strong, #52525b);\n  background-color: var(--mf-surface-raised, #1b1b22);\n}\n\n.card:active:not([aria-disabled=\"true\"]) {\n  transform: scale(0.99);\n}\n\n.card[data-state=\"checked\"] {\n  background-color: color-mix(in srgb, var(--mf-rc-accent, #6366f1) 8%, var(--mf-surface, #141419));\n}\n\n.card:focus-visible {\n  outline: 2px solid var(--mf-fg, #e4e4e7);\n  outline-offset: 2px;\n}\n\n.card[aria-disabled=\"true\"] {\n  opacity: 0.5;\n  cursor: not-allowed;\n}\n\n.ring {\n  position: absolute;\n  inset: -1px;\n  border-radius: inherit;\n  border: 2px solid var(--mf-rc-accent, #6366f1);\n  box-shadow: 0 0 0 4px color-mix(in srgb, var(--mf-rc-accent, #6366f1) 18%, transparent);\n  pointer-events: none;\n}\n\n.head {\n  display: flex;\n  align-items: center;\n  justify-content: space-between;\n  gap: 0.75rem;\n}\n\n.title {\n  font-weight: 600;\n  line-height: 1.3;\n}\n\n.indicator {\n  display: inline-grid;\n  place-items: center;\n  flex-shrink: 0;\n  width: 1.125rem;\n  height: 1.125rem;\n  border-radius: 999px;\n  border: 1px solid var(--mf-border-strong, #52525b);\n  color: #ffffff;\n  transition: background-color 180ms ease, border-color 180ms ease;\n}\n\n.card[data-state=\"checked\"] .indicator {\n  background-color: var(--mf-rc-accent, #6366f1);\n  border-color: var(--mf-rc-accent, #6366f1);\n}\n\n.description {\n  color: var(--mf-muted, #a1a1aa);\n  line-height: 1.45;\n}\n\n.meta {\n  margin-top: auto;\n  padding-top: 0.5rem;\n  font-weight: 600;\n  font-variant-numeric: tabular-nums;\n  color: var(--mf-fg, #f4f4f6);\n}\n\n.sm {\n  font-size: 0.8125rem;\n}\n\n.sm .card {\n  padding: 0.75rem;\n}\n\n.lg {\n  font-size: 0.9375rem;\n}\n\n.lg .card {\n  padding: 1.25rem;\n}\n\n@media (max-width: 560px) {\n  .grid {\n    grid-template-columns: 1fr;\n  }\n}\n\n@media (prefers-reduced-motion: reduce) {\n  .card,\n  .indicator {\n    transition: none;\n  }\n\n  .card:active:not([aria-disabled=\"true\"]) {\n    transform: none;\n  }\n}\n"
+    }
+  ],
+  "tailwindExample": "\"use client\";\n\nimport { motion } from \"motion/react\";\nimport { useState } from \"react\";\n\nconst plans = [\n  { value: \"starter\", label: \"Starter\", price: \"$0/mo\" },\n  { value: \"pro\", label: \"Pro\", price: \"$19/mo\" },\n  { value: \"team\", label: \"Team\", price: \"$49/mo\" },\n];\n\nexport function RadioCardsTailwind() {\n  const [value, setValue] = useState(\"pro\");\n  const idx = plans.findIndex((p) => p.value === value);\n  const onKey = (e: React.KeyboardEvent, i: number) => {\n    const d = e.key === \"ArrowRight\" || e.key === \"ArrowDown\" ? 1 : e.key === \"ArrowLeft\" || e.key === \"ArrowUp\" ? -1 : 0;\n    if (!d) return;\n    e.preventDefault();\n    const n = (i + d + plans.length) % plans.length;\n    setValue(plans[n].value);\n    (e.currentTarget.parentElement?.children[n] as HTMLElement)?.focus();\n  };\n  return (\n    <div role=\"radiogroup\" aria-label=\"Choose a plan\" className=\"grid w-full max-w-2xl grid-cols-3 gap-3\">\n      {plans.map((p, i) => (\n        <div key={p.value} role=\"radio\" aria-checked={p.value === value} tabIndex={i === idx ? 0 : -1} onClick={() => setValue(p.value)} onKeyDown={(e) => onKey(e, i)} className=\"relative cursor-pointer rounded-xl border border-zinc-800 bg-zinc-900 p-4 text-sm text-zinc-100 outline-none focus-visible:ring-2 focus-visible:ring-zinc-200\">\n          {p.value === value && <motion.span layoutId=\"rc-ring\" className=\"pointer-events-none absolute -inset-px rounded-xl border-2 border-indigo-500\" transition={{ type: \"spring\", stiffness: 500, damping: 38 }} />}\n          <div className=\"font-semibold\">{p.label}</div>\n          <div className=\"mt-3 font-semibold text-zinc-400\">{p.price}</div>\n        </div>\n      ))}\n    </div>\n  );\n}"
+}

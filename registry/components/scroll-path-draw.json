@@ -1,0 +1,197 @@
+{
+  "slug": "scroll-path-draw",
+  "name": "ScrollPathDraw",
+  "category": "Scroll Animations",
+  "collection": "scroll",
+  "featured": true,
+  "addedAt": "2026-10-16",
+  "version": "2.3.0",
+  "requiresMotion": false,
+  "dependencies": [
+    "react"
+  ],
+  "description": "A pinned SVG route draws itself in a two-color gradient as you scroll a smooth-scroll viewport, led by a glowing head dot, while milestone markers light up and their labels rise into place the moment the line reaches them.",
+  "tags": [
+    "scroll",
+    "svg",
+    "path",
+    "draw",
+    "timeline",
+    "roadmap",
+    "milestones",
+    "smooth-scroll"
+  ],
+  "a11yNotes": "The viewport is a focusable role=\"region\" labelled by the title, so keyboard users can Tab to it and scroll with arrows/Page keys/Space (native) with a 2px :focus-visible outline. The SVG is role=\"img\" with an aria-label listing every milestone in order, and the milestone labels are real SVG text; the head dot and percentage readout are aria-hidden. Wheel input is smoothed only while the viewport can still move and is released at the edges so the page keeps scrolling; touch and scrollbar dragging stay native. Under prefers-reduced-motion the wheel is not intercepted and the route renders fully drawn with every milestone visible.",
+  "defaultProps": {
+    "milestones": [
+      "Kickoff",
+      "Prototype",
+      "Private beta",
+      "Public launch",
+      "Series A"
+    ],
+    "title": "The road so far",
+    "color1": "#a78bfa",
+    "color2": "#22d3ee",
+    "strokeWidth": 5,
+    "scrollLength": 3,
+    "glow": true,
+    "lerp": 0.1,
+    "smooth": true
+  },
+  "controls": [
+    {
+      "prop": "milestones",
+      "label": "Milestones (comma separated)",
+      "type": "list"
+    },
+    {
+      "prop": "title",
+      "label": "Title",
+      "type": "text"
+    },
+    {
+      "prop": "color1",
+      "label": "Color 1",
+      "type": "color"
+    },
+    {
+      "prop": "color2",
+      "label": "Color 2",
+      "type": "color"
+    },
+    {
+      "prop": "strokeWidth",
+      "label": "Stroke width",
+      "type": "range",
+      "min": 1,
+      "max": 12,
+      "step": 0.5
+    },
+    {
+      "prop": "scrollLength",
+      "label": "Scroll length (x height)",
+      "type": "range",
+      "min": 1.5,
+      "max": 6,
+      "step": 0.5
+    },
+    {
+      "prop": "glow",
+      "label": "Glow",
+      "type": "boolean"
+    },
+    {
+      "prop": "lerp",
+      "label": "Lerp (smoothness)",
+      "type": "range",
+      "min": 0.05,
+      "max": 0.3,
+      "step": 0.01
+    },
+    {
+      "prop": "smooth",
+      "label": "Smooth scrolling",
+      "type": "boolean"
+    }
+  ],
+  "propsApi": [
+    {
+      "name": "milestones",
+      "type": "string[]",
+      "default": "['Kickoff', 'Prototype', 'Private beta', 'Public launch', 'Series A']",
+      "description": "Milestone labels placed along the route, in order."
+    },
+    {
+      "name": "title",
+      "type": "string",
+      "default": "'The road so far'",
+      "description": "Heading shown above the route (also the region label)."
+    },
+    {
+      "name": "color1",
+      "type": "string",
+      "default": "'#a78bfa'",
+      "description": "Gradient start color of the drawn path."
+    },
+    {
+      "name": "color2",
+      "type": "string",
+      "default": "'#22d3ee'",
+      "description": "Gradient end color of the drawn path, also used for the head dot and active markers."
+    },
+    {
+      "name": "strokeWidth",
+      "type": "number",
+      "default": "5",
+      "description": "Stroke width of the route in SVG units (the viewBox is 1000 wide)."
+    },
+    {
+      "name": "scrollLength",
+      "type": "number",
+      "default": "3",
+      "description": "Total scroll height as a multiple of the viewport height; larger values draw more slowly."
+    },
+    {
+      "name": "glow",
+      "type": "boolean",
+      "default": "true",
+      "description": "Adds a soft blur glow to the drawn path and head dot."
+    },
+    {
+      "name": "height",
+      "type": "number",
+      "default": "380",
+      "description": "Height of the component's own scroll viewport in px (width is always 100%)."
+    },
+    {
+      "name": "borderRadius",
+      "type": "number",
+      "default": "20",
+      "description": "Corner radius of the viewport in px."
+    },
+    {
+      "name": "lerp",
+      "type": "number",
+      "default": "0.1",
+      "description": "Interpolation factor per 60fps frame for wheel smoothing (0.05 floaty, 0.3 snappy)."
+    },
+    {
+      "name": "wheelMultiplier",
+      "type": "number",
+      "default": "1",
+      "description": "Multiplier applied to wheel and trackpad deltas."
+    },
+    {
+      "name": "smooth",
+      "type": "boolean",
+      "default": "true",
+      "description": "Enable smooth wheel scrolling; false (or prefers-reduced-motion) uses native scrolling."
+    },
+    {
+      "name": "className",
+      "type": "string",
+      "default": "''",
+      "description": "Additional class merged onto the root element."
+    },
+    {
+      "name": "style",
+      "type": "React.CSSProperties",
+      "default": "undefined",
+      "description": "Inline styles merged onto the root element."
+    }
+  ],
+  "files": [
+    {
+      "path": "components/ui/scroll-path-draw.tsx",
+      "type": "registry:component",
+      "content": "\"use client\";\n\nimport * as React from \"react\";\nimport styles from \"../styles/scroll-path-draw.module.css\";\n\ninterface SmoothScrollState {\n  /** Current scrollTop of the viewport in px */\n  scroll: number;\n  /** Maximum scrollTop in px */\n  limit: number;\n  /** scroll / limit, 0..1 */\n  progress: number;\n}\n\ninterface SmoothScrollOptions {\n  lerp: number;\n  wheelMultiplier: number;\n  smooth: boolean;\n  onScroll?: (state: SmoothScrollState) => void;\n}\n\nconst clamp = (v: number, min: number, max: number) => Math.min(max, Math.max(min, v));\n\nfunction usePrefersReducedMotion(): boolean {\n  const [reduced, setReduced] = React.useState(false);\n  React.useEffect(() => {\n    const mq = window.matchMedia(\"(prefers-reduced-motion: reduce)\");\n    const update = () => setReduced(mq.matches);\n    update();\n    mq.addEventListener(\"change\", update);\n    return () => mq.removeEventListener(\"change\", update);\n  }, []);\n  return reduced;\n}\n\n/** True when a nested scrollable element under the pointer can still scroll in the wheel direction. */\nfunction nestedCanScroll(node: EventTarget | null, root: HTMLElement, dy: number): boolean {\n  let el: Element | null = node instanceof Element ? node : null;\n  while (el && el !== root) {\n    if (el instanceof HTMLElement) {\n      const overflowY = window.getComputedStyle(el).overflowY;\n      if ((overflowY === \"auto\" || overflowY === \"scroll\") && el.scrollHeight > el.clientHeight + 1) {\n        if (dy < 0 ? el.scrollTop > 0 : el.scrollTop + el.clientHeight < el.scrollHeight - 1) return true;\n      }\n    }\n    el = el.parentElement;\n  }\n  return false;\n}\n\n/**\n * Self-contained smooth scroller for an overflow container: wheel input sets a target and a rAF\n * loop eases scrollTop toward it. Touch, keyboard and scrollbar stay native; wheel is released at\n * the edges so the page keeps scrolling.\n */\nfunction useSmoothScroll(\n  containerRef: React.RefObject<HTMLElement | null>,\n  { lerp, wheelMultiplier, smooth, onScroll }: SmoothScrollOptions,\n) {\n  const callbackRef = React.useRef(onScroll);\n  React.useEffect(() => {\n    callbackRef.current = onScroll;\n  }, [onScroll]);\n\n  React.useEffect(() => {\n    const el = containerRef.current;\n    if (!el) return;\n    const ease = clamp(Number.isFinite(lerp) ? lerp : 0.1, 0.01, 1);\n    const multiplier = Number.isFinite(wheelMultiplier) ? wheelMultiplier : 1;\n    let target = el.scrollTop;\n    let current = target;\n    let raf = 0;\n    let lastTime = 0;\n    const getLimit = () => Math.max(0, el.scrollHeight - el.clientHeight);\n    const emit = () => {\n      const limit = getLimit();\n      const scroll = clamp(el.scrollTop, 0, limit);\n      callbackRef.current?.({ scroll, limit, progress: limit > 0 ? scroll / limit : 0 });\n    };\n    const tick = (time: number) => {\n      const dt = lastTime ? Math.min(64, Math.max(1, time - lastTime)) : 16.667;\n      lastTime = time;\n      target = clamp(target, 0, getLimit());\n      if (Math.abs(el.scrollTop - current) > 2) {\n        current = target = el.scrollTop;\n        raf = 0;\n        lastTime = 0;\n        emit();\n        return;\n      }\n      current += (target - current) * (1 - Math.pow(1 - ease, dt / 16.667));\n      if (Math.abs(target - current) < 0.35) current = target;\n      el.scrollTop = current;\n      emit();\n      if (current === target) {\n        raf = 0;\n        lastTime = 0;\n        return;\n      }\n      raf = requestAnimationFrame(tick);\n    };\n    const onWheel = (event: WheelEvent) => {\n      if (event.ctrlKey || event.defaultPrevented || Math.abs(event.deltaX) > Math.abs(event.deltaY)) return;\n      let dy = event.deltaY;\n      if (event.deltaMode === 1) dy *= 16;\n      else if (event.deltaMode === 2) dy *= el.clientHeight;\n      dy *= multiplier;\n      if (dy === 0 || nestedCanScroll(event.target, el, dy)) return;\n      const limit = getLimit();\n      if (!raf) current = target = el.scrollTop;\n      if ((dy < 0 && target <= 0) || (dy > 0 && target >= limit - 0.5)) return;\n      event.preventDefault();\n      target = clamp(target + dy, 0, limit);\n      if (!raf) {\n        lastTime = 0;\n        raf = requestAnimationFrame(tick);\n      }\n    };\n    const onNativeScroll = () => {\n      if (raf) return;\n      current = target = el.scrollTop;\n      emit();\n    };\n    if (smooth) el.addEventListener(\"wheel\", onWheel, { passive: false });\n    el.addEventListener(\"scroll\", onNativeScroll, { passive: true });\n    const ro = new ResizeObserver(emit);\n    ro.observe(el);\n    if (el.firstElementChild) ro.observe(el.firstElementChild);\n    emit();\n    return () => {\n      if (smooth) el.removeEventListener(\"wheel\", onWheel);\n      el.removeEventListener(\"scroll\", onNativeScroll);\n      ro.disconnect();\n      if (raf) cancelAnimationFrame(raf);\n    };\n  }, [containerRef, lerp, wheelMultiplier, smooth]);\n}\n\nexport interface ScrollPathDrawProps {\n  /** Milestone labels placed along the route, in order */\n  milestones?: string[];\n  /** Heading shown above the route */\n  title?: string;\n  /** Gradient start color of the drawn path */\n  color1?: string;\n  /** Gradient end color of the drawn path */\n  color2?: string;\n  /** Stroke width of the route in SVG units (viewBox is 1000 wide) */\n  strokeWidth?: number;\n  /** Scroll distance as a multiple of the viewport height (more = slower drawing) */\n  scrollLength?: number;\n  /** Glow around the drawn path and head dot */\n  glow?: boolean;\n  /** Viewport height in px */\n  height?: number;\n  /** Viewport corner radius in px */\n  borderRadius?: number;\n  /** Interpolation factor per 60fps frame (0.05 = floaty, 0.3 = snappy) */\n  lerp?: number;\n  /** Multiplier applied to wheel / trackpad deltas */\n  wheelMultiplier?: number;\n  /** Enable smooth wheel scrolling (native scrolling when false or under reduced motion) */\n  smooth?: boolean;\n  /** Optional className merged onto the root */\n  className?: string;\n  /** Inline styles merged onto the root */\n  style?: React.CSSProperties;\n}\n\nconst DEFAULT_MILESTONES = [\"Kickoff\", \"Prototype\", \"Private beta\", \"Public launch\", \"Series A\"];\n\nconst rand = (n: number) => {\n  const x = Math.sin(n * 9301 + 49297) * 233280;\n  return x - Math.floor(x);\n};\n\ninterface Point {\n  x: number;\n  y: number;\n}\n\n/** Builds a monotonic-in-x winding route through the milestone anchors. */\nfunction buildRoute(count: number): { d: string; anchors: Point[] } {\n  const n = Math.max(1, count);\n  const anchors: Point[] = Array.from({ length: n }, (_, i) => ({\n    x: n === 1 ? 500 : 110 + (i * 780) / (n - 1),\n    y: (i % 2 === 0 ? 268 : 112) + (rand(i + 3) - 0.5) * 36,\n  }));\n  const pts: Point[] = [{ x: 18, y: 330 }, ...anchors, { x: 982, y: n % 2 === 0 ? 300 : 70 }];\n  let d = `M ${pts[0].x} ${pts[0].y}`;\n  for (let i = 1; i < pts.length; i++) {\n    const a = pts[i - 1];\n    const b = pts[i];\n    const h = (b.x - a.x) / 2;\n    d += ` C ${(a.x + h).toFixed(1)} ${a.y.toFixed(1)} ${(b.x - h).toFixed(1)} ${b.y.toFixed(1)} ${b.x.toFixed(1)} ${b.y.toFixed(1)}`;\n  }\n  return { d, anchors };\n}\n\nexport function ScrollPathDraw({\n  milestones = DEFAULT_MILESTONES,\n  title = \"The road so far\",\n  color1 = \"#a78bfa\",\n  color2 = \"#22d3ee\",\n  strokeWidth = 5,\n  scrollLength = 3,\n  glow = true,\n  height = 380,\n  borderRadius = 20,\n  lerp = 0.1,\n  wheelMultiplier = 1,\n  smooth = true,\n  className = \"\",\n  style,\n}: ScrollPathDrawProps) {\n  const reduced = usePrefersReducedMotion();\n  const uid = React.useId().replace(/[^a-zA-Z0-9_-]/g, \"\");\n  const viewportRef = React.useRef<HTMLDivElement>(null);\n  const rootRef = React.useRef<HTMLDivElement>(null);\n  const pathRef = React.useRef<SVGPathElement>(null);\n  const headRef = React.useRef<SVGGElement>(null);\n  const percentRef = React.useRef<HTMLSpanElement>(null);\n  const markerRefs = React.useRef<(SVGGElement | null)[]>([]);\n  const fractionsRef = React.useRef<number[]>([]);\n  const progressRef = React.useRef(0);\n\n  const { d, anchors } = React.useMemo(() => buildRoute(milestones.length), [milestones.length]);\n\n  const apply = React.useCallback(() => {\n    const path = pathRef.current;\n    if (!path) return;\n    const p = reduced ? 1 : clamp(progressRef.current / 0.94, 0, 1);\n    const total = path.getTotalLength();\n    path.style.strokeDashoffset = String(1 - p);\n    const pt = path.getPointAtLength(total * p);\n    headRef.current?.setAttribute(\"transform\", `translate(${pt.x.toFixed(2)} ${pt.y.toFixed(2)})`);\n    markerRefs.current.forEach((m, i) => {\n      if (m) m.dataset.active = String(p >= (fractionsRef.current[i] ?? 1) - 0.004);\n    });\n    if (percentRef.current) percentRef.current.textContent = `${Math.round(p * 100)}%`;\n    rootRef.current?.style.setProperty(\"--mf-spd-p\", p.toFixed(4));\n  }, [reduced]);\n\n  React.useEffect(() => {\n    const path = pathRef.current;\n    if (!path) return;\n    const total = path.getTotalLength();\n    fractionsRef.current = anchors.map((a) => {\n      let lo = 0;\n      let hi = total;\n      for (let k = 0; k < 24; k++) {\n        const mid = (lo + hi) / 2;\n        if (path.getPointAtLength(mid).x < a.x) lo = mid;\n        else hi = mid;\n      }\n      return total > 0 ? hi / total : 0;\n    });\n    apply();\n  }, [anchors, d, apply]);\n\n  const handleScroll = React.useCallback(\n    (state: SmoothScrollState) => {\n      progressRef.current = state.progress;\n      apply();\n    },\n    [apply],\n  );\n\n  useSmoothScroll(viewportRef, { lerp, wheelMultiplier, smooth: smooth && !reduced, onScroll: handleScroll });\n\n  const vars = {\n    \"--mf-spd-h\": `${height}px`,\n    \"--mf-spd-r\": `${borderRadius}px`,\n    \"--mf-spd-c1\": color1,\n    \"--mf-spd-c2\": color2,\n    \"--mf-spd-len\": Math.max(1.2, scrollLength),\n    ...style,\n  } as React.CSSProperties;\n  const filter = glow ? `url(#${uid}-glow)` : undefined;\n\n  return (\n    <div ref={rootRef} style={vars} className={`${styles.root} ${className}`.trim()}>\n      <div ref={viewportRef} className={styles.viewport} tabIndex={0} role=\"region\" aria-label={title}>\n        <div className={styles.track}>\n          <div className={styles.stage}>\n            <header className={styles.header}>\n              <h3 className={styles.title}>{title}</h3>\n              <span className={styles.percent} ref={percentRef} aria-hidden=\"true\">\n                0%\n              </span>\n            </header>\n            <svg className={styles.svg} viewBox=\"0 0 1000 400\" preserveAspectRatio=\"xMidYMid meet\" role=\"img\"\n              aria-label={`Route through ${milestones.join(\", \")}`}>\n              <defs>\n                <linearGradient id={`${uid}-grad`} x1=\"0\" y1=\"0\" x2=\"1000\" y2=\"0\" gradientUnits=\"userSpaceOnUse\">\n                  <stop offset=\"0\" stopColor={color1} />\n                  <stop offset=\"1\" stopColor={color2} />\n                </linearGradient>\n                <filter id={`${uid}-glow`} x=\"-20%\" y=\"-60%\" width=\"140%\" height=\"220%\">\n                  <feGaussianBlur stdDeviation=\"6\" result=\"b\" />\n                  <feMerge>\n                    <feMergeNode in=\"b\" />\n                    <feMergeNode in=\"SourceGraphic\" />\n                  </feMerge>\n                </filter>\n              </defs>\n              <path d={d} className={styles.base} strokeWidth={Math.max(1, strokeWidth * 0.5)} />\n              <path ref={pathRef} d={d} className={styles.line} pathLength={1} stroke={`url(#${uid}-grad)`}\n                strokeWidth={strokeWidth} filter={filter} />\n              {anchors.map((a, i) => {\n                const above = a.y > 200;\n                return (\n                  <g key={`${milestones[i]}-${i}`} ref={(node) => { markerRefs.current[i] = node; }}\n                    className={styles.marker} data-active=\"false\" transform={`translate(${a.x.toFixed(1)} ${a.y.toFixed(1)})`}>\n                    <circle r={strokeWidth + 5} className={styles.ring} />\n                    <circle r={Math.max(3, strokeWidth * 0.6)} className={styles.pin} />\n                    <g className={styles.label} style={{ \"--mf-spd-dy\": above ? \"8px\" : \"-8px\" } as React.CSSProperties}>\n                      <text y={above ? -30 : 44} textAnchor=\"middle\" className={styles.step}>\n                        {`0${i + 1}`.slice(-2)}\n                      </text>\n                      <text y={above ? -54 : 70} textAnchor=\"middle\" className={styles.name}>\n                        {milestones[i]}\n                      </text>\n                    </g>\n                  </g>\n                );\n              })}\n              <g ref={headRef} className={styles.head} aria-hidden=\"true\" transform=\"translate(18 330)\">\n                <circle r={strokeWidth + 9} className={styles.halo} filter={filter} />\n                <circle r={strokeWidth + 2} className={styles.dot} />\n              </g>\n            </svg>\n            <p className={styles.hint} aria-hidden=\"true\">Scroll to trace the route</p>\n          </div>\n        </div>\n      </div>\n    </div>\n  );\n}\n"
+    },
+    {
+      "path": "components/styles/scroll-path-draw.module.css",
+      "type": "registry:style",
+      "content": ".root {\n  --mf-spd-p: 0;\n  position: relative;\n  width: 100%;\n  height: var(--mf-spd-h, 380px);\n  border-radius: var(--mf-spd-r, 20px);\n  overflow: hidden;\n  border: 1px solid var(--mf-border, #2e2e38);\n  background:\n    radial-gradient(120% 80% at 0% 100%, color-mix(in srgb, var(--mf-spd-c1, #a78bfa) 14%, transparent), transparent 60%),\n    radial-gradient(90% 70% at 100% 0%, color-mix(in srgb, var(--mf-spd-c2, #22d3ee) 12%, transparent), transparent 60%),\n    var(--mf-surface, #141419);\n  color: var(--mf-fg, #f4f4f6);\n  container-type: inline-size;\n  isolation: isolate;\n}\n\n.root *,\n.root *::before,\n.root *::after {\n  box-sizing: border-box;\n}\n\n.viewport {\n  position: relative;\n  height: 100%;\n  overflow-x: hidden;\n  overflow-y: auto;\n  overscroll-behavior: auto;\n  scroll-behavior: auto;\n  scrollbar-width: thin;\n  scrollbar-color: var(--mf-border, #2e2e38) transparent;\n}\n\n.viewport:focus-visible {\n  outline: 2px solid var(--mf-fg, #e4e4e7);\n  outline-offset: -2px;\n}\n\n.track {\n  position: relative;\n  height: calc(var(--mf-spd-h, 380px) * var(--mf-spd-len, 3));\n}\n\n.stage {\n  position: sticky;\n  top: 0;\n  display: flex;\n  flex-direction: column;\n  height: var(--mf-spd-h, 380px);\n  padding: 1.1rem clamp(0.75rem, 4cqi, 2rem) 0.9rem;\n}\n\n.header {\n  display: flex;\n  align-items: baseline;\n  justify-content: space-between;\n  gap: 1rem;\n}\n\n.title {\n  margin: 0;\n  font-size: clamp(1.3rem, 4.2cqi, 2rem);\n  font-weight: 700;\n  letter-spacing: -0.03em;\n}\n\n.percent {\n  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;\n  font-size: 0.85rem;\n  font-variant-numeric: tabular-nums;\n  color: var(--mf-muted, #a1a1aa);\n}\n\n.svg {\n  flex: 1;\n  width: 100%;\n  min-height: 0;\n  overflow: visible;\n}\n\n.base {\n  fill: none;\n  stroke: var(--mf-border-strong, #3f3f4a);\n  stroke-linecap: round;\n  stroke-dasharray: 2 12;\n}\n\n.line {\n  fill: none;\n  stroke-linecap: round;\n  stroke-linejoin: round;\n  stroke-dasharray: 1;\n  stroke-dashoffset: 1;\n}\n\n.marker .ring {\n  fill: var(--mf-surface, #141419);\n  stroke: var(--mf-border-strong, #3f3f4a);\n  stroke-width: 2;\n  transition: stroke 300ms ease;\n}\n\n.marker .pin {\n  fill: var(--mf-border-strong, #3f3f4a);\n  transition: fill 300ms ease;\n}\n\n.marker[data-active=\"true\"] .ring {\n  stroke: var(--mf-spd-c2, #22d3ee);\n}\n\n.marker[data-active=\"true\"] .pin {\n  fill: var(--mf-fg, #f4f4f6);\n}\n\n.label {\n  opacity: 0;\n  transform: translateY(var(--mf-spd-dy, 8px));\n  transition:\n    opacity 420ms ease,\n    transform 520ms cubic-bezier(0.16, 1, 0.3, 1);\n}\n\n.marker[data-active=\"true\"] .label {\n  opacity: 1;\n  transform: none;\n}\n\n.step {\n  fill: var(--mf-spd-c2, #22d3ee);\n  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;\n  font-size: 16px;\n}\n\n.name {\n  fill: var(--mf-fg, #f4f4f6);\n  font-size: 24px;\n  font-weight: 650;\n  letter-spacing: -0.02em;\n}\n\n.halo {\n  fill: var(--mf-spd-c2, #22d3ee);\n  opacity: 0.35;\n}\n\n.dot {\n  fill: var(--mf-fg, #f4f4f6);\n  stroke: var(--mf-spd-c2, #22d3ee);\n  stroke-width: 3;\n}\n\n.hint {\n  margin: 0;\n  text-align: center;\n  font-size: 0.78rem;\n  letter-spacing: 0.06em;\n  text-transform: uppercase;\n  color: var(--mf-muted, #a1a1aa);\n  opacity: max(0, calc(1 - var(--mf-spd-p) * 12));\n}\n\n@media (prefers-reduced-motion: reduce) {\n  .label,\n  .marker .ring,\n  .marker .pin {\n    transition: none;\n  }\n}\n"
+    }
+  ],
+  "tailwindExample": "\"use client\";\n\nimport { useEffect, useRef } from \"react\";\n\nexport function ScrollPathDrawTailwind() {\n  const ref = useRef(null);\n  const path = useRef(null);\n  const head = useRef(null);\n  const d = \"M 20 330 C 200 330 200 110 380 110 S 560 290 740 290 S 880 70 980 70\";\n  useEffect(() => {\n    const el = ref.current;\n    const update = () => {\n      const p = el.scrollTop / Math.max(1, el.scrollHeight - el.clientHeight);\n      const len = path.current.getTotalLength();\n      path.current.style.strokeDashoffset = String(1 - p);\n      const pt = path.current.getPointAtLength(len * p);\n      head.current.setAttribute(\"transform\", `translate(${pt.x} ${pt.y})`);\n    };\n    update();\n    el.addEventListener(\"scroll\", update, { passive: true });\n    return () => el.removeEventListener(\"scroll\", update);\n  }, []);\n  return (\n    <div ref={ref} tabIndex={0} className=\"h-[380px] w-full overflow-y-auto rounded-[20px] border border-zinc-800 bg-zinc-900 text-zinc-100\">\n      <div className=\"h-[1140px]\">\n        <div className=\"sticky top-0 flex h-[380px] flex-col p-5\">\n          <h3 className=\"text-2xl font-bold\">The road so far</h3>\n          <svg viewBox=\"0 0 1000 400\" className=\"w-full flex-1\">\n            <defs>\n              <linearGradient id=\"spd\" x1=\"0\" x2=\"1\"><stop stopColor=\"#a78bfa\" /><stop offset=\"1\" stopColor=\"#22d3ee\" /></linearGradient>\n            </defs>\n            <path d={d} fill=\"none\" stroke=\"#3f3f46\" strokeWidth=\"2\" strokeDasharray=\"2 12\" />\n            <path ref={path} d={d} pathLength={1} fill=\"none\" stroke=\"url(#spd)\" strokeWidth=\"5\" strokeLinecap=\"round\" strokeDasharray=\"1\" strokeDashoffset=\"1\" />\n            <g ref={head}><circle r=\"12\" fill=\"#22d3ee\" opacity=\"0.35\" /><circle r=\"7\" fill=\"#fff\" /></g>\n          </svg>\n        </div>\n      </div>\n    </div>\n  );\n}"
+}

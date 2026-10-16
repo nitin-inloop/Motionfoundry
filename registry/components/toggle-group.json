@@ -1,0 +1,193 @@
+{
+  "slug": "toggle-group",
+  "name": "ToggleGroup",
+  "category": "Interactive Buttons and Controls",
+  "collection": "ui",
+  "featured": false,
+  "addedAt": "2026-10-16",
+  "version": "2.3.0",
+  "requiresMotion": true,
+  "dependencies": [
+    "motion",
+    "react"
+  ],
+  "description": "A group of pressable toggles (bold / italic / underline, alignment, or view switches) in single or multiple mode. Pressed items pop in a tinted fill with a spring, and in single mode the fill glides between items.",
+  "tags": [
+    "toggle-group",
+    "toggle",
+    "toolbar",
+    "formatting",
+    "segmented",
+    "ui"
+  ],
+  "a11yNotes": "role=\"group\" labelled by `label`; each item is a native <button> with aria-pressed, and icon-only items get aria-label plus a title. Roving tabindex keeps one Tab stop: Arrow keys move focus (wrapping), Home/End jump to the ends, Enter/Space toggle. Fills are aria-hidden. Under prefers-reduced-motion the fill appears without scaling or gliding.",
+  "defaultProps": {
+    "type": "multiple",
+    "preset": "formatting",
+    "label": "Text formatting",
+    "variant": "default",
+    "size": "md",
+    "showLabels": false,
+    "accentColor": "#6366f1",
+    "disabled": false
+  },
+  "controls": [
+    {
+      "prop": "type",
+      "label": "Type",
+      "type": "select",
+      "options": [
+        "single",
+        "multiple"
+      ]
+    },
+    {
+      "prop": "preset",
+      "label": "Preset",
+      "type": "select",
+      "options": [
+        "formatting",
+        "alignment",
+        "view"
+      ]
+    },
+    {
+      "prop": "label",
+      "label": "Accessible label",
+      "type": "text"
+    },
+    {
+      "prop": "variant",
+      "label": "Variant",
+      "type": "select",
+      "options": [
+        "default",
+        "outline"
+      ]
+    },
+    {
+      "prop": "size",
+      "label": "Size",
+      "type": "select",
+      "options": [
+        "sm",
+        "md",
+        "lg"
+      ]
+    },
+    {
+      "prop": "showLabels",
+      "label": "Show labels",
+      "type": "boolean"
+    },
+    {
+      "prop": "accentColor",
+      "label": "Accent color",
+      "type": "color"
+    },
+    {
+      "prop": "disabled",
+      "label": "Disabled",
+      "type": "boolean"
+    }
+  ],
+  "propsApi": [
+    {
+      "name": "type",
+      "type": "'single' | 'multiple'",
+      "default": "'multiple'",
+      "description": "Allow one pressed item (pressing it again clears it) or many."
+    },
+    {
+      "name": "preset",
+      "type": "'formatting' | 'alignment' | 'view'",
+      "default": "'formatting'",
+      "description": "Built-in item set used when `items` is not provided."
+    },
+    {
+      "name": "items",
+      "type": "{ value: string; label: string; icon?: React.ReactNode }[]",
+      "default": "undefined",
+      "description": "Custom items; overrides the preset."
+    },
+    {
+      "name": "value",
+      "type": "string[]",
+      "default": "undefined",
+      "description": "Controlled pressed values."
+    },
+    {
+      "name": "defaultValue",
+      "type": "string[]",
+      "default": "[items[0].value]",
+      "description": "Initially pressed values when uncontrolled."
+    },
+    {
+      "name": "onValueChange",
+      "type": "(value: string[]) => void",
+      "default": "undefined",
+      "description": "Called with the next pressed values."
+    },
+    {
+      "name": "label",
+      "type": "string",
+      "default": "'Text formatting'",
+      "description": "Accessible name of the group."
+    },
+    {
+      "name": "variant",
+      "type": "'default' | 'outline'",
+      "default": "'default'",
+      "description": "Floating toggles in a tray, or attached outlined segments."
+    },
+    {
+      "name": "size",
+      "type": "'sm' | 'md' | 'lg'",
+      "default": "'md'",
+      "description": "Size preset."
+    },
+    {
+      "name": "showLabels",
+      "type": "boolean",
+      "default": "false",
+      "description": "Show text labels next to icons."
+    },
+    {
+      "name": "accentColor",
+      "type": "string",
+      "default": "'#6366f1'",
+      "description": "Accent color of pressed items."
+    },
+    {
+      "name": "disabled",
+      "type": "boolean",
+      "default": "false",
+      "description": "Disable the whole group."
+    },
+    {
+      "name": "className",
+      "type": "string",
+      "default": "''",
+      "description": "Additional class merged onto the root element."
+    },
+    {
+      "name": "style",
+      "type": "React.CSSProperties",
+      "default": "undefined",
+      "description": "Inline styles merged onto the root element."
+    }
+  ],
+  "files": [
+    {
+      "path": "components/ui/toggle-group.tsx",
+      "type": "registry:component",
+      "content": "\"use client\";\n\nimport * as React from \"react\";\nimport { AnimatePresence, motion, useReducedMotion } from \"motion/react\";\nimport styles from \"../styles/toggle-group.module.css\";\n\nexport interface ToggleGroupItem {\n  /** Unique value */\n  value: string;\n  /** Accessible name (shown as text when there is no icon or `showLabels` is on) */\n  label: string;\n  /** Optional icon */\n  icon?: React.ReactNode;\n}\n\nexport interface ToggleGroupProps {\n  /** Allow one pressed item or many */\n  type?: \"single\" | \"multiple\";\n  /** Built-in item set used when `items` is not provided */\n  preset?: \"formatting\" | \"alignment\" | \"view\";\n  /** Custom items; overrides `preset` */\n  items?: ToggleGroupItem[];\n  /** Controlled pressed values */\n  value?: string[];\n  /** Initially pressed values when uncontrolled (defaults to the first item) */\n  defaultValue?: string[];\n  /** Called with the next pressed values */\n  onValueChange?: (value: string[]) => void;\n  /** Accessible name of the group */\n  label?: string;\n  /** Visual style */\n  variant?: \"default\" | \"outline\";\n  /** Size preset */\n  size?: \"sm\" | \"md\" | \"lg\";\n  /** Show text labels next to icons */\n  showLabels?: boolean;\n  /** Accent color of the pressed state */\n  accentColor?: string;\n  /** Disable the whole group */\n  disabled?: boolean;\n  /** Optional className merged onto the root */\n  className?: string;\n  /** Optional inline styles merged onto the root */\n  style?: React.CSSProperties;\n}\n\nfunction Glyph({ d }: { d: string }) {\n  return (\n    <svg aria-hidden=\"true\" width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" strokeWidth=\"2.25\" strokeLinecap=\"round\" strokeLinejoin=\"round\">\n      <path d={d} />\n    </svg>\n  );\n}\n\nconst PRESETS: Record<NonNullable<ToggleGroupProps[\"preset\"]>, ToggleGroupItem[]> = {\n  formatting: [\n    { value: \"bold\", label: \"Bold\", icon: <Glyph d=\"M7 5h6a3.5 3.5 0 0 1 0 7H7zM7 12h7a3.5 3.5 0 0 1 0 7H7z\" /> },\n    { value: \"italic\", label: \"Italic\", icon: <Glyph d=\"M19 4h-9M14 20H5M15 4 9 20\" /> },\n    { value: \"underline\", label: \"Underline\", icon: <Glyph d=\"M6 4v6a6 6 0 0 0 12 0V4M4 20h16\" /> },\n    { value: \"strike\", label: \"Strikethrough\", icon: <Glyph d=\"M16 6.5C15 5 13.5 4 11.5 4 9 4 7.5 5.5 7.5 7.5c0 4 9 3 9 8 0 2-1.8 3.5-4.5 3.5-2.2 0-4-1-5-2.5M4 12h16\" /> },\n  ],\n  alignment: [\n    { value: \"left\", label: \"Align left\", icon: <Glyph d=\"M4 6h16M4 12h10M4 18h14\" /> },\n    { value: \"center\", label: \"Align center\", icon: <Glyph d=\"M4 6h16M7 12h10M5 18h14\" /> },\n    { value: \"right\", label: \"Align right\", icon: <Glyph d=\"M4 6h16M10 12h10M6 18h14\" /> },\n    { value: \"justify\", label: \"Justify\", icon: <Glyph d=\"M4 6h16M4 12h16M4 18h16\" /> },\n  ],\n  view: [\n    { value: \"grid\", label: \"Grid\", icon: <Glyph d=\"M4 4h7v7H4zM13 4h7v7h-7zM4 13h7v7H4zM13 13h7v7h-7z\" /> },\n    { value: \"list\", label: \"List\", icon: <Glyph d=\"M9 6h11M9 12h11M9 18h11M4 6h.01M4 12h.01M4 18h.01\" /> },\n    { value: \"board\", label: \"Board\", icon: <Glyph d=\"M4 4h4v16H4zM10 4h4v10h-4zM16 4h4v13h-4z\" /> },\n  ],\n};\n\nexport function ToggleGroup({\n  type = \"multiple\",\n  preset = \"formatting\",\n  items: itemsProp,\n  value: valueProp,\n  defaultValue,\n  onValueChange,\n  label = \"Text formatting\",\n  variant = \"default\",\n  size = \"md\",\n  showLabels = false,\n  accentColor = \"#6366f1\",\n  disabled = false,\n  className = \"\",\n  style,\n}: ToggleGroupProps) {\n  const reduce = useReducedMotion();\n  const items = itemsProp && itemsProp.length > 0 ? itemsProp : PRESETS[preset] ?? PRESETS.formatting;\n  const [inner, setInner] = React.useState<string[]>(defaultValue ?? [items[0].value]);\n  const pressed = valueProp ?? inner;\n  const firstPressed = items.findIndex((it) => pressed.includes(it.value));\n  const [focusIndex, setFocusIndex] = React.useState(Math.max(0, firstPressed));\n  const refs = React.useRef<(HTMLButtonElement | null)[]>([]);\n  const layoutId = React.useId();\n\n  const toggle = (v: string) => {\n    if (disabled) return;\n    const isOn = pressed.includes(v);\n    const next = type === \"single\" ? (isOn ? [] : [v]) : isOn ? pressed.filter((p) => p !== v) : [...pressed, v];\n    if (valueProp === undefined) setInner(next);\n    onValueChange?.(next);\n  };\n\n  const onKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {\n    const n = items.length;\n    let next = -1;\n    if (e.key === \"ArrowRight\" || e.key === \"ArrowDown\") next = (focusIndex + 1) % n;\n    else if (e.key === \"ArrowLeft\" || e.key === \"ArrowUp\") next = (focusIndex - 1 + n) % n;\n    else if (e.key === \"Home\") next = 0;\n    else if (e.key === \"End\") next = n - 1;\n    if (next < 0) return;\n    e.preventDefault();\n    setFocusIndex(next);\n    refs.current[next]?.focus();\n  };\n\n  const spring = reduce ? { duration: 0 } : { type: \"spring\" as const, stiffness: 520, damping: 34 };\n\n  return (\n    <div\n      role=\"group\"\n      aria-label={label}\n      aria-disabled={disabled || undefined}\n      onKeyDown={onKeyDown}\n      className={[styles.root, styles[variant], styles[size], className].filter(Boolean).join(\" \")}\n      style={{ \"--mf-tg-accent\": accentColor, ...style } as React.CSSProperties}\n    >\n      {items.map((it, i) => {\n        const on = pressed.includes(it.value);\n        const iconOnly = !!it.icon && !showLabels;\n        return (\n          <button\n            key={it.value}\n            ref={(el) => {\n              refs.current[i] = el;\n            }}\n            type=\"button\"\n            aria-pressed={on}\n            aria-label={iconOnly ? it.label : undefined}\n            title={iconOnly ? it.label : undefined}\n            tabIndex={i === Math.min(focusIndex, items.length - 1) ? 0 : -1}\n            disabled={disabled}\n            data-state={on ? \"on\" : \"off\"}\n            className={`${styles.item} ${iconOnly ? styles.iconOnly : \"\"}`.trim()}\n            onFocus={() => setFocusIndex(i)}\n            onClick={() => toggle(it.value)}\n          >\n            {type === \"single\" ? (\n              on ? (\n                <motion.span layoutId={layoutId} className={styles.fill} aria-hidden=\"true\" transition={spring} />\n              ) : null\n            ) : (\n              <AnimatePresence initial={false}>\n                {on ? (\n                  <motion.span\n                    key=\"fill\"\n                    className={styles.fill}\n                    aria-hidden=\"true\"\n                    initial={{ opacity: 0, scale: reduce ? 1 : 0.6 }}\n                    animate={{ opacity: 1, scale: 1 }}\n                    exit={{ opacity: 0, scale: reduce ? 1 : 0.8 }}\n                    transition={spring}\n                  />\n                ) : null}\n              </AnimatePresence>\n            )}\n            {it.icon ? <span className={styles.icon}>{it.icon}</span> : null}\n            {iconOnly ? null : <span className={styles.text}>{it.label}</span>}\n          </button>\n        );\n      })}\n    </div>\n  );\n}\n"
+    },
+    {
+      "path": "components/styles/toggle-group.module.css",
+      "type": "registry:style",
+      "content": ".root {\n  --mf-tg-h: 2.25rem;\n  display: inline-flex;\n  align-items: center;\n  gap: 0.25rem;\n  padding: 0.25rem;\n  border-radius: 0.625rem;\n  background-color: var(--mf-surface, #141419);\n  border: 1px solid var(--mf-border, #2e2e38);\n  color: var(--mf-fg, #f4f4f6);\n}\n\n.outline {\n  gap: 0;\n  padding: 0;\n  background-color: transparent;\n  overflow: hidden;\n}\n\n.sm {\n  --mf-tg-h: 1.875rem;\n  font-size: 0.8125rem;\n}\n\n.md {\n  --mf-tg-h: 2.25rem;\n  font-size: 0.875rem;\n}\n\n.lg {\n  --mf-tg-h: 2.625rem;\n  font-size: 0.9375rem;\n}\n\n.root[aria-disabled=\"true\"] {\n  opacity: 0.5;\n}\n\n.item {\n  position: relative;\n  display: inline-flex;\n  align-items: center;\n  justify-content: center;\n  gap: 0.4375rem;\n  height: var(--mf-tg-h);\n  min-width: var(--mf-tg-h);\n  padding: 0 0.75rem;\n  border: 0;\n  border-radius: 0.4375rem;\n  background: transparent;\n  color: var(--mf-muted, #a1a1aa);\n  font: inherit;\n  font-weight: 500;\n  white-space: nowrap;\n  cursor: pointer;\n  isolation: isolate;\n  -webkit-tap-highlight-color: transparent;\n  transition: color 160ms ease, background-color 160ms ease;\n}\n\n.outline .item {\n  border-radius: 0;\n}\n\n.outline .item + .item {\n  border-left: 1px solid var(--mf-border, #2e2e38);\n}\n\n.iconOnly {\n  padding: 0;\n}\n\n.item:hover:not(:disabled) {\n  color: var(--mf-fg, #f4f4f6);\n  background-color: color-mix(in srgb, var(--mf-surface-raised, #1b1b22) 70%, transparent);\n}\n\n.item[data-state=\"on\"] {\n  color: var(--mf-tg-accent, #6366f1);\n}\n\n.item[data-state=\"on\"]:hover:not(:disabled) {\n  background-color: transparent;\n}\n\n.item:disabled {\n  cursor: not-allowed;\n}\n\n.item:focus-visible {\n  z-index: 2;\n  outline: 2px solid var(--mf-fg, #e4e4e7);\n  outline-offset: 1px;\n}\n\n.fill {\n  position: absolute;\n  inset: 0;\n  z-index: -1;\n  border-radius: inherit;\n  background-color: color-mix(in srgb, var(--mf-tg-accent, #6366f1) 16%, var(--mf-surface-raised, #1b1b22));\n  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--mf-tg-accent, #6366f1) 35%, transparent);\n}\n\n.icon {\n  display: inline-flex;\n  transition: transform 200ms cubic-bezier(0.34, 1.56, 0.64, 1);\n}\n\n.item:active:not(:disabled) .icon {\n  transform: scale(0.85);\n}\n\n.text {\n  position: relative;\n}\n\n@media (prefers-reduced-motion: reduce) {\n  .item,\n  .icon {\n    transition: none;\n  }\n\n  .item:active:not(:disabled) .icon {\n    transform: none;\n  }\n}\n"
+    }
+  ],
+  "tailwindExample": "\"use client\";\n\nimport { AnimatePresence, motion } from \"motion/react\";\nimport { useRef, useState } from \"react\";\n\nconst items = [\n  { value: \"bold\", label: \"Bold\", d: \"M7 5h6a3.5 3.5 0 0 1 0 7H7zM7 12h7a3.5 3.5 0 0 1 0 7H7z\" },\n  { value: \"italic\", label: \"Italic\", d: \"M19 4h-9M14 20H5M15 4 9 20\" },\n  { value: \"underline\", label: \"Underline\", d: \"M6 4v6a6 6 0 0 0 12 0V4M4 20h16\" },\n];\n\nexport function ToggleGroupTailwind() {\n  const [on, setOn] = useState<string[]>([\"bold\"]);\n  const [focus, setFocus] = useState(0);\n  const refs = useRef<(HTMLButtonElement | null)[]>([]);\n  const move = (e: React.KeyboardEvent) => {\n    const d = e.key === \"ArrowRight\" ? 1 : e.key === \"ArrowLeft\" ? -1 : 0;\n    if (!d) return;\n    const n = (focus + d + items.length) % items.length;\n    setFocus(n);\n    refs.current[n]?.focus();\n  };\n  return (\n    <div role=\"group\" aria-label=\"Text formatting\" onKeyDown={move} className=\"inline-flex gap-1 rounded-xl border border-zinc-800 bg-zinc-900 p-1\">\n      {items.map((it, i) => {\n        const pressed = on.includes(it.value);\n        return (\n          <button key={it.value} ref={(el) => { refs.current[i] = el; }} type=\"button\" aria-pressed={pressed} aria-label={it.label} tabIndex={i === focus ? 0 : -1} onFocus={() => setFocus(i)} onClick={() => setOn(pressed ? on.filter((v) => v !== it.value) : [...on, it.value])} className={`relative grid size-9 place-items-center rounded-lg ${pressed ? \"text-indigo-400\" : \"text-zinc-400 hover:text-zinc-100\"}`}>\n            <AnimatePresence>{pressed && <motion.span initial={{ scale: 0.6, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.8, opacity: 0 }} className=\"absolute inset-0 rounded-lg bg-indigo-500/15 ring-1 ring-inset ring-indigo-500/35\" />}</AnimatePresence>\n            <svg aria-hidden=\"true\" width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" strokeWidth=\"2.25\" strokeLinecap=\"round\" className=\"relative\"><path d={it.d} /></svg>\n          </button>\n        );\n      })}\n    </div>\n  );\n}"
+}

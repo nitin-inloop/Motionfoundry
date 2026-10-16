@@ -1,0 +1,191 @@
+{
+  "slug": "snap-sections",
+  "name": "SnapSections",
+  "category": "Scroll Animations",
+  "collection": "scroll",
+  "featured": false,
+  "addedAt": "2026-10-16",
+  "version": "2.3.0",
+  "requiresMotion": false,
+  "dependencies": [
+    "react"
+  ],
+  "description": "Full-height sections inside their own viewport that advance exactly one section per wheel or trackpad gesture with an eased snap animation, plus clickable dot navigation and PageUp/PageDown/Arrow/Space/Home/End keys; each section's content rises in as it becomes active.",
+  "tags": [
+    "scroll",
+    "snap",
+    "sections",
+    "fullpage",
+    "pagination",
+    "dots",
+    "keyboard"
+  ],
+  "a11yNotes": "The viewport is a focusable role=\"region\" whose label explains the Page Up/Page Down controls; PageDown/ArrowDown/Space go forward, PageUp/ArrowUp/Shift+Space go back, Home/End jump to the ends, all with a 2px :focus-visible outline. Each section is a labelled <section> (\"2 of 4: Organize\") with a real heading. The dot navigation is a <nav aria-label=\"Sections\"> of buttons with descriptive aria-labels and aria-current on the active one. A fresh wheel gesture past the first or last section is not intercepted, so the page keeps scrolling; touch uses native CSS scroll-snap. Under prefers-reduced-motion (or smooth=false) the wheel is not intercepted, snapping is native CSS scroll-snap and content transitions are removed.",
+  "defaultProps": {
+    "sections": [
+      "Capture",
+      "Organize",
+      "Collaborate",
+      "Publish"
+    ],
+    "accentColor": "#34d399",
+    "duration": 900,
+    "ease": "expo.out",
+    "showDots": true,
+    "dotsPosition": "right",
+    "threshold": 12,
+    "smooth": true
+  },
+  "controls": [
+    {
+      "prop": "sections",
+      "label": "Sections (comma separated)",
+      "type": "list"
+    },
+    {
+      "prop": "accentColor",
+      "label": "Accent",
+      "type": "color"
+    },
+    {
+      "prop": "duration",
+      "label": "Snap duration (ms)",
+      "type": "range",
+      "min": 200,
+      "max": 2000,
+      "step": 50
+    },
+    {
+      "prop": "ease",
+      "label": "Ease",
+      "type": "select",
+      "options": [
+        "expo.out",
+        "power3.inOut",
+        "power2.out",
+        "sine.inOut",
+        "back.out"
+      ]
+    },
+    {
+      "prop": "showDots",
+      "label": "Dot navigation",
+      "type": "boolean"
+    },
+    {
+      "prop": "dotsPosition",
+      "label": "Dots position",
+      "type": "select",
+      "options": [
+        "right",
+        "left"
+      ]
+    },
+    {
+      "prop": "threshold",
+      "label": "Wheel threshold (px)",
+      "type": "range",
+      "min": 1,
+      "max": 80,
+      "step": 1
+    },
+    {
+      "prop": "smooth",
+      "label": "Animated snapping",
+      "type": "boolean"
+    }
+  ],
+  "propsApi": [
+    {
+      "name": "sections",
+      "type": "string[]",
+      "default": "['Capture', 'Organize', 'Collaborate', 'Publish']",
+      "description": "Section titles, one full-height section per item."
+    },
+    {
+      "name": "accentColor",
+      "type": "string",
+      "default": "'#34d399'",
+      "description": "Accent color for the glow orb (hue-shifted per section), kicker and active dot."
+    },
+    {
+      "name": "duration",
+      "type": "number",
+      "default": "900",
+      "description": "Snap animation duration in ms."
+    },
+    {
+      "name": "ease",
+      "type": "'expo.out' | 'power3.inOut' | 'power2.out' | 'sine.inOut' | 'back.out'",
+      "default": "'expo.out'",
+      "description": "Easing curve of the snap animation."
+    },
+    {
+      "name": "showDots",
+      "type": "boolean",
+      "default": "true",
+      "description": "Show the clickable dot navigation."
+    },
+    {
+      "name": "dotsPosition",
+      "type": "'right' | 'left'",
+      "default": "'right'",
+      "description": "Side the dot navigation sits on."
+    },
+    {
+      "name": "threshold",
+      "type": "number",
+      "default": "12",
+      "description": "Accumulated wheel delta in px needed to trigger a snap; raise it to ignore tiny trackpad nudges."
+    },
+    {
+      "name": "smooth",
+      "type": "boolean",
+      "default": "true",
+      "description": "Animate snaps with easing; false (or prefers-reduced-motion) uses native CSS scroll-snap."
+    },
+    {
+      "name": "height",
+      "type": "number",
+      "default": "380",
+      "description": "Height of the viewport (and of each section) in px; width is always 100%."
+    },
+    {
+      "name": "borderRadius",
+      "type": "number",
+      "default": "20",
+      "description": "Corner radius of the viewport in px."
+    },
+    {
+      "name": "onSectionChange",
+      "type": "(index: number) => void",
+      "default": "undefined",
+      "description": "Called with the new index whenever the active section changes."
+    },
+    {
+      "name": "className",
+      "type": "string",
+      "default": "''",
+      "description": "Additional class merged onto the root element."
+    },
+    {
+      "name": "style",
+      "type": "React.CSSProperties",
+      "default": "undefined",
+      "description": "Inline styles merged onto the root element."
+    }
+  ],
+  "files": [
+    {
+      "path": "components/ui/snap-sections.tsx",
+      "type": "registry:component",
+      "content": "\"use client\";\n\nimport * as React from \"react\";\nimport styles from \"../styles/snap-sections.module.css\";\n\ntype SnapEase = \"expo.out\" | \"power3.inOut\" | \"power2.out\" | \"sine.inOut\" | \"back.out\";\n\nconst EASES: Record<SnapEase, (t: number) => number> = {\n  \"expo.out\": (t) => (t >= 1 ? 1 : 1 - Math.pow(2, -10 * t)),\n  \"power3.inOut\": (t) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2),\n  \"power2.out\": (t) => 1 - (1 - t) * (1 - t),\n  \"sine.inOut\": (t) => -(Math.cos(Math.PI * t) - 1) / 2,\n  \"back.out\": (t) => 1 + 2.70158 * Math.pow(t - 1, 3) + 1.70158 * Math.pow(t - 1, 2),\n};\n\nconst clamp = (v: number, min: number, max: number) => Math.min(max, Math.max(min, v));\n\nfunction usePrefersReducedMotion(): boolean {\n  const [reduced, setReduced] = React.useState(false);\n  React.useEffect(() => {\n    const mq = window.matchMedia(\"(prefers-reduced-motion: reduce)\");\n    const update = () => setReduced(mq.matches);\n    update();\n    mq.addEventListener(\"change\", update);\n    return () => mq.removeEventListener(\"change\", update);\n  }, []);\n  return reduced;\n}\n\nexport interface SnapSectionsProps {\n  /** Section titles, one full-height section per item */\n  sections?: string[];\n  /** Accent color for the glow orb, kicker and active dot */\n  accentColor?: string;\n  /** Snap animation duration in ms */\n  duration?: number;\n  /** Easing curve of the snap animation */\n  ease?: SnapEase;\n  /** Show the clickable dot navigation */\n  showDots?: boolean;\n  /** Side the dot navigation sits on */\n  dotsPosition?: \"right\" | \"left\";\n  /** Accumulated wheel delta in px needed to trigger a snap */\n  threshold?: number;\n  /** Animate snaps with easing (native CSS scroll-snap when false or under reduced motion) */\n  smooth?: boolean;\n  /** Viewport height in px */\n  height?: number;\n  /** Viewport corner radius in px */\n  borderRadius?: number;\n  /** Called with the new index whenever the active section changes */\n  onSectionChange?: (index: number) => void;\n  /** Optional className merged onto the root */\n  className?: string;\n  /** Inline styles merged onto the root */\n  style?: React.CSSProperties;\n}\n\nconst DEFAULT_SECTIONS = [\"Capture\", \"Organize\", \"Collaborate\", \"Publish\"];\nconst BLURBS = [\n  \"Drop in ideas from anywhere: links, notes, screenshots and voice.\",\n  \"Everything finds its place with smart tags and nested spaces.\",\n  \"Comment, assign and decide together in real time.\",\n  \"Turn any space into a polished page with one click.\",\n  \"Every gesture moves exactly one section, never more.\",\n];\n\nexport function SnapSections({\n  sections = DEFAULT_SECTIONS,\n  accentColor = \"#34d399\",\n  duration = 900,\n  ease = \"expo.out\",\n  showDots = true,\n  dotsPosition = \"right\",\n  threshold = 12,\n  smooth = true,\n  height = 380,\n  borderRadius = 20,\n  onSectionChange,\n  className = \"\",\n  style,\n}: SnapSectionsProps) {\n  const reduced = usePrefersReducedMotion();\n  const animated = smooth && !reduced;\n  const viewportRef = React.useRef<HTMLDivElement>(null);\n  const sectionRefs = React.useRef<(HTMLElement | null)[]>([]);\n  const [active, setActive] = React.useState(0);\n  const activeRef = React.useRef(0);\n  const animRef = React.useRef(0);\n  const changeRef = React.useRef(onSectionChange);\n  const count = sections.length;\n\n  React.useEffect(() => {\n    changeRef.current = onSectionChange;\n  }, [onSectionChange]);\n\n  const markActive = React.useCallback((i: number) => {\n    if (activeRef.current === i) return;\n    activeRef.current = i;\n    setActive(i);\n    changeRef.current?.(i);\n  }, []);\n\n  const goTo = React.useCallback(\n    (index: number) => {\n      const el = viewportRef.current;\n      const i = clamp(index, 0, Math.max(0, count - 1));\n      const section = sectionRefs.current[i];\n      if (!el || !section) return;\n      markActive(i);\n      if (animRef.current) cancelAnimationFrame(animRef.current);\n      animRef.current = 0;\n      const to = section.offsetTop;\n      if (!animated) {\n        el.scrollTop = to;\n        return;\n      }\n      const from = el.scrollTop;\n      const fn = EASES[ease] ?? EASES[\"expo.out\"];\n      const ms = Math.max(1, duration);\n      const start = performance.now();\n      el.dataset.animating = \"true\";\n      const tick = (now: number) => {\n        const t = clamp((now - start) / ms, 0, 1);\n        el.scrollTop = from + (to - from) * fn(t);\n        if (t < 1) {\n          animRef.current = requestAnimationFrame(tick);\n        } else {\n          animRef.current = 0;\n          el.scrollTop = to;\n          el.dataset.animating = \"false\";\n        }\n      };\n      animRef.current = requestAnimationFrame(tick);\n    },\n    [animated, count, duration, ease, markActive],\n  );\n\n  React.useEffect(() => {\n    const el = viewportRef.current;\n    if (!el) return;\n    let lastWheel = 0;\n    let acc = 0;\n    let consumed = false;\n    const onWheel = (event: WheelEvent) => {\n      if (event.ctrlKey || event.defaultPrevented || Math.abs(event.deltaX) > Math.abs(event.deltaY)) return;\n      const dy = event.deltaY * (event.deltaMode === 1 ? 16 : event.deltaMode === 2 ? el.clientHeight : 1);\n      if (dy === 0) return;\n      const now = performance.now();\n      const fresh = now - lastWheel > 160;\n      lastWheel = now;\n      if (fresh) {\n        consumed = false;\n        acc = 0;\n      }\n      const idx = activeRef.current;\n      const atEdge = (dy < 0 && idx === 0) || (dy > 0 && idx === count - 1);\n      // A new gesture past the first/last section is released so the page keeps scrolling.\n      if (atEdge && !animRef.current && (fresh || !consumed)) return;\n      event.preventDefault();\n      if (consumed || animRef.current) return;\n      acc += dy;\n      if (Math.abs(acc) >= Math.max(1, threshold)) {\n        consumed = true;\n        acc = 0;\n        goTo(idx + (dy > 0 ? 1 : -1));\n      }\n    };\n    const onScroll = () => {\n      if (animRef.current || el.clientHeight === 0) return;\n      markActive(clamp(Math.round(el.scrollTop / el.clientHeight), 0, Math.max(0, count - 1)));\n    };\n    const ro = new ResizeObserver(() => {\n      const section = sectionRefs.current[activeRef.current];\n      if (!animRef.current && section) el.scrollTop = section.offsetTop;\n    });\n    ro.observe(el);\n    if (animated) el.addEventListener(\"wheel\", onWheel, { passive: false });\n    el.addEventListener(\"scroll\", onScroll, { passive: true });\n    return () => {\n      if (animated) el.removeEventListener(\"wheel\", onWheel);\n      el.removeEventListener(\"scroll\", onScroll);\n      ro.disconnect();\n      if (animRef.current) cancelAnimationFrame(animRef.current);\n      animRef.current = 0;\n      el.dataset.animating = \"false\";\n    };\n  }, [animated, count, threshold, goTo, markActive]);\n\n  const onKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {\n    const idx = activeRef.current;\n    let next = -1;\n    if (event.key === \"PageDown\" || event.key === \"ArrowDown\" || (event.key === \" \" && !event.shiftKey)) next = idx + 1;\n    else if (event.key === \"PageUp\" || event.key === \"ArrowUp\" || (event.key === \" \" && event.shiftKey)) next = idx - 1;\n    else if (event.key === \"Home\") next = 0;\n    else if (event.key === \"End\") next = count - 1;\n    if (next < 0 || next > count - 1 || next === idx) return;\n    event.preventDefault();\n    goTo(next);\n  };\n\n  const vars = {\n    \"--mf-sns-h\": `${height}px`,\n    \"--mf-sns-r\": `${borderRadius}px`,\n    \"--mf-sns-accent\": accentColor,\n    ...style,\n  } as React.CSSProperties;\n\n  return (\n    <div style={vars} className={`${styles.root} ${className}`.trim()} data-dots={dotsPosition}>\n      <div\n        ref={viewportRef}\n        className={styles.viewport}\n        tabIndex={0}\n        role=\"region\"\n        aria-label={`${count} snapping sections. Use Page Up and Page Down to move between them.`}\n        onKeyDown={onKeyDown}\n        data-animating=\"false\"\n        data-snap={animated ? \"js\" : \"css\"}\n      >\n        {sections.map((title, i) => (\n          <section\n            key={`${title}-${i}`}\n            ref={(node) => {\n              sectionRefs.current[i] = node;\n            }}\n            className={styles.section}\n            data-active={String(i === active)}\n            aria-label={`${i + 1} of ${count}: ${title}`}\n            style={{ \"--mf-sns-i\": i } as React.CSSProperties}\n          >\n            <span aria-hidden=\"true\" className={styles.orb} />\n            <span aria-hidden=\"true\" className={styles.bigIndex}>\n              {String(i + 1).padStart(2, \"0\")}\n            </span>\n            <div className={styles.body}>\n              <span className={styles.kicker}>{`${String(i + 1).padStart(2, \"0\")} / ${String(count).padStart(2, \"0\")}`}</span>\n              <h3 className={styles.title}>{title}</h3>\n              <p className={styles.text}>{BLURBS[i % BLURBS.length]}</p>\n            </div>\n          </section>\n        ))}\n      </div>\n      {showDots && count > 1 ? (\n        <nav className={styles.dots} aria-label=\"Sections\">\n          {sections.map((title, i) => (\n            <button\n              key={`${title}-${i}`}\n              type=\"button\"\n              className={styles.dot}\n              aria-label={`Go to section ${i + 1}: ${title}`}\n              aria-current={i === active ? \"true\" : undefined}\n              onClick={() => goTo(i)}\n            />\n          ))}\n        </nav>\n      ) : null}\n    </div>\n  );\n}\n"
+    },
+    {
+      "path": "components/styles/snap-sections.module.css",
+      "type": "registry:style",
+      "content": ".root {\n  position: relative;\n  width: 100%;\n  height: var(--mf-sns-h, 380px);\n  border-radius: var(--mf-sns-r, 20px);\n  overflow: hidden;\n  border: 1px solid var(--mf-border, #2e2e38);\n  background: var(--mf-surface, #141419);\n  color: var(--mf-fg, #f4f4f6);\n  container-type: inline-size;\n  isolation: isolate;\n}\n\n.root *,\n.root *::before,\n.root *::after {\n  box-sizing: border-box;\n}\n\n.viewport {\n  position: relative;\n  height: 100%;\n  overflow-x: hidden;\n  overflow-y: auto;\n  overscroll-behavior: auto;\n  scroll-behavior: auto;\n  scroll-snap-type: y mandatory;\n  scrollbar-width: none;\n}\n\n.viewport::-webkit-scrollbar {\n  display: none;\n}\n\n.viewport[data-animating=\"true\"] {\n  scroll-snap-type: none;\n}\n\n.viewport:focus-visible {\n  outline: 2px solid var(--mf-fg, #e4e4e7);\n  outline-offset: -2px;\n}\n\n.section {\n  position: relative;\n  display: flex;\n  align-items: center;\n  height: 100%;\n  padding: 0 clamp(1.5rem, 10cqi, 6rem);\n  overflow: hidden;\n  scroll-snap-align: start;\n  scroll-snap-stop: always;\n  border-bottom: 1px solid var(--mf-border, #2e2e38);\n}\n\n.section:last-child {\n  border-bottom: 0;\n}\n\n.orb {\n  position: absolute;\n  top: 50%;\n  right: -12%;\n  width: min(70cqi, 520px);\n  aspect-ratio: 1;\n  border-radius: 50%;\n  background:\n    radial-gradient(circle at 35% 35%, color-mix(in srgb, var(--mf-sns-accent, #34d399) 85%, #ffffff), transparent 32%),\n    radial-gradient(circle, var(--mf-sns-accent, #34d399), transparent 66%);\n  filter: hue-rotate(calc(var(--mf-sns-i, 0) * 48deg)) blur(2px);\n  opacity: 0.38;\n  transform: translateY(-50%) scale(0.85);\n  transition:\n    transform 1000ms cubic-bezier(0.16, 1, 0.3, 1),\n    opacity 800ms ease;\n  pointer-events: none;\n}\n\n.bigIndex {\n  position: absolute;\n  right: clamp(1.5rem, 9cqi, 5rem);\n  bottom: -0.2em;\n  font-size: clamp(6rem, 30cqi, 13rem);\n  font-weight: 800;\n  line-height: 1;\n  letter-spacing: -0.06em;\n  color: transparent;\n  -webkit-text-stroke: 1px var(--mf-border-strong, #3f3f4a);\n  pointer-events: none;\n}\n\n.body {\n  position: relative;\n  display: flex;\n  flex-direction: column;\n  gap: 0.55rem;\n  max-width: 26rem;\n}\n\n.kicker,\n.title,\n.text {\n  opacity: 0;\n  transform: translateY(18px);\n  transition:\n    opacity 500ms ease,\n    transform 700ms cubic-bezier(0.16, 1, 0.3, 1);\n}\n\n.kicker {\n  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;\n  font-size: 0.78rem;\n  color: var(--mf-sns-accent, #34d399);\n}\n\n.title {\n  margin: 0;\n  font-size: clamp(2rem, 8cqi, 3.6rem);\n  font-weight: 750;\n  line-height: 1;\n  letter-spacing: -0.045em;\n  transition-delay: 60ms;\n}\n\n.text {\n  margin: 0;\n  color: var(--mf-muted, #a1a1aa);\n  font-size: 0.95rem;\n  line-height: 1.5;\n  transition-delay: 120ms;\n}\n\n.section[data-active=\"true\"] .kicker,\n.section[data-active=\"true\"] .title,\n.section[data-active=\"true\"] .text {\n  opacity: 1;\n  transform: none;\n}\n\n.section[data-active=\"true\"] .orb {\n  opacity: 0.6;\n  transform: translateY(-50%) scale(1);\n}\n\n.dots {\n  position: absolute;\n  top: 50%;\n  right: 1rem;\n  z-index: 2;\n  display: flex;\n  flex-direction: column;\n  gap: 0.35rem;\n  transform: translateY(-50%);\n}\n\n.root[data-dots=\"left\"] .dots {\n  right: auto;\n  left: 1rem;\n}\n\n.dot {\n  display: grid;\n  place-items: center;\n  width: 22px;\n  height: 22px;\n  padding: 0;\n  border: 0;\n  border-radius: 999px;\n  background: transparent;\n  cursor: pointer;\n}\n\n.dot::before {\n  content: \"\";\n  width: 8px;\n  height: 8px;\n  border-radius: 999px;\n  background: var(--mf-border-strong, #3f3f4a);\n  transition:\n    height 300ms cubic-bezier(0.16, 1, 0.3, 1),\n    background-color 300ms ease;\n}\n\n.dot:hover::before {\n  background: var(--mf-muted, #a1a1aa);\n}\n\n.dot[aria-current=\"true\"]::before {\n  height: 20px;\n  background: var(--mf-sns-accent, #34d399);\n}\n\n.dot:focus-visible {\n  outline: 2px solid var(--mf-fg, #e4e4e7);\n  outline-offset: 1px;\n}\n\n@media (prefers-reduced-motion: reduce) {\n  .kicker,\n  .title,\n  .text,\n  .orb,\n  .dot::before {\n    transition: none;\n  }\n}\n"
+    }
+  ],
+  "tailwindExample": "\"use client\";\n\nimport { useEffect, useRef, useState } from \"react\";\n\nexport function SnapSectionsTailwind() {\n  const ref = useRef(null);\n  const [active, setActive] = useState(0);\n  const sections = [\"Capture\", \"Organize\", \"Collaborate\", \"Publish\"];\n  const go = (i) => {\n    const el = ref.current;\n    const next = Math.max(0, Math.min(sections.length - 1, i));\n    setActive(next);\n    el.scrollTo({ top: next * el.clientHeight, behavior: \"smooth\" });\n  };\n  useEffect(() => {\n    const el = ref.current;\n    let last = 0;\n    const onWheel = (e) => {\n      const now = performance.now();\n      const fresh = now - last > 160;\n      last = now;\n      const idx = Math.round(el.scrollTop / el.clientHeight);\n      if ((e.deltaY < 0 && idx === 0) || (e.deltaY > 0 && idx === sections.length - 1)) return;\n      e.preventDefault();\n      if (fresh) go(idx + Math.sign(e.deltaY));\n    };\n    el.addEventListener(\"wheel\", onWheel, { passive: false });\n    return () => el.removeEventListener(\"wheel\", onWheel);\n  }, []);\n  return (\n    <div className=\"relative h-[380px] w-full overflow-hidden rounded-[20px] border border-zinc-800 bg-zinc-900 text-zinc-100\">\n      <div ref={ref} tabIndex={0} className=\"h-full snap-y snap-mandatory overflow-y-auto\">\n        {sections.map((t, i) => (\n          <section key={t} className=\"flex h-full snap-start items-center px-16\">\n            <div>\n              <span className=\"font-mono text-xs text-emerald-400\">0{i + 1} / 0{sections.length}</span>\n              <h3 className=\"text-5xl font-bold tracking-tight\">{t}</h3>\n            </div>\n          </section>\n        ))}\n      </div>\n      <nav className=\"absolute right-4 top-1/2 flex -translate-y-1/2 flex-col gap-2\">\n        {sections.map((t, i) => (\n          <button key={t} aria-label={`Go to ${t}`} onClick={() => go(i)} className={`w-2 rounded-full transition-all ${i === active ? \"h-5 bg-emerald-400\" : \"h-2 bg-zinc-600\"}`} />\n        ))}\n      </nav>\n    </div>\n  );\n}"
+}

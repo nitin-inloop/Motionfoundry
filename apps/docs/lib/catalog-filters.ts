@@ -3,9 +3,9 @@
  * (URL sync). Deliberately free of registry.json imports so client bundles stay small.
  */
 
-/** The release whose components get the "New" badge and the "New in v2.2" filter. */
-export const NEW_VERSION = "2.2.0";
-/** Short label for NEW_VERSION, e.g. "v2.2". */
+/** The release whose components get the "New" badge and the "New in v2.3" filter. */
+export const NEW_VERSION = "2.3.0";
+/** Short label for NEW_VERSION, e.g. "v2.3". */
 export const NEW_VERSION_LABEL = `v${NEW_VERSION.split(".").slice(0, 2).join(".")}`;
 
 export function isNewComponent(component: { version: string }): boolean {

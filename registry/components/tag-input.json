@@ -1,0 +1,192 @@
+{
+  "slug": "tag-input",
+  "name": "TagInput",
+  "category": "Forms and Inputs",
+  "collection": "ui",
+  "featured": false,
+  "addedAt": "2026-10-16",
+  "version": "2.3.0",
+  "requiresMotion": true,
+  "dependencies": [
+    "motion",
+    "react"
+  ],
+  "description": "A text box that turns entries into chips: Enter or comma adds a tag that pops in while its neighbours slide aside, Backspace arms then removes the last chip, duplicates shake the existing chip, and pasted comma lists are split automatically.",
+  "tags": [
+    "tags",
+    "chips",
+    "multi value",
+    "input",
+    "form",
+    "ui"
+  ],
+  "a11yNotes": "A native text input labelled by a visible <label> and described by a keyboard hint. Chips are list items in a labelled list (with the tag count); each has a native remove button labelled 'Remove <tag>' that also responds to Backspace/Delete. Backspace in an empty input first highlights the last chip, then removes it; Escape clears the draft. Additions and removals are announced through a polite live region and focus returns to the input after removal. Under prefers-reduced-motion chips fade without scaling or layout sliding.",
+  "defaultProps": {
+    "defaultValue": [
+      "React",
+      "TypeScript",
+      "Motion"
+    ],
+    "label": "Skills",
+    "placeholder": "Add a skill…",
+    "maxTags": 8,
+    "allowDuplicates": false,
+    "variant": "soft",
+    "size": "md",
+    "accentColor": "#6366f1",
+    "disabled": false
+  },
+  "controls": [
+    {
+      "prop": "defaultValue",
+      "label": "Initial tags (comma separated)",
+      "type": "list"
+    },
+    {
+      "prop": "label",
+      "label": "Label",
+      "type": "text"
+    },
+    {
+      "prop": "placeholder",
+      "label": "Placeholder",
+      "type": "text"
+    },
+    {
+      "prop": "maxTags",
+      "label": "Max tags (0 = unlimited)",
+      "type": "range",
+      "min": 0,
+      "max": 12,
+      "step": 1
+    },
+    {
+      "prop": "allowDuplicates",
+      "label": "Allow duplicates",
+      "type": "boolean"
+    },
+    {
+      "prop": "variant",
+      "label": "Chip style",
+      "type": "select",
+      "options": [
+        "soft",
+        "outline",
+        "solid"
+      ]
+    },
+    {
+      "prop": "size",
+      "label": "Size",
+      "type": "select",
+      "options": [
+        "sm",
+        "md",
+        "lg"
+      ]
+    },
+    {
+      "prop": "accentColor",
+      "label": "Accent color",
+      "type": "color"
+    },
+    {
+      "prop": "disabled",
+      "label": "Disabled",
+      "type": "boolean"
+    }
+  ],
+  "propsApi": [
+    {
+      "name": "value",
+      "type": "string[]",
+      "default": "undefined",
+      "description": "Controlled list of tags."
+    },
+    {
+      "name": "defaultValue",
+      "type": "string[]",
+      "default": "['React', 'TypeScript', 'Motion']",
+      "description": "Initial tags when uncontrolled."
+    },
+    {
+      "name": "onValueChange",
+      "type": "(tags: string[]) => void",
+      "default": "undefined",
+      "description": "Called with the next list whenever a tag is added or removed."
+    },
+    {
+      "name": "label",
+      "type": "string",
+      "default": "'Skills'",
+      "description": "Visible label and accessible name of the text box."
+    },
+    {
+      "name": "placeholder",
+      "type": "string",
+      "default": "'Add a skill…'",
+      "description": "Placeholder shown in the text box."
+    },
+    {
+      "name": "maxTags",
+      "type": "number",
+      "default": "8",
+      "description": "Maximum number of tags; 0 means unlimited. The input disables when the limit is reached."
+    },
+    {
+      "name": "allowDuplicates",
+      "type": "boolean",
+      "default": "false",
+      "description": "Allow the same tag more than once; otherwise the existing chip shakes."
+    },
+    {
+      "name": "variant",
+      "type": "'soft' | 'outline' | 'solid'",
+      "default": "'soft'",
+      "description": "Chip style."
+    },
+    {
+      "name": "size",
+      "type": "'sm' | 'md' | 'lg'",
+      "default": "'md'",
+      "description": "Field and chip size preset."
+    },
+    {
+      "name": "accentColor",
+      "type": "string",
+      "default": "'#6366f1'",
+      "description": "Chip tint and focus ring color."
+    },
+    {
+      "name": "disabled",
+      "type": "boolean",
+      "default": "false",
+      "description": "Disable the field and remove buttons."
+    },
+    {
+      "name": "className",
+      "type": "string",
+      "default": "''",
+      "description": "Additional class merged onto the root element."
+    },
+    {
+      "name": "style",
+      "type": "React.CSSProperties",
+      "default": "undefined",
+      "description": "Inline styles merged onto the root element."
+    }
+  ],
+  "files": [
+    {
+      "path": "components/ui/tag-input.tsx",
+      "type": "registry:component",
+      "content": "\"use client\";\n\nimport * as React from \"react\";\nimport { AnimatePresence, motion, useReducedMotion } from \"motion/react\";\nimport styles from \"../styles/tag-input.module.css\";\n\nexport interface TagInputProps {\n  /** Controlled list of tags */\n  value?: string[];\n  /** Initial tags when uncontrolled */\n  defaultValue?: string[];\n  /** Called with the next list whenever a tag is added or removed */\n  onValueChange?: (tags: string[]) => void;\n  /** Visible label (also the accessible name of the text box) */\n  label?: string;\n  /** Placeholder shown in the text box */\n  placeholder?: string;\n  /** Maximum number of tags (0 = unlimited) */\n  maxTags?: number;\n  /** Allow the same tag more than once (case-insensitive check) */\n  allowDuplicates?: boolean;\n  /** Chip style */\n  variant?: \"soft\" | \"outline\" | \"solid\";\n  /** Size preset */\n  size?: \"sm\" | \"md\" | \"lg\";\n  /** Chip and focus accent color */\n  accentColor?: string;\n  /** Disable the field */\n  disabled?: boolean;\n  /** Optional className merged onto the root */\n  className?: string;\n  /** Optional inline styles merged onto the root */\n  style?: React.CSSProperties;\n}\n\nconst DEFAULT_TAGS = [\"React\", \"TypeScript\", \"Motion\"];\n\nexport function TagInput({\n  value: valueProp,\n  defaultValue = DEFAULT_TAGS,\n  onValueChange,\n  label = \"Skills\",\n  placeholder = \"Add a skill…\",\n  maxTags = 8,\n  allowDuplicates = false,\n  variant = \"soft\",\n  size = \"md\",\n  accentColor = \"#6366f1\",\n  disabled = false,\n  className = \"\",\n  style,\n}: TagInputProps) {\n  const reduce = useReducedMotion();\n  const [inner, setInner] = React.useState<string[]>(defaultValue);\n  const tags = valueProp ?? inner;\n  const [draft, setDraft] = React.useState(\"\");\n  const [armed, setArmed] = React.useState(false);\n  const [flash, setFlash] = React.useState<{ index: number; n: number } | null>(null);\n  const [announce, setAnnounce] = React.useState(\"\");\n  const inputRef = React.useRef<HTMLInputElement>(null);\n  const id = React.useId();\n  const full = maxTags > 0 && tags.length >= maxTags;\n\n  React.useEffect(() => {\n    if (!flash) return;\n    const t = window.setTimeout(() => setFlash(null), 420);\n    return () => window.clearTimeout(t);\n  }, [flash]);\n\n  const seen = new Map<string, number>();\n  const keys = tags.map((tag) => {\n    const n = seen.get(tag) ?? 0;\n    seen.set(tag, n + 1);\n    return `${tag}#${n}`;\n  });\n\n  const update = (next: string[]) => {\n    if (valueProp === undefined) setInner(next);\n    onValueChange?.(next);\n  };\n\n  const add = (raw: string) => {\n    const parts = raw.split(\",\").map((s) => s.trim()).filter(Boolean);\n    if (parts.length === 0) return;\n    const next = [...tags];\n    const added: string[] = [];\n    for (const part of parts) {\n      if (maxTags > 0 && next.length >= maxTags) break;\n      const dup = next.findIndex((t) => t.toLowerCase() === part.toLowerCase());\n      if (dup !== -1 && !allowDuplicates) {\n        setFlash((f) => ({ index: dup, n: (f?.n ?? 0) + 1 }));\n        continue;\n      }\n      next.push(part);\n      added.push(part);\n    }\n    if (added.length) {\n      update(next);\n      setAnnounce(`Added ${added.join(\", \")}`);\n    }\n    setDraft(\"\");\n  };\n\n  const remove = (index: number, refocus = true) => {\n    const tag = tags[index];\n    if (tag === undefined) return;\n    update(tags.filter((_, i) => i !== index));\n    setAnnounce(`Removed ${tag}`);\n    setArmed(false);\n    if (refocus) inputRef.current?.focus();\n  };\n\n  const onKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {\n    if (e.key === \"Enter\" || e.key === \",\") {\n      if (draft.trim() || e.key === \",\") e.preventDefault();\n      add(draft);\n    } else if (e.key === \"Backspace\" && draft === \"\" && tags.length > 0) {\n      e.preventDefault();\n      if (armed) remove(tags.length - 1);\n      else setArmed(true);\n    } else if (e.key === \"Escape\") {\n      setArmed(false);\n      setDraft(\"\");\n    } else {\n      setArmed(false);\n    }\n  };\n\n  const spring = reduce ? { duration: 0.1 } : { type: \"spring\" as const, stiffness: 520, damping: 32 };\n\n  return (\n    <div\n      className={`${styles.root} ${className}`.trim()}\n      data-variant={variant}\n      data-size={size}\n      data-disabled={disabled ? \"\" : undefined}\n      style={{ \"--mf-tag-accent\": accentColor, ...style } as React.CSSProperties}\n    >\n      <label htmlFor={id} className={styles.label}>\n        {label}\n      </label>\n      <div className={styles.box} onPointerDown={(e) => {\n          if (disabled || (e.target instanceof Element && e.target.closest(\"button, input\"))) return;\n          e.preventDefault();\n          inputRef.current?.focus();\n        }}>\n        <ul role=\"list\" className={styles.list} aria-label={`${label}: ${tags.length} selected`}>\n          <AnimatePresence initial={false} mode=\"popLayout\">\n            {tags.map((tag, i) => (\n              <motion.li\n                key={keys[i]}\n                layout={!reduce}\n                className={styles.chip}\n                data-armed={armed && i === tags.length - 1 ? \"\" : undefined}\n                initial={{ opacity: 0, scale: reduce ? 1 : 0.6 }}\n                animate={flash?.index === i && !reduce ? { opacity: 1, scale: 1, x: [0, -4, 4, -2, 0] } : { opacity: 1, scale: 1, x: 0 }}\n                exit={{ opacity: 0, scale: reduce ? 1 : 0.6, transition: { duration: 0.14 } }}\n                transition={spring}\n              >\n                <span className={styles.text}>{tag}</span>\n                <button\n                  type=\"button\"\n                  className={styles.remove}\n                  aria-label={`Remove ${tag}`}\n                  disabled={disabled}\n                  onClick={() => remove(i)}\n                  onKeyDown={(e) => {\n                    if (e.key === \"Backspace\" || e.key === \"Delete\") {\n                      e.preventDefault();\n                      remove(i);\n                    }\n                  }}\n                >\n                  <svg aria-hidden=\"true\" width=\"12\" height=\"12\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" strokeWidth=\"2.5\" strokeLinecap=\"round\">\n                    <path d=\"M18 6 6 18M6 6l12 12\" />\n                  </svg>\n                </button>\n              </motion.li>\n            ))}\n          </AnimatePresence>\n        </ul>\n        <input\n          ref={inputRef}\n          id={id}\n          className={styles.input}\n          value={draft}\n          disabled={disabled || full}\n          placeholder={full ? `Limit of ${maxTags} reached` : placeholder}\n          aria-describedby={`${id}-hint`}\n          onChange={(e) => {\n            const v = e.target.value;\n            if (v.includes(\",\")) add(v);\n            else setDraft(v);\n          }}\n          onKeyDown={onKeyDown}\n          onBlur={() => {\n            setArmed(false);\n            if (draft.trim()) add(draft);\n          }}\n        />\n      </div>\n      <span id={`${id}-hint`} className={styles.hint}>\n        Press Enter or comma to add, Backspace to remove.\n        {maxTags > 0 ? ` ${tags.length}/${maxTags}` : \"\"}\n      </span>\n      <span className={styles.srOnly} aria-live=\"polite\">\n        {announce}\n      </span>\n    </div>\n  );\n}\n"
+    },
+    {
+      "path": "components/styles/tag-input.module.css",
+      "type": "registry:style",
+      "content": ".root {\n  --mf-tag-minh: 2.75rem;\n  --mf-tag-chip-h: 1.75rem;\n  --mf-tag-fs: 0.875rem;\n  display: flex;\n  flex-direction: column;\n  gap: 0.5rem;\n  width: 100%;\n  max-width: 26rem;\n  color: var(--mf-fg, #f4f4f6);\n}\n\n.root[data-size=\"sm\"] {\n  --mf-tag-minh: 2.25rem;\n  --mf-tag-chip-h: 1.5rem;\n  --mf-tag-fs: 0.8125rem;\n}\n\n.root[data-size=\"lg\"] {\n  --mf-tag-minh: 3.25rem;\n  --mf-tag-chip-h: 2rem;\n  --mf-tag-fs: 0.9375rem;\n}\n\n.label {\n  font-size: 0.875rem;\n  font-weight: 500;\n}\n\n.box {\n  display: flex;\n  flex-wrap: wrap;\n  align-items: center;\n  gap: 0.375rem;\n  min-height: var(--mf-tag-minh);\n  padding: 0.375rem 0.5rem;\n  border-radius: 0.625rem;\n  border: 1px solid var(--mf-border, #2e2e38);\n  background-color: var(--mf-surface, #141419);\n  cursor: text;\n  transition: border-color 160ms ease, box-shadow 200ms cubic-bezier(0.16, 1, 0.3, 1);\n}\n\n.box:hover {\n  border-color: var(--mf-border-strong, #52525b);\n}\n\n.box:focus-within {\n  border-color: var(--mf-tag-accent, #6366f1);\n  box-shadow: 0 0 0 3px color-mix(in srgb, var(--mf-tag-accent, #6366f1) 28%, transparent);\n}\n\n.list {\n  display: contents;\n  margin: 0;\n  padding: 0;\n  list-style: none;\n}\n\n.chip {\n  display: inline-flex;\n  align-items: center;\n  gap: 0.125rem;\n  height: var(--mf-tag-chip-h);\n  padding: 0 0.25rem 0 0.625rem;\n  border-radius: 0.5rem;\n  border: 1px solid color-mix(in srgb, var(--mf-tag-accent, #6366f1) 35%, transparent);\n  background-color: color-mix(in srgb, var(--mf-tag-accent, #6366f1) 16%, transparent);\n  color: var(--mf-fg, #f4f4f6);\n  font-size: var(--mf-tag-fs);\n  font-weight: 500;\n  line-height: 1;\n  white-space: nowrap;\n  transition: background-color 150ms ease, border-color 150ms ease, box-shadow 150ms ease;\n}\n\n.root[data-variant=\"outline\"] .chip {\n  border-color: var(--mf-border-strong, #52525b);\n  background-color: transparent;\n}\n\n.root[data-variant=\"solid\"] .chip {\n  border-color: var(--mf-tag-accent, #6366f1);\n  background-color: var(--mf-tag-accent, #6366f1);\n  color: #ffffff;\n}\n\n.chip[data-armed] {\n  box-shadow: 0 0 0 2px var(--mf-tag-accent, #6366f1);\n  border-color: var(--mf-tag-accent, #6366f1);\n}\n\n.text {\n  max-width: 12rem;\n  overflow: hidden;\n  text-overflow: ellipsis;\n}\n\n.remove {\n  display: inline-flex;\n  align-items: center;\n  justify-content: center;\n  width: 1.25rem;\n  height: 1.25rem;\n  padding: 0;\n  border: 0;\n  border-radius: 0.375rem;\n  background: transparent;\n  color: inherit;\n  opacity: 0.6;\n  cursor: pointer;\n  transition: opacity 150ms ease, background-color 150ms ease;\n}\n\n.remove:hover {\n  opacity: 1;\n  background-color: color-mix(in srgb, currentColor 14%, transparent);\n}\n\n.remove:focus-visible {\n  opacity: 1;\n  outline: 2px solid var(--mf-fg, #e4e4e7);\n  outline-offset: 1px;\n}\n\n.input {\n  flex: 1;\n  min-width: 7rem;\n  height: var(--mf-tag-chip-h);\n  padding: 0 0.25rem;\n  border: 0;\n  background: transparent;\n  color: var(--mf-fg, #f4f4f6);\n  font: inherit;\n  font-size: var(--mf-tag-fs);\n  outline: none;\n}\n\n.input::placeholder {\n  color: var(--mf-subtle, #71717a);\n}\n\n.hint {\n  font-size: 0.75rem;\n  color: var(--mf-subtle, #71717a);\n}\n\n.srOnly {\n  position: absolute;\n  width: 1px;\n  height: 1px;\n  margin: -1px;\n  padding: 0;\n  overflow: hidden;\n  clip: rect(0 0 0 0);\n  white-space: nowrap;\n  border: 0;\n}\n\n.root[data-disabled] {\n  opacity: 0.55;\n}\n\n.root[data-disabled] .box {\n  cursor: not-allowed;\n}\n\n@media (prefers-reduced-motion: reduce) {\n  .box,\n  .chip,\n  .remove {\n    transition: none;\n  }\n}\n"
+    }
+  ],
+  "tailwindExample": "\"use client\";\n\nimport { AnimatePresence, motion } from \"motion/react\";\nimport { useId, useState } from \"react\";\n\nexport function TagInputTailwind() {\n  const id = useId();\n  const [tags, setTags] = useState([\"React\", \"TypeScript\", \"Motion\"]);\n  const [draft, setDraft] = useState(\"\");\n  const add = () => { const t = draft.trim(); if (t && !tags.includes(t)) setTags([...tags, t]); setDraft(\"\"); };\n  return (\n    <div className=\"w-full max-w-md space-y-2 text-zinc-100\">\n      <label htmlFor={id} className=\"text-sm font-medium\">Skills</label>\n      <div className=\"flex min-h-11 flex-wrap items-center gap-1.5 rounded-xl border border-zinc-800 bg-zinc-900 px-2 py-1.5 focus-within:border-indigo-500 focus-within:ring-4 focus-within:ring-indigo-500/25\">\n        <AnimatePresence initial={false} mode=\"popLayout\">\n          {tags.map((t) => (\n            <motion.span layout key={t} initial={{ opacity: 0, scale: 0.6 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.6 }} className=\"inline-flex h-7 items-center gap-1 rounded-lg border border-indigo-500/35 bg-indigo-500/15 pl-2.5 pr-1 text-sm font-medium\">\n              {t}\n              <button type=\"button\" aria-label={`Remove ${t}`} onClick={() => setTags(tags.filter((x) => x !== t))} className=\"grid size-5 place-items-center rounded-md opacity-60 hover:opacity-100\">×</button>\n            </motion.span>\n          ))}\n        </AnimatePresence>\n        <input id={id} value={draft} placeholder=\"Add a skill…\" onChange={(e) => setDraft(e.target.value)} onKeyDown={(e) => { if (e.key === \"Enter\" || e.key === \",\") { e.preventDefault(); add(); } else if (e.key === \"Backspace\" && !draft) setTags(tags.slice(0, -1)); }} className=\"h-7 min-w-28 flex-1 bg-transparent px-1 text-sm outline-none placeholder:text-zinc-500\" />\n      </div>\n    </div>\n  );\n}"
+}

@@ -1,0 +1,189 @@
+{
+  "slug": "avatar-group",
+  "name": "AvatarGroup",
+  "category": "Data Display",
+  "collection": "ui",
+  "featured": false,
+  "addedAt": "2026-10-16",
+  "version": "2.3.0",
+  "requiresMotion": false,
+  "dependencies": [
+    "react"
+  ],
+  "description": "An overlapping stack of initials avatars with deterministic per-name gradients that cascade in, lift on hover and fan apart when the group is hovered or focused. Extra people collapse into an accent +N chip that expands the full list, with optional presence dots and name tooltips.",
+  "tags": [
+    "avatar",
+    "avatar-group",
+    "team",
+    "presence",
+    "stack",
+    "ui"
+  ],
+  "a11yNotes": "The root is a role=\"group\" with an aria-label; each avatar is a focusable role=\"img\" whose aria-label includes the name and presence status (initials, dot and tooltip are aria-hidden). The +N chip is a native button with aria-expanded and an aria-label listing the hidden names. Focus shows the tooltip and spreads the stack; under prefers-reduced-motion the entrance, lift, spread and status ping are disabled.",
+  "defaultProps": {
+    "names": [
+      "Ava Thompson",
+      "Liam Chen",
+      "Sofia Martinez",
+      "Noah Patel",
+      "Maya Okafor",
+      "Ethan Brooks",
+      "Isla Novak",
+      "Kai Tanaka",
+      "Zara Ahmed"
+    ],
+    "max": 5,
+    "size": "md",
+    "overlap": 0.3,
+    "spreadOnHover": true,
+    "showStatus": true,
+    "showTooltip": true,
+    "accentColor": "#6366f1",
+    "label": "Project members"
+  },
+  "controls": [
+    {
+      "prop": "names",
+      "label": "Names (comma separated)",
+      "type": "list"
+    },
+    {
+      "prop": "max",
+      "label": "Max visible",
+      "type": "range",
+      "min": 1,
+      "max": 9,
+      "step": 1
+    },
+    {
+      "prop": "size",
+      "label": "Size",
+      "type": "select",
+      "options": [
+        "sm",
+        "md",
+        "lg"
+      ]
+    },
+    {
+      "prop": "overlap",
+      "label": "Overlap",
+      "type": "range",
+      "min": 0,
+      "max": 0.6,
+      "step": 0.05
+    },
+    {
+      "prop": "spreadOnHover",
+      "label": "Spread on hover",
+      "type": "boolean"
+    },
+    {
+      "prop": "showStatus",
+      "label": "Status dots",
+      "type": "boolean"
+    },
+    {
+      "prop": "showTooltip",
+      "label": "Name tooltips",
+      "type": "boolean"
+    },
+    {
+      "prop": "accentColor",
+      "label": "Accent color",
+      "type": "color"
+    },
+    {
+      "prop": "label",
+      "label": "Group label",
+      "type": "text"
+    }
+  ],
+  "propsApi": [
+    {
+      "name": "names",
+      "type": "string[]",
+      "default": "['Ava Thompson', 'Liam Chen', ...] (9 names)",
+      "description": "People in the stack; initials and gradient are derived deterministically from each name."
+    },
+    {
+      "name": "max",
+      "type": "number",
+      "default": "5",
+      "description": "Maximum avatars shown before the rest collapse into a +N chip."
+    },
+    {
+      "name": "size",
+      "type": "'sm' | 'md' | 'lg'",
+      "default": "'md'",
+      "description": "Avatar size preset (32 / 40 / 52px)."
+    },
+    {
+      "name": "overlap",
+      "type": "number",
+      "default": "0.3",
+      "description": "Overlap between neighbours as a fraction of the avatar size (0-0.6)."
+    },
+    {
+      "name": "spreadOnHover",
+      "type": "boolean",
+      "default": "true",
+      "description": "Fan the avatars apart while the group is hovered or focused."
+    },
+    {
+      "name": "showStatus",
+      "type": "boolean",
+      "default": "true",
+      "description": "Show a deterministic presence dot (online pings softly)."
+    },
+    {
+      "name": "showTooltip",
+      "type": "boolean",
+      "default": "true",
+      "description": "Show the full name in a tooltip on hover or focus."
+    },
+    {
+      "name": "accentColor",
+      "type": "string",
+      "default": "'#6366f1'",
+      "description": "Tint of the +N overflow chip."
+    },
+    {
+      "name": "label",
+      "type": "string",
+      "default": "'Project members'",
+      "description": "Accessible name of the group."
+    },
+    {
+      "name": "onExpandedChange",
+      "type": "(expanded: boolean) => void",
+      "default": "undefined",
+      "description": "Called when the +N chip expands or collapses the full list."
+    },
+    {
+      "name": "className",
+      "type": "string",
+      "default": "''",
+      "description": "Additional class merged onto the root element."
+    },
+    {
+      "name": "style",
+      "type": "React.CSSProperties",
+      "default": "undefined",
+      "description": "Inline styles merged onto the root element."
+    }
+  ],
+  "files": [
+    {
+      "path": "components/ui/avatar-group.tsx",
+      "type": "registry:component",
+      "content": "\"use client\";\n\nimport * as React from \"react\";\nimport styles from \"../styles/avatar-group.module.css\";\n\nexport interface AvatarGroupProps {\n  /** People shown in the stack (initials are derived from each name) */\n  names?: string[];\n  /** Maximum avatars shown before collapsing the rest into a +N chip */\n  max?: number;\n  /** Avatar size preset */\n  size?: \"sm\" | \"md\" | \"lg\";\n  /** How much neighbouring avatars overlap, as a fraction of the avatar size (0–0.6) */\n  overlap?: number;\n  /** Fan the stack apart while the group is hovered or focused */\n  spreadOnHover?: boolean;\n  /** Show a deterministic presence dot (online / away / busy / offline) on each avatar */\n  showStatus?: boolean;\n  /** Show the person's name in a small tooltip on hover / focus */\n  showTooltip?: boolean;\n  /** Accent color used by the +N chip and focus tint */\n  accentColor?: string;\n  /** Accessible name of the group */\n  label?: string;\n  /** Called when the +N chip toggles the full list */\n  onExpandedChange?: (expanded: boolean) => void;\n  /** Optional className merged onto the root */\n  className?: string;\n  /** Optional inline styles merged onto the root */\n  style?: React.CSSProperties;\n}\n\nconst DEFAULT_NAMES = [\n  \"Ava Thompson\",\n  \"Liam Chen\",\n  \"Sofia Martinez\",\n  \"Noah Patel\",\n  \"Maya Okafor\",\n  \"Ethan Brooks\",\n  \"Isla Novak\",\n  \"Kai Tanaka\",\n  \"Zara Ahmed\",\n];\n\nconst STATUSES = [\"online\", \"away\", \"online\", \"busy\", \"offline\", \"online\", \"away\", \"online\", \"busy\"] as const;\n\nfunction hash(s: string) {\n  let h = 2166136261;\n  for (let i = 0; i < s.length; i++) {\n    h ^= s.charCodeAt(i);\n    h = Math.imul(h, 16777619);\n  }\n  return h >>> 0;\n}\n\nfunction initials(name: string) {\n  const parts = name.trim().split(/\\s+/).filter(Boolean);\n  if (parts.length === 0) return \"?\";\n  const first = parts[0]?.[0] ?? \"\";\n  const last = parts.length > 1 ? parts[parts.length - 1]?.[0] ?? \"\" : parts[0]?.[1] ?? \"\";\n  return (first + last).toUpperCase();\n}\n\nfunction gradientFor(name: string) {\n  const h = hash(name);\n  const hue = h % 360;\n  const hue2 = (hue + 35 + ((h >>> 9) % 50)) % 360;\n  const angle = 120 + ((h >>> 3) % 120);\n  return `linear-gradient(${angle}deg, hsl(${hue} 78% 62%), hsl(${hue2} 72% 46%))`;\n}\n\nexport function AvatarGroup({\n  names = DEFAULT_NAMES,\n  max = 5,\n  size = \"md\",\n  overlap = 0.3,\n  spreadOnHover = true,\n  showStatus = true,\n  showTooltip = true,\n  accentColor = \"#6366f1\",\n  label = \"Project members\",\n  onExpandedChange,\n  className = \"\",\n  style,\n}: AvatarGroupProps) {\n  const [expanded, setExpanded] = React.useState(false);\n  const limit = Math.max(1, Math.floor(max));\n  const visible = expanded ? names : names.slice(0, limit);\n  const hidden = names.length - visible.length;\n  const ov = Math.min(0.6, Math.max(0, overlap));\n\n  const toggle = () => {\n    const next = !expanded;\n    setExpanded(next);\n    onExpandedChange?.(next);\n  };\n\n  return (\n    <div\n      role=\"group\"\n      aria-label={label}\n      className={`${styles.root} ${className}`.trim()}\n      data-size={size}\n      data-spread={spreadOnHover ? \"\" : undefined}\n      style={{ \"--mf-ag-accent\": accentColor, \"--mf-ag-overlap\": ov, ...style } as React.CSSProperties}\n    >\n      <ul className={styles.list}>\n        {visible.map((name, i) => {\n          const status = STATUSES[i % STATUSES.length] ?? \"online\";\n          const desc = showStatus ? `${name} (${status})` : name;\n          return (\n            <li key={`${name}-${i}`} className={styles.item} style={{ \"--mf-ag-i\": i, zIndex: visible.length - i } as React.CSSProperties}>\n              <span role=\"img\" aria-label={desc} tabIndex={0} className={styles.avatar} style={{ backgroundImage: gradientFor(name) }}>\n                <span aria-hidden=\"true\" className={styles.initials}>\n                  {initials(name)}\n                </span>\n                {showStatus && <span aria-hidden=\"true\" className={styles.status} data-status={status} />}\n              </span>\n              {showTooltip && (\n                <span aria-hidden=\"true\" className={styles.tip}>\n                  {name}\n                </span>\n              )}\n            </li>\n          );\n        })}\n        {(hidden > 0 || expanded) && names.length > limit && (\n          <li className={styles.item} style={{ \"--mf-ag-i\": visible.length, zIndex: 0 } as React.CSSProperties}>\n            <button\n              type=\"button\"\n              className={`${styles.avatar} ${styles.more}`}\n              aria-expanded={expanded}\n              aria-label={expanded ? \"Show fewer members\" : `Show ${hidden} more: ${names.slice(limit).join(\", \")}`}\n              onClick={toggle}\n            >\n              {expanded ? (\n                <svg aria-hidden=\"true\" width=\"14\" height=\"14\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" strokeWidth=\"2.5\" strokeLinecap=\"round\">\n                  <path d=\"M15 6l-6 6 6 6\" />\n                </svg>\n              ) : (\n                `+${hidden}`\n              )}\n            </button>\n          </li>\n        )}\n      </ul>\n    </div>\n  );\n}\n"
+    },
+    {
+      "path": "components/styles/avatar-group.module.css",
+      "type": "registry:style",
+      "content": ".root {\n  --mf-ag-size: 2.5rem;\n  --mf-ag-fs: 0.875rem;\n  --mf-ag-ring: var(--mf-bg, #0b0b0f);\n  display: inline-flex;\n  align-items: center;\n  color: var(--mf-fg, #f4f4f6);\n}\n\n.root[data-size=\"sm\"] {\n  --mf-ag-size: 2rem;\n  --mf-ag-fs: 0.75rem;\n}\n\n.root[data-size=\"lg\"] {\n  --mf-ag-size: 3.25rem;\n  --mf-ag-fs: 1.0625rem;\n}\n\n.list {\n  display: flex;\n  align-items: center;\n  margin: 0;\n  padding: 0.375rem 0;\n  list-style: none;\n}\n\n.item {\n  position: relative;\n  margin-left: calc(var(--mf-ag-size) * var(--mf-ag-overlap, 0.3) * -1);\n  transition: margin-left 260ms cubic-bezier(0.16, 1, 0.3, 1);\n  animation: mf-ag-in 420ms cubic-bezier(0.16, 1, 0.3, 1) both;\n  animation-delay: calc(var(--mf-ag-i, 0) * 55ms);\n}\n\n.item:first-child {\n  margin-left: 0;\n}\n\n.root[data-spread]:hover .item:not(:first-child),\n.root[data-spread]:focus-within .item:not(:first-child) {\n  margin-left: 0.25rem;\n}\n\n.avatar {\n  position: relative;\n  display: inline-flex;\n  align-items: center;\n  justify-content: center;\n  width: var(--mf-ag-size);\n  height: var(--mf-ag-size);\n  border-radius: 999px;\n  background-color: var(--mf-surface-raised, #1b1b22);\n  background-size: cover;\n  box-shadow: 0 0 0 2px var(--mf-ag-ring);\n  color: #fff;\n  font-size: var(--mf-ag-fs);\n  font-weight: 600;\n  letter-spacing: 0.02em;\n  cursor: default;\n  user-select: none;\n  transition: transform 220ms cubic-bezier(0.16, 1, 0.3, 1), box-shadow 200ms ease;\n}\n\n.initials {\n  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.25);\n}\n\n.item:hover .avatar,\n.avatar:focus-visible {\n  transform: translateY(-4px) scale(1.06);\n}\n\n.item:hover,\n.item:focus-within {\n  z-index: 50 !important;\n}\n\n.avatar:focus-visible {\n  outline: 2px solid var(--mf-fg, #e4e4e7);\n  outline-offset: 2px;\n}\n\n.status {\n  position: absolute;\n  right: 0;\n  bottom: 0;\n  width: 28%;\n  height: 28%;\n  min-width: 0.5rem;\n  min-height: 0.5rem;\n  border-radius: 999px;\n  border: 2px solid var(--mf-ag-ring);\n  background-color: #22c55e;\n}\n\n.status[data-status=\"away\"] {\n  background-color: #f59e0b;\n}\n\n.status[data-status=\"busy\"] {\n  background-color: #ef4444;\n}\n\n.status[data-status=\"offline\"] {\n  background-color: var(--mf-subtle, #71717a);\n}\n\n.status[data-status=\"online\"]::after {\n  content: \"\";\n  position: absolute;\n  inset: -2px;\n  border-radius: inherit;\n  border: 2px solid #22c55e;\n  animation: mf-ag-ping 2.2s cubic-bezier(0, 0, 0.2, 1) infinite;\n}\n\n.more {\n  border: 1px solid color-mix(in srgb, var(--mf-ag-accent, #6366f1) 45%, var(--mf-border, #2e2e38));\n  background-color: color-mix(in srgb, var(--mf-ag-accent, #6366f1) 16%, var(--mf-surface, #141419));\n  color: var(--mf-fg, #f4f4f6);\n  font: inherit;\n  font-size: calc(var(--mf-ag-fs) * 0.92);\n  font-weight: 600;\n  cursor: pointer;\n}\n\n.more:hover {\n  background-color: color-mix(in srgb, var(--mf-ag-accent, #6366f1) 28%, var(--mf-surface, #141419));\n}\n\n.tip {\n  position: absolute;\n  left: 50%;\n  bottom: calc(100% + 0.5rem);\n  padding: 0.25rem 0.5rem;\n  border-radius: 0.375rem;\n  border: 1px solid var(--mf-border, #2e2e38);\n  background-color: var(--mf-surface-raised, #1b1b22);\n  color: var(--mf-fg, #f4f4f6);\n  font-size: 0.75rem;\n  font-weight: 500;\n  white-space: nowrap;\n  pointer-events: none;\n  opacity: 0;\n  transform: translate(-50%, 4px);\n  transition: opacity 150ms ease, transform 180ms cubic-bezier(0.16, 1, 0.3, 1);\n  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.25);\n}\n\n.item:hover .tip,\n.item:focus-within .tip {\n  opacity: 1;\n  transform: translate(-50%, 0);\n}\n\n@keyframes mf-ag-in {\n  from {\n    opacity: 0;\n    transform: translateX(-8px) scale(0.85);\n  }\n  to {\n    opacity: 1;\n    transform: none;\n  }\n}\n\n@keyframes mf-ag-ping {\n  0% {\n    opacity: 0.7;\n    transform: scale(1);\n  }\n  80%,\n  100% {\n    opacity: 0;\n    transform: scale(2);\n  }\n}\n\n@media (prefers-reduced-motion: reduce) {\n  .item,\n  .avatar,\n  .tip {\n    transition: none;\n    animation: none;\n  }\n  .status::after {\n    animation: none;\n    display: none;\n  }\n  .item:hover .avatar,\n  .avatar:focus-visible {\n    transform: none;\n  }\n}\n"
+    }
+  ],
+  "tailwindExample": "\"use client\";\n\nconst people = [\"Ava Thompson\", \"Liam Chen\", \"Sofia Martinez\", \"Noah Patel\", \"Maya Okafor\", \"Ethan Brooks\", \"Isla Novak\"];\nconst hues = [262, 199, 330, 150, 24, 220, 290];\n\nexport function AvatarGroupTailwind({ max = 5 }) {\n  const shown = people.slice(0, max);\n  return (\n    <div role=\"group\" aria-label=\"Project members\" className=\"group flex items-center\">\n      {shown.map((n, i) => (\n        <span key={n} role=\"img\" aria-label={n} tabIndex={0} style={{ backgroundImage: `linear-gradient(135deg, hsl(${hues[i]} 78% 62%), hsl(${hues[i] + 40} 72% 46%))` }} className=\"relative -ml-3 grid size-10 place-items-center rounded-full text-sm font-semibold text-white ring-2 ring-zinc-950 transition-all duration-300 first:ml-0 group-hover:ml-1 first:group-hover:ml-0 hover:z-10 hover:-translate-y-1 hover:scale-105\">\n          {n.split(\" \").map((p) => p[0]).join(\"\")}\n          <span aria-hidden className=\"absolute bottom-0 right-0 size-2.5 rounded-full bg-emerald-500 ring-2 ring-zinc-950\" />\n        </span>\n      ))}\n      {people.length > max && (\n        <button type=\"button\" aria-label={`${people.length - max} more`} className=\"-ml-3 grid size-10 place-items-center rounded-full border border-indigo-500/50 bg-indigo-500/15 text-sm font-semibold text-zinc-100 ring-2 ring-zinc-950 transition-all group-hover:ml-1\">+{people.length - max}</button>\n      )}\n    </div>\n  );\n}"
+}

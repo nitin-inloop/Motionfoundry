@@ -1,12 +1,13 @@
 # @motionfoundry/ui
 
-Production-ready animated React components — **72 components** in five collections:
+Production-ready animated React components — **137 components** in six collections:
 
 - **Core** (24): kinetic typography, spatial cards, canvas networks, and developer-interface choreography.
 - **Studio Kit** (24): everyday product motion — text reveals, feedback buttons, interactive cards, ambient backgrounds, loaders, and list interactions.
-- **Gradients** (8): animated mesh, aurora, conic, liquid, wave, orb, grain, and spotlight backgrounds with every color and speed exposed.
+- **Shaders** (13): animated backgrounds — including 5 dark WebGL shaders — with every color and speed exposed (formerly "Gradients").
+- **UI** (50): animated, accessible UI primitives (buttons, inputs, selects, dialogs, menus, tabs, toasts, tables, charts…) with no Radix/shadcn dependency.
 - **Text FX** (8): GSAP-style split-text, mask wipes, elastic letters, text on a path, rolling hovers, marker highlights, scatter, and cube-flip words — no GSAP dependency.
-- **Scroll** (8): Lenis-style smooth scrolling, parallax, scroll-filled text, horizontal tracks, stacking cards, velocity marquees, zoom reveals, and timelines — no Lenis dependency.
+- **Scroll** (18): Lenis-style smooth scrolling, parallax, scroll-filled text, horizontal tracks, stacking cards, velocity marquees, zoom reveals, and timelines — no Lenis dependency.
 
 Every component is written in TypeScript with a scoped CSS Module, ships with sensible defaults (`<FlipCard />` renders a full demo), works in React Server Component trees, and respects `prefers-reduced-motion`.
 
@@ -53,64 +54,148 @@ npx motionfoundry add rotating-words confetti-button flip-card
 
 ## Components
 
-### Core (24)
+### Scroll (18)
 
-**Advanced Text Animations**
+**Scroll Animations**
 
 | Component | Slug | Needs `motion` |
 | --- | --- | --- |
-| `KineticType` | `kinetic-type` | yes |
-| `GlyphCascade` | `glyph-cascade` | no |
-| `TextMorph` | `text-morph` | yes |
-| `OrbitingWords` | `orbiting-words` | no |
-| `AuroraHeadline` | `aurora-headline` | yes |
+| `SmoothScroll` | `smooth-scroll` | no |
+| `ParallaxLayers` | `parallax-layers` | no |
+| `ScrollFillText` | `scroll-fill-text` | no |
+| `HorizontalScroll` | `horizontal-scroll` | no |
+| `StickyStackCards` | `sticky-stack-cards` | no |
+| `VelocityMarquee` | `velocity-marquee` | no |
+| `ScrollZoomReveal` | `scroll-zoom-reveal` | no |
+| `ScrollTimeline` | `scroll-timeline` | no |
+| `ScrollCoverflow` | `scroll-coverflow` | no |
+| `SplitScreenScroll` | `split-screen-scroll` | no |
+| `PinnedSteps` | `pinned-steps` | no |
+| `ParallaxColumns` | `parallax-columns` | no |
+| `ScrollWordSwap` | `scroll-word-swap` | no |
+| `ScrollTiltCards` | `scroll-tilt-cards` | no |
+| `ScrollPathDraw` | `scroll-path-draw` | no |
+| `ScrollFocusList` | `scroll-focus-list` | no |
+| `SnapSections` | `snap-sections` | no |
+| `ScrollColorShift` | `scroll-color-shift` | no |
+
+
+### Shaders (13)
+
+**Gradient Backgrounds**
+
+| Component | Slug | Needs `motion` |
+| --- | --- | --- |
+| `MeshGradient` | `mesh-gradient` | no |
+| `AuroraRibbons` | `aurora-ribbons` | no |
+| `ConicGradient` | `conic-gradient` | no |
+| `LiquidGradient` | `liquid-gradient` | no |
+| `WaveGradient` | `wave-gradient` | no |
+| `GradientOrbs` | `gradient-orbs` | no |
+| `GrainGradient` | `grain-gradient` | no |
+| `SpotlightGradient` | `spotlight-gradient` | no |
+| `NebulaGradient` | `nebula-gradient` | no |
+| `PlasmaGradient` | `plasma-gradient` | no |
+| `SilkGradient` | `silk-gradient` | no |
+| `EmberGradient` | `ember-gradient` | no |
+| `EclipseGradient` | `eclipse-gradient` | no |
+
+
+### UI (50)
 
 **Interactive Buttons and Controls**
 
 | Component | Slug | Needs `motion` |
 | --- | --- | --- |
-| `MagneticButton` | `magnetic-button` | yes |
-| `VelocityButton` | `velocity-button` | no |
-| `ElasticPressButton` | `elastic-press-button` | yes |
+| `Button` | `button` | no |
+| `IconButton` | `icon-button` | no |
+| `ButtonGroup` | `button-group` | no |
+| `CopyButton` | `copy-button` | yes |
+| `ToggleGroup` | `toggle-group` | yes |
+| `LikeButton` | `like-button` | yes |
+| `SplitButton` | `split-button` | yes |
+| `HoldToConfirm` | `hold-to-confirm` | no |
 
-**High-End Animated Cards**
-
-| Component | Slug | Needs `motion` |
-| --- | --- | --- |
-| `ConstellationCard` | `constellation-card` | no |
-| `LiquidGlassCard` | `liquid-glass-card` | no |
-| `HoloTiltCard` | `holo-tilt-card` | yes |
-| `MorphingBorder` | `morphing-border` | no |
-
-**Reveals and Continuous Motion**
+**Forms and Inputs**
 
 | Component | Slug | Needs `motion` |
 | --- | --- | --- |
-| `PortalRevealPanel` | `portal-reveal-panel` | yes |
-| `InfiniteMarquee` | `infinite-marquee` | no |
-| `ScrollNarrative` | `scroll-narrative` | yes |
-| `ParallaxDepthScene` | `parallax-depth-scene` | yes |
+| `FloatingInput` | `floating-input` | yes |
+| `OtpInput` | `otp-input` | yes |
+| `PasswordInput` | `password-input` | yes |
+| `TagInput` | `tag-input` | yes |
+| `NumberStepper` | `number-stepper` | yes |
+| `RangeSlider` | `range-slider` | yes |
+| `RadioCards` | `radio-cards` | yes |
+| `SegmentedControl` | `segmented-control` | yes |
+| `Select` | `select` | yes |
+| `Combobox` | `combobox` | yes |
+| `FileDropzone` | `file-dropzone` | yes |
+| `StarRating` | `star-rating` | yes |
 
-**Animated Backgrounds and Visual Effects**
+**Overlays and Menus**
 
 | Component | Slug | Needs `motion` |
 | --- | --- | --- |
-| `FluidMeshBackground` | `fluid-mesh-background` | no |
-| `NoiseAurora` | `noise-aurora` | no |
-| `OrbitingParticles` | `orbiting-particles` | no |
-| `LiquidBlob` | `liquid-blob` | no |
+| `Dialog` | `dialog` | yes |
+| `Drawer` | `drawer` | yes |
+| `BottomSheet` | `bottom-sheet` | yes |
+| `Popover` | `popover` | yes |
+| `HoverCard` | `hover-card` | yes |
+| `Tooltip` | `tooltip` | yes |
+| `DropdownMenu` | `dropdown-menu` | yes |
+| `ContextMenu` | `context-menu` | yes |
+| `AlertDialog` | `alert-dialog` | yes |
+| `Toast` | `toast` | yes |
 
-**Developer-Interface Animations**
+**Navigation**
 
 | Component | Slug | Needs `motion` |
 | --- | --- | --- |
-| `MagneticDock` | `magnetic-dock` | yes |
-| `ScrollVelocityProgress` | `scroll-velocity-progress` | no |
-| `MorphingCommandPalette` | `morphing-command-palette` | yes |
-| `StaggeredGridReveal` | `staggered-grid-reveal` | yes |
+| `Tabs` | `tabs` | yes |
+| `Breadcrumb` | `breadcrumb` | yes |
+| `Pagination` | `pagination` | yes |
+| `Stepper` | `stepper` | yes |
+| `Accordion` | `accordion` | yes |
+| `NavigationMenu` | `navigation-menu` | yes |
+| `SidebarNav` | `sidebar-nav` | yes |
+| `Menubar` | `menubar` | yes |
+
+**Data Display**
+
+| Component | Slug | Needs `motion` |
+| --- | --- | --- |
+| `AvatarGroup` | `avatar-group` | no |
+| `Badge` | `badge` | yes |
+| `ProgressRing` | `progress-ring` | no |
+| `StatCard` | `stat-card` | no |
+| `BarChart` | `bar-chart` | no |
+| `Sparkline` | `sparkline` | no |
+| `TreeView` | `tree-view` | yes |
+| `DataTable` | `data-table` | yes |
+| `ActivityFeed` | `activity-feed` | yes |
+| `ContributionHeatmap` | `contribution-heatmap` | no |
+| `ImageCompare` | `image-compare` | no |
+| `Carousel` | `carousel` | yes |
 
 
-### Studio Kit (24)
+### Text FX (8) — in the package, not listed on the site
+
+**Advanced Text Animations**
+
+| Component | Slug | Needs `motion` |
+| --- | --- | --- |
+| `SplitText` | `split-text` | no |
+| `MaskWipeText` | `mask-wipe-text` | no |
+| `ElasticLetters` | `elastic-letters` | no |
+| `TextOnPath` | `text-on-path` | no |
+| `RollingText` | `rolling-text` | no |
+| `MarkerHighlight` | `marker-highlight` | no |
+| `ScatterText` | `scatter-text` | no |
+| `CubeFlipWords` | `cube-flip-words` | no |
+
+
+### Studio Kit (24) — in the package, not listed on the site
 
 **Advanced Text Animations**
 
@@ -167,52 +252,61 @@ npx motionfoundry add rotating-words confetti-button flip-card
 | `NotificationStack` | `notification-stack` | yes |
 
 
-### Gradients (8)
-
-**Gradient Backgrounds**
-
-| Component | Slug | Needs `motion` |
-| --- | --- | --- |
-| `MeshGradient` | `mesh-gradient` | no |
-| `AuroraRibbons` | `aurora-ribbons` | no |
-| `ConicGradient` | `conic-gradient` | no |
-| `LiquidGradient` | `liquid-gradient` | no |
-| `WaveGradient` | `wave-gradient` | no |
-| `GradientOrbs` | `gradient-orbs` | no |
-| `GrainGradient` | `grain-gradient` | no |
-| `SpotlightGradient` | `spotlight-gradient` | no |
-
-
-### Text FX (8)
+### Core (24) — in the package, not listed on the site
 
 **Advanced Text Animations**
 
 | Component | Slug | Needs `motion` |
 | --- | --- | --- |
-| `SplitText` | `split-text` | no |
-| `MaskWipeText` | `mask-wipe-text` | no |
-| `ElasticLetters` | `elastic-letters` | no |
-| `TextOnPath` | `text-on-path` | no |
-| `RollingText` | `rolling-text` | no |
-| `MarkerHighlight` | `marker-highlight` | no |
-| `ScatterText` | `scatter-text` | no |
-| `CubeFlipWords` | `cube-flip-words` | no |
+| `KineticType` | `kinetic-type` | yes |
+| `GlyphCascade` | `glyph-cascade` | no |
+| `TextMorph` | `text-morph` | yes |
+| `OrbitingWords` | `orbiting-words` | no |
+| `AuroraHeadline` | `aurora-headline` | yes |
 
-
-### Scroll (8)
-
-**Scroll Animations**
+**Interactive Buttons and Controls**
 
 | Component | Slug | Needs `motion` |
 | --- | --- | --- |
-| `SmoothScroll` | `smooth-scroll` | no |
-| `ParallaxLayers` | `parallax-layers` | no |
-| `ScrollFillText` | `scroll-fill-text` | no |
-| `HorizontalScroll` | `horizontal-scroll` | no |
-| `StickyStackCards` | `sticky-stack-cards` | no |
-| `VelocityMarquee` | `velocity-marquee` | no |
-| `ScrollZoomReveal` | `scroll-zoom-reveal` | no |
-| `ScrollTimeline` | `scroll-timeline` | no |
+| `MagneticButton` | `magnetic-button` | yes |
+| `VelocityButton` | `velocity-button` | no |
+| `ElasticPressButton` | `elastic-press-button` | yes |
+
+**High-End Animated Cards**
+
+| Component | Slug | Needs `motion` |
+| --- | --- | --- |
+| `ConstellationCard` | `constellation-card` | no |
+| `LiquidGlassCard` | `liquid-glass-card` | no |
+| `HoloTiltCard` | `holo-tilt-card` | yes |
+| `MorphingBorder` | `morphing-border` | no |
+
+**Reveals and Continuous Motion**
+
+| Component | Slug | Needs `motion` |
+| --- | --- | --- |
+| `PortalRevealPanel` | `portal-reveal-panel` | yes |
+| `InfiniteMarquee` | `infinite-marquee` | no |
+| `ScrollNarrative` | `scroll-narrative` | yes |
+| `ParallaxDepthScene` | `parallax-depth-scene` | yes |
+
+**Animated Backgrounds and Visual Effects**
+
+| Component | Slug | Needs `motion` |
+| --- | --- | --- |
+| `FluidMeshBackground` | `fluid-mesh-background` | no |
+| `NoiseAurora` | `noise-aurora` | no |
+| `OrbitingParticles` | `orbiting-particles` | no |
+| `LiquidBlob` | `liquid-blob` | no |
+
+**Developer-Interface Animations**
+
+| Component | Slug | Needs `motion` |
+| --- | --- | --- |
+| `MagneticDock` | `magnetic-dock` | yes |
+| `ScrollVelocityProgress` | `scroll-velocity-progress` | no |
+| `MorphingCommandPalette` | `morphing-command-palette` | yes |
+| `StaggeredGridReveal` | `staggered-grid-reveal` | yes |
 
 Full prop tables, live playgrounds, and accessibility notes for every component are in the documentation site (`apps/docs`, run `pnpm dev` from the repository root).
 

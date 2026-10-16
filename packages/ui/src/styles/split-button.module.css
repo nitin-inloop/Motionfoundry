@@ -1,0 +1,206 @@
+.root {
+  --mf-sb-h: 2.375rem;
+  position: relative;
+  display: inline-flex;
+  align-items: stretch;
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+  color: var(--mf-fg, #f4f4f6);
+}
+
+.sm {
+  --mf-sb-h: 2rem;
+  font-size: 0.8125rem;
+}
+
+.md {
+  --mf-sb-h: 2.375rem;
+}
+
+.lg {
+  --mf-sb-h: 2.75rem;
+  font-size: 0.9375rem;
+}
+
+.main,
+.trigger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: var(--mf-sb-h);
+  border: 1px solid transparent;
+  font: inherit;
+  font-weight: 500;
+  white-space: nowrap;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: background-color 160ms ease, border-color 160ms ease, color 160ms ease, transform 160ms ease;
+}
+
+.main {
+  padding: 0 0.875rem 0 1rem;
+  border-radius: 0.5rem 0 0 0.5rem;
+  border-right-width: 0;
+}
+
+.trigger {
+  width: calc(var(--mf-sb-h) - 0.25rem);
+  padding: 0;
+  border-radius: 0 0.5rem 0.5rem 0;
+  border-left-width: 0;
+}
+
+.main:active:not(:disabled),
+.trigger:active:not(:disabled) {
+  transform: scale(0.97);
+}
+
+.main:focus-visible,
+.trigger:focus-visible {
+  position: relative;
+  z-index: 1;
+  outline: 2px solid var(--mf-fg, #e4e4e7);
+  outline-offset: 2px;
+}
+
+.main:disabled,
+.trigger:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.divider {
+  width: 1px;
+  align-self: stretch;
+}
+
+.chevron {
+  transition: transform 220ms cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.trigger[aria-expanded="true"] .chevron {
+  transform: rotate(180deg);
+}
+
+/* Variants */
+.default .main,
+.default .trigger {
+  background-color: var(--mf-sb-accent, #6366f1);
+  border-color: var(--mf-sb-accent, #6366f1);
+  color: #ffffff;
+}
+
+.default .main:hover:not(:disabled),
+.default .trigger:hover:not(:disabled),
+.default .trigger[aria-expanded="true"] {
+  background-color: color-mix(in srgb, var(--mf-sb-accent, #6366f1) 86%, #ffffff);
+}
+
+.default .divider {
+  background-color: color-mix(in srgb, #ffffff 30%, var(--mf-sb-accent, #6366f1));
+}
+
+.secondary .main,
+.secondary .trigger {
+  background-color: var(--mf-surface-raised, #1b1b22);
+  color: var(--mf-fg, #f4f4f6);
+}
+
+.secondary .main:hover:not(:disabled),
+.secondary .trigger:hover:not(:disabled),
+.secondary .trigger[aria-expanded="true"] {
+  background-color: color-mix(in srgb, var(--mf-surface-raised, #1b1b22) 82%, var(--mf-fg, #f4f4f6));
+}
+
+.secondary .divider {
+  background-color: var(--mf-border, #2e2e38);
+}
+
+.outline .main,
+.outline .trigger {
+  background-color: var(--mf-surface, #141419);
+  border-color: var(--mf-border, #2e2e38);
+  color: var(--mf-fg, #f4f4f6);
+}
+
+.outline .main:hover:not(:disabled),
+.outline .trigger:hover:not(:disabled),
+.outline .trigger[aria-expanded="true"] {
+  background-color: var(--mf-surface-raised, #1b1b22);
+}
+
+.outline .divider {
+  background-color: var(--mf-border, #2e2e38);
+}
+
+/* Menu */
+.menu {
+  position: absolute;
+  z-index: 50;
+  min-width: max(100%, 13rem);
+  padding: 0.3125rem;
+  border-radius: 0.625rem;
+  border: 1px solid var(--mf-border, #2e2e38);
+  background-color: var(--mf-surface, #141419);
+  color: var(--mf-fg, #f4f4f6);
+  box-shadow: 0 16px 40px -12px rgba(0, 0, 0, 0.5), 0 2px 6px rgba(0, 0, 0, 0.15);
+  outline: none;
+}
+
+.menu[data-side="bottom"] {
+  top: calc(100% + 0.375rem);
+}
+
+.menu[data-side="top"] {
+  bottom: calc(100% + 0.375rem);
+}
+
+.menu[data-align="end"] {
+  right: 0;
+}
+
+.menu[data-align="start"] {
+  left: 0;
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  min-height: 2.125rem;
+  padding: 0 0.625rem;
+  border: 0;
+  border-radius: 0.375rem;
+  background: transparent;
+  color: var(--mf-fg, #f4f4f6);
+  font: inherit;
+  font-size: 0.875rem;
+  text-align: left;
+  white-space: nowrap;
+  cursor: pointer;
+  outline: none;
+  transition: background-color 120ms ease;
+}
+
+.item:focus,
+.item:hover {
+  background-color: var(--mf-surface-raised, #1b1b22);
+}
+
+.item:focus-visible {
+  box-shadow: inset 0 0 0 1px var(--mf-border-strong, #52525b);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .main,
+  .trigger,
+  .chevron,
+  .item {
+    transition: none;
+  }
+
+  .main:active:not(:disabled),
+  .trigger:active:not(:disabled) {
+    transform: none;
+  }
+}

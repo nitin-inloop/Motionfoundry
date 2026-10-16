@@ -1,0 +1,210 @@
+.root {
+  --mf-bc-accent: #6366f1;
+  --mf-bc-stagger: 60ms;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  width: 100%;
+  max-width: 42rem;
+  margin: 0;
+  padding: 1.25rem 1.25rem 1rem;
+  border: 1px solid var(--mf-border, #2e2e38);
+  border-radius: 0.75rem;
+  background-color: var(--mf-surface, #141419);
+  color: var(--mf-fg, #f4f4f6);
+  box-sizing: border-box;
+}
+
+.head {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.title {
+  font-size: 0.9375rem;
+  font-weight: 600;
+  line-height: 1.3;
+  color: var(--mf-fg, #f4f4f6);
+}
+
+.desc {
+  font-size: 0.8125rem;
+  color: var(--mf-muted, #a1a1aa);
+}
+
+.plot {
+  position: relative;
+  width: 100%;
+  border-radius: 0.5rem;
+  outline: none;
+}
+
+.plot:focus-visible {
+  outline: 2px solid var(--mf-fg, #e4e4e7);
+  outline-offset: 4px;
+}
+
+.svg {
+  display: block;
+  overflow: visible;
+  font-family: inherit;
+}
+
+.grid {
+  stroke: var(--mf-border, #2e2e38);
+  stroke-dasharray: 3 4;
+  stroke-width: 1;
+}
+
+.axis {
+  stroke: var(--mf-border-strong, #52525b);
+  stroke-width: 1;
+}
+
+.tick,
+.label {
+  fill: var(--mf-muted, #a1a1aa);
+  font-size: 11px;
+}
+
+.label {
+  fill: var(--mf-subtle, #71717a);
+  font-size: 11.5px;
+}
+
+.hit {
+  fill: transparent;
+}
+
+.bar {
+  fill: var(--mf-bc-accent);
+  transform-box: fill-box;
+  transform-origin: 50% 100%;
+  pointer-events: none;
+  transition: opacity 180ms ease, filter 180ms ease;
+  animation: mf-bc-grow-y 720ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation-delay: calc(var(--i, 0) * var(--mf-bc-stagger));
+}
+
+.root[data-orientation="horizontal"] .bar {
+  transform-origin: 0% 50%;
+  animation-name: mf-bc-grow-x;
+}
+
+.bar[data-dim] {
+  opacity: 0.4;
+}
+
+.value {
+  fill: var(--mf-fg, #f4f4f6);
+  font-size: 11px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  pointer-events: none;
+  animation: mf-bc-fade 400ms ease both;
+  animation-delay: calc(var(--i, 0) * var(--mf-bc-stagger) + 420ms);
+}
+
+.tooltip {
+  position: absolute;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
+  min-width: 5.5rem;
+  padding: 0.4375rem 0.625rem;
+  border: 1px solid var(--mf-border, #2e2e38);
+  border-radius: 0.5rem;
+  background-color: var(--mf-surface-raised, #1b1b22);
+  box-shadow: 0 8px 24px rgb(0 0 0 / 0.28);
+  font-size: 0.75rem;
+  pointer-events: none;
+  white-space: nowrap;
+  animation: mf-bc-pop 160ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.tooltip[data-side="top"] {
+  transform: translate(-50%, calc(-100% - 1.75rem));
+}
+
+.tooltip[data-side="right"] {
+  transform: translate(3.5rem, -50%);
+}
+
+.tipLabel {
+  color: var(--mf-muted, #a1a1aa);
+}
+
+.tipValue {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  color: var(--mf-fg, #f4f4f6);
+}
+
+.swatch {
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 2px;
+  background-color: var(--mf-bc-accent);
+}
+
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+@keyframes mf-bc-grow-y {
+  from {
+    transform: scaleY(0);
+  }
+  to {
+    transform: scaleY(1);
+  }
+}
+
+@keyframes mf-bc-grow-x {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+@keyframes mf-bc-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes mf-bc-pop {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bar,
+  .value,
+  .tooltip {
+    animation: none;
+    transition: none;
+  }
+}

@@ -1,0 +1,210 @@
+{
+  "slug": "contribution-heatmap",
+  "name": "ContributionHeatmap",
+  "category": "Data Display",
+  "collection": "ui",
+  "featured": false,
+  "addedAt": "2026-10-16",
+  "version": "2.3.0",
+  "requiresMotion": false,
+  "dependencies": [
+    "react"
+  ],
+  "description": "A GitHub-style calendar heatmap whose cells pop in along a diagonal wave, shaded in five intensity levels mixed from a single accent color. Includes month and weekday labels, a Less/More legend and a hover/keyboard tooltip, driven by seeded deterministic demo data or your own daily counts.",
+  "tags": [
+    "heatmap",
+    "calendar",
+    "contributions",
+    "activity",
+    "github",
+    "ui"
+  ],
+  "a11yNotes": "The cell grid is one focusable role=\"img\" whose aria-label states the total and the date range. Arrow keys move day by day (Up/Down) and week by week (Left/Right), Home/End jump to the first/last day; each move shows the tooltip and announces \"n contributions on Day, Mon d, yyyy\" in a polite live region, Escape clears. Labels and legend are aria-hidden decoration. Focus is shown with a 2px outline. Under prefers-reduced-motion the cells appear without the pop-in.",
+  "defaultProps": {
+    "weeks": 40,
+    "endDate": "2026-10-16",
+    "seed": 7,
+    "accentColor": "#6366f1",
+    "unit": "contributions",
+    "cellSize": 12,
+    "cellGap": 3,
+    "cellRadius": 3,
+    "showLabels": true,
+    "showLegend": true,
+    "stagger": 12
+  },
+  "controls": [
+    {
+      "prop": "weeks",
+      "label": "Weeks",
+      "type": "range",
+      "min": 8,
+      "max": 53,
+      "step": 1
+    },
+    {
+      "prop": "endDate",
+      "label": "End date (YYYY-MM-DD)",
+      "type": "text"
+    },
+    {
+      "prop": "seed",
+      "label": "Data seed",
+      "type": "range",
+      "min": 1,
+      "max": 50,
+      "step": 1
+    },
+    {
+      "prop": "accentColor",
+      "label": "Accent color",
+      "type": "color"
+    },
+    {
+      "prop": "unit",
+      "label": "Unit",
+      "type": "text"
+    },
+    {
+      "prop": "cellSize",
+      "label": "Cell size",
+      "type": "range",
+      "min": 8,
+      "max": 20,
+      "step": 1
+    },
+    {
+      "prop": "cellGap",
+      "label": "Cell gap",
+      "type": "range",
+      "min": 1,
+      "max": 6,
+      "step": 1
+    },
+    {
+      "prop": "cellRadius",
+      "label": "Cell radius",
+      "type": "range",
+      "min": 0,
+      "max": 10,
+      "step": 1
+    },
+    {
+      "prop": "showLabels",
+      "label": "Month/day labels",
+      "type": "boolean"
+    },
+    {
+      "prop": "showLegend",
+      "label": "Legend",
+      "type": "boolean"
+    },
+    {
+      "prop": "stagger",
+      "label": "Stagger (ms)",
+      "type": "range",
+      "min": 0,
+      "max": 40,
+      "step": 1
+    }
+  ],
+  "propsApi": [
+    {
+      "name": "data",
+      "type": "number[]",
+      "default": "undefined",
+      "description": "Explicit daily counts, oldest first, aligned so the last entry falls on endDate. Overrides the generated demo data."
+    },
+    {
+      "name": "weeks",
+      "type": "number",
+      "default": "40",
+      "description": "Number of week columns (1–60)."
+    },
+    {
+      "name": "endDate",
+      "type": "string",
+      "default": "'2026-10-16'",
+      "description": "Last day of the calendar as YYYY-MM-DD (UTC); a fixed date keeps server and client output identical."
+    },
+    {
+      "name": "seed",
+      "type": "number",
+      "default": "7",
+      "description": "Seed for the deterministic demo data."
+    },
+    {
+      "name": "accentColor",
+      "type": "string",
+      "default": "'#6366f1'",
+      "description": "Base color; levels 1–4 are color-mixed from it over the empty-cell surface."
+    },
+    {
+      "name": "unit",
+      "type": "string",
+      "default": "'contributions'",
+      "description": "Noun used in the header, tooltip and announcements."
+    },
+    {
+      "name": "cellSize",
+      "type": "number",
+      "default": "12",
+      "description": "Cell size in px."
+    },
+    {
+      "name": "cellGap",
+      "type": "number",
+      "default": "3",
+      "description": "Gap between cells in px."
+    },
+    {
+      "name": "cellRadius",
+      "type": "number",
+      "default": "3",
+      "description": "Cell corner radius in px."
+    },
+    {
+      "name": "showLabels",
+      "type": "boolean",
+      "default": "true",
+      "description": "Show month labels above and Mon/Wed/Fri labels to the left."
+    },
+    {
+      "name": "showLegend",
+      "type": "boolean",
+      "default": "true",
+      "description": "Show the Less/More intensity legend."
+    },
+    {
+      "name": "stagger",
+      "type": "number",
+      "default": "12",
+      "description": "Per-diagonal delay of the cell pop-in, in ms."
+    },
+    {
+      "name": "className",
+      "type": "string",
+      "default": "''",
+      "description": "Additional class merged onto the root element."
+    },
+    {
+      "name": "style",
+      "type": "React.CSSProperties",
+      "default": "undefined",
+      "description": "Inline styles merged onto the root element."
+    }
+  ],
+  "files": [
+    {
+      "path": "components/ui/contribution-heatmap.tsx",
+      "type": "registry:component",
+      "content": "\"use client\";\n\nimport * as React from \"react\";\nimport styles from \"../styles/contribution-heatmap.module.css\";\n\nexport interface ContributionHeatmapProps {\n  /** Explicit daily counts, oldest first, ending on `endDate` (overrides the generated demo data) */\n  data?: number[];\n  /** Number of week columns to show */\n  weeks?: number;\n  /** Last day of the calendar as YYYY-MM-DD */\n  endDate?: string;\n  /** Seed for the deterministic demo data */\n  seed?: number;\n  /** Base color; the four active levels are mixed from it */\n  accentColor?: string;\n  /** Noun used in the header and tooltip */\n  unit?: string;\n  /** Cell size in px */\n  cellSize?: number;\n  /** Gap between cells in px */\n  cellGap?: number;\n  /** Cell corner radius in px */\n  cellRadius?: number;\n  /** Show month and weekday labels */\n  showLabels?: boolean;\n  /** Show the Less/More legend */\n  showLegend?: boolean;\n  /** Per-diagonal delay of the cell reveal in ms */\n  stagger?: number;\n  /** Optional className merged onto the root */\n  className?: string;\n  /** Optional inline styles merged onto the root */\n  style?: React.CSSProperties;\n}\n\nconst MONTHS = [\"Jan\", \"Feb\", \"Mar\", \"Apr\", \"May\", \"Jun\", \"Jul\", \"Aug\", \"Sep\", \"Oct\", \"Nov\", \"Dec\"];\nconst DAYS = [\"Sun\", \"Mon\", \"Tue\", \"Wed\", \"Thu\", \"Fri\", \"Sat\"];\nconst DAY_MS = 86400000;\n\nfunction rand(n: number) {\n  const x = Math.sin(n * 12.9898 + 78.233) * 43758.5453;\n  return x - Math.floor(x);\n}\n\nfunction parseDate(s: string) {\n  const m = /^(\\d{4})-(\\d{2})-(\\d{2})$/.exec(s.trim());\n  return m ? Date.UTC(+m[1], +m[2] - 1, +m[3]) : Date.UTC(2026, 9, 16);\n}\n\nconst fmtDate = (t: number) => {\n  const d = new Date(t);\n  return `${DAYS[d.getUTCDay()]}, ${MONTHS[d.getUTCMonth()]} ${d.getUTCDate()}, ${d.getUTCFullYear()}`;\n};\n\ninterface Cell {\n  t: number;\n  count: number;\n  level: number;\n  col: number;\n  row: number;\n}\n\nexport function ContributionHeatmap({\n  data,\n  weeks = 40,\n  endDate = \"2026-10-16\",\n  seed = 7,\n  accentColor = \"#6366f1\",\n  unit = \"contributions\",\n  cellSize = 12,\n  cellGap = 3,\n  cellRadius = 3,\n  showLabels = true,\n  showLegend = true,\n  stagger = 12,\n  className = \"\",\n  style,\n}: ContributionHeatmapProps) {\n  const [active, setActive] = React.useState<number | null>(null);\n  const [kbd, setKbd] = React.useState(false);\n  const cols = Math.max(1, Math.min(60, Math.round(weeks)));\n\n  const { cells, total, monthLabels } = React.useMemo(() => {\n    const end = parseDate(endDate);\n    const endRow = new Date(end).getUTCDay();\n    const start = end - ((cols - 1) * 7 + endRow) * DAY_MS;\n    const days = (cols - 1) * 7 + endRow + 1;\n    const raw: number[] = [];\n    for (let i = 0; i < days; i++) {\n      if (data) {\n        raw.push(Math.max(0, data[data.length - days + i] ?? 0));\n        continue;\n      }\n      const dow = new Date(start + i * DAY_MS).getUTCDay();\n      const weekend = dow === 0 || dow === 6;\n      const r = rand(i * 1.37 + seed * 101.3);\n      const burst = rand(Math.floor(i / 9) + seed * 7.1) > 0.7 ? 1.8 : 1;\n      const base = (weekend ? 0.35 : 1) * (0.6 + (i / days) * 0.8) * burst;\n      raw.push(r < (weekend ? 0.55 : 0.18) ? 0 : Math.round(r * 9 * base));\n    }\n    const max = Math.max(1, ...raw);\n    const out: Cell[] = raw.map((count, i) => ({\n      t: start + i * DAY_MS,\n      count,\n      level: count === 0 ? 0 : Math.min(4, Math.ceil((count / max) * 4)),\n      col: Math.floor(i / 7),\n      row: i % 7,\n    }));\n    const labels: Array<{ col: number; text: string }> = [];\n    let prev = -1;\n    for (let c = 0; c < cols; c++) {\n      const mo = new Date(start + c * 7 * DAY_MS).getUTCMonth();\n      if (mo !== prev && (labels.length === 0 || c - labels[labels.length - 1].col > 2)) labels.push({ col: c, text: MONTHS[mo] });\n      prev = mo;\n    }\n    return { cells: out, total: raw.reduce((a, b) => a + b, 0), monthLabels: labels };\n  }, [data, cols, endDate, seed]);\n\n  const step = cellSize + cellGap;\n  const label = (c: Cell) => `${c.count === 0 ? \"No\" : c.count} ${unit} on ${fmtDate(c.t)}`;\n  const cur = active !== null ? cells[active] : null;\n\n  const onKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {\n    const i = active ?? cells.length - 1;\n    const moves: Record<string, number> = { ArrowUp: -1, ArrowDown: 1, ArrowLeft: -7, ArrowRight: 7 };\n    let next = -1;\n    if (e.key in moves) next = i + moves[e.key];\n    else if (e.key === \"Home\") next = 0;\n    else if (e.key === \"End\") next = cells.length - 1;\n    else if (e.key === \"Escape\") return setActive(null);\n    else return;\n    e.preventDefault();\n    if (next < 0 || next >= cells.length) return;\n    setKbd(true);\n    setActive(next);\n  };\n\n  return (\n    <div\n      className={`${styles.root} ${className}`.trim()}\n      style={\n        {\n          \"--mf-ch-accent\": accentColor,\n          \"--mf-ch-size\": `${cellSize}px`,\n          \"--mf-ch-gap\": `${cellGap}px`,\n          \"--mf-ch-radius\": `${cellRadius}px`,\n          ...style,\n        } as React.CSSProperties\n      }\n    >\n      <div className={styles.header}>\n        <span className={styles.total}>\n          {total.toLocaleString(\"en-US\")} {unit}\n        </span>\n        <span className={styles.range}>in the last {cols} weeks</span>\n      </div>\n      <div className={styles.scroller}>\n        <div className={styles.layout} data-labels={showLabels ? \"\" : undefined}>\n          {showLabels && (\n            <div className={styles.months} aria-hidden=\"true\">\n              {monthLabels.map((m) => (\n                <span key={`${m.col}-${m.text}`} style={{ left: m.col * step }}>\n                  {m.text}\n                </span>\n              ))}\n            </div>\n          )}\n          {showLabels && (\n            <div className={styles.days} aria-hidden=\"true\">\n              {DAYS.map((d, i) => (\n                <span key={d}>{i % 2 === 1 ? d : \"\"}</span>\n              ))}\n            </div>\n          )}\n          <div\n            className={styles.grid}\n            tabIndex={0}\n            role=\"img\"\n            aria-label={`${total.toLocaleString(\"en-US\")} ${unit} over ${cols} weeks ending ${fmtDate(parseDate(endDate))}. Use arrow keys to read individual days.`}\n            onKeyDown={onKeyDown}\n            onBlur={() => kbd && setActive(null)}\n            onPointerLeave={() => setActive(null)}\n          >\n            {cells.map((c, i) => (\n              <span\n                key={c.t}\n                className={styles.cell}\n                data-level={c.level}\n                data-active={active === i ? \"\" : undefined}\n                style={{ gridColumn: c.col + 1, gridRow: c.row + 1, animationDelay: `${(c.col + c.row) * stagger}ms` } as React.CSSProperties}\n                onPointerEnter={() => {\n                  setKbd(false);\n                  setActive(i);\n                }}\n              />\n            ))}\n            {cur && (\n              <div\n                className={styles.tooltip}\n                aria-hidden=\"true\"\n                style={{ left: cur.col * step + cellSize / 2, top: cur.row * step }}\n                data-flip={cur.col < 6 ? \"start\" : cur.col > cols - 7 ? \"end\" : undefined}\n                data-below={cur.row < 3 ? \"\" : undefined}\n              >\n                <strong>{cur.count === 0 ? \"No\" : cur.count} {unit}</strong> on {fmtDate(cur.t)}\n              </div>\n            )}\n          </div>\n        </div>\n      </div>\n      {showLegend && (\n        <div className={styles.legend} aria-hidden=\"true\">\n          <span>Less</span>\n          {[0, 1, 2, 3, 4].map((l) => (\n            <span key={l} className={styles.swatch} data-level={l} />\n          ))}\n          <span>More</span>\n        </div>\n      )}\n      <span className={styles.srOnly} aria-live=\"polite\">\n        {kbd && cur ? label(cur) : \"\"}\n      </span>\n    </div>\n  );\n}\n"
+    },
+    {
+      "path": "components/styles/contribution-heatmap.module.css",
+      "type": "registry:style",
+      "content": ".root {\n  --mf-ch-accent: #6366f1;\n  --mf-ch-size: 12px;\n  --mf-ch-gap: 3px;\n  --mf-ch-radius: 3px;\n  --mf-ch-l0: var(--mf-surface-raised, #1b1b22);\n  --mf-ch-l1: color-mix(in srgb, var(--mf-ch-accent) 28%, var(--mf-ch-l0));\n  --mf-ch-l2: color-mix(in srgb, var(--mf-ch-accent) 52%, var(--mf-ch-l0));\n  --mf-ch-l3: color-mix(in srgb, var(--mf-ch-accent) 76%, var(--mf-ch-l0));\n  --mf-ch-l4: var(--mf-ch-accent);\n  position: relative;\n  display: inline-flex;\n  flex-direction: column;\n  gap: 0.75rem;\n  max-width: 100%;\n  padding: 1.125rem 1.25rem 1rem;\n  border: 1px solid var(--mf-border, #2e2e38);\n  border-radius: 0.75rem;\n  background-color: var(--mf-surface, #141419);\n  color: var(--mf-fg, #f4f4f6);\n  box-sizing: border-box;\n}\n\n.header {\n  display: flex;\n  align-items: baseline;\n  gap: 0.375rem;\n  font-size: 0.875rem;\n}\n\n.total {\n  font-weight: 600;\n}\n\n.range {\n  color: var(--mf-muted, #a1a1aa);\n}\n\n.scroller {\n  max-width: 100%;\n  overflow-x: auto;\n  overflow-y: visible;\n  padding-top: 0.25rem;\n  margin-top: -0.25rem;\n}\n\n.layout {\n  display: grid;\n  grid-template-columns: auto auto;\n  grid-template-rows: auto auto;\n  column-gap: 0.5rem;\n  row-gap: 0.375rem;\n  width: max-content;\n}\n\n.layout:not([data-labels]) {\n  display: block;\n}\n\n.months {\n  position: relative;\n  grid-column: 2;\n  height: 0.875rem;\n  font-size: 0.6875rem;\n  color: var(--mf-muted, #a1a1aa);\n}\n\n.months span {\n  position: absolute;\n  top: 0;\n  white-space: nowrap;\n}\n\n.days {\n  grid-column: 1;\n  grid-row: 2;\n  display: grid;\n  grid-template-rows: repeat(7, var(--mf-ch-size));\n  row-gap: var(--mf-ch-gap);\n  font-size: 0.625rem;\n  line-height: var(--mf-ch-size);\n  color: var(--mf-subtle, #71717a);\n}\n\n.grid {\n  position: relative;\n  grid-column: 2;\n  grid-row: 2;\n  display: grid;\n  grid-template-rows: repeat(7, var(--mf-ch-size));\n  grid-auto-columns: var(--mf-ch-size);\n  gap: var(--mf-ch-gap);\n  border-radius: 0.25rem;\n  outline: none;\n}\n\n.grid:focus-visible {\n  outline: 2px solid var(--mf-fg, #e4e4e7);\n  outline-offset: 4px;\n}\n\n.cell,\n.swatch {\n  width: var(--mf-ch-size);\n  height: var(--mf-ch-size);\n  border-radius: var(--mf-ch-radius);\n  background-color: var(--mf-ch-l0);\n  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--mf-fg, #f4f4f6) 5%, transparent);\n}\n\n.cell {\n  animation: mf-ch-in 420ms cubic-bezier(0.34, 1.56, 0.64, 1) both;\n  transition: transform 140ms ease, box-shadow 140ms ease;\n}\n\n.cell[data-level=\"1\"],\n.swatch[data-level=\"1\"] {\n  background-color: var(--mf-ch-l1);\n}\n\n.cell[data-level=\"2\"],\n.swatch[data-level=\"2\"] {\n  background-color: var(--mf-ch-l2);\n}\n\n.cell[data-level=\"3\"],\n.swatch[data-level=\"3\"] {\n  background-color: var(--mf-ch-l3);\n}\n\n.cell[data-level=\"4\"],\n.swatch[data-level=\"4\"] {\n  background-color: var(--mf-ch-l4);\n}\n\n.cell[data-active] {\n  transform: scale(1.25);\n  box-shadow: 0 0 0 1.5px var(--mf-fg, #f4f4f6);\n  position: relative;\n  z-index: 1;\n}\n\n.tooltip {\n  position: absolute;\n  z-index: 3;\n  padding: 0.375rem 0.5625rem;\n  border: 1px solid var(--mf-border, #2e2e38);\n  border-radius: 0.375rem;\n  background-color: var(--mf-surface-raised, #1b1b22);\n  box-shadow: 0 8px 24px rgb(0 0 0 / 0.28);\n  font-size: 0.75rem;\n  color: var(--mf-muted, #a1a1aa);\n  white-space: nowrap;\n  pointer-events: none;\n  transform: translateX(-50%);\n  translate: 0 calc(-100% - 6px);\n  animation: mf-ch-fade 140ms ease both;\n}\n\n.tooltip[data-flip=\"start\"] {\n  transform: translateX(-12px);\n}\n\n.tooltip[data-flip=\"end\"] {\n  transform: translateX(calc(-100% + 12px));\n}\n\n.tooltip[data-below] {\n  translate: 0 calc(var(--mf-ch-size) + 6px);\n}\n\n.tooltip strong {\n  color: var(--mf-fg, #f4f4f6);\n  font-weight: 600;\n}\n\n.legend {\n  display: flex;\n  align-items: center;\n  justify-content: flex-end;\n  gap: 0.25rem;\n  font-size: 0.6875rem;\n  color: var(--mf-muted, #a1a1aa);\n}\n\n.legend span:first-child {\n  margin-right: 0.25rem;\n}\n\n.legend span:last-child {\n  margin-left: 0.25rem;\n}\n\n.srOnly {\n  position: absolute;\n  width: 1px;\n  height: 1px;\n  padding: 0;\n  margin: -1px;\n  overflow: hidden;\n  clip: rect(0 0 0 0);\n  white-space: nowrap;\n  border: 0;\n}\n\n@keyframes mf-ch-in {\n  from {\n    opacity: 0;\n    scale: 0.3;\n  }\n  to {\n    opacity: 1;\n    scale: 1;\n  }\n}\n\n@keyframes mf-ch-fade {\n  from {\n    opacity: 0;\n  }\n  to {\n    opacity: 1;\n  }\n}\n\n@media (prefers-reduced-motion: reduce) {\n  .cell,\n  .tooltip {\n    animation: none;\n    transition: none;\n  }\n}\n"
+    }
+  ],
+  "tailwindExample": "\"use client\";\n\nconst rand = (n: number) => { const x = Math.sin(n * 12.9898 + 78.233) * 43758.5453; return x - Math.floor(x); };\nconst days = Array.from({ length: 30 * 7 }, (_, i) => { const r = rand(i + 7); return r < 0.25 ? 0 : Math.ceil(r * 4); });\nconst shades = [\"bg-zinc-800\", \"bg-indigo-500/30\", \"bg-indigo-500/55\", \"bg-indigo-500/80\", \"bg-indigo-500\"];\n\nexport function ContributionHeatmapTailwind() {\n  return (\n    <div className=\"inline-flex flex-col gap-3 rounded-xl border border-zinc-800 bg-zinc-950 p-5 text-zinc-100\">\n      <p className=\"text-sm\"><span className=\"font-semibold\">Activity</span> <span className=\"text-zinc-400\">in the last 30 weeks</span></p>\n      <div role=\"img\" aria-label=\"Activity heatmap for the last 30 weeks\" className=\"grid grid-flow-col grid-rows-7 gap-[3px]\">\n        {days.map((l, i) => (\n          <span key={i} title={`${l} contributions`} style={{ animationDelay: `${(Math.floor(i / 7) + (i % 7)) * 12}ms` }} className={`size-3 rounded-[3px] ${shades[l]} animate-[pop_.4s_cubic-bezier(.34,1.56,.64,1)_both] hover:ring-1 hover:ring-zinc-100 motion-reduce:animate-none`} />\n        ))}\n      </div>\n      <div aria-hidden=\"true\" className=\"flex items-center justify-end gap-1 text-[11px] text-zinc-400\">Less {shades.map((s) => <span key={s} className={`size-3 rounded-[3px] ${s}`} />)} More</div>\n      <style>{`@keyframes pop{from{opacity:0;scale:.3}}`}</style>\n    </div>\n  );\n}"
+}

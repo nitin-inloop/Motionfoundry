@@ -1,0 +1,203 @@
+{
+  "slug": "otp-input",
+  "name": "OtpInput",
+  "category": "Forms and Inputs",
+  "collection": "ui",
+  "featured": false,
+  "addedAt": "2026-10-16",
+  "version": "2.3.0",
+  "requiresMotion": true,
+  "dependencies": [
+    "motion",
+    "react"
+  ],
+  "description": "A one-time-code field rendered as separate slots: characters spring into place as you type, the active slot glows with a blinking caret, pasting fills every slot at once, and a completed code flashes green.",
+  "tags": [
+    "otp",
+    "pin",
+    "verification code",
+    "2fa",
+    "input",
+    "form",
+    "ui"
+  ],
+  "a11yNotes": "Backed by a single native <input> (autocomplete=\"one-time-code\", numeric inputMode) labelled by a visible <label> and described by a screen-reader hint with the expected length, so autofill, paste and screen readers see one field instead of N. The visual slots are aria-hidden. Typing auto-advances, Backspace steps back, Left/Right/Home/End move between slots and typing over a filled slot replaces it. invalid sets aria-invalid. Under prefers-reduced-motion characters fade without springing, and the caret blink, completion glow and error shake are disabled.",
+  "defaultProps": {
+    "length": 6,
+    "mode": "numeric",
+    "groupSize": 3,
+    "mask": false,
+    "label": "Verification code",
+    "size": "md",
+    "accentColor": "#6366f1",
+    "invalid": false,
+    "disabled": false
+  },
+  "controls": [
+    {
+      "prop": "length",
+      "label": "Length",
+      "type": "range",
+      "min": 4,
+      "max": 8,
+      "step": 1
+    },
+    {
+      "prop": "mode",
+      "label": "Mode",
+      "type": "select",
+      "options": [
+        "numeric",
+        "alphanumeric"
+      ]
+    },
+    {
+      "prop": "groupSize",
+      "label": "Group size (0 = none)",
+      "type": "range",
+      "min": 0,
+      "max": 4,
+      "step": 1
+    },
+    {
+      "prop": "mask",
+      "label": "Mask characters",
+      "type": "boolean"
+    },
+    {
+      "prop": "label",
+      "label": "Label",
+      "type": "text"
+    },
+    {
+      "prop": "size",
+      "label": "Size",
+      "type": "select",
+      "options": [
+        "sm",
+        "md",
+        "lg"
+      ]
+    },
+    {
+      "prop": "accentColor",
+      "label": "Accent color",
+      "type": "color"
+    },
+    {
+      "prop": "invalid",
+      "label": "Invalid",
+      "type": "boolean"
+    },
+    {
+      "prop": "disabled",
+      "label": "Disabled",
+      "type": "boolean"
+    }
+  ],
+  "propsApi": [
+    {
+      "name": "length",
+      "type": "number",
+      "default": "6",
+      "description": "Number of characters in the code (1 to 12)."
+    },
+    {
+      "name": "value",
+      "type": "string",
+      "default": "undefined",
+      "description": "Controlled value."
+    },
+    {
+      "name": "defaultValue",
+      "type": "string",
+      "default": "''",
+      "description": "Initial value when uncontrolled."
+    },
+    {
+      "name": "onValueChange",
+      "type": "(value: string) => void",
+      "default": "undefined",
+      "description": "Called with the sanitized value on every change."
+    },
+    {
+      "name": "onComplete",
+      "type": "(value: string) => void",
+      "default": "undefined",
+      "description": "Called when every slot is filled."
+    },
+    {
+      "name": "mode",
+      "type": "'numeric' | 'alphanumeric'",
+      "default": "'numeric'",
+      "description": "Accepted characters; alphanumeric input is upper-cased."
+    },
+    {
+      "name": "groupSize",
+      "type": "number",
+      "default": "3",
+      "description": "Insert a dash separator after every N slots; 0 disables grouping."
+    },
+    {
+      "name": "mask",
+      "type": "boolean",
+      "default": "false",
+      "description": "Render dots instead of the typed characters."
+    },
+    {
+      "name": "label",
+      "type": "string",
+      "default": "'Verification code'",
+      "description": "Visible label and accessible name."
+    },
+    {
+      "name": "size",
+      "type": "'sm' | 'md' | 'lg'",
+      "default": "'md'",
+      "description": "Slot size preset."
+    },
+    {
+      "name": "accentColor",
+      "type": "string",
+      "default": "'#6366f1'",
+      "description": "Color of the active slot ring and caret."
+    },
+    {
+      "name": "invalid",
+      "type": "boolean",
+      "default": "false",
+      "description": "Red error state with a short shake; sets aria-invalid."
+    },
+    {
+      "name": "disabled",
+      "type": "boolean",
+      "default": "false",
+      "description": "Disable the field."
+    },
+    {
+      "name": "className",
+      "type": "string",
+      "default": "''",
+      "description": "Additional class merged onto the root element."
+    },
+    {
+      "name": "style",
+      "type": "React.CSSProperties",
+      "default": "undefined",
+      "description": "Inline styles merged onto the root element."
+    }
+  ],
+  "files": [
+    {
+      "path": "components/ui/otp-input.tsx",
+      "type": "registry:component",
+      "content": "\"use client\";\n\nimport * as React from \"react\";\nimport { AnimatePresence, motion, useReducedMotion } from \"motion/react\";\nimport styles from \"../styles/otp-input.module.css\";\n\nexport interface OtpInputProps {\n  /** Number of characters in the code */\n  length?: number;\n  /** Controlled value */\n  value?: string;\n  /** Initial value when uncontrolled */\n  defaultValue?: string;\n  /** Called with the sanitized value on every change */\n  onValueChange?: (value: string) => void;\n  /** Called once every slot is filled */\n  onComplete?: (value: string) => void;\n  /** Accepted characters */\n  mode?: \"numeric\" | \"alphanumeric\";\n  /** Insert a separator after every N slots (0 disables) */\n  groupSize?: number;\n  /** Render dots instead of the typed characters */\n  mask?: boolean;\n  /** Visible label above the slots (also the accessible name) */\n  label?: string;\n  /** Slot size preset */\n  size?: \"sm\" | \"md\" | \"lg\";\n  /** Accent color of the active slot, caret and completion glow */\n  accentColor?: string;\n  /** Show the error state */\n  invalid?: boolean;\n  /** Disable the field */\n  disabled?: boolean;\n  /** Optional className merged onto the root */\n  className?: string;\n  /** Optional inline styles merged onto the root */\n  style?: React.CSSProperties;\n}\n\nfunction sanitize(raw: string, mode: \"numeric\" | \"alphanumeric\", length: number): string {\n  const clean = mode === \"numeric\" ? raw.replace(/\\D/g, \"\") : raw.replace(/[^a-z0-9]/gi, \"\").toUpperCase();\n  return clean.slice(0, length);\n}\n\nexport function OtpInput({\n  length = 6,\n  value: valueProp,\n  defaultValue = \"\",\n  onValueChange,\n  onComplete,\n  mode = \"numeric\",\n  groupSize = 3,\n  mask = false,\n  label = \"Verification code\",\n  size = \"md\",\n  accentColor = \"#6366f1\",\n  invalid = false,\n  disabled = false,\n  className = \"\",\n  style,\n}: OtpInputProps) {\n  const reduce = useReducedMotion();\n  const count = Math.max(1, Math.min(12, Math.round(length)));\n  const [inner, setInner] = React.useState(() => sanitize(defaultValue, mode, count));\n  const controlled = valueProp !== undefined;\n  const value = controlled ? sanitize(valueProp, mode, count) : inner;\n  const [focused, setFocused] = React.useState(false);\n  const [cursor, setCursor] = React.useState(0);\n  const inputRef = React.useRef<HTMLInputElement>(null);\n  const id = React.useId();\n  const complete = value.length === count;\n  const active = Math.min(cursor, value.length, count - 1);\n\n  const commit = (raw: string) => {\n    const next = sanitize(raw, mode, count);\n    if (next === value) return;\n    if (!controlled) setInner(next);\n    onValueChange?.(next);\n    if (next.length === count) onComplete?.(next);\n  };\n\n  const syncCursor = () => {\n    const el = inputRef.current;\n    if (el) setCursor(el.selectionStart ?? el.value.length);\n  };\n\n  const onKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {\n    const el = e.currentTarget;\n    if (e.key === \"ArrowLeft\" || e.key === \"ArrowRight\" || e.key === \"Home\" || e.key === \"End\") {\n      e.preventDefault();\n      const pos = e.key === \"Home\" ? 0 : e.key === \"End\" ? value.length : Math.max(0, Math.min(value.length, active + (e.key === \"ArrowLeft\" ? -1 : 1)));\n      el.setSelectionRange(pos, pos);\n      setCursor(pos);\n    } else if (e.key.length === 1 && !e.metaKey && !e.ctrlKey && el.selectionStart === el.selectionEnd && active < value.length) {\n      // Typing over an existing slot replaces it and advances.\n      e.preventDefault();\n      const ch = sanitize(e.key, mode, 1);\n      if (!ch) return;\n      commit(value.slice(0, active) + ch + value.slice(active + 1));\n      const pos = Math.min(active + 1, count);\n      requestAnimationFrame(() => el.setSelectionRange(pos, pos));\n      setCursor(pos);\n    } else if (e.key === \"Backspace\" && el.selectionStart === el.selectionEnd && active < value.length && value.length === count) {\n      // On a full code, Backspace clears the highlighted slot and everything after it.\n      e.preventDefault();\n      commit(value.slice(0, active));\n      setCursor(active);\n    }\n  };\n\n  const groups = groupSize > 0 && groupSize < count ? groupSize : 0;\n  const pop = reduce ? { duration: 0.08 } : { type: \"spring\" as const, stiffness: 600, damping: 28 };\n\n  return (\n    <div\n      className={`${styles.root} ${className}`.trim()}\n      data-size={size}\n      data-invalid={invalid ? \"\" : undefined}\n      data-complete={complete && !invalid ? \"\" : undefined}\n      data-disabled={disabled ? \"\" : undefined}\n      style={{ \"--mf-otp-accent\": accentColor, ...style } as React.CSSProperties}\n    >\n      <label htmlFor={id} className={styles.label}>\n        {label}\n      </label>\n      <span id={`${id}-hint`} className={styles.srOnly}>\n        {`${count} ${mode === \"numeric\" ? \"digits\" : \"characters\"}`}\n      </span>\n      <div className={styles.slots}>\n        <input\n          ref={inputRef}\n          id={id}\n          className={styles.input}\n          value={value}\n          maxLength={count}\n          disabled={disabled}\n          inputMode={mode === \"numeric\" ? \"numeric\" : \"text\"}\n          autoComplete=\"one-time-code\"\n          autoCapitalize=\"characters\"\n          spellCheck={false}\n          aria-invalid={invalid || undefined}\n          aria-describedby={`${id}-hint`}\n          onChange={(e) => {\n            commit(e.target.value);\n            setCursor(sanitize(e.target.value, mode, count).length);\n          }}\n          onSelect={syncCursor}\n          onKeyDown={onKeyDown}\n          onFocus={() => {\n            setFocused(true);\n            setCursor(value.length);\n          }}\n          onBlur={() => setFocused(false)}\n        />\n        {Array.from({ length: count }, (_, i) => {\n          const ch = value[i];\n          const isActive = focused && i === active;\n          return (\n            <React.Fragment key={i}>\n              {groups > 0 && i > 0 && i % groups === 0 && <span aria-hidden=\"true\" className={styles.sep} />}\n              <div aria-hidden=\"true\" className={styles.slot} data-active={isActive ? \"\" : undefined} data-filled={ch ? \"\" : undefined}>\n                <AnimatePresence initial={false}>\n                  {ch && (\n                    <motion.span\n                      key={ch + i}\n                      className={styles.char}\n                      initial={{ opacity: 0, y: reduce ? 0 : 8, scale: reduce ? 1 : 0.6 }}\n                      animate={{ opacity: 1, y: 0, scale: 1 }}\n                      exit={{ opacity: 0, scale: reduce ? 1 : 0.6, transition: { duration: 0.1 } }}\n                      transition={pop}\n                    >\n                      {mask ? \"•\" : ch}\n                    </motion.span>\n                  )}\n                </AnimatePresence>\n                {isActive && !ch && <span className={styles.caret} />}\n              </div>\n            </React.Fragment>\n          );\n        })}\n      </div>\n    </div>\n  );\n}\n"
+    },
+    {
+      "path": "components/styles/otp-input.module.css",
+      "type": "registry:style",
+      "content": ".root {\n  --mf-otp-w: 3rem;\n  --mf-otp-h: 3.5rem;\n  --mf-otp-fs: 1.5rem;\n  --mf-otp-ring: var(--mf-otp-accent, #6366f1);\n  display: inline-flex;\n  flex-direction: column;\n  gap: 0.625rem;\n  color: var(--mf-fg, #f4f4f6);\n}\n\n.root[data-size=\"sm\"] {\n  --mf-otp-w: 2.375rem;\n  --mf-otp-h: 2.75rem;\n  --mf-otp-fs: 1.125rem;\n}\n\n.root[data-size=\"lg\"] {\n  --mf-otp-w: 3.5rem;\n  --mf-otp-h: 4.25rem;\n  --mf-otp-fs: 1.875rem;\n}\n\n.root[data-invalid] {\n  --mf-otp-ring: #ef4444;\n}\n\n.root[data-complete] {\n  --mf-otp-ring: #22c55e;\n}\n\n.label {\n  font-size: 0.875rem;\n  font-weight: 500;\n  color: var(--mf-muted, #a1a1aa);\n}\n\n.srOnly {\n  position: absolute;\n  width: 1px;\n  height: 1px;\n  margin: -1px;\n  padding: 0;\n  overflow: hidden;\n  clip: rect(0 0 0 0);\n  white-space: nowrap;\n  border: 0;\n}\n\n.slots {\n  position: relative;\n  display: flex;\n  align-items: center;\n  gap: 0.5rem;\n}\n\n.input {\n  position: absolute;\n  inset: 0;\n  z-index: 1;\n  width: 100%;\n  height: 100%;\n  margin: 0;\n  padding: 0;\n  border: 0;\n  background: transparent;\n  color: transparent;\n  caret-color: transparent;\n  font-size: 16px;\n  letter-spacing: 2em;\n  outline: none;\n  cursor: text;\n  -webkit-text-fill-color: transparent;\n}\n\n.input::selection {\n  background: transparent;\n}\n\n.root[data-disabled] .input {\n  cursor: not-allowed;\n}\n\n.sep {\n  width: 0.625rem;\n  height: 2px;\n  margin: 0 0.125rem;\n  border-radius: 2px;\n  background-color: var(--mf-border-strong, #52525b);\n}\n\n.slot {\n  position: relative;\n  display: grid;\n  place-items: center;\n  width: var(--mf-otp-w);\n  height: var(--mf-otp-h);\n  border-radius: 0.625rem;\n  border: 1px solid var(--mf-border, #2e2e38);\n  background-color: var(--mf-surface, #141419);\n  font-size: var(--mf-otp-fs);\n  font-weight: 600;\n  font-variant-numeric: tabular-nums;\n  transition: border-color 160ms ease, box-shadow 200ms cubic-bezier(0.16, 1, 0.3, 1), transform 200ms cubic-bezier(0.16, 1, 0.3, 1);\n}\n\n.slot[data-filled] {\n  border-color: var(--mf-border-strong, #52525b);\n}\n\n.root[data-invalid] .slot,\n.root[data-complete] .slot {\n  border-color: var(--mf-otp-ring);\n}\n\n.slot[data-active] {\n  border-color: var(--mf-otp-ring);\n  box-shadow: 0 0 0 3px color-mix(in srgb, var(--mf-otp-ring) 28%, transparent);\n  transform: translateY(-1px);\n}\n\n.root[data-complete] .slot {\n  animation: mf-otp-done 520ms cubic-bezier(0.16, 1, 0.3, 1);\n}\n\n.root[data-invalid] .slots {\n  animation: mf-otp-shake 360ms ease;\n}\n\n.char {\n  position: absolute;\n  line-height: 1;\n}\n\n.caret {\n  width: 2px;\n  height: 45%;\n  border-radius: 1px;\n  background-color: var(--mf-otp-ring);\n  animation: mf-otp-blink 1.06s steps(1, end) infinite;\n}\n\n.root[data-disabled] {\n  opacity: 0.55;\n}\n\n@keyframes mf-otp-blink {\n  0%,\n  50% {\n    opacity: 1;\n  }\n  50.01%,\n  100% {\n    opacity: 0;\n  }\n}\n\n@keyframes mf-otp-done {\n  0% {\n    box-shadow: 0 0 0 0 color-mix(in srgb, var(--mf-otp-ring) 45%, transparent);\n  }\n  100% {\n    box-shadow: 0 0 0 8px transparent;\n  }\n}\n\n@keyframes mf-otp-shake {\n  0%,\n  100% {\n    transform: translateX(0);\n  }\n  25% {\n    transform: translateX(-5px);\n  }\n  50% {\n    transform: translateX(4px);\n  }\n  75% {\n    transform: translateX(-2px);\n  }\n}\n\n@media (prefers-reduced-motion: reduce) {\n  .slot {\n    transition: none;\n  }\n\n  .slot[data-active] {\n    transform: none;\n  }\n\n  .root[data-complete] .slot,\n  .root[data-invalid] .slots,\n  .caret {\n    animation: none;\n  }\n}\n"
+    }
+  ],
+  "tailwindExample": "\"use client\";\n\nimport { useId, useState } from \"react\";\n\nexport function OtpInputTailwind({ length = 6 }) {\n  const id = useId();\n  const [value, setValue] = useState(\"\");\n  const [focused, setFocused] = useState(false);\n  return (\n    <div className=\"inline-flex flex-col gap-2.5\">\n      <label htmlFor={id} className=\"text-sm font-medium text-zinc-400\">Verification code</label>\n      <div className=\"relative flex gap-2\">\n        <input id={id} value={value} maxLength={length} inputMode=\"numeric\" autoComplete=\"one-time-code\" onFocus={() => setFocused(true)} onBlur={() => setFocused(false)} onChange={(e) => setValue(e.target.value.replace(/\\D/g, \"\").slice(0, length))} className=\"absolute inset-0 z-10 bg-transparent text-transparent caret-transparent outline-none\" />\n        {Array.from({ length }, (_, i) => {\n          const active = focused && i === Math.min(value.length, length - 1);\n          return (\n            <div key={i} aria-hidden=\"true\" className={`grid h-14 w-12 place-items-center rounded-xl border bg-zinc-900 text-2xl font-semibold text-zinc-100 transition ${active ? \"border-indigo-500 ring-4 ring-indigo-500/25\" : \"border-zinc-800\"}`}>\n              {value[i] ?? (active ? <span className=\"h-6 w-0.5 animate-pulse bg-indigo-400\" /> : null)}\n            </div>\n          );\n        })}\n      </div>\n    </div>\n  );\n}"
+}

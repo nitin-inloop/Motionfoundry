@@ -1,0 +1,214 @@
+{
+  "slug": "icon-button",
+  "name": "IconButton",
+  "category": "Interactive Buttons and Controls",
+  "collection": "ui",
+  "featured": false,
+  "addedAt": "2026-10-16",
+  "version": "2.3.0",
+  "requiresMotion": false,
+  "dependencies": [
+    "react"
+  ],
+  "description": "A round or square icon-only button with a floating label that springs in on hover or keyboard focus and a ripple that expands from the exact press point. Comes with solid, soft, outline and ghost variants and seven built-in inline icons.",
+  "tags": [
+    "icon-button",
+    "button",
+    "ripple",
+    "tooltip",
+    "toolbar",
+    "ui"
+  ],
+  "a11yNotes": "Native <button> with `label` as its aria-label, so the icon-only control always has an accessible name. The floating label is a visual duplicate (aria-hidden) shown on hover and :focus-visible. Ripples also fire for Enter/Space presses and are aria-hidden. Under prefers-reduced-motion ripples, hover tilt and press scale are disabled.",
+  "defaultProps": {
+    "label": "Notifications",
+    "icon": "bell",
+    "variant": "soft",
+    "shape": "round",
+    "size": "md",
+    "showLabel": true,
+    "labelSide": "top",
+    "ripple": true,
+    "accentColor": "#6366f1",
+    "disabled": false
+  },
+  "controls": [
+    {
+      "prop": "label",
+      "label": "Label",
+      "type": "text"
+    },
+    {
+      "prop": "icon",
+      "label": "Icon",
+      "type": "select",
+      "options": [
+        "bell",
+        "heart",
+        "settings",
+        "share",
+        "plus",
+        "trash",
+        "search"
+      ]
+    },
+    {
+      "prop": "variant",
+      "label": "Variant",
+      "type": "select",
+      "options": [
+        "solid",
+        "soft",
+        "outline",
+        "ghost"
+      ]
+    },
+    {
+      "prop": "shape",
+      "label": "Shape",
+      "type": "select",
+      "options": [
+        "round",
+        "square"
+      ]
+    },
+    {
+      "prop": "size",
+      "label": "Size",
+      "type": "select",
+      "options": [
+        "sm",
+        "md",
+        "lg"
+      ]
+    },
+    {
+      "prop": "showLabel",
+      "label": "Hover label",
+      "type": "boolean"
+    },
+    {
+      "prop": "labelSide",
+      "label": "Label side",
+      "type": "select",
+      "options": [
+        "top",
+        "bottom"
+      ]
+    },
+    {
+      "prop": "ripple",
+      "label": "Ripple",
+      "type": "boolean"
+    },
+    {
+      "prop": "accentColor",
+      "label": "Accent color",
+      "type": "color"
+    },
+    {
+      "prop": "disabled",
+      "label": "Disabled",
+      "type": "boolean"
+    }
+  ],
+  "propsApi": [
+    {
+      "name": "label",
+      "type": "string",
+      "default": "'Notifications'",
+      "description": "Accessible name, also shown as the floating hover/focus label."
+    },
+    {
+      "name": "icon",
+      "type": "'bell' | 'heart' | 'settings' | 'share' | 'plus' | 'trash' | 'search'",
+      "default": "'bell'",
+      "description": "Built-in inline SVG icon."
+    },
+    {
+      "name": "children",
+      "type": "React.ReactNode",
+      "default": "undefined",
+      "description": "Custom icon that replaces the built-in one."
+    },
+    {
+      "name": "variant",
+      "type": "'solid' | 'soft' | 'outline' | 'ghost'",
+      "default": "'soft'",
+      "description": "Visual style."
+    },
+    {
+      "name": "shape",
+      "type": "'round' | 'square'",
+      "default": "'round'",
+      "description": "Circle or rounded-square corners."
+    },
+    {
+      "name": "size",
+      "type": "'sm' | 'md' | 'lg'",
+      "default": "'md'",
+      "description": "32, 40 or 48px square."
+    },
+    {
+      "name": "showLabel",
+      "type": "boolean",
+      "default": "true",
+      "description": "Show the floating label on hover and keyboard focus."
+    },
+    {
+      "name": "labelSide",
+      "type": "'top' | 'bottom'",
+      "default": "'top'",
+      "description": "Side the floating label appears on."
+    },
+    {
+      "name": "ripple",
+      "type": "boolean",
+      "default": "true",
+      "description": "Expand a ripple from the press point."
+    },
+    {
+      "name": "accentColor",
+      "type": "string",
+      "default": "'#6366f1'",
+      "description": "Brand color for solid/soft variants."
+    },
+    {
+      "name": "disabled",
+      "type": "boolean",
+      "default": "false",
+      "description": "Disable the button."
+    },
+    {
+      "name": "onClick",
+      "type": "(event: React.MouseEvent<HTMLButtonElement>) => void",
+      "default": "undefined",
+      "description": "Click handler."
+    },
+    {
+      "name": "className",
+      "type": "string",
+      "default": "''",
+      "description": "Additional class merged onto the root wrapper."
+    },
+    {
+      "name": "style",
+      "type": "React.CSSProperties",
+      "default": "undefined",
+      "description": "Inline styles merged onto the root wrapper."
+    }
+  ],
+  "files": [
+    {
+      "path": "components/ui/icon-button.tsx",
+      "type": "registry:component",
+      "content": "\"use client\";\n\nimport * as React from \"react\";\nimport styles from \"../styles/icon-button.module.css\";\n\ntype IconName = \"bell\" | \"heart\" | \"settings\" | \"share\" | \"plus\" | \"trash\" | \"search\";\n\nexport interface IconButtonProps {\n  /** Accessible name, also shown as the hover/focus label */\n  label?: string;\n  /** Built-in inline SVG icon */\n  icon?: IconName;\n  /** Custom icon; overrides `icon` */\n  children?: React.ReactNode;\n  /** Visual style */\n  variant?: \"solid\" | \"soft\" | \"outline\" | \"ghost\";\n  /** Corner shape */\n  shape?: \"round\" | \"square\";\n  /** Size preset */\n  size?: \"sm\" | \"md\" | \"lg\";\n  /** Show the floating label on hover and keyboard focus */\n  showLabel?: boolean;\n  /** Side the floating label appears on */\n  labelSide?: \"top\" | \"bottom\";\n  /** Play a ripple from the press point */\n  ripple?: boolean;\n  /** Brand color for solid/soft variants and the ripple */\n  accentColor?: string;\n  /** Disable the button */\n  disabled?: boolean;\n  /** Click handler */\n  onClick?: (event: React.MouseEvent<HTMLButtonElement>) => void;\n  /** Optional className merged onto the root */\n  className?: string;\n  /** Optional inline styles merged onto the root */\n  style?: React.CSSProperties;\n}\n\nconst PATHS: Record<IconName, string> = {\n  bell: \"M6 8a6 6 0 1 1 12 0c0 7 3 9 3 9H3s3-2 3-9M10.3 21a1.94 1.94 0 0 0 3.4 0\",\n  heart: \"M19 14c1.5-1.5 3-3.2 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.8 0-3 .5-4.5 2-1.5-1.5-2.7-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4 3 5.5l7 7z\",\n  settings: \"M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6zM19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z\",\n  share: \"M18 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6zM6 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6zM18 22a3 3 0 1 0 0-6 3 3 0 0 0 0 6zM8.6 13.5l6.8 4M15.4 6.5l-6.8 4\",\n  plus: \"M12 5v14M5 12h14\",\n  trash: \"M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6M10 11v6M14 11v6\",\n  search: \"M11 19a8 8 0 1 0 0-16 8 8 0 0 0 0 16zM21 21l-4.3-4.3\",\n};\n\ninterface Ripple {\n  id: number;\n  x: number;\n  y: number;\n  r: number;\n}\n\nexport function IconButton({\n  label = \"Notifications\",\n  icon = \"bell\",\n  children,\n  variant = \"soft\",\n  shape = \"round\",\n  size = \"md\",\n  showLabel = true,\n  labelSide = \"top\",\n  ripple = true,\n  accentColor = \"#6366f1\",\n  disabled = false,\n  onClick,\n  className = \"\",\n  style,\n}: IconButtonProps) {\n  const [ripples, setRipples] = React.useState<Ripple[]>([]);\n  const nextId = React.useRef(0);\n\n  const onPointerDown = (e: React.PointerEvent<HTMLButtonElement>) => {\n    if (!ripple || disabled) return;\n    const rect = e.currentTarget.getBoundingClientRect();\n    const x = e.clientX - rect.left;\n    const y = e.clientY - rect.top;\n    const r = Math.hypot(Math.max(x, rect.width - x), Math.max(y, rect.height - y));\n    const id = nextId.current++;\n    setRipples((list) => [...list.slice(-3), { id, x, y, r }]);\n  };\n\n  const onKeyDown = (e: React.KeyboardEvent<HTMLButtonElement>) => {\n    if (!ripple || disabled || e.repeat || (e.key !== \"Enter\" && e.key !== \" \")) return;\n    const { width, height } = e.currentTarget.getBoundingClientRect();\n    const id = nextId.current++;\n    setRipples((list) => [...list.slice(-3), { id, x: width / 2, y: height / 2, r: Math.hypot(width, height) / 2 }]);\n  };\n\n  const cls = [styles.root, styles[variant], styles[shape], styles[size]].filter(Boolean).join(\" \");\n\n  return (\n    <span\n      className={`${styles.wrap} ${className}`.trim()}\n      data-side={labelSide}\n      style={{ \"--mf-ib-accent\": accentColor, ...style } as React.CSSProperties}\n    >\n      <button\n        type=\"button\"\n        aria-label={label}\n        disabled={disabled}\n        onPointerDown={onPointerDown}\n        onKeyDown={onKeyDown}\n        onClick={onClick}\n        className={cls}\n      >\n        <span className={styles.ripples} aria-hidden=\"true\">\n          {ripples.map((rp) => (\n            <span\n              key={rp.id}\n              className={styles.ripple}\n              style={{ left: rp.x - rp.r, top: rp.y - rp.r, width: rp.r * 2, height: rp.r * 2 }}\n              onAnimationEnd={() => setRipples((list) => list.filter((it) => it.id !== rp.id))}\n            />\n          ))}\n        </span>\n        <span className={styles.icon} aria-hidden=\"true\">\n          {children ?? (\n            <svg width=\"100%\" height=\"100%\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" strokeWidth=\"2\" strokeLinecap=\"round\" strokeLinejoin=\"round\">\n              <path d={PATHS[icon] ?? PATHS.bell} />\n            </svg>\n          )}\n        </span>\n      </button>\n      {showLabel && label ? (\n        <span className={styles.tip} aria-hidden=\"true\">\n          {label}\n        </span>\n      ) : null}\n    </span>\n  );\n}\n"
+    },
+    {
+      "path": "components/styles/icon-button.module.css",
+      "type": "registry:style",
+      "content": ".wrap {\n  position: relative;\n  display: inline-flex;\n  color: var(--mf-fg, #f4f4f6);\n}\n\n.root {\n  --mf-ib-size: 2.5rem;\n  position: relative;\n  display: inline-flex;\n  align-items: center;\n  justify-content: center;\n  width: var(--mf-ib-size);\n  height: var(--mf-ib-size);\n  padding: 0;\n  border: 1px solid transparent;\n  overflow: hidden;\n  font: inherit;\n  cursor: pointer;\n  isolation: isolate;\n  -webkit-tap-highlight-color: transparent;\n  transition: background-color 160ms ease, border-color 160ms ease, color 160ms ease, box-shadow 160ms ease,\n    transform 200ms cubic-bezier(0.34, 1.56, 0.64, 1);\n}\n\n.root:active:not(:disabled) {\n  transform: scale(0.92);\n  transition-duration: 160ms, 160ms, 160ms, 160ms, 80ms;\n}\n\n.root:focus-visible {\n  outline: 2px solid var(--mf-fg, #e4e4e7);\n  outline-offset: 2px;\n}\n\n.root:disabled {\n  opacity: 0.5;\n  cursor: not-allowed;\n}\n\n.sm {\n  --mf-ib-size: 2rem;\n}\n\n.md {\n  --mf-ib-size: 2.5rem;\n}\n\n.lg {\n  --mf-ib-size: 3rem;\n}\n\n.round {\n  border-radius: 999px;\n}\n\n.square {\n  border-radius: 0.625rem;\n}\n\n.icon {\n  position: relative;\n  z-index: 1;\n  display: inline-flex;\n  width: 45%;\n  height: 45%;\n  transition: transform 220ms cubic-bezier(0.34, 1.56, 0.64, 1);\n}\n\n.root:hover:not(:disabled) .icon {\n  transform: scale(1.08) rotate(-6deg);\n}\n\n.solid {\n  background-color: var(--mf-ib-accent, #6366f1);\n  color: #ffffff;\n  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.18);\n}\n\n.solid:hover:not(:disabled) {\n  box-shadow: 0 6px 18px -6px color-mix(in srgb, var(--mf-ib-accent, #6366f1) 70%, transparent), inset 0 1px 0 rgba(255, 255, 255, 0.18);\n}\n\n.soft {\n  background-color: color-mix(in srgb, var(--mf-ib-accent, #6366f1) 16%, transparent);\n  color: var(--mf-ib-accent, #6366f1);\n}\n\n.soft:hover:not(:disabled) {\n  background-color: color-mix(in srgb, var(--mf-ib-accent, #6366f1) 24%, transparent);\n}\n\n.outline {\n  background-color: var(--mf-surface, #141419);\n  border-color: var(--mf-border, #2e2e38);\n  color: var(--mf-fg, #f4f4f6);\n}\n\n.outline:hover:not(:disabled) {\n  background-color: var(--mf-surface-raised, #1b1b22);\n  border-color: var(--mf-border-strong, #52525b);\n}\n\n.ghost {\n  background-color: transparent;\n  color: var(--mf-muted, #a1a1aa);\n}\n\n.ghost:hover:not(:disabled) {\n  background-color: var(--mf-surface-raised, #1b1b22);\n  color: var(--mf-fg, #f4f4f6);\n}\n\n.ripples {\n  position: absolute;\n  inset: 0;\n  z-index: 0;\n  pointer-events: none;\n}\n\n.ripple {\n  position: absolute;\n  border-radius: 999px;\n  background-color: currentColor;\n  opacity: 0.28;\n  transform: scale(0);\n  animation: mf-ib-ripple 520ms cubic-bezier(0.16, 1, 0.3, 1) forwards;\n}\n\n.solid .ripple {\n  background-color: #ffffff;\n}\n\n@keyframes mf-ib-ripple {\n  to {\n    transform: scale(1);\n    opacity: 0;\n  }\n}\n\n.tip {\n  position: absolute;\n  left: 50%;\n  z-index: 10;\n  padding: 0.3125rem 0.5rem;\n  border-radius: 0.375rem;\n  border: 1px solid var(--mf-border, #2e2e38);\n  background-color: var(--mf-surface-raised, #1b1b22);\n  color: var(--mf-fg, #f4f4f6);\n  font-size: 0.75rem;\n  font-weight: 500;\n  line-height: 1.2;\n  white-space: nowrap;\n  pointer-events: none;\n  box-shadow: 0 8px 24px -8px rgba(0, 0, 0, 0.45);\n  opacity: 0;\n  transition: opacity 150ms ease, transform 200ms cubic-bezier(0.16, 1, 0.3, 1);\n}\n\n.wrap[data-side=\"top\"] .tip {\n  bottom: calc(100% + 0.5rem);\n  transform: translate(-50%, 4px) scale(0.96);\n}\n\n.wrap[data-side=\"bottom\"] .tip {\n  top: calc(100% + 0.5rem);\n  transform: translate(-50%, -4px) scale(0.96);\n}\n\n.wrap:hover .root:not(:disabled) + .tip,\n.root:focus-visible + .tip {\n  opacity: 1;\n  transform: translate(-50%, 0) scale(1);\n  transition-delay: 120ms;\n}\n\n@media (prefers-reduced-motion: reduce) {\n  .root,\n  .icon,\n  .tip {\n    transition: none;\n  }\n\n  .root:active:not(:disabled),\n  .root:hover:not(:disabled) .icon {\n    transform: none;\n  }\n\n  .ripple {\n    display: none;\n  }\n\n  .wrap[data-side] .tip {\n    transform: translate(-50%, 0);\n  }\n}\n"
+    }
+  ],
+  "tailwindExample": "\"use client\";\n\nimport { useState } from \"react\";\n\nexport function IconButtonTailwind({ label = \"Notifications\" }) {\n  const [ripples, setRipples] = useState<{ id: number; x: number; y: number }[]>([]);\n  return (\n    <span className=\"group relative inline-flex\">\n      <button\n        type=\"button\"\n        aria-label={label}\n        onPointerDown={(e) => {\n          const r = e.currentTarget.getBoundingClientRect();\n          setRipples((l) => [...l, { id: e.timeStamp, x: e.clientX - r.left, y: e.clientY - r.top }]);\n        }}\n        className=\"relative grid size-10 place-items-center overflow-hidden rounded-full bg-indigo-500/15 text-indigo-400 transition active:scale-90 hover:bg-indigo-500/25 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2\"\n      >\n        {ripples.map((r) => (\n          <span key={r.id} onAnimationEnd={() => setRipples((l) => l.filter((x) => x.id !== r.id))} style={{ left: r.x - 40, top: r.y - 40 }} className=\"absolute size-20 animate-ping rounded-full bg-current opacity-30 [animation-iteration-count:1]\" />\n        ))}\n        <svg aria-hidden=\"true\" width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" strokeWidth=\"2\" strokeLinecap=\"round\"><path d=\"M6 8a6 6 0 1 1 12 0c0 7 3 9 3 9H3s3-2 3-9M10.3 21a1.94 1.94 0 0 0 3.4 0\" /></svg>\n      </button>\n      <span aria-hidden=\"true\" className=\"pointer-events-none absolute bottom-full left-1/2 mb-2 -translate-x-1/2 translate-y-1 whitespace-nowrap rounded-md border border-zinc-800 bg-zinc-900 px-2 py-1 text-xs text-zinc-100 opacity-0 transition group-hover:translate-y-0 group-hover:opacity-100\">{label}</span>\n    </span>\n  );\n}"
+}

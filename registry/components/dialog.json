@@ -1,0 +1,213 @@
+{
+  "slug": "dialog",
+  "name": "Dialog",
+  "category": "Overlays and Menus",
+  "collection": "ui",
+  "featured": true,
+  "addedAt": "2026-10-16",
+  "version": "2.3.0",
+  "requiresMotion": true,
+  "dependencies": [
+    "motion",
+    "react"
+  ],
+  "description": "A modal dialog that fades in a blurred backdrop and scales the panel up with a soft ease, with a title, description, body content and footer actions. Focus is trapped while open and restored to the trigger on close.",
+  "tags": [
+    "dialog",
+    "modal",
+    "overlay",
+    "focus-trap",
+    "backdrop",
+    "ui"
+  ],
+  "a11yNotes": "Implements the WAI-ARIA dialog (modal) pattern: role=\"dialog\" with aria-modal, aria-labelledby (title) and aria-describedby (description). Focus moves into the panel on open, Tab/Shift+Tab cycle inside it, Escape and backdrop click close it, and focus returns to the trigger. Body scroll is locked while open. The panel is portaled to document.body only after mount and copies the --mf-* theme variables from its trigger. Under prefers-reduced-motion the panel only fades.",
+  "defaultProps": {
+    "triggerLabel": "Edit profile",
+    "title": "Edit profile",
+    "description": "Make changes to your profile here. Click save when you're done.",
+    "confirmLabel": "Save changes",
+    "cancelLabel": "Cancel",
+    "size": "md",
+    "accentColor": "#6366f1",
+    "backdropBlur": 6,
+    "closeOnOutsideClick": true,
+    "showCloseButton": true
+  },
+  "controls": [
+    {
+      "prop": "triggerLabel",
+      "label": "Trigger label",
+      "type": "text"
+    },
+    {
+      "prop": "title",
+      "label": "Title",
+      "type": "text"
+    },
+    {
+      "prop": "description",
+      "label": "Description",
+      "type": "text"
+    },
+    {
+      "prop": "confirmLabel",
+      "label": "Confirm label",
+      "type": "text"
+    },
+    {
+      "prop": "cancelLabel",
+      "label": "Cancel label",
+      "type": "text"
+    },
+    {
+      "prop": "size",
+      "label": "Size",
+      "type": "select",
+      "options": [
+        "sm",
+        "md",
+        "lg"
+      ]
+    },
+    {
+      "prop": "accentColor",
+      "label": "Accent color",
+      "type": "color"
+    },
+    {
+      "prop": "backdropBlur",
+      "label": "Backdrop blur (px)",
+      "type": "range",
+      "min": 0,
+      "max": 20,
+      "step": 1
+    },
+    {
+      "prop": "closeOnOutsideClick",
+      "label": "Close on outside click",
+      "type": "boolean"
+    },
+    {
+      "prop": "showCloseButton",
+      "label": "Show close button",
+      "type": "boolean"
+    }
+  ],
+  "propsApi": [
+    {
+      "name": "open",
+      "type": "boolean",
+      "default": "undefined",
+      "description": "Controlled open state."
+    },
+    {
+      "name": "defaultOpen",
+      "type": "boolean",
+      "default": "false",
+      "description": "Initial open state when uncontrolled."
+    },
+    {
+      "name": "onOpenChange",
+      "type": "(open: boolean) => void",
+      "default": "undefined",
+      "description": "Called whenever the dialog requests to open or close."
+    },
+    {
+      "name": "triggerLabel",
+      "type": "string",
+      "default": "'Edit profile'",
+      "description": "Label of the trigger button."
+    },
+    {
+      "name": "title",
+      "type": "string",
+      "default": "'Edit profile'",
+      "description": "Dialog title, used as the accessible name."
+    },
+    {
+      "name": "description",
+      "type": "string",
+      "default": "\"Make changes to your profile here. Click save when you're done.\"",
+      "description": "Supporting text under the title, used as the accessible description."
+    },
+    {
+      "name": "children",
+      "type": "React.ReactNode",
+      "default": "profile form",
+      "description": "Body content; defaults to a small Name/Username form."
+    },
+    {
+      "name": "confirmLabel",
+      "type": "string",
+      "default": "'Save changes'",
+      "description": "Label of the primary action."
+    },
+    {
+      "name": "cancelLabel",
+      "type": "string",
+      "default": "'Cancel'",
+      "description": "Label of the secondary action."
+    },
+    {
+      "name": "onConfirm",
+      "type": "() => void",
+      "default": "undefined",
+      "description": "Called when the primary action is pressed; the dialog then closes."
+    },
+    {
+      "name": "size",
+      "type": "'sm' | 'md' | 'lg'",
+      "default": "'md'",
+      "description": "Panel max-width preset (22rem, 28rem, 36rem)."
+    },
+    {
+      "name": "accentColor",
+      "type": "string",
+      "default": "'#6366f1'",
+      "description": "Color of the primary action and input focus ring."
+    },
+    {
+      "name": "backdropBlur",
+      "type": "number",
+      "default": "6",
+      "description": "Backdrop blur radius in pixels."
+    },
+    {
+      "name": "closeOnOutsideClick",
+      "type": "boolean",
+      "default": "true",
+      "description": "Close the dialog when the backdrop is clicked."
+    },
+    {
+      "name": "showCloseButton",
+      "type": "boolean",
+      "default": "true",
+      "description": "Show the X close button in the top-right corner."
+    },
+    {
+      "name": "className",
+      "type": "string",
+      "default": "''",
+      "description": "Additional class merged onto the root element."
+    },
+    {
+      "name": "style",
+      "type": "React.CSSProperties",
+      "default": "undefined",
+      "description": "Inline styles merged onto the root element."
+    }
+  ],
+  "files": [
+    {
+      "path": "components/ui/dialog.tsx",
+      "type": "registry:component",
+      "content": "\"use client\";\n\nimport * as React from \"react\";\nimport { createPortal } from \"react-dom\";\nimport { AnimatePresence, motion, useReducedMotion } from \"motion/react\";\nimport styles from \"../styles/dialog.module.css\";\n\nexport interface DialogProps {\n  /** Controlled open state */\n  open?: boolean;\n  /** Initial open state when uncontrolled */\n  defaultOpen?: boolean;\n  /** Called whenever the dialog requests to open or close */\n  onOpenChange?: (open: boolean) => void;\n  /** Label of the trigger button */\n  triggerLabel?: string;\n  /** Dialog title (used as the accessible name) */\n  title?: string;\n  /** Supporting description under the title (used as the accessible description) */\n  description?: string;\n  /** Body content; defaults to a small profile form */\n  children?: React.ReactNode;\n  /** Label of the primary action */\n  confirmLabel?: string;\n  /** Label of the secondary (cancel) action */\n  cancelLabel?: string;\n  /** Called when the primary action is pressed (the dialog then closes) */\n  onConfirm?: () => void;\n  /** Panel width preset */\n  size?: \"sm\" | \"md\" | \"lg\";\n  /** Accent color used for the primary action and focus highlights */\n  accentColor?: string;\n  /** Backdrop blur in pixels */\n  backdropBlur?: number;\n  /** Close when clicking the backdrop */\n  closeOnOutsideClick?: boolean;\n  /** Show the X close button in the corner */\n  showCloseButton?: boolean;\n  /** Optional className merged onto the root */\n  className?: string;\n  /** Optional inline styles merged onto the root */\n  style?: React.CSSProperties;\n}\n\nconst THEME_TOKENS = [\"--mf-bg\", \"--mf-fg\", \"--mf-surface\", \"--mf-surface-raised\", \"--mf-muted\", \"--mf-subtle\", \"--mf-border\", \"--mf-border-strong\", \"--mf-accent\"];\nconst FOCUSABLE = 'a[href],button:not([disabled]),input:not([disabled]),select:not([disabled]),textarea:not([disabled]),[tabindex]:not([tabindex=\"-1\"])';\nconst useIsoLayoutEffect = typeof window !== \"undefined\" ? React.useLayoutEffect : React.useEffect;\n\n/** Copies the --mf-* theme variables from an element so a portaled layer matches its surroundings. */\nfunction readThemeVars(el: Element | null): Record<string, string> {\n  const out: Record<string, string> = {};\n  if (!el) return out;\n  const cs = getComputedStyle(el);\n  for (const token of THEME_TOKENS) {\n    const v = cs.getPropertyValue(token).trim();\n    if (v) out[token] = v;\n  }\n  return out;\n}\n\nfunction useControllable(value: boolean | undefined, defaultValue: boolean, onChange?: (v: boolean) => void): [boolean, (v: boolean) => void] {\n  const [inner, setInner] = React.useState(defaultValue);\n  const controlled = value !== undefined;\n  const current = controlled ? value : inner;\n  const set = React.useCallback(\n    (v: boolean) => {\n      if (!controlled) setInner(v);\n      onChange?.(v);\n    },\n    [controlled, onChange],\n  );\n  return [current, set];\n}\n\nfunction DefaultBody({ fieldId }: { fieldId: string }) {\n  return (\n    <div className={styles.form}>\n      <label className={styles.field} htmlFor={`${fieldId}-name`}>\n        <span className={styles.label}>Name</span>\n        <input id={`${fieldId}-name`} className={styles.input} defaultValue=\"Ada Lovelace\" />\n      </label>\n      <label className={styles.field} htmlFor={`${fieldId}-user`}>\n        <span className={styles.label}>Username</span>\n        <input id={`${fieldId}-user`} className={styles.input} defaultValue=\"@ada\" />\n      </label>\n    </div>\n  );\n}\n\nexport function Dialog({\n  open: openProp,\n  defaultOpen = false,\n  onOpenChange,\n  triggerLabel = \"Edit profile\",\n  title = \"Edit profile\",\n  description = \"Make changes to your profile here. Click save when you're done.\",\n  children,\n  confirmLabel = \"Save changes\",\n  cancelLabel = \"Cancel\",\n  onConfirm,\n  size = \"md\",\n  accentColor = \"#6366f1\",\n  backdropBlur = 6,\n  closeOnOutsideClick = true,\n  showCloseButton = true,\n  className = \"\",\n  style,\n}: DialogProps) {\n  const reduce = useReducedMotion();\n  const [open, setOpen] = useControllable(openProp, defaultOpen, onOpenChange);\n  const [mounted, setMounted] = React.useState(false);\n  const [themeVars, setThemeVars] = React.useState<Record<string, string>>({});\n  const rootRef = React.useRef<HTMLDivElement>(null);\n  const triggerRef = React.useRef<HTMLButtonElement>(null);\n  const panelRef = React.useRef<HTMLDivElement>(null);\n  const wasOpen = React.useRef(false);\n  const baseId = React.useId();\n  const titleId = `${baseId}-title`;\n  const descId = `${baseId}-desc`;\n\n  React.useEffect(() => setMounted(true), []);\n\n  useIsoLayoutEffect(() => {\n    if (open) setThemeVars(readThemeVars(rootRef.current));\n  }, [open]);\n\n  // Body scroll lock, Escape and focus restore.\n  React.useEffect(() => {\n    if (!open) {\n      if (wasOpen.current) triggerRef.current?.focus();\n      wasOpen.current = false;\n      return;\n    }\n    wasOpen.current = true;\n    const body = document.body;\n    const prevOverflow = body.style.overflow;\n    const prevPadding = body.style.paddingRight;\n    const gap = window.innerWidth - document.documentElement.clientWidth;\n    body.style.overflow = \"hidden\";\n    if (gap > 0) body.style.paddingRight = `${gap}px`;\n    const onKey = (e: KeyboardEvent) => {\n      if (e.key === \"Escape\") {\n        e.preventDefault();\n        setOpen(false);\n      }\n    };\n    document.addEventListener(\"keydown\", onKey);\n    const raf = requestAnimationFrame(() => {\n      const panel = panelRef.current;\n      if (!panel) return;\n      const first = panel.querySelector<HTMLElement>(\"[data-autofocus]\") ?? panel.querySelector<HTMLElement>(FOCUSABLE);\n      (first ?? panel).focus();\n    });\n    return () => {\n      cancelAnimationFrame(raf);\n      document.removeEventListener(\"keydown\", onKey);\n      body.style.overflow = prevOverflow;\n      body.style.paddingRight = prevPadding;\n    };\n  }, [open, setOpen]);\n\n  const trapFocus = (e: React.KeyboardEvent<HTMLDivElement>) => {\n    if (e.key !== \"Tab\" || !panelRef.current) return;\n    const nodes = Array.from(panelRef.current.querySelectorAll<HTMLElement>(FOCUSABLE));\n    if (nodes.length === 0) {\n      e.preventDefault();\n      return;\n    }\n    const first = nodes[0];\n    const last = nodes[nodes.length - 1];\n    if (e.shiftKey && (document.activeElement === first || document.activeElement === panelRef.current)) {\n      e.preventDefault();\n      last.focus();\n    } else if (!e.shiftKey && document.activeElement === last) {\n      e.preventDefault();\n      first.focus();\n    }\n  };\n\n  const layerStyle = {\n    ...themeVars,\n    \"--mf-dlg-accent\": accentColor,\n    \"--mf-dlg-blur\": `${Math.max(0, backdropBlur)}px`,\n  } as React.CSSProperties;\n\n  const ease = [0.16, 1, 0.3, 1] as const;\n\n  return (\n    <div ref={rootRef} className={`${styles.root} ${className}`.trim()} style={{ \"--mf-dlg-accent\": accentColor, ...style } as React.CSSProperties}>\n      <button ref={triggerRef} type=\"button\" aria-haspopup=\"dialog\" aria-expanded={open} onClick={() => setOpen(true)} className={styles.trigger}>\n        {triggerLabel}\n      </button>\n      {mounted &&\n        createPortal(\n          <AnimatePresence>\n            {open && (\n              <div className={styles.layer} style={layerStyle}>\n                <motion.div\n                  aria-hidden=\"true\"\n                  className={styles.backdrop}\n                  initial={{ opacity: 0 }}\n                  animate={{ opacity: 1 }}\n                  exit={{ opacity: 0 }}\n                  transition={{ duration: reduce ? 0.1 : 0.2 }}\n                />\n                <div\n                  className={styles.center}\n                  onPointerDown={(e) => {\n                    if (closeOnOutsideClick && e.target === e.currentTarget) setOpen(false);\n                  }}\n                >\n                  <motion.div\n                    ref={panelRef}\n                    role=\"dialog\"\n                    aria-modal=\"true\"\n                    aria-labelledby={titleId}\n                    aria-describedby={description ? descId : undefined}\n                    tabIndex={-1}\n                    onKeyDown={trapFocus}\n                    className={`${styles.panel} ${styles[size] ?? \"\"}`.trim()}\n                    initial={reduce ? { opacity: 0 } : { opacity: 0, scale: 0.95, y: 8 }}\n                    animate={reduce ? { opacity: 1 } : { opacity: 1, scale: 1, y: 0 }}\n                    exit={reduce ? { opacity: 0 } : { opacity: 0, scale: 0.97, y: 4 }}\n                    transition={reduce ? { duration: 0.1 } : { duration: 0.22, ease }}\n                  >\n                    <div className={styles.header}>\n                      <h2 id={titleId} className={styles.title}>\n                        {title}\n                      </h2>\n                      {description && (\n                        <p id={descId} className={styles.description}>\n                          {description}\n                        </p>\n                      )}\n                    </div>\n                    <div className={styles.body}>{children ?? <DefaultBody fieldId={baseId} />}</div>\n                    <div className={styles.footer}>\n                      <button type=\"button\" className={styles.secondary} onClick={() => setOpen(false)}>\n                        {cancelLabel}\n                      </button>\n                      <button\n                        type=\"button\"\n                        className={styles.primary}\n                        onClick={() => {\n                          onConfirm?.();\n                          setOpen(false);\n                        }}\n                      >\n                        {confirmLabel}\n                      </button>\n                    </div>\n                    {showCloseButton && (\n                      <button type=\"button\" aria-label=\"Close\" className={styles.close} onClick={() => setOpen(false)}>\n                        <svg aria-hidden=\"true\" width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" strokeWidth=\"2\" strokeLinecap=\"round\">\n                          <path d=\"M18 6 6 18M6 6l12 12\" />\n                        </svg>\n                      </button>\n                    )}\n                  </motion.div>\n                </div>\n              </div>\n            )}\n          </AnimatePresence>,\n          document.body,\n        )}\n    </div>\n  );\n}\n"
+    },
+    {
+      "path": "components/styles/dialog.module.css",
+      "type": "registry:style",
+      "content": ".root {\n  display: inline-flex;\n  color: var(--mf-fg, #f4f4f6);\n}\n\n.trigger,\n.secondary,\n.primary {\n  display: inline-flex;\n  align-items: center;\n  justify-content: center;\n  height: 2.375rem;\n  padding: 0 1rem;\n  border-radius: 0.5rem;\n  font: inherit;\n  font-size: 0.875rem;\n  font-weight: 500;\n  cursor: pointer;\n  transition: background-color 150ms ease, border-color 150ms ease, opacity 150ms ease, transform 150ms ease;\n}\n\n.trigger,\n.secondary {\n  border: 1px solid var(--mf-border, #2e2e38);\n  background-color: var(--mf-surface, #141419);\n  color: var(--mf-fg, #f4f4f6);\n}\n\n.trigger:hover,\n.secondary:hover {\n  background-color: var(--mf-surface-raised, #1b1b22);\n  border-color: var(--mf-border-strong, #52525b);\n}\n\n.trigger:active,\n.secondary:active,\n.primary:active {\n  transform: scale(0.98);\n}\n\n.primary {\n  border: 1px solid var(--mf-dlg-accent, #6366f1);\n  background-color: var(--mf-dlg-accent, #6366f1);\n  color: #ffffff;\n}\n\n.primary:hover {\n  opacity: 0.9;\n}\n\n.trigger:focus-visible,\n.secondary:focus-visible,\n.primary:focus-visible,\n.close:focus-visible {\n  outline: 2px solid var(--mf-fg, #e4e4e7);\n  outline-offset: 2px;\n}\n\n.layer {\n  position: fixed;\n  inset: 0;\n  z-index: 1000;\n  color: var(--mf-fg, #f4f4f6);\n}\n\n.backdrop {\n  position: absolute;\n  inset: 0;\n  background-color: rgba(9, 9, 11, 0.55);\n  backdrop-filter: blur(var(--mf-dlg-blur, 6px));\n  -webkit-backdrop-filter: blur(var(--mf-dlg-blur, 6px));\n}\n\n.center {\n  position: absolute;\n  inset: 0;\n  display: grid;\n  place-items: center;\n  padding: 1rem;\n  overflow-y: auto;\n}\n\n.panel {\n  position: relative;\n  width: 100%;\n  max-width: 28rem;\n  padding: 1.5rem;\n  border-radius: 0.75rem;\n  border: 1px solid var(--mf-border, #2e2e38);\n  background-color: var(--mf-surface, #141419);\n  color: var(--mf-fg, #f4f4f6);\n  box-shadow: 0 24px 64px -16px rgba(0, 0, 0, 0.55);\n  outline: none;\n}\n\n.sm {\n  max-width: 22rem;\n}\n\n.md {\n  max-width: 28rem;\n}\n\n.lg {\n  max-width: 36rem;\n}\n\n.header {\n  display: flex;\n  flex-direction: column;\n  gap: 0.375rem;\n  padding-right: 1.5rem;\n}\n\n.title {\n  margin: 0;\n  font-size: 1.125rem;\n  font-weight: 600;\n  line-height: 1.3;\n  letter-spacing: -0.01em;\n}\n\n.description {\n  margin: 0;\n  font-size: 0.875rem;\n  line-height: 1.5;\n  color: var(--mf-muted, #a1a1aa);\n}\n\n.body {\n  margin-top: 1.25rem;\n  font-size: 0.875rem;\n}\n\n.form {\n  display: grid;\n  gap: 0.875rem;\n}\n\n.field {\n  display: grid;\n  grid-template-columns: 6rem 1fr;\n  align-items: center;\n  gap: 0.75rem;\n}\n\n.label {\n  font-size: 0.8125rem;\n  font-weight: 500;\n  color: var(--mf-muted, #a1a1aa);\n  text-align: right;\n}\n\n.input {\n  height: 2.25rem;\n  padding: 0 0.75rem;\n  border-radius: 0.5rem;\n  border: 1px solid var(--mf-border, #2e2e38);\n  background-color: var(--mf-bg, #09090b);\n  color: var(--mf-fg, #f4f4f6);\n  font: inherit;\n  font-size: 0.875rem;\n  transition: border-color 150ms ease, box-shadow 150ms ease;\n}\n\n.input:focus {\n  outline: none;\n  border-color: var(--mf-dlg-accent, #6366f1);\n  box-shadow: 0 0 0 3px color-mix(in srgb, var(--mf-dlg-accent, #6366f1) 30%, transparent);\n}\n\n.footer {\n  display: flex;\n  justify-content: flex-end;\n  gap: 0.5rem;\n  margin-top: 1.5rem;\n}\n\n.close {\n  position: absolute;\n  top: 0.875rem;\n  right: 0.875rem;\n  display: inline-flex;\n  align-items: center;\n  justify-content: center;\n  width: 1.75rem;\n  height: 1.75rem;\n  border: 0;\n  border-radius: 0.375rem;\n  background: transparent;\n  color: var(--mf-subtle, #71717a);\n  cursor: pointer;\n  transition: color 150ms ease, background-color 150ms ease;\n}\n\n.close:hover {\n  color: var(--mf-fg, #f4f4f6);\n  background-color: var(--mf-surface-raised, #1b1b22);\n}\n\n@media (max-width: 480px) {\n  .field {\n    grid-template-columns: 1fr;\n    gap: 0.375rem;\n  }\n\n  .label {\n    text-align: left;\n  }\n}\n\n@media (prefers-reduced-motion: reduce) {\n  .trigger,\n  .secondary,\n  .primary,\n  .input,\n  .close {\n    transition: none;\n  }\n\n  .panel {\n    transform: none !important;\n  }\n}\n"
+    }
+  ],
+  "tailwindExample": "\"use client\";\n\nimport { AnimatePresence, motion } from \"motion/react\";\nimport { useEffect, useRef, useState } from \"react\";\n\nexport function DialogTailwind({ title = \"Edit profile\" }) {\n  const [open, setOpen] = useState(false);\n  const trigger = useRef<HTMLButtonElement>(null);\n  const panel = useRef<HTMLDivElement>(null);\n  useEffect(() => {\n    if (!open) return;\n    panel.current?.querySelector(\"input\")?.focus();\n    const onKey = (e: KeyboardEvent) => e.key === \"Escape\" && setOpen(false);\n    document.addEventListener(\"keydown\", onKey);\n    return () => { document.removeEventListener(\"keydown\", onKey); trigger.current?.focus(); };\n  }, [open]);\n  return (\n    <>\n      <button ref={trigger} type=\"button\" onClick={() => setOpen(true)} className=\"h-9 rounded-lg border border-zinc-800 bg-zinc-900 px-4 text-sm font-medium text-zinc-100\">Edit profile</button>\n      <AnimatePresence>\n        {open && (\n          <div className=\"fixed inset-0 z-50 grid place-items-center p-4\">\n            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setOpen(false)} className=\"absolute inset-0 bg-black/50 backdrop-blur-sm\" />\n            <motion.div ref={panel} role=\"dialog\" aria-modal=\"true\" aria-labelledby=\"dlg-title\" initial={{ opacity: 0, scale: 0.95, y: 8 }} animate={{ opacity: 1, scale: 1, y: 0 }} exit={{ opacity: 0, scale: 0.97 }} transition={{ duration: 0.22, ease: [0.16, 1, 0.3, 1] }} className=\"relative w-full max-w-md rounded-xl border border-zinc-800 bg-zinc-900 p-6 text-zinc-100 shadow-2xl\">\n              <h2 id=\"dlg-title\" className=\"text-lg font-semibold\">{title}</h2>\n              <p className=\"mt-1 text-sm text-zinc-400\">Make changes to your profile here.</p>\n              <input aria-label=\"Name\" defaultValue=\"Ada Lovelace\" className=\"mt-5 h-9 w-full rounded-lg border border-zinc-800 bg-zinc-950 px-3 text-sm outline-none focus:border-indigo-500\" />\n              <div className=\"mt-6 flex justify-end gap-2\">\n                <button type=\"button\" onClick={() => setOpen(false)} className=\"h-9 rounded-lg border border-zinc-800 px-4 text-sm\">Cancel</button>\n                <button type=\"button\" onClick={() => setOpen(false)} className=\"h-9 rounded-lg bg-indigo-500 px-4 text-sm font-medium text-white\">Save changes</button>\n              </div>\n            </motion.div>\n          </div>\n        )}\n      </AnimatePresence>\n    </>\n  );\n}"
+}

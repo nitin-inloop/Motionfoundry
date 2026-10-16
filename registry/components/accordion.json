@@ -1,0 +1,195 @@
+{
+  "slug": "accordion",
+  "name": "Accordion",
+  "category": "Navigation",
+  "collection": "ui",
+  "featured": false,
+  "addedAt": "2026-10-16",
+  "version": "2.3.0",
+  "requiresMotion": true,
+  "dependencies": [
+    "motion",
+    "react"
+  ],
+  "description": "A vertically stacked set of disclosure sections that open with a smooth height animation and a spring-rotating chevron or plus icon. Supports single or multiple open items, separated, bordered or ghost styles, and controlled or uncontrolled state.",
+  "tags": [
+    "accordion",
+    "disclosure",
+    "collapse",
+    "faq",
+    "expand",
+    "ui"
+  ],
+  "a11yNotes": "Follows the WAI-ARIA Accordion pattern: each header is a native button inside a heading (level configurable) with aria-expanded and aria-controls; each open panel is a role=region labelled by its header. Enter/Space toggle, ArrowUp/ArrowDown move between headers (wrapping) and Home/End jump to the first/last, skipping disabled items. In single, non-collapsible mode the open header reports aria-disabled. Closed panels are unmounted so their content leaves the tab order. Reduced motion opens panels instantly.",
+  "defaultProps": {
+    "type": "single",
+    "collapsible": true,
+    "defaultValue": [
+      "install"
+    ],
+    "variant": "separated",
+    "icon": "chevron",
+    "size": "md",
+    "accentColor": "#6366f1",
+    "disabled": false
+  },
+  "controls": [
+    {
+      "prop": "type",
+      "label": "Type",
+      "type": "select",
+      "options": [
+        "single",
+        "multiple"
+      ]
+    },
+    {
+      "prop": "collapsible",
+      "label": "Collapsible (single)",
+      "type": "boolean"
+    },
+    {
+      "prop": "defaultValue",
+      "label": "Open items (install, styling, a11y, motion)",
+      "type": "list"
+    },
+    {
+      "prop": "variant",
+      "label": "Variant",
+      "type": "select",
+      "options": [
+        "separated",
+        "bordered",
+        "ghost"
+      ]
+    },
+    {
+      "prop": "icon",
+      "label": "Icon",
+      "type": "select",
+      "options": [
+        "chevron",
+        "plus"
+      ]
+    },
+    {
+      "prop": "size",
+      "label": "Size",
+      "type": "select",
+      "options": [
+        "sm",
+        "md",
+        "lg"
+      ]
+    },
+    {
+      "prop": "accentColor",
+      "label": "Accent color",
+      "type": "color"
+    },
+    {
+      "prop": "disabled",
+      "label": "Disabled",
+      "type": "boolean"
+    }
+  ],
+  "propsApi": [
+    {
+      "name": "items",
+      "type": "{ value: string; title: string; content?: React.ReactNode; disabled?: boolean }[]",
+      "default": "4-question FAQ",
+      "description": "Sections to render."
+    },
+    {
+      "name": "type",
+      "type": "'single' | 'multiple'",
+      "default": "'single'",
+      "description": "Allow one or several sections open at once."
+    },
+    {
+      "name": "collapsible",
+      "type": "boolean",
+      "default": "true",
+      "description": "In single mode, allow closing the open section."
+    },
+    {
+      "name": "value",
+      "type": "string[]",
+      "default": "undefined",
+      "description": "Controlled list of open item values."
+    },
+    {
+      "name": "defaultValue",
+      "type": "string[]",
+      "default": "['install']",
+      "description": "Initially open item values when uncontrolled."
+    },
+    {
+      "name": "onValueChange",
+      "type": "(value: string[]) => void",
+      "default": "undefined",
+      "description": "Called with the open item values after each toggle."
+    },
+    {
+      "name": "variant",
+      "type": "'separated' | 'bordered' | 'ghost'",
+      "default": "'separated'",
+      "description": "Separate cards, one bordered container, or bare dividers."
+    },
+    {
+      "name": "icon",
+      "type": "'chevron' | 'plus'",
+      "default": "'chevron'",
+      "description": "Indicator icon; the chevron flips, the plus turns into an x."
+    },
+    {
+      "name": "size",
+      "type": "'sm' | 'md' | 'lg'",
+      "default": "'md'",
+      "description": "Padding and text size preset."
+    },
+    {
+      "name": "accentColor",
+      "type": "string",
+      "default": "'#6366f1'",
+      "description": "Color of the open indicator and open-card border."
+    },
+    {
+      "name": "headingLevel",
+      "type": "2 | 3 | 4 | 5 | 6",
+      "default": "3",
+      "description": "Heading level wrapping each header button."
+    },
+    {
+      "name": "disabled",
+      "type": "boolean",
+      "default": "false",
+      "description": "Disable every item."
+    },
+    {
+      "name": "className",
+      "type": "string",
+      "default": "''",
+      "description": "Class merged onto the root element."
+    },
+    {
+      "name": "style",
+      "type": "React.CSSProperties",
+      "default": "undefined",
+      "description": "Inline styles merged onto the root element."
+    }
+  ],
+  "files": [
+    {
+      "path": "components/ui/accordion.tsx",
+      "type": "registry:component",
+      "content": "\"use client\";\n\nimport * as React from \"react\";\nimport { AnimatePresence, motion, useReducedMotion } from \"motion/react\";\nimport styles from \"../styles/accordion.module.css\";\n\nexport interface AccordionItem {\n  /** Unique value of the item */\n  value: string;\n  /** Header text */\n  title: string;\n  /** Panel content */\n  content?: React.ReactNode;\n  /** Disable this item */\n  disabled?: boolean;\n}\n\nexport interface AccordionProps {\n  /** Items to render; defaults to an FAQ */\n  items?: AccordionItem[];\n  /** Allow one or several items open at once */\n  type?: \"single\" | \"multiple\";\n  /** In single mode, allow closing the open item */\n  collapsible?: boolean;\n  /** Controlled open item values */\n  value?: string[];\n  /** Initially open item values when uncontrolled */\n  defaultValue?: string[];\n  /** Called with the open item values */\n  onValueChange?: (value: string[]) => void;\n  /** Visual style */\n  variant?: \"separated\" | \"bordered\" | \"ghost\";\n  /** Indicator icon */\n  icon?: \"chevron\" | \"plus\";\n  /** Size preset */\n  size?: \"sm\" | \"md\" | \"lg\";\n  /** Accent color of the open indicator and focus highlights */\n  accentColor?: string;\n  /** Heading level used for item headers */\n  headingLevel?: 2 | 3 | 4 | 5 | 6;\n  /** Disable every item */\n  disabled?: boolean;\n  /** Optional className merged onto the root */\n  className?: string;\n  /** Optional inline styles merged onto the root */\n  style?: React.CSSProperties;\n}\n\nconst DEFAULT_ITEMS: AccordionItem[] = [\n  {\n    value: \"install\",\n    title: \"How do I install a component?\",\n    content: \"Run the CLI with the component slug. It copies a single self-contained file and its CSS module into your project, so you own the code.\",\n  },\n  {\n    value: \"styling\",\n    title: \"Can I restyle everything?\",\n    content: \"Yes. Every surface reads the --mf-* theme variables, and props such as accentColor, size and variant cover the most common tweaks.\",\n  },\n  {\n    value: \"a11y\",\n    title: \"Is it accessible?\",\n    content: \"Headers are real buttons with aria-expanded, panels are labelled regions, and arrow keys move between headers following the WAI-ARIA pattern.\",\n  },\n  {\n    value: \"motion\",\n    title: \"What about reduced motion?\",\n    content: \"When the user prefers reduced motion, panels open instantly and the indicator stops rotating.\",\n  },\n];\n\nexport function Accordion({\n  items = DEFAULT_ITEMS,\n  type = \"single\",\n  collapsible = true,\n  value: valueProp,\n  defaultValue = [\"install\"],\n  onValueChange,\n  variant = \"separated\",\n  icon = \"chevron\",\n  size = \"md\",\n  accentColor = \"#6366f1\",\n  headingLevel = 3,\n  disabled = false,\n  className = \"\",\n  style,\n}: AccordionProps) {\n  const reduce = useReducedMotion();\n  const [inner, setInner] = React.useState<string[]>(defaultValue);\n  const controlled = valueProp !== undefined;\n  const open = controlled ? valueProp : inner;\n  const baseId = React.useId();\n  const headerRefs = React.useRef<Array<HTMLButtonElement | null>>([]);\n  const Heading = `h${headingLevel}` as \"h3\";\n\n  const toggle = (v: string) => {\n    const isOpen = open.includes(v);\n    let next: string[];\n    if (type === \"multiple\") next = isOpen ? open.filter((x) => x !== v) : [...open, v];\n    else if (isOpen) {\n      if (!collapsible) return;\n      next = [];\n    } else next = [v];\n    if (!controlled) setInner(next);\n    onValueChange?.(next);\n  };\n\n  const onKeyDown = (e: React.KeyboardEvent<HTMLButtonElement>, i: number) => {\n    const nodes = headerRefs.current;\n    const enabled = nodes.map((n, idx) => (n && !n.disabled ? idx : -1)).filter((idx) => idx >= 0);\n    const pos = enabled.indexOf(i);\n    let next = -1;\n    if (e.key === \"ArrowDown\") next = enabled[(pos + 1) % enabled.length];\n    else if (e.key === \"ArrowUp\") next = enabled[(pos - 1 + enabled.length) % enabled.length];\n    else if (e.key === \"Home\") next = enabled[0];\n    else if (e.key === \"End\") next = enabled[enabled.length - 1];\n    if (next === undefined || next < 0) return;\n    e.preventDefault();\n    nodes[next]?.focus();\n  };\n\n  const ease = [0.16, 1, 0.3, 1] as const;\n\n  return (\n    <div\n      className={`${styles.root} ${className}`.trim()}\n      data-variant={variant}\n      data-size={size}\n      style={{ \"--mf-acc-accent\": accentColor, ...style } as React.CSSProperties}\n    >\n      {items.map((item, i) => {\n        const isOpen = open.includes(item.value);\n        const itemDisabled = disabled || !!item.disabled;\n        const headerId = `${baseId}-h-${i}`;\n        const panelId = `${baseId}-p-${i}`;\n        return (\n          <div key={item.value} className={styles.item} data-open={isOpen ? \"\" : undefined}>\n            <Heading className={styles.heading}>\n              <button\n                ref={(el) => {\n                  headerRefs.current[i] = el;\n                }}\n                id={headerId}\n                type=\"button\"\n                className={styles.trigger}\n                aria-expanded={isOpen}\n                aria-controls={panelId}\n                aria-disabled={type === \"single\" && isOpen && !collapsible ? true : undefined}\n                disabled={itemDisabled}\n                onClick={() => toggle(item.value)}\n                onKeyDown={(e) => onKeyDown(e, i)}\n              >\n                <span>{item.title}</span>\n                <motion.span\n                  aria-hidden=\"true\"\n                  className={styles.icon}\n                  initial={false}\n                  animate={{ rotate: isOpen ? (icon === \"plus\" ? 45 : 180) : 0 }}\n                  transition={reduce ? { duration: 0 } : { type: \"spring\", stiffness: 380, damping: 28 }}\n                >\n                  <svg width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" strokeWidth=\"2\" strokeLinecap=\"round\" strokeLinejoin=\"round\">\n                    <path d={icon === \"plus\" ? \"M12 5v14M5 12h14\" : \"m6 9 6 6 6-6\"} />\n                  </svg>\n                </motion.span>\n              </button>\n            </Heading>\n            <AnimatePresence initial={false}>\n              {isOpen && (\n                <motion.div\n                  key=\"panel\"\n                  id={panelId}\n                  role=\"region\"\n                  aria-labelledby={headerId}\n                  className={styles.panel}\n                  initial={{ height: 0, opacity: 0 }}\n                  animate={{ height: \"auto\", opacity: 1 }}\n                  exit={{ height: 0, opacity: 0 }}\n                  transition={reduce ? { duration: 0 } : { height: { duration: 0.28, ease }, opacity: { duration: 0.2 } }}\n                >\n                  <motion.div\n                    className={styles.content}\n                    initial={{ y: reduce ? 0 : -6 }}\n                    animate={{ y: 0 }}\n                    exit={{ y: reduce ? 0 : -6 }}\n                    transition={{ duration: reduce ? 0 : 0.25, ease }}\n                  >\n                    {item.content}\n                  </motion.div>\n                </motion.div>\n              )}\n            </AnimatePresence>\n          </div>\n        );\n      })}\n    </div>\n  );\n}\n"
+    },
+    {
+      "path": "components/styles/accordion.module.css",
+      "type": "registry:style",
+      "content": ".root {\n  --mf-acc-py: 1rem;\n  --mf-acc-fs: 0.9375rem;\n  display: flex;\n  flex-direction: column;\n  width: 100%;\n  max-width: 34rem;\n  color: var(--mf-fg, #f4f4f6);\n  font-size: var(--mf-acc-fs);\n}\n\n.root[data-size=\"sm\"] {\n  --mf-acc-py: 0.75rem;\n  --mf-acc-fs: 0.875rem;\n}\n\n.root[data-size=\"lg\"] {\n  --mf-acc-py: 1.25rem;\n  --mf-acc-fs: 1rem;\n}\n\n.root[data-variant=\"separated\"] {\n  gap: 0.5rem;\n}\n\n.root[data-variant=\"bordered\"] {\n  border-radius: 0.75rem;\n  border: 1px solid var(--mf-border, #2e2e38);\n  background-color: var(--mf-surface, #141419);\n  overflow: hidden;\n}\n\n.item {\n  position: relative;\n  transition: border-color 200ms ease, background-color 200ms ease;\n}\n\n.root[data-variant=\"separated\"] .item {\n  border-radius: 0.75rem;\n  border: 1px solid var(--mf-border, #2e2e38);\n  background-color: var(--mf-surface, #141419);\n}\n\n.root[data-variant=\"separated\"] .item[data-open] {\n  border-color: color-mix(in srgb, var(--mf-acc-accent, #6366f1) 45%, var(--mf-border, #2e2e38));\n}\n\n.root[data-variant=\"bordered\"] .item + .item,\n.root[data-variant=\"ghost\"] .item + .item {\n  border-top: 1px solid var(--mf-border, #2e2e38);\n}\n\n.heading {\n  margin: 0;\n  font-size: inherit;\n  font-weight: inherit;\n}\n\n.trigger {\n  display: flex;\n  align-items: center;\n  justify-content: space-between;\n  gap: 1rem;\n  width: 100%;\n  padding: var(--mf-acc-py) 1.125rem;\n  border: 0;\n  border-radius: inherit;\n  background: transparent;\n  color: var(--mf-fg, #f4f4f6);\n  font: inherit;\n  font-weight: 500;\n  text-align: left;\n  cursor: pointer;\n}\n\n.root[data-variant=\"ghost\"] .trigger {\n  padding-left: 0.125rem;\n  padding-right: 0.125rem;\n}\n\n.trigger:hover:not(:disabled) span:first-child {\n  text-decoration: underline;\n  text-decoration-color: color-mix(in srgb, var(--mf-acc-accent, #6366f1) 70%, transparent);\n  text-underline-offset: 4px;\n}\n\n.trigger:focus-visible {\n  outline: 2px solid var(--mf-fg, #e4e4e7);\n  outline-offset: -2px;\n}\n\n.trigger:disabled {\n  opacity: 0.45;\n  cursor: not-allowed;\n}\n\n.trigger[aria-disabled=\"true\"] {\n  cursor: default;\n}\n\n.icon {\n  display: inline-flex;\n  flex-shrink: 0;\n  color: var(--mf-muted, #a1a1aa);\n  transition: color 180ms ease;\n}\n\n.item[data-open] .icon {\n  color: var(--mf-acc-accent, #6366f1);\n}\n\n.panel {\n  overflow: hidden;\n}\n\n.content {\n  padding: 0 1.125rem var(--mf-acc-py);\n  color: var(--mf-muted, #a1a1aa);\n  line-height: 1.6;\n}\n\n.root[data-variant=\"ghost\"] .content {\n  padding-left: 0.125rem;\n  padding-right: 0.125rem;\n}\n\n@media (prefers-reduced-motion: reduce) {\n  .item,\n  .icon {\n    transition: none;\n  }\n}\n"
+    }
+  ],
+  "tailwindExample": "\"use client\";\n\nimport { useId, useState } from \"react\";\nimport { AnimatePresence, motion } from \"motion/react\";\n\nconst ITEMS = [\n  { q: \"How do I install a component?\", a: \"Run the CLI with the component slug.\" },\n  { q: \"Can I restyle everything?\", a: \"Yes, every surface reads theme variables.\" },\n  { q: \"Is it accessible?\", a: \"Headers are buttons with aria-expanded.\" },\n];\n\nexport function AccordionTailwind() {\n  const id = useId();\n  const [open, setOpen] = useState<number | null>(0);\n  return (\n    <div className=\"w-full max-w-lg space-y-2\">\n      {ITEMS.map((item, i) => (\n        <div key={item.q} className=\"rounded-xl border border-zinc-800 bg-zinc-900\">\n          <h3>\n            <button id={`${id}-h${i}`} aria-expanded={open === i} aria-controls={`${id}-p${i}`} onClick={() => setOpen(open === i ? null : i)} className=\"flex w-full items-center justify-between px-4 py-4 text-left font-medium text-zinc-100\">\n              {item.q}\n              <motion.svg animate={{ rotate: open === i ? 180 : 0 }} width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" strokeWidth=\"2\" className=\"text-zinc-400\"><path d=\"m6 9 6 6 6-6\" /></motion.svg>\n            </button>\n          </h3>\n          <AnimatePresence initial={false}>\n            {open === i && (\n              <motion.div id={`${id}-p${i}`} role=\"region\" aria-labelledby={`${id}-h${i}`} initial={{ height: 0 }} animate={{ height: \"auto\" }} exit={{ height: 0 }} className=\"overflow-hidden\">\n                <p className=\"px-4 pb-4 text-zinc-400\">{item.a}</p>\n              </motion.div>\n            )}\n          </AnimatePresence>\n        </div>\n      ))}\n    </div>\n  );\n}\n"
+}

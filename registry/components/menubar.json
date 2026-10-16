@@ -1,0 +1,133 @@
+{
+  "slug": "menubar",
+  "name": "Menubar",
+  "category": "Navigation",
+  "collection": "ui",
+  "featured": false,
+  "addedAt": "2026-10-16",
+  "version": "2.3.0",
+  "requiresMotion": true,
+  "dependencies": [
+    "motion",
+    "react"
+  ],
+  "description": "A desktop-app style menubar (File, Edit, View, Profiles) whose menus fade and lift in, switch on hover once one is open, and support shortcuts, separators, disabled items, and checkbox items.",
+  "tags": [
+    "menubar",
+    "menu",
+    "app menu",
+    "desktop",
+    "keyboard",
+    "ui"
+  ],
+  "a11yNotes": "Implements the WAI-ARIA menubar pattern: a role=\"menubar\" with roving tabindex across role=\"menuitem\" triggers (aria-haspopup, aria-expanded, aria-controls). Left/Right move between menus (switching the open menu), Down/Enter/Space open a menu on its first item, Up opens on its last, Home/End jump. Inside a menu, Up/Down/Home/End move focus, letters jump by typeahead, Enter/Space activate, Escape closes and returns focus to the trigger, and Tab closes. Checkbox items use role=\"menuitemcheckbox\" with aria-checked and keep the menu open; disabled items are aria-disabled and skipped. Reduced motion removes the open animation.",
+  "defaultProps": {
+    "appName": "Foundry",
+    "showShortcuts": true,
+    "dense": false,
+    "switchOnHover": true,
+    "accentColor": "#6366f1"
+  },
+  "controls": [
+    {
+      "prop": "appName",
+      "label": "App name",
+      "type": "text"
+    },
+    {
+      "prop": "showShortcuts",
+      "label": "Shortcuts",
+      "type": "boolean"
+    },
+    {
+      "prop": "dense",
+      "label": "Dense",
+      "type": "boolean"
+    },
+    {
+      "prop": "switchOnHover",
+      "label": "Switch menus on hover",
+      "type": "boolean"
+    },
+    {
+      "prop": "accentColor",
+      "label": "Accent",
+      "type": "color"
+    }
+  ],
+  "propsApi": [
+    {
+      "name": "menus",
+      "type": "MenubarMenu[]",
+      "default": "File / Edit / View / Profiles",
+      "description": "Menus: { label, items: ({ label, shortcut?, disabled? } | { type: 'checkbox', label, checked? } | { type: 'separator' })[] }."
+    },
+    {
+      "name": "appName",
+      "type": "string",
+      "default": "'Foundry'",
+      "description": "App name before the menus; also the menubar's accessible label (empty hides it)."
+    },
+    {
+      "name": "showShortcuts",
+      "type": "boolean",
+      "default": "true",
+      "description": "Show keyboard shortcut hints."
+    },
+    {
+      "name": "dense",
+      "type": "boolean",
+      "default": "false",
+      "description": "Tighter item spacing."
+    },
+    {
+      "name": "switchOnHover",
+      "type": "boolean",
+      "default": "true",
+      "description": "While a menu is open, hovering another trigger switches to it."
+    },
+    {
+      "name": "accentColor",
+      "type": "string",
+      "default": "'#6366f1'",
+      "description": "Highlight, check mark, and focus color."
+    },
+    {
+      "name": "onSelect",
+      "type": "(menu: string, item: string) => void",
+      "default": "undefined",
+      "description": "Called when an item is chosen."
+    },
+    {
+      "name": "onCheckedChange",
+      "type": "(menu: string, item: string, checked: boolean) => void",
+      "default": "undefined",
+      "description": "Called when a checkbox item toggles."
+    },
+    {
+      "name": "className",
+      "type": "string",
+      "default": "''",
+      "description": "Merged onto the root."
+    },
+    {
+      "name": "style",
+      "type": "React.CSSProperties",
+      "default": "undefined",
+      "description": "Merged onto the root."
+    }
+  ],
+  "files": [
+    {
+      "path": "components/ui/menubar.tsx",
+      "type": "registry:component",
+      "content": "\"use client\";\n\nimport * as React from \"react\";\nimport { AnimatePresence, motion, useReducedMotion } from \"motion/react\";\nimport styles from \"../styles/menubar.module.css\";\n\nexport type MenubarEntry =\n  | { type?: \"item\"; label: string; shortcut?: string; disabled?: boolean }\n  | { type: \"checkbox\"; label: string; shortcut?: string; checked?: boolean }\n  | { type: \"separator\" };\n\nexport interface MenubarMenu {\n  /** Top-level menu label */\n  label: string;\n  /** Entries shown in the dropdown */\n  items: MenubarEntry[];\n}\n\nexport interface MenubarProps {\n  /** Menus from left to right */\n  menus?: MenubarMenu[];\n  /** App name shown before the menus (empty hides it) */\n  appName?: string;\n  /** Show keyboard shortcut hints */\n  showShortcuts?: boolean;\n  /** Tighter item spacing */\n  dense?: boolean;\n  /** While a menu is open, hovering another trigger switches to it */\n  switchOnHover?: boolean;\n  /** Accent color for highlighted items and checks */\n  accentColor?: string;\n  /** Called when an item is chosen, with the menu and item labels */\n  onSelect?: (menu: string, item: string) => void;\n  /** Called when a checkbox item is toggled */\n  onCheckedChange?: (menu: string, item: string, checked: boolean) => void;\n  /** Optional className merged onto the root */\n  className?: string;\n  /** Optional inline styles merged onto the root */\n  style?: React.CSSProperties;\n}\n\nconst DEFAULT_MENUS: MenubarMenu[] = [\n  {\n    label: \"File\",\n    items: [\n      { label: \"New Tab\", shortcut: \"⌘T\" },\n      { label: \"New Window\", shortcut: \"⌘N\" },\n      { label: \"New Incognito Window\", disabled: true },\n      { type: \"separator\" },\n      { label: \"Share…\" },\n      { label: \"Print…\", shortcut: \"⌘P\" },\n    ],\n  },\n  {\n    label: \"Edit\",\n    items: [\n      { label: \"Undo\", shortcut: \"⌘Z\" },\n      { label: \"Redo\", shortcut: \"⇧⌘Z\" },\n      { type: \"separator\" },\n      { label: \"Cut\", shortcut: \"⌘X\" },\n      { label: \"Copy\", shortcut: \"⌘C\" },\n      { label: \"Paste\", shortcut: \"⌘V\" },\n    ],\n  },\n  {\n    label: \"View\",\n    items: [\n      { type: \"checkbox\", label: \"Always Show Bookmarks Bar\", checked: true },\n      { type: \"checkbox\", label: \"Always Show Full URLs\" },\n      { type: \"separator\" },\n      { label: \"Reload\", shortcut: \"⌘R\" },\n      { label: \"Toggle Fullscreen\", shortcut: \"⌃⌘F\" },\n    ],\n  },\n  {\n    label: \"Profiles\",\n    items: [{ label: \"Andy\" }, { label: \"Benoit\" }, { label: \"Luis\" }, { type: \"separator\" }, { label: \"Edit…\" }, { label: \"Add Profile…\" }],\n  },\n];\n\ntype Checks = Record<string, boolean>;\nconst checkKey = (menu: string, item: string) => `${menu}\\u0000${item}`;\n\nfunction initialChecks(menus: MenubarMenu[]): Checks {\n  const out: Checks = {};\n  for (const m of menus) for (const it of m.items) if (it.type === \"checkbox\") out[checkKey(m.label, it.label)] = !!it.checked;\n  return out;\n}\n\nexport function Menubar({\n  menus = DEFAULT_MENUS,\n  appName = \"Foundry\",\n  showShortcuts = true,\n  dense = false,\n  switchOnHover = true,\n  accentColor = \"#6366f1\",\n  onSelect,\n  onCheckedChange,\n  className = \"\",\n  style,\n}: MenubarProps) {\n  const reduceMotion = useReducedMotion();\n  const baseId = React.useId();\n  const rootRef = React.useRef<HTMLDivElement>(null);\n  const triggerRefs = React.useRef<(HTMLButtonElement | null)[]>([]);\n  const [open, setOpen] = React.useState<number | null>(null);\n  const [focusIndex, setFocusIndex] = React.useState(0); // roving tabindex among triggers\n  const [checks, setChecks] = React.useState<Checks>(() => initialChecks(menus));\n  const pendingItemFocus = React.useRef<\"first\" | \"last\" | null>(null);\n\n  // Close on outside pointer down.\n  React.useEffect(() => {\n    if (open === null) return;\n    const onDown = (e: PointerEvent) => {\n      if (!rootRef.current?.contains(e.target as Node)) setOpen(null);\n    };\n    document.addEventListener(\"pointerdown\", onDown);\n    return () => document.removeEventListener(\"pointerdown\", onDown);\n  }, [open]);\n\n  const menuItems = (menuIndex: number) =>\n    Array.from(rootRef.current?.querySelectorAll<HTMLElement>(`[data-menu=\"${menuIndex}\"] [role^=\"menuitem\"]:not([aria-disabled=\"true\"])`) ?? []);\n\n  // After a menu opens from the keyboard, move focus into it.\n  React.useEffect(() => {\n    if (open === null || !pendingItemFocus.current) return;\n    const where = pendingItemFocus.current;\n    pendingItemFocus.current = null;\n    const id = requestAnimationFrame(() => {\n      const items = menuItems(open);\n      (where === \"last\" ? items[items.length - 1] : items[0])?.focus();\n    });\n    return () => cancelAnimationFrame(id);\n  }, [open]);\n\n  const openMenu = (index: number, focusItem: \"first\" | \"last\" | null = null) => {\n    pendingItemFocus.current = focusItem;\n    setFocusIndex(index);\n    setOpen(index);\n  };\n\n  const close = (refocus = true) => {\n    const index = open;\n    setOpen(null);\n    if (refocus && index !== null) triggerRefs.current[index]?.focus();\n  };\n\n  const moveTrigger = (delta: number, keepOpen: boolean) => {\n    const next = (focusIndex + delta + menus.length) % menus.length;\n    setFocusIndex(next);\n    triggerRefs.current[next]?.focus();\n    if (keepOpen) openMenu(next, \"first\");\n  };\n\n  const onTriggerKeyDown = (e: React.KeyboardEvent, index: number) => {\n    if (e.key === \"ArrowRight\" || e.key === \"ArrowLeft\") {\n      e.preventDefault();\n      moveTrigger(e.key === \"ArrowRight\" ? 1 : -1, open !== null);\n    } else if (e.key === \"ArrowDown\" || e.key === \"Enter\" || e.key === \" \") {\n      e.preventDefault();\n      openMenu(index, \"first\");\n    } else if (e.key === \"ArrowUp\") {\n      e.preventDefault();\n      openMenu(index, \"last\");\n    } else if (e.key === \"Home\" || e.key === \"End\") {\n      e.preventDefault();\n      const target = e.key === \"Home\" ? 0 : menus.length - 1;\n      setFocusIndex(target);\n      triggerRefs.current[target]?.focus();\n    } else if (e.key === \"Escape\") {\n      close();\n    }\n  };\n\n  const onMenuKeyDown = (e: React.KeyboardEvent, menuIndex: number) => {\n    const items = menuItems(menuIndex);\n    const current = items.indexOf(document.activeElement as HTMLElement);\n    const focusAt = (i: number) => items[(i + items.length) % items.length]?.focus();\n    switch (e.key) {\n      case \"ArrowDown\":\n        e.preventDefault();\n        focusAt(current + 1);\n        break;\n      case \"ArrowUp\":\n        e.preventDefault();\n        focusAt(current - 1);\n        break;\n      case \"Home\":\n        e.preventDefault();\n        focusAt(0);\n        break;\n      case \"End\":\n        e.preventDefault();\n        focusAt(items.length - 1);\n        break;\n      case \"ArrowRight\":\n      case \"ArrowLeft\":\n        e.preventDefault();\n        moveTrigger(e.key === \"ArrowRight\" ? 1 : -1, true);\n        break;\n      case \"Escape\":\n        e.preventDefault();\n        close();\n        break;\n      case \"Tab\":\n        setOpen(null);\n        break;\n      default:\n        // Typeahead: jump to the next item starting with the typed letter.\n        if (e.key.length === 1 && /\\S/.test(e.key)) {\n          const k = e.key.toLowerCase();\n          const order = [...items.slice(current + 1), ...items.slice(0, current + 1)];\n          order.find((el) => el.textContent?.trim().toLowerCase().startsWith(k))?.focus();\n        }\n    }\n  };\n\n  const choose = (menu: MenubarMenu, entry: MenubarEntry) => {\n    if (entry.type === \"separator\") return;\n    if (entry.type === \"checkbox\") {\n      const key = checkKey(menu.label, entry.label);\n      const next = !checks[key];\n      setChecks((c) => ({ ...c, [key]: next }));\n      onCheckedChange?.(menu.label, entry.label, next);\n      return; // checkbox items keep the menu open\n    }\n    if (entry.disabled) return;\n    onSelect?.(menu.label, entry.label);\n    close();\n  };\n\n  const transition = reduceMotion ? { duration: 0 } : { duration: 0.16, ease: [0.16, 1, 0.3, 1] as [number, number, number, number] };\n\n  return (\n    <div\n      ref={rootRef}\n      className={`${styles.root} ${dense ? styles.dense : \"\"} ${className}`.trim()}\n      style={{ \"--mf-mb-accent\": accentColor, ...style } as React.CSSProperties}\n    >\n      <div role=\"menubar\" aria-label={appName || \"Menu bar\"} className={styles.bar}>\n        {appName && (\n          <span className={styles.app} aria-hidden=\"true\">\n            <span className={styles.logo} />\n            {appName}\n          </span>\n        )}\n        {menus.map((menu, index) => {\n          const isOpen = open === index;\n          const menuId = `${baseId}-menu-${index}`;\n          return (\n            <div key={menu.label} className={styles.menuWrap} data-menu={index}>\n              <button\n                ref={(el) => {\n                  triggerRefs.current[index] = el;\n                }}\n                type=\"button\"\n                role=\"menuitem\"\n                aria-haspopup=\"menu\"\n                aria-expanded={isOpen}\n                aria-controls={isOpen ? menuId : undefined}\n                tabIndex={index === focusIndex ? 0 : -1}\n                className={styles.trigger}\n                data-open={isOpen || undefined}\n                onClick={() => (isOpen ? close(false) : openMenu(index))}\n                onPointerEnter={() => {\n                  if (switchOnHover && open !== null && open !== index) openMenu(index);\n                }}\n                onKeyDown={(e) => onTriggerKeyDown(e, index)}\n              >\n                {menu.label}\n              </button>\n              <AnimatePresence>\n                {isOpen && (\n                  <motion.div\n                    id={menuId}\n                    role=\"menu\"\n                    aria-label={menu.label}\n                    className={styles.menu}\n                    initial={{ opacity: 0, y: -4, scale: 0.98 }}\n                    animate={{ opacity: 1, y: 0, scale: 1 }}\n                    exit={{ opacity: 0, y: -4, scale: 0.98 }}\n                    transition={transition}\n                    onKeyDown={(e) => onMenuKeyDown(e, index)}\n                  >\n                    {menu.items.map((entry, i) => {\n                      if (entry.type === \"separator\") return <div key={`sep-${i}`} role=\"separator\" className={styles.separator} />;\n                      const isCheckbox = entry.type === \"checkbox\";\n                      const checked = isCheckbox && checks[checkKey(menu.label, entry.label)];\n                      const disabled = !isCheckbox && !!entry.disabled;\n                      return (\n                        <div\n                          key={entry.label}\n                          role={isCheckbox ? \"menuitemcheckbox\" : \"menuitem\"}\n                          aria-checked={isCheckbox ? !!checked : undefined}\n                          aria-disabled={disabled || undefined}\n                          tabIndex={-1}\n                          className={styles.item}\n                          onClick={() => choose(menu, entry)}\n                          onKeyDown={(e) => {\n                            if (e.key === \"Enter\" || e.key === \" \") {\n                              e.preventDefault();\n                              choose(menu, entry);\n                            }\n                          }}\n                          onPointerEnter={(e) => {\n                            if (!disabled) e.currentTarget.focus();\n                          }}\n                        >\n                          <span className={styles.check} aria-hidden=\"true\">\n                            {checked && (\n                              <svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" strokeWidth={2.5} strokeLinecap=\"round\" strokeLinejoin=\"round\">\n                                <path d=\"m5 12.5 4.5 4.5L19 7\" />\n                              </svg>\n                            )}\n                          </span>\n                          <span className={styles.label}>{entry.label}</span>\n                          {showShortcuts && entry.shortcut && <kbd className={styles.shortcut}>{entry.shortcut}</kbd>}\n                        </div>\n                      );\n                    })}\n                  </motion.div>\n                )}\n              </AnimatePresence>\n            </div>\n          );\n        })}\n      </div>\n    </div>\n  );\n}\n"
+    },
+    {
+      "path": "components/styles/menubar.module.css",
+      "type": "registry:style",
+      "content": ".root {\n  display: flex;\n  justify-content: center;\n  width: 100%;\n  min-height: 19rem;\n  color: var(--mf-fg, #f4f4f6);\n  font-size: 0.875rem;\n}\n\n.bar {\n  display: inline-flex;\n  align-items: center;\n  gap: 0.125rem;\n  height: 2.5rem;\n  padding: 0 0.25rem;\n  border: 1px solid var(--mf-border, #2e2e38);\n  border-radius: 0.625rem;\n  background-color: var(--mf-surface, #141419);\n  align-self: flex-start;\n}\n\n.app {\n  display: inline-flex;\n  align-items: center;\n  gap: 0.5rem;\n  padding: 0 0.625rem 0 0.375rem;\n  margin-right: 0.125rem;\n  border-right: 1px solid var(--mf-border, #2e2e38);\n  font-weight: 650;\n}\n\n.logo {\n  width: 1rem;\n  height: 1rem;\n  border-radius: 0.3125rem;\n  background: linear-gradient(135deg, var(--mf-mb-accent, #6366f1), color-mix(in srgb, var(--mf-mb-accent, #6366f1) 45%, #f472b6));\n}\n\n.menuWrap {\n  position: relative;\n}\n\n.trigger {\n  height: 2rem;\n  padding: 0 0.75rem;\n  border: 0;\n  border-radius: 0.4375rem;\n  background: transparent;\n  color: var(--mf-fg, #f4f4f6);\n  font: inherit;\n  font-weight: 500;\n  cursor: default;\n  transition: background-color 120ms ease;\n}\n\n.trigger:hover,\n.trigger[data-open] {\n  background-color: var(--mf-surface-raised, #1b1b22);\n}\n\n.trigger:focus-visible,\n.item:focus-visible {\n  outline: 2px solid var(--mf-mb-accent, #6366f1);\n  outline-offset: -2px;\n}\n\n.menu {\n  position: absolute;\n  top: calc(100% + 0.5rem);\n  left: 0;\n  z-index: 50;\n  min-width: 14rem;\n  padding: 0.3125rem;\n  border: 1px solid var(--mf-border, #2e2e38);\n  border-radius: 0.625rem;\n  background-color: var(--mf-surface, #141419);\n  box-shadow: 0 16px 40px -16px rgba(0, 0, 0, 0.6);\n  transform-origin: top left;\n}\n\n.item {\n  display: flex;\n  align-items: center;\n  gap: 0.5rem;\n  height: 2rem;\n  padding: 0 0.5rem 0 0.25rem;\n  border-radius: 0.375rem;\n  color: var(--mf-fg, #f4f4f6);\n  white-space: nowrap;\n  cursor: default;\n  outline: none;\n}\n\n.item:focus,\n.item:hover {\n  background-color: color-mix(in srgb, var(--mf-mb-accent, #6366f1) 16%, var(--mf-surface-raised, #1b1b22));\n}\n\n.item[aria-disabled=\"true\"] {\n  color: var(--mf-subtle, #71717a);\n  background: transparent;\n}\n\n.check {\n  display: inline-flex;\n  flex-shrink: 0;\n  align-items: center;\n  justify-content: center;\n  width: 1.25rem;\n  height: 1.25rem;\n  color: var(--mf-mb-accent, #6366f1);\n}\n\n.check svg {\n  width: 0.875rem;\n  height: 0.875rem;\n}\n\n.label {\n  flex: 1;\n}\n\n.shortcut {\n  margin-left: 1.5rem;\n  color: var(--mf-subtle, #71717a);\n  font-family: inherit;\n  font-size: 0.75rem;\n  letter-spacing: 0.04em;\n}\n\n.separator {\n  height: 1px;\n  margin: 0.3125rem -0.3125rem;\n  background-color: var(--mf-border, #2e2e38);\n}\n\n.dense .item {\n  height: 1.75rem;\n  font-size: 0.8125rem;\n}\n\n.dense .bar {\n  height: 2.25rem;\n}\n\n.dense .trigger {\n  height: 1.75rem;\n  padding: 0 0.625rem;\n}\n\n@media (prefers-reduced-motion: reduce) {\n  .trigger {\n    transition: none;\n  }\n}\n"
+    }
+  ],
+  "tailwindExample": "\"use client\";\n\nimport { useState } from \"react\";\nimport { AnimatePresence, motion } from \"motion/react\";\n\nconst menus = { File: [\"New Tab\", \"New Window\", \"Print…\"], Edit: [\"Undo\", \"Redo\", \"Copy\", \"Paste\"], View: [\"Reload\", \"Toggle Fullscreen\"] };\n\nexport function MenubarTailwind() {\n  const [open, setOpen] = useState<string | null>(null);\n  return (\n    <div role=\"menubar\" className=\"inline-flex h-10 items-center gap-0.5 rounded-xl border border-zinc-800 bg-zinc-950 px-1 text-sm text-zinc-100\">\n      {Object.entries(menus).map(([label, items]) => (\n        <div key={label} className=\"relative\" onPointerEnter={() => open && setOpen(label)}>\n          <button\n            role=\"menuitem\"\n            aria-haspopup=\"menu\"\n            aria-expanded={open === label}\n            onClick={() => setOpen(open === label ? null : label)}\n            className=\"h-8 rounded-md px-3 font-medium hover:bg-zinc-900 aria-expanded:bg-zinc-900\"\n          >\n            {label}\n          </button>\n          <AnimatePresence>\n            {open === label && (\n              <motion.div\n                role=\"menu\"\n                initial={{ opacity: 0, y: -4 }}\n                animate={{ opacity: 1, y: 0 }}\n                exit={{ opacity: 0, y: -4 }}\n                className=\"absolute left-0 top-10 z-10 min-w-48 rounded-lg border border-zinc-800 bg-zinc-950 p-1 shadow-xl\"\n              >\n                {items.map((item) => (\n                  <div key={item} role=\"menuitem\" tabIndex={-1} onClick={() => setOpen(null)} className=\"rounded-md px-2 py-1.5 hover:bg-indigo-500/15\">\n                    {item}\n                  </div>\n                ))}\n              </motion.div>\n            )}\n          </AnimatePresence>\n        </div>\n      ))}\n    </div>\n  );\n}"
+}

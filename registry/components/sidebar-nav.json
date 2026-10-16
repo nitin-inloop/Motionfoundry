@@ -1,0 +1,181 @@
+{
+  "slug": "sidebar-nav",
+  "name": "SidebarNav",
+  "category": "Navigation",
+  "collection": "ui",
+  "featured": false,
+  "addedAt": "2026-10-16",
+  "version": "2.3.0",
+  "requiresMotion": true,
+  "dependencies": [
+    "motion",
+    "react"
+  ],
+  "description": "An app sidebar with grouped links, an accent pill that glides to the active item, count badges, and a toggle that springs the panel down to an icon rail.",
+  "tags": [
+    "sidebar",
+    "navigation",
+    "app shell",
+    "collapsible",
+    "nav rail",
+    "ui"
+  ],
+  "a11yNotes": "Renders a <nav> landmark labelled by the workspace title. Items are native buttons with aria-current=\"page\" on the active one; Up/Down/Home/End move focus between items and Tab still works. The collapse toggle is a button with aria-expanded and aria-controls. When collapsed, each item keeps its accessible name through aria-label and a title tooltip, and group headings are hidden from assistive tech. Badges announce \"N new\". Reduced motion removes the width spring and pill glide.",
+  "defaultProps": {
+    "defaultValue": "inbox",
+    "defaultCollapsed": false,
+    "title": "Acme Inc.",
+    "showBadges": true,
+    "showToggle": true,
+    "width": 240,
+    "accentColor": "#6366f1"
+  },
+  "controls": [
+    {
+      "prop": "title",
+      "label": "Workspace title",
+      "type": "text"
+    },
+    {
+      "prop": "defaultValue",
+      "label": "Active item",
+      "type": "select",
+      "options": [
+        "home",
+        "inbox",
+        "analytics",
+        "projects",
+        "team",
+        "settings",
+        "help"
+      ]
+    },
+    {
+      "prop": "defaultCollapsed",
+      "label": "Start collapsed",
+      "type": "boolean"
+    },
+    {
+      "prop": "showBadges",
+      "label": "Badges",
+      "type": "boolean"
+    },
+    {
+      "prop": "showToggle",
+      "label": "Collapse toggle",
+      "type": "boolean"
+    },
+    {
+      "prop": "width",
+      "label": "Expanded width (px)",
+      "type": "range",
+      "min": 200,
+      "max": 320,
+      "step": 10
+    },
+    {
+      "prop": "accentColor",
+      "label": "Accent",
+      "type": "color"
+    }
+  ],
+  "propsApi": [
+    {
+      "name": "groups",
+      "type": "SidebarNavGroup[]",
+      "default": "Workspace + Organization groups",
+      "description": "Grouped links: { label, items: { id, label, icon?, badge? }[] }."
+    },
+    {
+      "name": "value",
+      "type": "string",
+      "default": "undefined",
+      "description": "Controlled active item id."
+    },
+    {
+      "name": "defaultValue",
+      "type": "string",
+      "default": "'inbox'",
+      "description": "Initially active item id (uncontrolled)."
+    },
+    {
+      "name": "onValueChange",
+      "type": "(id: string) => void",
+      "default": "undefined",
+      "description": "Called when an item is activated."
+    },
+    {
+      "name": "collapsed",
+      "type": "boolean",
+      "default": "undefined",
+      "description": "Controlled collapsed state."
+    },
+    {
+      "name": "defaultCollapsed",
+      "type": "boolean",
+      "default": "false",
+      "description": "Start collapsed to the icon rail (uncontrolled)."
+    },
+    {
+      "name": "onCollapsedChange",
+      "type": "(collapsed: boolean) => void",
+      "default": "undefined",
+      "description": "Called when the collapse toggle is used."
+    },
+    {
+      "name": "title",
+      "type": "string",
+      "default": "'Acme Inc.'",
+      "description": "Workspace title; also the nav landmark's label."
+    },
+    {
+      "name": "showBadges",
+      "type": "boolean",
+      "default": "true",
+      "description": "Show count badges (a dot when collapsed)."
+    },
+    {
+      "name": "showToggle",
+      "type": "boolean",
+      "default": "true",
+      "description": "Show the collapse toggle button."
+    },
+    {
+      "name": "width",
+      "type": "number",
+      "default": "240",
+      "description": "Expanded width in pixels (collapsed is 64)."
+    },
+    {
+      "name": "accentColor",
+      "type": "string",
+      "default": "'#6366f1'",
+      "description": "Active pill, icon, and badge color."
+    },
+    {
+      "name": "className",
+      "type": "string",
+      "default": "''",
+      "description": "Merged onto the root."
+    },
+    {
+      "name": "style",
+      "type": "React.CSSProperties",
+      "default": "undefined",
+      "description": "Merged onto the root."
+    }
+  ],
+  "files": [
+    {
+      "path": "components/ui/sidebar-nav.tsx",
+      "type": "registry:component",
+      "content": "\"use client\";\n\nimport * as React from \"react\";\nimport { motion, useReducedMotion } from \"motion/react\";\nimport styles from \"../styles/sidebar-nav.module.css\";\n\nexport type SidebarNavIcon = \"home\" | \"inbox\" | \"chart\" | \"folder\" | \"users\" | \"settings\" | \"help\";\n\nexport interface SidebarNavItem {\n  /** Unique id used for the active state */\n  id: string;\n  /** Visible label (also the accessible name when collapsed) */\n  label: string;\n  /** Built-in icon */\n  icon?: SidebarNavIcon;\n  /** Optional count badge */\n  badge?: number;\n}\n\nexport interface SidebarNavGroup {\n  /** Group heading (hidden when collapsed) */\n  label: string;\n  /** Links in this group */\n  items: SidebarNavItem[];\n}\n\nexport interface SidebarNavProps {\n  /** Grouped navigation links */\n  groups?: SidebarNavGroup[];\n  /** Controlled active item id */\n  value?: string;\n  /** Initially active item id (uncontrolled) */\n  defaultValue?: string;\n  /** Called when an item is activated */\n  onValueChange?: (id: string) => void;\n  /** Controlled collapsed state */\n  collapsed?: boolean;\n  /** Start collapsed to icons (uncontrolled) */\n  defaultCollapsed?: boolean;\n  /** Called when the collapse toggle is used */\n  onCollapsedChange?: (collapsed: boolean) => void;\n  /** Workspace title shown at the top */\n  title?: string;\n  /** Show count badges */\n  showBadges?: boolean;\n  /** Show the collapse toggle button */\n  showToggle?: boolean;\n  /** Expanded width in pixels */\n  width?: number;\n  /** Accent color for the active pill and badges */\n  accentColor?: string;\n  /** Optional className merged onto the root */\n  className?: string;\n  /** Optional inline styles merged onto the root */\n  style?: React.CSSProperties;\n}\n\nconst DEFAULT_GROUPS: SidebarNavGroup[] = [\n  {\n    label: \"Workspace\",\n    items: [\n      { id: \"home\", label: \"Home\", icon: \"home\" },\n      { id: \"inbox\", label: \"Inbox\", icon: \"inbox\", badge: 12 },\n      { id: \"analytics\", label: \"Analytics\", icon: \"chart\" },\n      { id: \"projects\", label: \"Projects\", icon: \"folder\", badge: 3 },\n    ],\n  },\n  {\n    label: \"Organization\",\n    items: [\n      { id: \"team\", label: \"Team\", icon: \"users\" },\n      { id: \"settings\", label: \"Settings\", icon: \"settings\" },\n      { id: \"help\", label: \"Help & support\", icon: \"help\" },\n    ],\n  },\n];\n\nconst ICON_PATHS: Record<SidebarNavIcon, string> = {\n  home: \"M3 10.5 12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z\",\n  inbox: \"M3 13h5l1.5 3h5L16 13h5M5 5h14l2 8v6a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1v-6z\",\n  chart: \"M4 20V10M10 20V4M16 20v-7M22 20H2\",\n  folder: \"M3 6a1 1 0 0 1 1-1h5l2 2h9a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1z\",\n  users: \"M16 19v-1a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v1M9 10a3 3 0 1 0 0-6 3 3 0 0 0 0 6M22 19v-1a4 4 0 0 0-3-3.87M16 4.13a3 3 0 0 1 0 5.74\",\n  settings: \"M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-2.8 1.2V21a2 2 0 1 1-4 0v-.1A1.7 1.7 0 0 0 7 19.4a1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1A1.7 1.7 0 0 0 1.2 14H1a2 2 0 1 1 0-4h.1A1.7 1.7 0 0 0 2.6 7a1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1A1.7 1.7 0 0 0 7 2.6 1.7 1.7 0 0 0 8 1.1V1a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V7a1.7 1.7 0 0 0 1.5 1H23a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z\",\n  help: \"M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20M9.1 9a3 3 0 0 1 5.8 1c0 2-3 3-3 3M12 17h.01\",\n};\n\nfunction Icon({ name }: { name: SidebarNavIcon }) {\n  return (\n    <svg className={styles.icon} viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" strokeWidth={1.8} strokeLinecap=\"round\" strokeLinejoin=\"round\" aria-hidden=\"true\">\n      <path d={ICON_PATHS[name]} />\n    </svg>\n  );\n}\n\nexport function SidebarNav({\n  groups = DEFAULT_GROUPS,\n  value,\n  defaultValue = \"inbox\",\n  onValueChange,\n  collapsed,\n  defaultCollapsed = false,\n  onCollapsedChange,\n  title = \"Acme Inc.\",\n  showBadges = true,\n  showToggle = true,\n  width = 240,\n  accentColor = \"#6366f1\",\n  className = \"\",\n  style,\n}: SidebarNavProps) {\n  const reduceMotion = useReducedMotion();\n  const pillId = React.useId();\n  const listId = React.useId();\n  const listRef = React.useRef<HTMLDivElement>(null);\n  const [activeState, setActiveState] = React.useState(defaultValue);\n  const [collapsedState, setCollapsedState] = React.useState(defaultCollapsed);\n  const active = value ?? activeState;\n  const isCollapsed = collapsed ?? collapsedState;\n\n  const select = (id: string) => {\n    if (value === undefined) setActiveState(id);\n    onValueChange?.(id);\n  };\n\n  const toggle = () => {\n    const next = !isCollapsed;\n    if (collapsed === undefined) setCollapsedState(next);\n    onCollapsedChange?.(next);\n  };\n\n  // Up/Down/Home/End move focus between items (the list is also reachable with Tab).\n  const onKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {\n    const buttons = Array.from(listRef.current?.querySelectorAll<HTMLButtonElement>(\"[data-sidebar-item]\") ?? []);\n    const index = buttons.indexOf(document.activeElement as HTMLButtonElement);\n    if (index === -1) return;\n    const targets: Record<string, number> = { ArrowDown: index + 1, ArrowUp: index - 1, Home: 0, End: buttons.length - 1 };\n    if (!(event.key in targets)) return;\n    event.preventDefault();\n    buttons[(targets[event.key] + buttons.length) % buttons.length]?.focus();\n  };\n\n  const spring = reduceMotion ? { duration: 0 } : { type: \"spring\" as const, stiffness: 420, damping: 34 };\n\n  return (\n    <motion.nav\n      aria-label={title || \"Sidebar\"}\n      className={`${styles.root} ${className}`.trim()}\n      data-collapsed={isCollapsed || undefined}\n      animate={{ width: isCollapsed ? 64 : width }}\n      initial={false}\n      transition={spring}\n      style={{ \"--mf-sn-accent\": accentColor, ...style } as React.CSSProperties}\n    >\n      <div className={styles.header}>\n        <span className={styles.logo} aria-hidden=\"true\" />\n        {!isCollapsed && <span className={styles.title}>{title}</span>}\n        {showToggle && (\n          <button\n            type=\"button\"\n            className={styles.toggle}\n            onClick={toggle}\n            aria-expanded={!isCollapsed}\n            aria-controls={listId}\n            aria-label={isCollapsed ? \"Expand sidebar\" : \"Collapse sidebar\"}\n          >\n            <svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" strokeWidth={1.8} strokeLinecap=\"round\" aria-hidden=\"true\">\n              <rect x=\"3\" y=\"4\" width=\"18\" height=\"16\" rx=\"2\" />\n              <path d=\"M9 4v16\" />\n            </svg>\n          </button>\n        )}\n      </div>\n\n      <div id={listId} ref={listRef} className={styles.groups} onKeyDown={onKeyDown}>\n        {groups.map((group) => (\n          <div key={group.label} className={styles.group}>\n            <div className={styles.groupLabel} aria-hidden={isCollapsed || undefined}>\n              {isCollapsed ? <span className={styles.groupRule} /> : group.label}\n            </div>\n            <ul className={styles.list}>\n              {group.items.map((item) => {\n                const isActive = item.id === active;\n                return (\n                  <li key={item.id}>\n                    <button\n                      type=\"button\"\n                      data-sidebar-item=\"\"\n                      className={styles.item}\n                      aria-current={isActive ? \"page\" : undefined}\n                      aria-label={isCollapsed ? item.label : undefined}\n                      title={isCollapsed ? item.label : undefined}\n                      onClick={() => select(item.id)}\n                    >\n                      {isActive && <motion.span layoutId={`${pillId}-pill`} className={styles.pill} transition={spring} aria-hidden=\"true\" />}\n                      {item.icon && <Icon name={item.icon} />}\n                      {!isCollapsed && <span className={styles.label}>{item.label}</span>}\n                      {showBadges && item.badge !== undefined && (\n                        <span className={isCollapsed ? styles.badgeDot : styles.badge} aria-label={`${item.badge} new`}>\n                          {isCollapsed ? null : item.badge}\n                        </span>\n                      )}\n                    </button>\n                  </li>\n                );\n              })}\n            </ul>\n          </div>\n        ))}\n      </div>\n    </motion.nav>\n  );\n}\n"
+    },
+    {
+      "path": "components/styles/sidebar-nav.module.css",
+      "type": "registry:style",
+      "content": ".root {\n  display: flex;\n  flex-direction: column;\n  gap: 0.75rem;\n  height: 23rem;\n  overflow: hidden;\n  padding: 0.75rem 0.625rem;\n  border-radius: 0.875rem;\n  border: 1px solid var(--mf-border, #2e2e38);\n  background-color: var(--mf-surface, #141419);\n  color: var(--mf-fg, #f4f4f6);\n  font-size: 0.875rem;\n}\n\n.header {\n  display: flex;\n  align-items: center;\n  gap: 0.625rem;\n  min-height: 2.25rem;\n  padding: 0 0.25rem 0 0.375rem;\n}\n\n.logo {\n  flex-shrink: 0;\n  width: 1.5rem;\n  height: 1.5rem;\n  border-radius: 0.4375rem;\n  background: linear-gradient(135deg, var(--mf-sn-accent, #6366f1), color-mix(in srgb, var(--mf-sn-accent, #6366f1) 45%, #f472b6));\n}\n\n.title {\n  flex: 1;\n  min-width: 0;\n  overflow: hidden;\n  font-weight: 650;\n  white-space: nowrap;\n  text-overflow: ellipsis;\n}\n\n.toggle {\n  display: inline-flex;\n  flex-shrink: 0;\n  align-items: center;\n  justify-content: center;\n  width: 2rem;\n  height: 2rem;\n  margin-left: auto;\n  border: 0;\n  border-radius: 0.5rem;\n  background: transparent;\n  color: var(--mf-muted, #a1a1aa);\n  cursor: pointer;\n  transition: background-color 150ms ease, color 150ms ease;\n}\n\n.root[data-collapsed] .header {\n  flex-direction: column;\n  padding: 0;\n}\n\n.root[data-collapsed] .toggle {\n  margin-left: 0;\n}\n\n.toggle svg {\n  width: 1.125rem;\n  height: 1.125rem;\n}\n\n.toggle:hover {\n  background-color: var(--mf-surface-raised, #1b1b22);\n  color: var(--mf-fg, #f4f4f6);\n}\n\n.groups {\n  display: flex;\n  flex: 1;\n  flex-direction: column;\n  gap: 1rem;\n  overflow-y: auto;\n  overflow-x: hidden;\n}\n\n.group {\n  display: flex;\n  flex-direction: column;\n  gap: 0.25rem;\n}\n\n.groupLabel {\n  display: flex;\n  align-items: center;\n  min-height: 1.25rem;\n  padding: 0 0.625rem;\n  color: var(--mf-subtle, #71717a);\n  font-size: 0.6875rem;\n  font-weight: 600;\n  letter-spacing: 0.04em;\n  text-transform: uppercase;\n  white-space: nowrap;\n}\n\n.groupRule {\n  display: block;\n  width: 100%;\n  height: 1px;\n  background-color: var(--mf-border, #2e2e38);\n}\n\n.list {\n  display: flex;\n  flex-direction: column;\n  gap: 0.125rem;\n  margin: 0;\n  padding: 0;\n  list-style: none;\n}\n\n.item {\n  position: relative;\n  display: flex;\n  align-items: center;\n  gap: 0.75rem;\n  width: 100%;\n  height: 2.25rem;\n  padding: 0 0.6875rem;\n  border: 0;\n  border-radius: 0.5625rem;\n  background: transparent;\n  color: var(--mf-muted, #a1a1aa);\n  font: inherit;\n  text-align: left;\n  white-space: nowrap;\n  cursor: pointer;\n  transition: color 150ms ease, background-color 150ms ease;\n}\n\n.item:hover {\n  background-color: color-mix(in srgb, var(--mf-surface-raised, #1b1b22) 80%, transparent);\n  color: var(--mf-fg, #f4f4f6);\n}\n\n.item[aria-current=\"page\"] {\n  color: var(--mf-fg, #f4f4f6);\n}\n\n.item:focus-visible,\n.toggle:focus-visible {\n  outline: 2px solid var(--mf-fg, #e4e4e7);\n  outline-offset: 2px;\n}\n\n.pill {\n  position: absolute;\n  inset: 0;\n  z-index: 0;\n  border-radius: inherit;\n  background-color: color-mix(in srgb, var(--mf-sn-accent, #6366f1) 16%, var(--mf-surface-raised, #1b1b22));\n  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--mf-sn-accent, #6366f1) 35%, transparent);\n}\n\n.icon,\n.label,\n.badge,\n.badgeDot {\n  position: relative;\n  z-index: 1;\n}\n\n.icon {\n  flex-shrink: 0;\n  width: 1.125rem;\n  height: 1.125rem;\n}\n\n.item[aria-current=\"page\"] .icon {\n  color: var(--mf-sn-accent, #6366f1);\n}\n\n.label {\n  flex: 1;\n  min-width: 0;\n  overflow: hidden;\n  text-overflow: ellipsis;\n}\n\n.badge {\n  min-width: 1.375rem;\n  padding: 0.0625rem 0.375rem;\n  border-radius: 999px;\n  background-color: color-mix(in srgb, var(--mf-sn-accent, #6366f1) 22%, transparent);\n  color: var(--mf-fg, #f4f4f6);\n  font-size: 0.6875rem;\n  font-weight: 600;\n  text-align: center;\n}\n\n.badgeDot {\n  position: absolute;\n  top: 0.4375rem;\n  right: 0.5rem;\n  width: 0.4375rem;\n  height: 0.4375rem;\n  border-radius: 999px;\n  background-color: var(--mf-sn-accent, #6366f1);\n}\n\n@media (prefers-reduced-motion: reduce) {\n  .item,\n  .toggle {\n    transition: none;\n  }\n}\n"
+    }
+  ],
+  "tailwindExample": "\"use client\";\n\nimport { useState } from \"react\";\nimport { motion } from \"motion/react\";\n\nconst items = [\"Home\", \"Inbox\", \"Analytics\", \"Projects\", \"Team\", \"Settings\"];\n\nexport function SidebarNavTailwind() {\n  const [active, setActive] = useState(\"Inbox\");\n  const [collapsed, setCollapsed] = useState(false);\n  return (\n    <motion.nav\n      animate={{ width: collapsed ? 64 : 240 }}\n      className=\"flex h-96 flex-col gap-2 overflow-hidden rounded-2xl border border-zinc-800 bg-zinc-950 p-2.5 text-sm text-zinc-100\"\n    >\n      <button onClick={() => setCollapsed(!collapsed)} aria-expanded={!collapsed} className=\"mb-2 self-end rounded-md px-2 py-1 text-zinc-400 hover:bg-zinc-900\">\n        {collapsed ? \"»\" : \"«\"}\n      </button>\n      {items.map((item) => (\n        <button\n          key={item}\n          onClick={() => setActive(item)}\n          aria-current={active === item ? \"page\" : undefined}\n          className=\"relative flex h-9 items-center rounded-lg px-3 text-left text-zinc-400 aria-[current=page]:text-white\"\n        >\n          {active === item && <motion.span layoutId=\"pill\" className=\"absolute inset-0 rounded-lg bg-indigo-500/15 ring-1 ring-indigo-500/40\" />}\n          <span className=\"relative truncate\">{collapsed ? item[0] : item}</span>\n        </button>\n      ))}\n    </motion.nav>\n  );\n}"
+}

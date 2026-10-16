@@ -1,0 +1,209 @@
+.root {
+  --mf-fi-h: 3.25rem;
+  --mf-fi-fs: 0.9375rem;
+  --mf-fi-ring: var(--mf-fi-accent, #6366f1);
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+  width: 100%;
+  max-width: 22rem;
+  color: var(--mf-fg, #f4f4f6);
+  font-size: var(--mf-fi-fs);
+}
+
+.root[data-size="sm"] {
+  --mf-fi-h: 2.75rem;
+  --mf-fi-fs: 0.875rem;
+}
+
+.root[data-size="lg"] {
+  --mf-fi-h: 3.75rem;
+  --mf-fi-fs: 1rem;
+}
+
+.root[data-invalid] {
+  --mf-fi-ring: #ef4444;
+}
+
+.field {
+  position: relative;
+  display: flex;
+  align-items: center;
+  height: var(--mf-fi-h);
+  border-radius: 0.625rem;
+  border: 1px solid var(--mf-border, #2e2e38);
+  background-color: var(--mf-surface, #141419);
+  transition: border-color 180ms ease, box-shadow 220ms cubic-bezier(0.16, 1, 0.3, 1), background-color 180ms ease;
+}
+
+.root[data-variant="filled"] .field {
+  border-color: transparent;
+  border-radius: 0.625rem 0.625rem 0.25rem 0.25rem;
+  background-color: var(--mf-surface-raised, #1b1b22);
+}
+
+.root[data-variant="underline"] .field {
+  border-width: 0 0 1px;
+  border-radius: 0;
+  background-color: transparent;
+}
+
+.field:hover {
+  border-color: var(--mf-border-strong, #52525b);
+}
+
+.root[data-focused] .field,
+.root[data-invalid] .field {
+  border-color: var(--mf-fi-ring);
+}
+
+.root[data-variant="outline"][data-focused] .field {
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--mf-fi-ring) 28%, transparent);
+}
+
+.root[data-variant="filled"][data-focused] .field {
+  border-color: transparent;
+}
+
+.input {
+  flex: 1;
+  min-width: 0;
+  height: 100%;
+  padding: calc(var(--mf-fi-h) * 0.32) 0.875rem 0;
+  border: 0;
+  background: transparent;
+  color: var(--mf-fg, #f4f4f6);
+  font: inherit;
+  font-size: var(--mf-fi-fs);
+  outline: none;
+}
+
+.root[data-variant="underline"] .input {
+  padding-left: 0.125rem;
+}
+
+.input::placeholder {
+  color: transparent;
+}
+
+.label {
+  position: absolute;
+  left: 0.875rem;
+  top: 50%;
+  max-width: calc(100% - 3rem);
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  color: var(--mf-muted, #a1a1aa);
+  pointer-events: none;
+  transform-origin: left center;
+  transform: translateY(-50%);
+  transition: transform 200ms cubic-bezier(0.16, 1, 0.3, 1), color 160ms ease, top 200ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.root[data-variant="underline"] .label {
+  left: 0.125rem;
+}
+
+.root[data-floated] .label {
+  top: 30%;
+  transform: translateY(-50%) scale(0.78);
+}
+
+.root[data-focused] .label {
+  color: var(--mf-fi-ring);
+}
+
+.root[data-invalid] .label {
+  color: #ef4444;
+}
+
+.req {
+  margin-left: 0.125rem;
+  color: #ef4444;
+}
+
+.bar {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -1px;
+  height: 2px;
+  background-color: var(--mf-fi-ring);
+  transform: scaleX(0);
+  transform-origin: center;
+  transition: transform 260ms cubic-bezier(0.16, 1, 0.3, 1);
+  pointer-events: none;
+}
+
+.root[data-variant="outline"] .bar {
+  display: none;
+}
+
+.root[data-focused] .bar,
+.root[data-invalid] .bar {
+  transform: scaleX(1);
+}
+
+.clear {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 1.625rem;
+  height: 1.625rem;
+  margin-right: 0.5rem;
+  border: 0;
+  border-radius: 999px;
+  background-color: transparent;
+  color: var(--mf-subtle, #71717a);
+  cursor: pointer;
+  transition: background-color 150ms ease, color 150ms ease;
+}
+
+.clear:hover {
+  color: var(--mf-fg, #f4f4f6);
+  background-color: var(--mf-surface-raised, #1b1b22);
+}
+
+.clear:focus-visible {
+  outline: 2px solid var(--mf-fg, #e4e4e7);
+  outline-offset: 1px;
+}
+
+.msgSlot {
+  min-height: 1.25rem;
+  padding: 0 0.25rem;
+}
+
+.msg {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  margin: 0;
+  font-size: 0.8125rem;
+  line-height: 1.4;
+  color: var(--mf-muted, #a1a1aa);
+}
+
+.error {
+  color: #ef4444;
+}
+
+.root[data-disabled] {
+  opacity: 0.55;
+}
+
+.root[data-disabled] .field,
+.root[data-disabled] .input {
+  cursor: not-allowed;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .field,
+  .label,
+  .bar,
+  .clear {
+    transition: none;
+  }
+}

@@ -90,7 +90,9 @@ export function runCli(argv = process.argv.slice(2)) {
 
   if (command === "list") {
     const collectionIdx = args.indexOf("--collection");
-    const collection = collectionIdx !== -1 ? args[collectionIdx + 1] : undefined;
+    const COLLECTION_ALIASES = { gradients: "shaders" }; // renamed in 2.3.0
+    const requested = collectionIdx !== -1 ? args[collectionIdx + 1] : undefined;
+    const collection = (requested && COLLECTION_ALIASES[requested]) || requested;
     if (collection && !(registry.collections ?? []).some((c) => c.id === collection)) {
       console.error(`✖ Unknown collection "${collection}". Available: ${(registry.collections ?? []).map((c) => c.id).join(", ")}`);
       return { code: 1 };

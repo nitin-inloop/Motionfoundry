@@ -1,0 +1,195 @@
+.root {
+  --mf-ag-size: 2.5rem;
+  --mf-ag-fs: 0.875rem;
+  --mf-ag-ring: var(--mf-bg, #0b0b0f);
+  display: inline-flex;
+  align-items: center;
+  color: var(--mf-fg, #f4f4f6);
+}
+
+.root[data-size="sm"] {
+  --mf-ag-size: 2rem;
+  --mf-ag-fs: 0.75rem;
+}
+
+.root[data-size="lg"] {
+  --mf-ag-size: 3.25rem;
+  --mf-ag-fs: 1.0625rem;
+}
+
+.list {
+  display: flex;
+  align-items: center;
+  margin: 0;
+  padding: 0.375rem 0;
+  list-style: none;
+}
+
+.item {
+  position: relative;
+  margin-left: calc(var(--mf-ag-size) * var(--mf-ag-overlap, 0.3) * -1);
+  transition: margin-left 260ms cubic-bezier(0.16, 1, 0.3, 1);
+  animation: mf-ag-in 420ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation-delay: calc(var(--mf-ag-i, 0) * 55ms);
+}
+
+.item:first-child {
+  margin-left: 0;
+}
+
+.root[data-spread]:hover .item:not(:first-child),
+.root[data-spread]:focus-within .item:not(:first-child) {
+  margin-left: 0.25rem;
+}
+
+.avatar {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--mf-ag-size);
+  height: var(--mf-ag-size);
+  border-radius: 999px;
+  background-color: var(--mf-surface-raised, #1b1b22);
+  background-size: cover;
+  box-shadow: 0 0 0 2px var(--mf-ag-ring);
+  color: #fff;
+  font-size: var(--mf-ag-fs);
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  cursor: default;
+  user-select: none;
+  transition: transform 220ms cubic-bezier(0.16, 1, 0.3, 1), box-shadow 200ms ease;
+}
+
+.initials {
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.25);
+}
+
+.item:hover .avatar,
+.avatar:focus-visible {
+  transform: translateY(-4px) scale(1.06);
+}
+
+.item:hover,
+.item:focus-within {
+  z-index: 50 !important;
+}
+
+.avatar:focus-visible {
+  outline: 2px solid var(--mf-fg, #e4e4e7);
+  outline-offset: 2px;
+}
+
+.status {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: 28%;
+  height: 28%;
+  min-width: 0.5rem;
+  min-height: 0.5rem;
+  border-radius: 999px;
+  border: 2px solid var(--mf-ag-ring);
+  background-color: #22c55e;
+}
+
+.status[data-status="away"] {
+  background-color: #f59e0b;
+}
+
+.status[data-status="busy"] {
+  background-color: #ef4444;
+}
+
+.status[data-status="offline"] {
+  background-color: var(--mf-subtle, #71717a);
+}
+
+.status[data-status="online"]::after {
+  content: "";
+  position: absolute;
+  inset: -2px;
+  border-radius: inherit;
+  border: 2px solid #22c55e;
+  animation: mf-ag-ping 2.2s cubic-bezier(0, 0, 0.2, 1) infinite;
+}
+
+.more {
+  border: 1px solid color-mix(in srgb, var(--mf-ag-accent, #6366f1) 45%, var(--mf-border, #2e2e38));
+  background-color: color-mix(in srgb, var(--mf-ag-accent, #6366f1) 16%, var(--mf-surface, #141419));
+  color: var(--mf-fg, #f4f4f6);
+  font: inherit;
+  font-size: calc(var(--mf-ag-fs) * 0.92);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.more:hover {
+  background-color: color-mix(in srgb, var(--mf-ag-accent, #6366f1) 28%, var(--mf-surface, #141419));
+}
+
+.tip {
+  position: absolute;
+  left: 50%;
+  bottom: calc(100% + 0.5rem);
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.375rem;
+  border: 1px solid var(--mf-border, #2e2e38);
+  background-color: var(--mf-surface-raised, #1b1b22);
+  color: var(--mf-fg, #f4f4f6);
+  font-size: 0.75rem;
+  font-weight: 500;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transform: translate(-50%, 4px);
+  transition: opacity 150ms ease, transform 180ms cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.25);
+}
+
+.item:hover .tip,
+.item:focus-within .tip {
+  opacity: 1;
+  transform: translate(-50%, 0);
+}
+
+@keyframes mf-ag-in {
+  from {
+    opacity: 0;
+    transform: translateX(-8px) scale(0.85);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes mf-ag-ping {
+  0% {
+    opacity: 0.7;
+    transform: scale(1);
+  }
+  80%,
+  100% {
+    opacity: 0;
+    transform: scale(2);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .item,
+  .avatar,
+  .tip {
+    transition: none;
+    animation: none;
+  }
+  .status::after {
+    animation: none;
+    display: none;
+  }
+  .item:hover .avatar,
+  .avatar:focus-visible {
+    transform: none;
+  }
+}

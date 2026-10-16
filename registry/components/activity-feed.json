@@ -1,0 +1,152 @@
+{
+  "slug": "activity-feed",
+  "name": "ActivityFeed",
+  "category": "Data Display",
+  "collection": "ui",
+  "featured": false,
+  "addedAt": "2026-10-16",
+  "version": "2.3.0",
+  "requiresMotion": true,
+  "dependencies": [
+    "motion",
+    "react"
+  ],
+  "description": "A vertical activity timeline whose events slide in one after another, each with a springy color-coded inline-SVG icon (commit, comment, deploy, merge, alert, star) and a connector line that draws down to the next event. Relative times are derived deterministically from minutes-ago values.",
+  "tags": [
+    "activity",
+    "feed",
+    "timeline",
+    "events",
+    "log",
+    "dashboard",
+    "ui"
+  ],
+  "a11yNotes": "A <section> labelled by its heading (visible or visually hidden) containing an ordered list, so screen readers announce the number of events. Icons and connector lines are aria-hidden decoration; each event is plain text and its relative time is a <time> element with an ISO 8601 duration in dateTime. Under prefers-reduced-motion all events appear immediately with no slide, spring or line draw.",
+  "defaultProps": {
+    "title": "Recent activity",
+    "showTitle": true,
+    "maxItems": 6,
+    "stagger": 90,
+    "showConnector": true,
+    "dense": false,
+    "accentColor": "#6366f1"
+  },
+  "controls": [
+    {
+      "prop": "title",
+      "label": "Title",
+      "type": "text"
+    },
+    {
+      "prop": "showTitle",
+      "label": "Show title",
+      "type": "boolean"
+    },
+    {
+      "prop": "maxItems",
+      "label": "Max items",
+      "type": "range",
+      "min": 1,
+      "max": 6,
+      "step": 1
+    },
+    {
+      "prop": "stagger",
+      "label": "Stagger (ms)",
+      "type": "range",
+      "min": 0,
+      "max": 400,
+      "step": 10
+    },
+    {
+      "prop": "showConnector",
+      "label": "Connector line",
+      "type": "boolean"
+    },
+    {
+      "prop": "dense",
+      "label": "Dense",
+      "type": "boolean"
+    },
+    {
+      "prop": "accentColor",
+      "label": "Accent color",
+      "type": "color"
+    }
+  ],
+  "propsApi": [
+    {
+      "name": "items",
+      "type": "ActivityItem[]",
+      "default": "6 sample events",
+      "description": "Events, newest first: { id, actor, action, target?, kind: 'commit' | 'comment' | 'deploy' | 'merge' | 'alert' | 'star', minutesAgo }."
+    },
+    {
+      "name": "title",
+      "type": "string",
+      "default": "'Recent activity'",
+      "description": "Heading above the feed; also its accessible name."
+    },
+    {
+      "name": "showTitle",
+      "type": "boolean",
+      "default": "true",
+      "description": "Show the heading visibly (otherwise visually hidden)."
+    },
+    {
+      "name": "maxItems",
+      "type": "number",
+      "default": "6",
+      "description": "Maximum events rendered."
+    },
+    {
+      "name": "stagger",
+      "type": "number",
+      "default": "90",
+      "description": "Delay between events animating in, in milliseconds."
+    },
+    {
+      "name": "showConnector",
+      "type": "boolean",
+      "default": "true",
+      "description": "Draw a vertical connector line between event icons."
+    },
+    {
+      "name": "dense",
+      "type": "boolean",
+      "default": "false",
+      "description": "Compact spacing with smaller icons and inline times."
+    },
+    {
+      "name": "accentColor",
+      "type": "string",
+      "default": "'#6366f1'",
+      "description": "Commit icon color and connector tint."
+    },
+    {
+      "name": "className",
+      "type": "string",
+      "default": "''",
+      "description": "Additional class merged onto the root element."
+    },
+    {
+      "name": "style",
+      "type": "React.CSSProperties",
+      "default": "undefined",
+      "description": "Inline styles merged onto the root element."
+    }
+  ],
+  "files": [
+    {
+      "path": "components/ui/activity-feed.tsx",
+      "type": "registry:component",
+      "content": "\"use client\";\n\nimport * as React from \"react\";\nimport { motion, useReducedMotion } from \"motion/react\";\nimport styles from \"../styles/activity-feed.module.css\";\n\nexport type ActivityKind = \"commit\" | \"comment\" | \"deploy\" | \"merge\" | \"alert\" | \"star\";\n\nexport interface ActivityItem {\n  /** Unique id */\n  id: string;\n  /** Who did it */\n  actor: string;\n  /** What happened (verb phrase) */\n  action: string;\n  /** What it happened to */\n  target?: string;\n  /** Icon / color category */\n  kind: ActivityKind;\n  /** How long ago, in minutes (deterministic — no clocks are read) */\n  minutesAgo: number;\n}\n\nexport interface ActivityFeedProps {\n  /** Events, newest first */\n  items?: ActivityItem[];\n  /** Heading shown above the feed (also its accessible name) */\n  title?: string;\n  /** Show the heading visibly */\n  showTitle?: boolean;\n  /** Maximum events rendered */\n  maxItems?: number;\n  /** Delay between items animating in, in milliseconds */\n  stagger?: number;\n  /** Draw a vertical connector line between icons */\n  showConnector?: boolean;\n  /** Compact spacing */\n  dense?: boolean;\n  /** Accent color (commit icons, connector glow and focus tint) */\n  accentColor?: string;\n  /** Optional className merged onto the root */\n  className?: string;\n  /** Optional inline styles merged onto the root */\n  style?: React.CSSProperties;\n}\n\nconst DEFAULT_ITEMS: ActivityItem[] = [\n  { id: \"a1\", actor: \"Maya Okafor\", action: \"deployed\", target: \"web@v2.3.0 to production\", kind: \"deploy\", minutesAgo: 2 },\n  { id: \"a2\", actor: \"Liam Chen\", action: \"merged pull request\", target: \"#482 Faster search index\", kind: \"merge\", minutesAgo: 18 },\n  { id: \"a3\", actor: \"Sofia Martinez\", action: \"commented on\", target: \"Checkout redesign\", kind: \"comment\", minutesAgo: 47 },\n  { id: \"a4\", actor: \"Noah Patel\", action: \"pushed 3 commits to\", target: \"feat/billing-v2\", kind: \"commit\", minutesAgo: 95 },\n  { id: \"a5\", actor: \"Monitoring\", action: \"flagged elevated latency on\", target: \"api-eu-west\", kind: \"alert\", minutesAgo: 260 },\n  { id: \"a6\", actor: \"Ava Thompson\", action: \"starred\", target: \"motionfoundry/ui\", kind: \"star\", minutesAgo: 1680 },\n];\n\nconst ICONS: Record<ActivityKind, React.ReactNode> = {\n  commit: (\n    <>\n      <circle cx=\"12\" cy=\"12\" r=\"3.5\" />\n      <path d=\"M3 12h5.5M15.5 12H21\" />\n    </>\n  ),\n  comment: <path d=\"M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12Z\" />,\n  deploy: <path d=\"M12 3c3 2 5 5.5 5 9l-2.5 3h-5L7 12c0-3.5 2-7 5-9ZM9.5 15 8 20l4-2 4 2-1.5-5M12 9.5v.01\" />,\n  merge: (\n    <>\n      <circle cx=\"6\" cy=\"5\" r=\"2\" />\n      <circle cx=\"6\" cy=\"19\" r=\"2\" />\n      <circle cx=\"18\" cy=\"12\" r=\"2\" />\n      <path d=\"M6 7v10M8 5h2a6 6 0 0 1 6 6\" />\n    </>\n  ),\n  alert: <path d=\"M12 4 2.5 20h19L12 4ZM12 10v4.5M12 17.5v.01\" />,\n  star: <path d=\"m12 3.5 2.6 5.3 5.9.9-4.3 4.1 1 5.8-5.2-2.7-5.2 2.7 1-5.8-4.3-4.1 5.9-.9L12 3.5Z\" />,\n};\n\nfunction relative(min: number) {\n  const m = Math.max(0, Math.round(min));\n  if (m < 1) return { text: \"just now\", iso: \"PT0M\" };\n  if (m < 60) return { text: `${m}m ago`, iso: `PT${m}M` };\n  const h = Math.floor(m / 60);\n  if (h < 24) return { text: `${h}h ago`, iso: `PT${h}H` };\n  const d = Math.floor(h / 24);\n  return { text: d === 1 ? \"yesterday\" : `${d}d ago`, iso: `P${d}D` };\n}\n\nexport function ActivityFeed({\n  items = DEFAULT_ITEMS,\n  title = \"Recent activity\",\n  showTitle = true,\n  maxItems = 6,\n  stagger = 90,\n  showConnector = true,\n  dense = false,\n  accentColor = \"#6366f1\",\n  className = \"\",\n  style,\n}: ActivityFeedProps) {\n  const reduce = useReducedMotion();\n  const id = React.useId();\n  const list = items.slice(0, Math.max(1, Math.floor(maxItems)));\n  const step = Math.max(0, stagger) / 1000;\n\n  return (\n    <section\n      aria-labelledby={`${id}-title`}\n      className={`${styles.root} ${className}`.trim()}\n      data-dense={dense ? \"\" : undefined}\n      style={{ \"--mf-af-accent\": accentColor, ...style } as React.CSSProperties}\n    >\n      <h3 id={`${id}-title`} className={showTitle ? styles.title : styles.srOnly}>\n        {title}\n      </h3>\n      <ol className={styles.list}>\n        {list.map((item, i) => {\n          const t = relative(item.minutesAgo);\n          const last = i === list.length - 1;\n          return (\n            <motion.li\n              key={item.id}\n              className={styles.item}\n              initial={reduce ? false : { opacity: 0, x: -10 }}\n              animate={{ opacity: 1, x: 0 }}\n              transition={reduce ? { duration: 0 } : { duration: 0.42, delay: i * step, ease: [0.16, 1, 0.3, 1] }}\n            >\n              <div className={styles.rail} aria-hidden=\"true\">\n                <motion.span\n                  className={styles.icon}\n                  data-kind={item.kind}\n                  initial={reduce ? false : { scale: 0.4 }}\n                  animate={{ scale: 1 }}\n                  transition={reduce ? { duration: 0 } : { type: \"spring\", stiffness: 520, damping: 22, delay: i * step }}\n                >\n                  <svg width=\"15\" height=\"15\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" strokeWidth=\"2\" strokeLinecap=\"round\" strokeLinejoin=\"round\">\n                    {ICONS[item.kind]}\n                  </svg>\n                </motion.span>\n                {showConnector && !last && (\n                  <motion.span\n                    className={styles.line}\n                    initial={reduce ? false : { scaleY: 0 }}\n                    animate={{ scaleY: 1 }}\n                    transition={reduce ? { duration: 0 } : { duration: 0.4, delay: i * step + 0.15, ease: \"easeOut\" }}\n                  />\n                )}\n              </div>\n              <div className={styles.body}>\n                <p className={styles.text}>\n                  <span className={styles.actor}>{item.actor}</span> {item.action}\n                  {item.target && (\n                    <>\n                      {\" \"}\n                      <span className={styles.target}>{item.target}</span>\n                    </>\n                  )}\n                </p>\n                <time className={styles.time} dateTime={t.iso}>\n                  {t.text}\n                </time>\n              </div>\n            </motion.li>\n          );\n        })}\n      </ol>\n    </section>\n  );\n}\n"
+    },
+    {
+      "path": "components/styles/activity-feed.module.css",
+      "type": "registry:style",
+      "content": ".root {\n  --mf-af-gap: 0.875rem;\n  --mf-af-icon: 2rem;\n  width: 100%;\n  max-width: 27rem;\n  padding: 1.125rem 1.25rem 0.375rem;\n  border-radius: 0.75rem;\n  border: 1px solid var(--mf-border, #2e2e38);\n  background-color: var(--mf-surface, #141419);\n  color: var(--mf-fg, #f4f4f6);\n  font-size: 0.875rem;\n}\n\n.root[data-dense] {\n  --mf-af-gap: 0.5rem;\n  --mf-af-icon: 1.625rem;\n}\n\n.title {\n  margin: 0 0 0.875rem;\n  font-size: 0.9375rem;\n  font-weight: 600;\n  letter-spacing: -0.01em;\n}\n\n.list {\n  margin: 0;\n  padding: 0;\n  list-style: none;\n}\n\n.item {\n  display: flex;\n  gap: 0.75rem;\n}\n\n.rail {\n  position: relative;\n  display: flex;\n  flex-direction: column;\n  align-items: center;\n  flex-shrink: 0;\n  width: var(--mf-af-icon);\n}\n\n.icon {\n  position: relative;\n  z-index: 1;\n  display: inline-flex;\n  align-items: center;\n  justify-content: center;\n  width: var(--mf-af-icon);\n  height: var(--mf-af-icon);\n  border-radius: 999px;\n  --mf-af-c: var(--mf-af-accent, #6366f1);\n  color: var(--mf-af-c);\n  background-color: color-mix(in srgb, var(--mf-af-c) 14%, var(--mf-surface, #141419));\n  box-shadow: 0 0 0 1px color-mix(in srgb, var(--mf-af-c) 30%, transparent);\n}\n\n.root[data-dense] .icon svg {\n  width: 13px;\n  height: 13px;\n}\n\n.icon[data-kind=\"comment\"] {\n  --mf-af-c: #0ea5e9;\n}\n\n.icon[data-kind=\"deploy\"] {\n  --mf-af-c: #22c55e;\n}\n\n.icon[data-kind=\"merge\"] {\n  --mf-af-c: #a855f7;\n}\n\n.icon[data-kind=\"alert\"] {\n  --mf-af-c: #f59e0b;\n}\n\n.icon[data-kind=\"star\"] {\n  --mf-af-c: #eab308;\n}\n\n.line {\n  flex: 1;\n  width: 2px;\n  min-height: 0.75rem;\n  margin: 0.25rem 0;\n  border-radius: 2px;\n  background: linear-gradient(\n    to bottom,\n    color-mix(in srgb, var(--mf-af-accent, #6366f1) 45%, var(--mf-border, #2e2e38)),\n    var(--mf-border, #2e2e38)\n  );\n  transform-origin: top;\n}\n\n.body {\n  flex: 1;\n  min-width: 0;\n  padding: 0.25rem 0 var(--mf-af-gap);\n}\n\n.root[data-dense] .body {\n  padding-top: 0.125rem;\n}\n\n.text {\n  margin: 0;\n  line-height: 1.45;\n  color: var(--mf-muted, #a1a1aa);\n}\n\n.actor {\n  font-weight: 600;\n  color: var(--mf-fg, #f4f4f6);\n}\n\n.target {\n  font-weight: 500;\n  color: var(--mf-fg, #f4f4f6);\n}\n\n.time {\n  display: block;\n  margin-top: 0.125rem;\n  font-size: 0.75rem;\n  color: var(--mf-subtle, #71717a);\n  font-variant-numeric: tabular-nums;\n}\n\n.root[data-dense] .time {\n  display: inline;\n  margin: 0 0 0 0.375rem;\n}\n\n.root[data-dense] .text {\n  display: inline;\n}\n\n.srOnly {\n  position: absolute;\n  width: 1px;\n  height: 1px;\n  margin: -1px;\n  padding: 0;\n  overflow: hidden;\n  clip: rect(0 0 0 0);\n  white-space: nowrap;\n  border: 0;\n}\n\n@media (prefers-reduced-motion: reduce) {\n  .line,\n  .icon {\n    transition: none;\n    animation: none;\n  }\n}\n"
+    }
+  ],
+  "tailwindExample": "\"use client\";\n\nimport { motion } from \"motion/react\";\n\nconst items = [\n  { id: 1, actor: \"Maya Okafor\", action: \"deployed\", target: \"web@v2.3.0\", time: \"2m ago\", color: \"text-emerald-500 bg-emerald-500/15\" },\n  { id: 2, actor: \"Liam Chen\", action: \"merged\", target: \"#482 Faster search\", time: \"18m ago\", color: \"text-purple-500 bg-purple-500/15\" },\n  { id: 3, actor: \"Sofia Martinez\", action: \"commented on\", target: \"Checkout redesign\", time: \"47m ago\", color: \"text-sky-500 bg-sky-500/15\" },\n  { id: 4, actor: \"Noah Patel\", action: \"pushed to\", target: \"feat/billing-v2\", time: \"1h ago\", color: \"text-indigo-500 bg-indigo-500/15\" },\n];\n\nexport function ActivityFeedTailwind() {\n  return (\n    <section aria-labelledby=\"feed-title\" className=\"w-full max-w-md rounded-xl border border-zinc-800 bg-zinc-900 p-5 text-sm\">\n      <h3 id=\"feed-title\" className=\"mb-3 font-semibold text-zinc-100\">Recent activity</h3>\n      <ol>\n        {items.map((it, i) => (\n          <motion.li key={it.id} initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: i * 0.09 }} className=\"flex gap-3\">\n            <div aria-hidden className=\"flex flex-col items-center\">\n              <span className={`grid size-8 place-items-center rounded-full ${it.color}`}>●</span>\n              {i < items.length - 1 && <span className=\"my-1 w-0.5 flex-1 rounded bg-zinc-800\" />}\n            </div>\n            <div className=\"pb-3.5 pt-1\">\n              <p className=\"text-zinc-400\"><span className=\"font-semibold text-zinc-100\">{it.actor}</span> {it.action} <span className=\"font-medium text-zinc-100\">{it.target}</span></p>\n              <time className=\"text-xs text-zinc-500\">{it.time}</time>\n            </div>\n          </motion.li>\n        ))}\n      </ol>\n    </section>\n  );\n}"
+}

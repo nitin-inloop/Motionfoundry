@@ -1,0 +1,206 @@
+.root {
+  position: relative;
+  width: 100%;
+  height: var(--mf-sns-h, 380px);
+  border-radius: var(--mf-sns-r, 20px);
+  overflow: hidden;
+  border: 1px solid var(--mf-border, #2e2e38);
+  background: var(--mf-surface, #141419);
+  color: var(--mf-fg, #f4f4f6);
+  container-type: inline-size;
+  isolation: isolate;
+}
+
+.root *,
+.root *::before,
+.root *::after {
+  box-sizing: border-box;
+}
+
+.viewport {
+  position: relative;
+  height: 100%;
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior: auto;
+  scroll-behavior: auto;
+  scroll-snap-type: y mandatory;
+  scrollbar-width: none;
+}
+
+.viewport::-webkit-scrollbar {
+  display: none;
+}
+
+.viewport[data-animating="true"] {
+  scroll-snap-type: none;
+}
+
+.viewport:focus-visible {
+  outline: 2px solid var(--mf-fg, #e4e4e7);
+  outline-offset: -2px;
+}
+
+.section {
+  position: relative;
+  display: flex;
+  align-items: center;
+  height: 100%;
+  padding: 0 clamp(1.5rem, 10cqi, 6rem);
+  overflow: hidden;
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+  border-bottom: 1px solid var(--mf-border, #2e2e38);
+}
+
+.section:last-child {
+  border-bottom: 0;
+}
+
+.orb {
+  position: absolute;
+  top: 50%;
+  right: -12%;
+  width: min(70cqi, 520px);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 35% 35%, color-mix(in srgb, var(--mf-sns-accent, #34d399) 85%, #ffffff), transparent 32%),
+    radial-gradient(circle, var(--mf-sns-accent, #34d399), transparent 66%);
+  filter: hue-rotate(calc(var(--mf-sns-i, 0) * 48deg)) blur(2px);
+  opacity: 0.38;
+  transform: translateY(-50%) scale(0.85);
+  transition:
+    transform 1000ms cubic-bezier(0.16, 1, 0.3, 1),
+    opacity 800ms ease;
+  pointer-events: none;
+}
+
+.bigIndex {
+  position: absolute;
+  right: clamp(1.5rem, 9cqi, 5rem);
+  bottom: -0.2em;
+  font-size: clamp(6rem, 30cqi, 13rem);
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -0.06em;
+  color: transparent;
+  -webkit-text-stroke: 1px var(--mf-border-strong, #3f3f4a);
+  pointer-events: none;
+}
+
+.body {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+  max-width: 26rem;
+}
+
+.kicker,
+.title,
+.text {
+  opacity: 0;
+  transform: translateY(18px);
+  transition:
+    opacity 500ms ease,
+    transform 700ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.kicker {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.78rem;
+  color: var(--mf-sns-accent, #34d399);
+}
+
+.title {
+  margin: 0;
+  font-size: clamp(2rem, 8cqi, 3.6rem);
+  font-weight: 750;
+  line-height: 1;
+  letter-spacing: -0.045em;
+  transition-delay: 60ms;
+}
+
+.text {
+  margin: 0;
+  color: var(--mf-muted, #a1a1aa);
+  font-size: 0.95rem;
+  line-height: 1.5;
+  transition-delay: 120ms;
+}
+
+.section[data-active="true"] .kicker,
+.section[data-active="true"] .title,
+.section[data-active="true"] .text {
+  opacity: 1;
+  transform: none;
+}
+
+.section[data-active="true"] .orb {
+  opacity: 0.6;
+  transform: translateY(-50%) scale(1);
+}
+
+.dots {
+  position: absolute;
+  top: 50%;
+  right: 1rem;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  transform: translateY(-50%);
+}
+
+.root[data-dots="left"] .dots {
+  right: auto;
+  left: 1rem;
+}
+
+.dot {
+  display: grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  padding: 0;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  cursor: pointer;
+}
+
+.dot::before {
+  content: "";
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  background: var(--mf-border-strong, #3f3f4a);
+  transition:
+    height 300ms cubic-bezier(0.16, 1, 0.3, 1),
+    background-color 300ms ease;
+}
+
+.dot:hover::before {
+  background: var(--mf-muted, #a1a1aa);
+}
+
+.dot[aria-current="true"]::before {
+  height: 20px;
+  background: var(--mf-sns-accent, #34d399);
+}
+
+.dot:focus-visible {
+  outline: 2px solid var(--mf-fg, #e4e4e7);
+  outline-offset: 1px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .kicker,
+  .title,
+  .text,
+  .orb,
+  .dot::before {
+    transition: none;
+  }
+}

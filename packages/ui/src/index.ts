@@ -1,12 +1,12 @@
 /**
  * @motionfoundry/ui — Production-Ready Open-Source Animated React Component Library
- * Version: 2.2.0 (Core, Studio Kit, Gradients, Text FX, Scroll — 72 components)
+ * Version: 2.3.0 (Scroll, Shaders, UI, Text FX, Studio Kit, Core)
  * License: MIT
  *
  * Export order defines the registry order (see scripts/build-registry.mjs).
  */
 
-export const MOTIONFOUNDRY_VERSION = "2.2.0";
+export const MOTIONFOUNDRY_VERSION = "2.3.0";
 
 export const MOTIONFOUNDRY_BRAND = "MotionFoundry";
 
@@ -91,3 +91,74 @@ export { StickyStackCards, type StickyStackCardsProps } from "./components/stick
 export { VelocityMarquee, type VelocityMarqueeProps } from "./components/velocity-marquee";
 export { ScrollZoomReveal, type ScrollZoomRevealProps } from "./components/scroll-zoom-reveal";
 export { ScrollTimeline, type ScrollTimelineProps } from "./components/scroll-timeline";
+
+// Shaders (v2.3)
+export { NebulaGradient, type NebulaGradientProps } from "./components/nebula-gradient";
+export { PlasmaGradient, type PlasmaGradientProps } from "./components/plasma-gradient";
+export { SilkGradient, type SilkGradientProps } from "./components/silk-gradient";
+export { EmberGradient, type EmberGradientProps } from "./components/ember-gradient";
+export { EclipseGradient, type EclipseGradientProps } from "./components/eclipse-gradient";
+
+// Scroll (v2.3)
+export { ScrollCoverflow, type ScrollCoverflowProps } from "./components/scroll-coverflow";
+export { SplitScreenScroll, type SplitScreenScrollProps } from "./components/split-screen-scroll";
+export { PinnedSteps, type PinnedStepsProps } from "./components/pinned-steps";
+export { ParallaxColumns, type ParallaxColumnsProps } from "./components/parallax-columns";
+export { ScrollWordSwap, type ScrollWordSwapProps } from "./components/scroll-word-swap";
+export { ScrollTiltCards, type ScrollTiltCardsProps } from "./components/scroll-tilt-cards";
+export { ScrollPathDraw, type ScrollPathDrawProps } from "./components/scroll-path-draw";
+export { ScrollFocusList, type ScrollFocusListProps } from "./components/scroll-focus-list";
+export { SnapSections, type SnapSectionsProps } from "./components/snap-sections";
+export { ScrollColorShift, type ScrollColorShiftProps } from "./components/scroll-color-shift";
+
+// UI collection
+export { Button, type ButtonProps } from "./components/button";
+export { IconButton, type IconButtonProps } from "./components/icon-button";
+export { ButtonGroup, type ButtonGroupProps } from "./components/button-group";
+export { CopyButton, type CopyButtonProps } from "./components/copy-button";
+export { ToggleGroup, type ToggleGroupProps } from "./components/toggle-group";
+export { LikeButton, type LikeButtonProps } from "./components/like-button";
+export { SplitButton, type SplitButtonProps } from "./components/split-button";
+export { HoldToConfirm, type HoldToConfirmProps } from "./components/hold-to-confirm";
+export { FloatingInput, type FloatingInputProps } from "./components/floating-input";
+export { OtpInput, type OtpInputProps } from "./components/otp-input";
+export { PasswordInput, type PasswordInputProps } from "./components/password-input";
+export { TagInput, type TagInputProps } from "./components/tag-input";
+export { NumberStepper, type NumberStepperProps } from "./components/number-stepper";
+export { RangeSlider, type RangeSliderProps } from "./components/range-slider";
+export { RadioCards, type RadioCardsProps } from "./components/radio-cards";
+export { SegmentedControl, type SegmentedControlProps } from "./components/segmented-control";
+export { Select, type SelectProps } from "./components/select";
+export { Combobox, type ComboboxProps } from "./components/combobox";
+export { FileDropzone, type FileDropzoneProps } from "./components/file-dropzone";
+export { StarRating, type StarRatingProps } from "./components/star-rating";
+export { Tabs, type TabsProps } from "./components/tabs";
+export { Breadcrumb, type BreadcrumbProps } from "./components/breadcrumb";
+export { Dialog, type DialogProps } from "./components/dialog";
+export { Drawer, type DrawerProps } from "./components/drawer";
+export { AvatarGroup, type AvatarGroupProps } from "./components/avatar-group";
+export { Badge, type BadgeProps } from "./components/badge";
+export { Pagination, type PaginationProps } from "./components/pagination";
+export { Stepper, type StepperProps } from "./components/stepper";
+export { Accordion, type AccordionProps } from "./components/accordion";
+export { BottomSheet, type BottomSheetProps } from "./components/bottom-sheet";
+export { Popover, type PopoverProps } from "./components/popover";
+export { HoverCard, type HoverCardProps } from "./components/hover-card";
+export { Tooltip, type TooltipProps } from "./components/tooltip";
+export { ProgressRing, type ProgressRingProps } from "./components/progress-ring";
+export { StatCard, type StatCardProps } from "./components/stat-card";
+export { BarChart, type BarChartProps } from "./components/bar-chart";
+export { Sparkline, type SparklineProps } from "./components/sparkline";
+export { TreeView, type TreeViewProps } from "./components/tree-view";
+export { DropdownMenu, type DropdownMenuProps } from "./components/dropdown-menu";
+export { DataTable, type DataTableProps } from "./components/data-table";
+export { ActivityFeed, type ActivityFeedProps } from "./components/activity-feed";
+export { ContributionHeatmap, type ContributionHeatmapProps } from "./components/contribution-heatmap";
+export { ImageCompare, type ImageCompareProps } from "./components/image-compare";
+export { NavigationMenu, type NavigationMenuProps } from "./components/navigation-menu";
+export { ContextMenu, type ContextMenuProps } from "./components/context-menu";
+export { AlertDialog, type AlertDialogProps } from "./components/alert-dialog";
+export { Carousel, type CarouselProps } from "./components/carousel";
+export { SidebarNav, type SidebarNavProps } from "./components/sidebar-nav";
+export { Menubar, type MenubarProps } from "./components/menubar";
+export { Toast, type ToastProps } from "./components/toast";

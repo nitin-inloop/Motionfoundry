@@ -1,0 +1,162 @@
+{
+  "slug": "navigation-menu",
+  "name": "NavigationMenu",
+  "category": "Navigation",
+  "collection": "ui",
+  "featured": true,
+  "addedAt": "2026-10-16",
+  "version": "2.3.0",
+  "requiresMotion": true,
+  "dependencies": [
+    "motion",
+    "react"
+  ],
+  "description": "A site header navigation with a pill or underline indicator that glides under the hovered item and a shared dropdown panel that springs open, slides between triggers and cross-fades its sub-links and feature card.",
+  "tags": [
+    "navigation menu",
+    "navbar",
+    "header",
+    "mega menu",
+    "dropdown",
+    "ui"
+  ],
+  "a11yNotes": "Uses the WAI-ARIA disclosure navigation pattern inside <nav aria-label>: items with sub-links are native buttons with aria-expanded and aria-controls pointing at the panel; plain items are links. Left/Right/Home/End move between top-level items, ArrowDown opens a menu and focuses its first link, Up/Down move through panel links, and Escape closes and returns focus to the trigger. The panel closes when focus or a pointer leaves the component. Keyboard Enter/Space toggles the panel even in hover mode. The hover indicator is aria-hidden; reduced motion removes sliding and scaling.",
+  "defaultProps": {
+    "brand": "Foundry",
+    "ctaLabel": "Get started",
+    "indicator": "pill",
+    "openOn": "hover",
+    "accentColor": "#6366f1",
+    "minHeight": 340,
+    "ariaLabel": "Main"
+  },
+  "controls": [
+    {
+      "prop": "brand",
+      "label": "Brand",
+      "type": "text"
+    },
+    {
+      "prop": "ctaLabel",
+      "label": "CTA label",
+      "type": "text"
+    },
+    {
+      "prop": "indicator",
+      "label": "Hover indicator",
+      "type": "select",
+      "options": [
+        "pill",
+        "underline"
+      ]
+    },
+    {
+      "prop": "openOn",
+      "label": "Open on",
+      "type": "select",
+      "options": [
+        "hover",
+        "click"
+      ]
+    },
+    {
+      "prop": "accentColor",
+      "label": "Accent color",
+      "type": "color"
+    },
+    {
+      "prop": "minHeight",
+      "label": "Reserved height",
+      "type": "range",
+      "min": 0,
+      "max": 480,
+      "step": 20
+    },
+    {
+      "prop": "ariaLabel",
+      "label": "Nav label",
+      "type": "text"
+    }
+  ],
+  "propsApi": [
+    {
+      "name": "items",
+      "type": "{ label: string; href?: string; links?: { label: string; description?: string; href?: string }[]; feature?: { title: string; description: string; href?: string } }[]",
+      "default": "Products / Resources / Pricing / Blog",
+      "description": "Top-level items; items with links get a dropdown panel."
+    },
+    {
+      "name": "brand",
+      "type": "string",
+      "default": "'Foundry'",
+      "description": "Brand text on the left; empty string hides it."
+    },
+    {
+      "name": "ctaLabel",
+      "type": "string",
+      "default": "'Get started'",
+      "description": "Call-to-action label on the right; empty string hides it."
+    },
+    {
+      "name": "indicator",
+      "type": "'pill' | 'underline'",
+      "default": "'pill'",
+      "description": "Style of the gliding hover indicator."
+    },
+    {
+      "name": "openOn",
+      "type": "'hover' | 'click'",
+      "default": "'hover'",
+      "description": "Open panels on pointer hover (click also works) or on click only."
+    },
+    {
+      "name": "accentColor",
+      "type": "string",
+      "default": "'#6366f1'",
+      "description": "Color of the feature card, CTA and link highlights."
+    },
+    {
+      "name": "minHeight",
+      "type": "number",
+      "default": "340",
+      "description": "Minimum height of the root in pixels so the open panel has room; use 0 in a real header."
+    },
+    {
+      "name": "ariaLabel",
+      "type": "string",
+      "default": "'Main'",
+      "description": "Accessible label of the nav landmark."
+    },
+    {
+      "name": "onNavigate",
+      "type": "(href: string, label: string) => void",
+      "default": "undefined",
+      "description": "Called when any link is activated. Links with href '#' are not followed."
+    },
+    {
+      "name": "className",
+      "type": "string",
+      "default": "''",
+      "description": "Class merged onto the root element."
+    },
+    {
+      "name": "style",
+      "type": "React.CSSProperties",
+      "default": "undefined",
+      "description": "Inline styles merged onto the root element."
+    }
+  ],
+  "files": [
+    {
+      "path": "components/ui/navigation-menu.tsx",
+      "type": "registry:component",
+      "content": "\"use client\";\n\nimport * as React from \"react\";\nimport { AnimatePresence, motion, useReducedMotion } from \"motion/react\";\nimport styles from \"../styles/navigation-menu.module.css\";\n\nexport interface NavigationMenuLink {\n  /** Link title */\n  label: string;\n  /** Short description under the title */\n  description?: string;\n  /** Link target */\n  href?: string;\n}\n\nexport interface NavigationMenuItem {\n  /** Top-level label */\n  label: string;\n  /** Link target for items without sub-links */\n  href?: string;\n  /** Sub-links shown in the dropdown panel */\n  links?: NavigationMenuLink[];\n  /** Optional highlighted card shown beside the sub-links */\n  feature?: { title: string; description: string; href?: string };\n}\n\nexport interface NavigationMenuProps {\n  /** Top-level items */\n  items?: NavigationMenuItem[];\n  /** Brand text shown on the left (empty hides it) */\n  brand?: string;\n  /** Call-to-action button label (empty hides it) */\n  ctaLabel?: string;\n  /** Hover indicator style */\n  indicator?: \"pill\" | \"underline\";\n  /** Open dropdowns on hover (and click) or on click only */\n  openOn?: \"hover\" | \"click\";\n  /** Accent color for the feature card, CTA and highlights */\n  accentColor?: string;\n  /** Minimum height reserved for the open panel, in pixels */\n  minHeight?: number;\n  /** Accessible label of the nav landmark */\n  ariaLabel?: string;\n  /** Called when any link is activated; links with href \"#\" are not followed */\n  onNavigate?: (href: string, label: string) => void;\n  /** Optional className merged onto the root */\n  className?: string;\n  /** Optional inline styles merged onto the root */\n  style?: React.CSSProperties;\n}\n\nconst DEFAULT_ITEMS: NavigationMenuItem[] = [\n  {\n    label: \"Products\",\n    feature: { title: \"MotionFoundry 2.3\", description: \"Forty new animated UI primitives, built from scratch.\", href: \"#\" },\n    links: [\n      { label: \"Analytics\", description: \"Real-time dashboards for every metric.\", href: \"#\" },\n      { label: \"Automations\", description: \"Trigger workflows from any event.\", href: \"#\" },\n      { label: \"Integrations\", description: \"Connect the tools you already use.\", href: \"#\" },\n    ],\n  },\n  {\n    label: \"Resources\",\n    links: [\n      { label: \"Documentation\", description: \"Guides and API references.\", href: \"#\" },\n      { label: \"Templates\", description: \"Starter kits for common apps.\", href: \"#\" },\n      { label: \"Changelog\", description: \"What shipped this month.\", href: \"#\" },\n      { label: \"Community\", description: \"Ask questions, share builds.\", href: \"#\" },\n    ],\n  },\n  { label: \"Pricing\", href: \"#\" },\n  { label: \"Blog\", href: \"#\" },\n];\n\nconst useIsoLayoutEffect = typeof window !== \"undefined\" ? React.useLayoutEffect : React.useEffect;\n\nexport function NavigationMenu({\n  items = DEFAULT_ITEMS,\n  brand = \"Foundry\",\n  ctaLabel = \"Get started\",\n  indicator = \"pill\",\n  openOn = \"hover\",\n  accentColor = \"#6366f1\",\n  minHeight = 340,\n  ariaLabel = \"Main\",\n  onNavigate,\n  className = \"\",\n  style,\n}: NavigationMenuProps) {\n  const reduce = useReducedMotion();\n  const baseId = React.useId();\n  const [open, setOpen] = React.useState<number | null>(null);\n  const [hover, setHover] = React.useState<number | null>(null);\n  const [bar, setBar] = React.useState<{ x: number; w: number } | null>(null);\n  const [panelX, setPanelX] = React.useState(0);\n  const [snap, setSnap] = React.useState(true);\n  const placedFor = React.useRef<number | null>(null);\n  const rootRef = React.useRef<HTMLDivElement>(null);\n  const navRef = React.useRef<HTMLElement>(null);\n  const panelRef = React.useRef<HTMLDivElement>(null);\n  const topRefs = React.useRef<Array<HTMLElement | null>>([]);\n  const timer = React.useRef<ReturnType<typeof setTimeout> | null>(null);\n  const focusFirst = React.useRef(false);\n  const target = hover ?? open;\n\n  const clearTimer = () => {\n    if (timer.current) clearTimeout(timer.current);\n    timer.current = null;\n  };\n  React.useEffect(() => clearTimer, []);\n\n  React.useEffect(() => {\n    if (open === null) return;\n    const onDown = (e: PointerEvent) => {\n      const node = e.target as Node;\n      if (!navRef.current?.contains(node) && !panelRef.current?.contains(node)) setOpen(null);\n    };\n    document.addEventListener(\"pointerdown\", onDown);\n    return () => document.removeEventListener(\"pointerdown\", onDown);\n  }, [open]);\n\n  const scheduleClose = () => {\n    setHover(null);\n    if (openOn !== \"hover\") return;\n    clearTimer();\n    timer.current = setTimeout(() => setOpen(null), 180);\n  };\n\n  const close = (refocus: boolean) => {\n    clearTimer();\n    if (refocus && open !== null) topRefs.current[open]?.focus();\n    setOpen(null);\n  };\n\n  const place = React.useCallback(() => {\n    const root = rootRef.current;\n    const t = target !== null ? topRefs.current[target] : null;\n    setBar(t ? { x: t.offsetLeft, w: t.offsetWidth } : null);\n    const trig = open !== null ? topRefs.current[open] : null;\n    const panel = panelRef.current;\n    const fresh = placedFor.current === null;\n    placedFor.current = open;\n    if (!root || !trig || !panel) return;\n    const r = root.getBoundingClientRect();\n    const tr = trig.getBoundingClientRect();\n    const max = root.clientWidth - panel.offsetWidth;\n    setSnap(fresh);\n    setPanelX(Math.max(0, Math.min(max, tr.left - r.left + tr.width / 2 - panel.offsetWidth / 2)));\n  }, [target, open]);\n\n  useIsoLayoutEffect(() => {\n    place();\n  }, [place]);\n\n  React.useEffect(() => {\n    const panel = panelRef.current;\n    if (!panel || typeof ResizeObserver === \"undefined\") return;\n    const ro = new ResizeObserver(() => place());\n    ro.observe(panel);\n    if (rootRef.current) ro.observe(rootRef.current);\n    if (focusFirst.current) {\n      focusFirst.current = false;\n      panel.querySelector<HTMLElement>(\"a\")?.focus();\n    }\n    return () => ro.disconnect();\n  }, [open, place]);\n\n  const linkClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string | undefined, label: string) => {\n    if (!href || href === \"#\") e.preventDefault();\n    onNavigate?.(href ?? \"#\", label);\n    close(false);\n  };\n\n  const onTopKey = (e: React.KeyboardEvent<HTMLElement>, i: number) => {\n    const n = items.length;\n    let next = -1;\n    if (e.key === \"ArrowRight\") next = (i + 1) % n;\n    else if (e.key === \"ArrowLeft\") next = (i - 1 + n) % n;\n    else if (e.key === \"Home\") next = 0;\n    else if (e.key === \"End\") next = n - 1;\n    else if (e.key === \"ArrowDown\" && items[i].links?.length) {\n      e.preventDefault();\n      if (open === i) panelRef.current?.querySelector<HTMLElement>(\"a\")?.focus();\n      else {\n        focusFirst.current = true;\n        setOpen(i);\n      }\n      return;\n    } else if (e.key === \"Escape\" && open !== null) {\n      e.preventDefault();\n      close(true);\n      return;\n    }\n    if (next < 0) return;\n    e.preventDefault();\n    topRefs.current[next]?.focus();\n    if (open !== null) setOpen(items[next].links?.length ? next : null);\n  };\n\n  const onPanelKey = (e: React.KeyboardEvent<HTMLDivElement>) => {\n    const links = Array.from(panelRef.current?.querySelectorAll<HTMLElement>(\"a\") ?? []);\n    const i = links.indexOf(document.activeElement as HTMLElement);\n    let next = -1;\n    if (e.key === \"ArrowDown\" || e.key === \"ArrowRight\") next = (i + 1) % links.length;\n    else if (e.key === \"ArrowUp\" || e.key === \"ArrowLeft\") next = (i - 1 + links.length) % links.length;\n    else if (e.key === \"Home\") next = 0;\n    else if (e.key === \"End\") next = links.length - 1;\n    else if (e.key === \"Escape\") {\n      e.preventDefault();\n      close(true);\n      return;\n    }\n    if (next < 0) return;\n    e.preventDefault();\n    links[next]?.focus();\n  };\n\n  const active = open !== null ? items[open] : null;\n  const spring = reduce ? { duration: 0 } : { type: \"spring\" as const, stiffness: 420, damping: 36 };\n\n  return (\n    <div\n      ref={rootRef}\n      className={`${styles.root} ${className}`.trim()}\n      data-indicator={indicator}\n      style={{ \"--mf-nm-accent\": accentColor, minHeight: Math.max(0, minHeight), ...style } as React.CSSProperties}\n      onBlur={(e) => {\n        if (!e.currentTarget.contains(e.relatedTarget as Node | null)) setOpen(null);\n      }}\n    >\n      <nav ref={navRef} aria-label={ariaLabel} className={styles.bar} onPointerLeave={scheduleClose} onPointerEnter={clearTimer}>\n        {brand && (\n          <a href=\"#\" className={styles.brand} onClick={(e) => linkClick(e, \"#\", brand)}>\n            <span aria-hidden=\"true\" className={styles.logo} />\n            {brand}\n          </a>\n        )}\n        <ul className={styles.list} onPointerLeave={() => setHover(null)}>\n          <motion.li\n            aria-hidden=\"true\"\n            className={styles.indicator}\n            initial={false}\n            animate={bar ? { x: bar.x, width: bar.w, opacity: 1 } : { opacity: 0 }}\n            transition={spring}\n          />\n          {items.map((item, i) => {\n            const hasMenu = !!item.links?.length;\n            const common = {\n              ref: (el: HTMLElement | null) => {\n                topRefs.current[i] = el;\n              },\n              className: styles.top,\n              onPointerEnter: () => {\n                setHover(i);\n                if (openOn === \"hover\") {\n                  clearTimer();\n                  timer.current = setTimeout(() => setOpen(hasMenu ? i : null), open === null ? 90 : 0);\n                }\n              },\n              onFocus: () => setHover(i),\n              onKeyDown: (e: React.KeyboardEvent<HTMLElement>) => onTopKey(e, i),\n            };\n            return (\n              <li key={item.label}>\n                {hasMenu ? (\n                  <button\n                    {...common}\n                    type=\"button\"\n                    aria-expanded={open === i}\n                    aria-controls={`${baseId}-panel`}\n                    data-open={open === i ? \"\" : undefined}\n                    onClick={(e) => {\n                      clearTimer();\n                      const toggle = openOn === \"click\" || e.detail === 0;\n                      setOpen(toggle && open === i ? null : i);\n                    }}\n                  >\n                    {item.label}\n                    <svg aria-hidden=\"true\" className={styles.caret} width=\"12\" height=\"12\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" strokeWidth=\"2.5\" strokeLinecap=\"round\" strokeLinejoin=\"round\">\n                      <path d=\"m6 9 6 6 6-6\" />\n                    </svg>\n                  </button>\n                ) : (\n                  <a {...common} href={item.href ?? \"#\"} onClick={(e) => linkClick(e, item.href, item.label)}>\n                    {item.label}\n                  </a>\n                )}\n              </li>\n            );\n          })}\n        </ul>\n        {ctaLabel && (\n          <a href=\"#\" className={styles.cta} onClick={(e) => linkClick(e, \"#\", ctaLabel)}>\n            {ctaLabel}\n          </a>\n        )}\n      </nav>\n      <AnimatePresence>\n        {active && (\n          <motion.div\n            ref={panelRef}\n            id={`${baseId}-panel`}\n            className={styles.panel}\n            onKeyDown={onPanelKey}\n            onPointerEnter={clearTimer}\n            onPointerLeave={scheduleClose}\n            initial={{ opacity: 0, y: reduce ? 0 : -8, scale: reduce ? 1 : 0.98, x: panelX }}\n            animate={{ opacity: 1, y: 0, scale: 1, x: panelX }}\n            exit={{ opacity: 0, y: reduce ? 0 : -6, scale: reduce ? 1 : 0.98 }}\n            transition={reduce ? { duration: 0.1, x: { duration: 0 } } : { type: \"spring\", stiffness: 380, damping: 34, x: snap ? { duration: 0 } : { type: \"spring\", stiffness: 380, damping: 34 } }}\n          >\n            <AnimatePresence mode=\"wait\" initial={false}>\n              <motion.div\n                key={open ?? -1}\n                className={styles.content}\n                initial={{ opacity: 0 }}\n                animate={{ opacity: 1 }}\n                exit={{ opacity: 0 }}\n                transition={{ duration: reduce ? 0 : 0.12 }}\n              >\n                {active.feature && (\n                  <a href={active.feature.href ?? \"#\"} className={styles.feature} onClick={(e) => linkClick(e, active.feature?.href, active.feature?.title ?? \"\")}>\n                    <strong>{active.feature.title}</strong>\n                    <span>{active.feature.description}</span>\n                  </a>\n                )}\n                <ul className={styles.links} data-cols={!active.feature && (active.links?.length ?? 0) > 3 ? 2 : 1}>\n                  {active.links?.map((l) => (\n                    <li key={l.label}>\n                      <a href={l.href ?? \"#\"} className={styles.link} onClick={(e) => linkClick(e, l.href, l.label)}>\n                        <span className={styles.linkTitle}>{l.label}</span>\n                        {l.description && <span className={styles.linkDesc}>{l.description}</span>}\n                      </a>\n                    </li>\n                  ))}\n                </ul>\n              </motion.div>\n            </AnimatePresence>\n          </motion.div>\n        )}\n      </AnimatePresence>\n    </div>\n  );\n}\n"
+    },
+    {
+      "path": "components/styles/navigation-menu.module.css",
+      "type": "registry:style",
+      "content": ".root {\n  position: relative;\n  width: 100%;\n  max-width: 52rem;\n  color: var(--mf-fg, #f4f4f6);\n  font-size: 0.875rem;\n}\n\n.bar {\n  display: flex;\n  align-items: center;\n  gap: 1rem;\n  height: 3.5rem;\n  padding: 0 0.625rem 0 1rem;\n  border-radius: 0.875rem;\n  border: 1px solid var(--mf-border, #2e2e38);\n  background-color: var(--mf-surface, #141419);\n}\n\n.brand {\n  display: inline-flex;\n  align-items: center;\n  gap: 0.5rem;\n  color: var(--mf-fg, #f4f4f6);\n  font-weight: 650;\n  font-size: 0.9375rem;\n  text-decoration: none;\n  border-radius: 0.375rem;\n}\n\n.logo {\n  width: 1.25rem;\n  height: 1.25rem;\n  border-radius: 0.375rem;\n  background: linear-gradient(135deg, var(--mf-nm-accent, #6366f1), color-mix(in srgb, var(--mf-nm-accent, #6366f1) 40%, #f472b6));\n}\n\n.list {\n  position: relative;\n  display: flex;\n  align-items: center;\n  gap: 0.125rem;\n  flex: 1;\n  margin: 0;\n  padding: 0;\n  list-style: none;\n}\n\n.list > li {\n  display: inline-flex;\n}\n\n.indicator {\n  position: absolute;\n  left: 0;\n  pointer-events: none;\n}\n\n.root[data-indicator=\"pill\"] .indicator {\n  top: 50%;\n  height: 2.125rem;\n  margin-top: -1.0625rem;\n  border-radius: 0.5rem;\n  background-color: var(--mf-surface-raised, #1b1b22);\n}\n\n.root[data-indicator=\"underline\"] .indicator {\n  bottom: -0.6875rem;\n  height: 2px;\n  border-radius: 2px;\n  background-color: var(--mf-nm-accent, #6366f1);\n}\n\n.top {\n  position: relative;\n  z-index: 1;\n  display: inline-flex;\n  align-items: center;\n  gap: 0.25rem;\n  height: 2.125rem;\n  padding: 0 0.75rem;\n  border: 0;\n  border-radius: 0.5rem;\n  background: transparent;\n  color: var(--mf-muted, #a1a1aa);\n  font: inherit;\n  font-weight: 500;\n  text-decoration: none;\n  cursor: pointer;\n  transition: color 150ms ease;\n}\n\n.top:hover,\n.top[data-open] {\n  color: var(--mf-fg, #f4f4f6);\n}\n\n.caret {\n  transition: transform 220ms cubic-bezier(0.16, 1, 0.3, 1);\n}\n\n.top[data-open] .caret {\n  transform: rotate(180deg);\n}\n\n.cta {\n  display: inline-flex;\n  align-items: center;\n  height: 2.25rem;\n  padding: 0 0.95rem;\n  border-radius: 0.5rem;\n  background-color: var(--mf-nm-accent, #6366f1);\n  color: #ffffff;\n  font-weight: 500;\n  text-decoration: none;\n  white-space: nowrap;\n  transition: filter 150ms ease, transform 120ms ease;\n}\n\n.cta:hover {\n  filter: brightness(1.08);\n}\n\n.cta:active {\n  transform: scale(0.97);\n}\n\n.top:focus-visible,\n.brand:focus-visible,\n.cta:focus-visible,\n.link:focus-visible,\n.feature:focus-visible {\n  outline: 2px solid var(--mf-fg, #e4e4e7);\n  outline-offset: 2px;\n}\n\n.panel {\n  position: absolute;\n  top: calc(3.5rem + 0.5rem);\n  left: 0;\n  z-index: 30;\n  max-width: 100%;\n  padding: 0.5rem;\n  border-radius: 0.875rem;\n  border: 1px solid var(--mf-border, #2e2e38);\n  background-color: var(--mf-surface-raised, #1b1b22);\n  box-shadow: 0 18px 48px -12px rgba(0, 0, 0, 0.5);\n  transform-origin: top center;\n}\n\n.content {\n  display: flex;\n  gap: 0.5rem;\n}\n\n.feature {\n  display: flex;\n  flex-direction: column;\n  justify-content: flex-end;\n  gap: 0.375rem;\n  width: 12.5rem;\n  min-height: 11rem;\n  padding: 1rem;\n  border-radius: 0.625rem;\n  background:\n    radial-gradient(120% 90% at 0% 0%, color-mix(in srgb, var(--mf-nm-accent, #6366f1) 85%, transparent), transparent 70%),\n    linear-gradient(160deg, color-mix(in srgb, var(--mf-nm-accent, #6366f1) 55%, #0b0b10), #0b0b10);\n  color: #ffffff;\n  text-decoration: none;\n}\n\n.feature strong {\n  font-size: 1rem;\n}\n\n.feature span {\n  color: rgba(255, 255, 255, 0.78);\n  line-height: 1.45;\n}\n\n.links {\n  display: grid;\n  grid-template-columns: 17rem;\n  gap: 0.125rem;\n  margin: 0;\n  padding: 0;\n  list-style: none;\n}\n\n.links[data-cols=\"2\"] {\n  grid-template-columns: repeat(2, 15rem);\n}\n\n.link {\n  display: flex;\n  flex-direction: column;\n  gap: 0.1875rem;\n  padding: 0.625rem 0.75rem;\n  border-radius: 0.5rem;\n  text-decoration: none;\n  transition: background-color 140ms ease;\n}\n\n.link:hover,\n.link:focus-visible {\n  background-color: color-mix(in srgb, var(--mf-nm-accent, #6366f1) 14%, transparent);\n}\n\n.linkTitle {\n  color: var(--mf-fg, #f4f4f6);\n  font-weight: 550;\n}\n\n.linkDesc {\n  color: var(--mf-muted, #a1a1aa);\n  font-size: 0.8125rem;\n  line-height: 1.4;\n}\n\n@media (max-width: 640px) {\n  .feature {\n    display: none;\n  }\n\n  .links[data-cols=\"2\"] {\n    grid-template-columns: 15rem;\n  }\n}\n\n@media (prefers-reduced-motion: reduce) {\n  .top,\n  .caret,\n  .cta,\n  .link {\n    transition: none;\n  }\n}\n"
+    }
+  ],
+  "tailwindExample": "\"use client\";\n\nimport { useState } from \"react\";\nimport { AnimatePresence, motion } from \"motion/react\";\n\nconst ITEMS = [\n  { label: \"Products\", links: [\"Analytics\", \"Automations\", \"Integrations\"] },\n  { label: \"Resources\", links: [\"Documentation\", \"Templates\", \"Changelog\"] },\n  { label: \"Pricing\" },\n];\n\nexport function NavigationMenuTailwind() {\n  const [hover, setHover] = useState<string | null>(null);\n  const [open, setOpen] = useState<string | null>(null);\n  const active = ITEMS.find((i) => i.label === open);\n  return (\n    <div className=\"relative w-full max-w-3xl text-sm\" onMouseLeave={() => { setHover(null); setOpen(null); }}>\n      <nav aria-label=\"Main\" className=\"flex h-14 items-center gap-4 rounded-2xl border border-zinc-800 bg-zinc-900 px-4\">\n        <span className=\"font-semibold text-zinc-100\">Foundry</span>\n        <ul className=\"flex flex-1 gap-0.5\">\n          {ITEMS.map((item) => (\n            <li key={item.label} className=\"relative\" onMouseEnter={() => { setHover(item.label); setOpen(item.links ? item.label : null); }}>\n              {hover === item.label && <motion.span layoutId=\"nav-hover\" className=\"absolute inset-0 rounded-lg bg-zinc-800\" />}\n              <button aria-expanded={item.links ? open === item.label : undefined} onClick={() => setOpen(open === item.label ? null : item.label)} className=\"relative h-9 rounded-lg px-3 font-medium text-zinc-400 hover:text-zinc-100\">{item.label}</button>\n            </li>\n          ))}\n        </ul>\n      </nav>\n      <AnimatePresence>\n        {active?.links && (\n          <motion.ul initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -6 }} className=\"absolute left-24 top-16 w-64 rounded-2xl border border-zinc-800 bg-zinc-900 p-2 shadow-2xl\">\n            {active.links.map((l) => <li key={l}><a href=\"#\" className=\"block rounded-lg px-3 py-2.5 text-zinc-100 hover:bg-indigo-500/15\">{l}</a></li>)}\n          </motion.ul>\n        )}\n      </AnimatePresence>\n    </div>\n  );\n}\n"
+}

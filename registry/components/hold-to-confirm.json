@@ -1,0 +1,229 @@
+{
+  "slug": "hold-to-confirm",
+  "name": "HoldToConfirm",
+  "category": "Interactive Buttons and Controls",
+  "collection": "ui",
+  "featured": false,
+  "addedAt": "2026-10-16",
+  "version": "2.3.0",
+  "requiresMotion": false,
+  "dependencies": [
+    "react"
+  ],
+  "description": "A press-and-hold button for destructive actions: holding sweeps an accent fill across the button (the label inverts as it is covered), releasing early drains it back, and completing the hold fires onConfirm with a pop and a check mark before resetting.",
+  "tags": [
+    "hold",
+    "confirm",
+    "destructive",
+    "progress",
+    "long-press",
+    "ui"
+  ],
+  "a11yNotes": "Native <button> described by a visually hidden hint (\"Press and hold, or hold Space or Enter, to confirm\"). Holding Space or Enter works like a pointer hold (key repeat is ignored, keyup or blur cancels). A polite role=\"status\" region announces the confirmed label, and the button is aria-disabled until it resets. Progress is driven by requestAnimationFrame through a CSS variable without re-rendering. Under prefers-reduced-motion the press scale and confirm pop are removed; the progress fill remains because it conveys state.",
+  "defaultProps": {
+    "label": "Hold to delete",
+    "holdingLabel": "Keep holding…",
+    "confirmedLabel": "Deleted",
+    "holdDuration": 1500,
+    "resetAfter": 2200,
+    "fillStyle": "fill",
+    "variant": "outline",
+    "size": "md",
+    "accentColor": "#ef4444",
+    "showIcon": true,
+    "haptics": true,
+    "disabled": false
+  },
+  "controls": [
+    {
+      "prop": "label",
+      "label": "Label",
+      "type": "text"
+    },
+    {
+      "prop": "holdingLabel",
+      "label": "Holding label",
+      "type": "text"
+    },
+    {
+      "prop": "confirmedLabel",
+      "label": "Confirmed label",
+      "type": "text"
+    },
+    {
+      "prop": "holdDuration",
+      "label": "Hold duration (ms)",
+      "type": "range",
+      "min": 400,
+      "max": 4000,
+      "step": 100
+    },
+    {
+      "prop": "resetAfter",
+      "label": "Reset after (ms, 0 = never)",
+      "type": "range",
+      "min": 0,
+      "max": 6000,
+      "step": 100
+    },
+    {
+      "prop": "fillStyle",
+      "label": "Progress style",
+      "type": "select",
+      "options": [
+        "fill",
+        "bar"
+      ]
+    },
+    {
+      "prop": "variant",
+      "label": "Variant",
+      "type": "select",
+      "options": [
+        "solid",
+        "outline"
+      ]
+    },
+    {
+      "prop": "size",
+      "label": "Size",
+      "type": "select",
+      "options": [
+        "sm",
+        "md",
+        "lg"
+      ]
+    },
+    {
+      "prop": "accentColor",
+      "label": "Accent color",
+      "type": "color"
+    },
+    {
+      "prop": "showIcon",
+      "label": "Show icon",
+      "type": "boolean"
+    },
+    {
+      "prop": "haptics",
+      "label": "Haptics",
+      "type": "boolean"
+    },
+    {
+      "prop": "disabled",
+      "label": "Disabled",
+      "type": "boolean"
+    }
+  ],
+  "propsApi": [
+    {
+      "name": "label",
+      "type": "string",
+      "default": "'Hold to delete'",
+      "description": "Idle label."
+    },
+    {
+      "name": "holdingLabel",
+      "type": "string",
+      "default": "'Keep holding…'",
+      "description": "Label shown while the button is held."
+    },
+    {
+      "name": "confirmedLabel",
+      "type": "string",
+      "default": "'Deleted'",
+      "description": "Label shown (and announced) once confirmed."
+    },
+    {
+      "name": "holdDuration",
+      "type": "number",
+      "default": "1500",
+      "description": "Milliseconds the button must be held (minimum 200)."
+    },
+    {
+      "name": "resetAfter",
+      "type": "number",
+      "default": "2200",
+      "description": "Milliseconds after confirming before it resets; 0 keeps it confirmed."
+    },
+    {
+      "name": "fillStyle",
+      "type": "'fill' | 'bar'",
+      "default": "'fill'",
+      "description": "Sweep the whole button with an inverting label, or grow a thin bar along the bottom."
+    },
+    {
+      "name": "variant",
+      "type": "'solid' | 'outline'",
+      "default": "'outline'",
+      "description": "Tinted or neutral outlined surface."
+    },
+    {
+      "name": "size",
+      "type": "'sm' | 'md' | 'lg'",
+      "default": "'md'",
+      "description": "Size preset."
+    },
+    {
+      "name": "accentColor",
+      "type": "string",
+      "default": "'#ef4444'",
+      "description": "Color of the progress fill."
+    },
+    {
+      "name": "showIcon",
+      "type": "boolean",
+      "default": "true",
+      "description": "Show the trash / check icon."
+    },
+    {
+      "name": "haptics",
+      "type": "boolean",
+      "default": "true",
+      "description": "Call navigator.vibrate on confirm where supported."
+    },
+    {
+      "name": "disabled",
+      "type": "boolean",
+      "default": "false",
+      "description": "Disable the button."
+    },
+    {
+      "name": "onConfirm",
+      "type": "() => void",
+      "default": "undefined",
+      "description": "Called once the hold completes."
+    },
+    {
+      "name": "onCancel",
+      "type": "() => void",
+      "default": "undefined",
+      "description": "Called when a hold is released before completing."
+    },
+    {
+      "name": "className",
+      "type": "string",
+      "default": "''",
+      "description": "Additional class merged onto the root element."
+    },
+    {
+      "name": "style",
+      "type": "React.CSSProperties",
+      "default": "undefined",
+      "description": "Inline styles merged onto the root element."
+    }
+  ],
+  "files": [
+    {
+      "path": "components/ui/hold-to-confirm.tsx",
+      "type": "registry:component",
+      "content": "\"use client\";\n\nimport * as React from \"react\";\nimport styles from \"../styles/hold-to-confirm.module.css\";\n\nexport interface HoldToConfirmProps {\n  /** Idle label */\n  label?: string;\n  /** Label shown while holding */\n  holdingLabel?: string;\n  /** Label shown once confirmed */\n  confirmedLabel?: string;\n  /** Milliseconds the button must be held */\n  holdDuration?: number;\n  /** Milliseconds after confirming before it resets (0 = stay confirmed) */\n  resetAfter?: number;\n  /** Visual style of the progress */\n  fillStyle?: \"fill\" | \"bar\";\n  /** Visual style of the button */\n  variant?: \"solid\" | \"outline\";\n  /** Size preset */\n  size?: \"sm\" | \"md\" | \"lg\";\n  /** Color of the progress fill */\n  accentColor?: string;\n  /** Show the leading icon */\n  showIcon?: boolean;\n  /** Vibrate on confirm where supported */\n  haptics?: boolean;\n  /** Disable the button */\n  disabled?: boolean;\n  /** Called once the hold completes */\n  onConfirm?: () => void;\n  /** Called when a hold is released early */\n  onCancel?: () => void;\n  /** Optional className merged onto the root */\n  className?: string;\n  /** Optional inline styles merged onto the root */\n  style?: React.CSSProperties;\n}\n\ntype Phase = \"idle\" | \"holding\" | \"confirmed\";\nconst RELEASE_MS = 320;\n\nfunction Glyph({ done }: { done: boolean }) {\n  return (\n    <svg aria-hidden=\"true\" width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" strokeWidth=\"2\" strokeLinecap=\"round\" strokeLinejoin=\"round\">\n      <path d={done ? \"M5 12.5l4.5 4.5L19 7\" : \"M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6M10 11v6M14 11v6\"} />\n    </svg>\n  );\n}\n\nexport function HoldToConfirm({\n  label = \"Hold to delete\",\n  holdingLabel = \"Keep holding…\",\n  confirmedLabel = \"Deleted\",\n  holdDuration = 1500,\n  resetAfter = 2200,\n  fillStyle = \"fill\",\n  variant = \"outline\",\n  size = \"md\",\n  accentColor = \"#ef4444\",\n  showIcon = true,\n  haptics = true,\n  disabled = false,\n  onConfirm,\n  onCancel,\n  className = \"\",\n  style,\n}: HoldToConfirmProps) {\n  const [phase, setPhase] = React.useState<Phase>(\"idle\");\n  const btnRef = React.useRef<HTMLButtonElement>(null);\n  const progress = React.useRef(0);\n  const holding = React.useRef(false);\n  const raf = React.useRef(0);\n  const last = React.useRef(0);\n  const resetTimer = React.useRef<ReturnType<typeof setTimeout> | null>(null);\n  const hintId = React.useId();\n  const cbs = React.useRef({ onConfirm, onCancel });\n  cbs.current = { onConfirm, onCancel };\n\n  const paint = (p: number) => btnRef.current?.style.setProperty(\"--mf-htc-p\", p.toFixed(4));\n\n  const tick = React.useCallback(\n    (now: number) => {\n      const dt = Math.min(64, now - last.current);\n      last.current = now;\n      const dur = Math.max(200, holdDuration);\n      progress.current = holding.current ? progress.current + dt / dur : progress.current - dt / RELEASE_MS;\n      if (progress.current >= 1) {\n        progress.current = 1;\n        holding.current = false;\n        paint(1);\n        setPhase(\"confirmed\");\n        if (haptics && typeof navigator !== \"undefined\" && \"vibrate\" in navigator) navigator.vibrate(30);\n        cbs.current.onConfirm?.();\n        if (resetAfter > 0) {\n          resetTimer.current = setTimeout(() => {\n            progress.current = 0;\n            paint(0);\n            setPhase(\"idle\");\n          }, resetAfter);\n        }\n        return;\n      }\n      if (progress.current <= 0) {\n        progress.current = 0;\n        paint(0);\n        return;\n      }\n      paint(progress.current);\n      raf.current = requestAnimationFrame(tick);\n    },\n    [holdDuration, resetAfter, haptics],\n  );\n\n  const run = () => {\n    cancelAnimationFrame(raf.current);\n    last.current = performance.now();\n    raf.current = requestAnimationFrame(tick);\n  };\n\n  const start = () => {\n    if (disabled || phase === \"confirmed\" || holding.current) return;\n    holding.current = true;\n    setPhase(\"holding\");\n    run();\n  };\n\n  const release = () => {\n    if (!holding.current) return;\n    holding.current = false;\n    setPhase(\"idle\");\n    cbs.current.onCancel?.();\n    run();\n  };\n\n  React.useEffect(\n    () => () => {\n      cancelAnimationFrame(raf.current);\n      if (resetTimer.current) clearTimeout(resetTimer.current);\n    },\n    [],\n  );\n\n  const text = phase === \"confirmed\" ? confirmedLabel : phase === \"holding\" ? holdingLabel : label;\n  const inner = (\n    <>\n      {showIcon ? <Glyph done={phase === \"confirmed\"} /> : null}\n      <span>{text}</span>\n    </>\n  );\n\n  return (\n    <div className={`${styles.root} ${className}`.trim()} style={{ \"--mf-htc-accent\": accentColor, ...style } as React.CSSProperties}>\n      <button\n        ref={btnRef}\n        type=\"button\"\n        disabled={disabled}\n        aria-describedby={hintId}\n        aria-disabled={phase === \"confirmed\" || undefined}\n        data-phase={phase}\n        data-fill={fillStyle}\n        className={[styles.button, styles[variant], styles[size]].filter(Boolean).join(\" \")}\n        onPointerDown={(e) => {\n          if (e.button !== 0) return;\n          e.currentTarget.setPointerCapture(e.pointerId);\n          start();\n        }}\n        onPointerUp={release}\n        onPointerCancel={release}\n        onPointerMove={(e) => {\n          if (!holding.current) return;\n          const r = e.currentTarget.getBoundingClientRect();\n          if (e.clientX < r.left - 16 || e.clientX > r.right + 16 || e.clientY < r.top - 16 || e.clientY > r.bottom + 16) release();\n        }}\n        onKeyDown={(e) => {\n          if (e.key !== \" \" && e.key !== \"Enter\") return;\n          e.preventDefault();\n          if (!e.repeat) start();\n        }}\n        onKeyUp={(e) => {\n          if (e.key === \" \" || e.key === \"Enter\") release();\n        }}\n        onBlur={release}\n        onContextMenu={(e) => e.preventDefault()}\n      >\n        <span className={styles.track} aria-hidden=\"true\">\n          <span className={styles.fill} />\n        </span>\n        {[label, holdingLabel, confirmedLabel].map((t, i) => (\n          <span key={i} className={`${styles.content} ${styles.sizer}`} aria-hidden=\"true\">\n            {showIcon ? <Glyph done={false} /> : null}\n            <span>{t}</span>\n          </span>\n        ))}\n        <span className={styles.content}>{inner}</span>\n        <span className={styles.overlay} aria-hidden=\"true\">\n          {inner}\n        </span>\n      </button>\n      <span id={hintId} className={styles.srOnly}>\n        Press and hold, or hold Space or Enter, to confirm.\n      </span>\n      <span className={styles.srOnly} role=\"status\" aria-live=\"polite\">\n        {phase === \"confirmed\" ? confirmedLabel : \"\"}\n      </span>\n    </div>\n  );\n}\n"
+    },
+    {
+      "path": "components/styles/hold-to-confirm.module.css",
+      "type": "registry:style",
+      "content": ".root {\n  position: relative;\n  display: inline-flex;\n  color: var(--mf-fg, #f4f4f6);\n}\n\n.button {\n  --mf-htc-p: 0;\n  --mf-htc-h: 2.5rem;\n  position: relative;\n  display: inline-grid;\n  place-items: center;\n  height: var(--mf-htc-h);\n  padding: 0 1.125rem;\n  border: 1px solid transparent;\n  border-radius: 0.5rem;\n  overflow: hidden;\n  isolation: isolate;\n  font: inherit;\n  font-size: 0.875rem;\n  font-weight: 500;\n  white-space: nowrap;\n  cursor: pointer;\n  user-select: none;\n  -webkit-user-select: none;\n  -webkit-touch-callout: none;\n  touch-action: none;\n  -webkit-tap-highlight-color: transparent;\n  transition: border-color 180ms ease, background-color 180ms ease, color 180ms ease, transform 220ms cubic-bezier(0.34, 1.56, 0.64, 1);\n}\n\n.button > * {\n  grid-area: 1 / 1;\n}\n\n.sm {\n  --mf-htc-h: 2rem;\n  padding: 0 0.875rem;\n  font-size: 0.8125rem;\n}\n\n.md {\n  --mf-htc-h: 2.5rem;\n}\n\n.lg {\n  --mf-htc-h: 3rem;\n  padding: 0 1.5rem;\n  font-size: 0.9375rem;\n}\n\n.button:focus-visible {\n  outline: 2px solid var(--mf-fg, #e4e4e7);\n  outline-offset: 2px;\n}\n\n.button:disabled {\n  opacity: 0.5;\n  cursor: not-allowed;\n}\n\n.button[data-phase=\"holding\"] {\n  transform: scale(0.97);\n}\n\n.button[data-phase=\"confirmed\"] {\n  cursor: default;\n  animation: mf-htc-pop 360ms cubic-bezier(0.34, 1.56, 0.64, 1);\n}\n\n@keyframes mf-htc-pop {\n  40% {\n    transform: scale(1.04);\n  }\n}\n\n.outline {\n  background-color: var(--mf-surface, #141419);\n  border-color: var(--mf-border, #2e2e38);\n  color: var(--mf-fg, #f4f4f6);\n}\n\n.outline:hover:not(:disabled) {\n  border-color: color-mix(in srgb, var(--mf-htc-accent, #ef4444) 50%, var(--mf-border, #2e2e38));\n}\n\n.solid {\n  background-color: color-mix(in srgb, var(--mf-htc-accent, #ef4444) 16%, var(--mf-surface, #141419));\n  border-color: color-mix(in srgb, var(--mf-htc-accent, #ef4444) 35%, transparent);\n  color: var(--mf-htc-accent, #ef4444);\n}\n\n.content,\n.overlay {\n  position: relative;\n  z-index: 1;\n  display: inline-flex;\n  align-items: center;\n  gap: 0.5rem;\n}\n\n.sizer {\n  visibility: hidden;\n}\n\n.track {\n  position: absolute;\n  inset: 0;\n  z-index: 0;\n  pointer-events: none;\n}\n\n.fill {\n  position: absolute;\n  inset: 0;\n  background-color: var(--mf-htc-accent, #ef4444);\n  transform-origin: left center;\n  transform: scaleX(var(--mf-htc-p, 0));\n}\n\n.overlay {\n  position: absolute;\n  inset: 0;\n  justify-content: center;\n  z-index: 2;\n  color: #ffffff;\n  clip-path: inset(0 calc((1 - var(--mf-htc-p, 0)) * 100%) 0 0);\n}\n\n.button[data-fill=\"bar\"] .track {\n  top: auto;\n  height: 3px;\n  background-color: color-mix(in srgb, var(--mf-htc-accent, #ef4444) 18%, transparent);\n}\n\n.button[data-fill=\"bar\"] .overlay {\n  display: none;\n}\n\n.button[data-fill=\"bar\"][data-phase=\"confirmed\"] {\n  color: var(--mf-htc-accent, #ef4444);\n  border-color: color-mix(in srgb, var(--mf-htc-accent, #ef4444) 50%, transparent);\n}\n\n.srOnly {\n  position: absolute;\n  width: 1px;\n  height: 1px;\n  margin: -1px;\n  padding: 0;\n  overflow: hidden;\n  clip: rect(0 0 0 0);\n  white-space: nowrap;\n  border: 0;\n}\n\n@media (prefers-reduced-motion: reduce) {\n  .button {\n    transition: none;\n  }\n\n  .button[data-phase=\"holding\"] {\n    transform: none;\n  }\n\n  .button[data-phase=\"confirmed\"] {\n    animation: none;\n  }\n}\n"
+    }
+  ],
+  "tailwindExample": "\"use client\";\n\nimport { useEffect, useRef, useState } from \"react\";\n\nexport function HoldToConfirmTailwind({ holdDuration = 1500, onConfirm = () => {} }) {\n  const [p, setP] = useState(0);\n  const [done, setDone] = useState(false);\n  const holding = useRef(false);\n  const raf = useRef(0);\n  useEffect(() => () => cancelAnimationFrame(raf.current), []);\n  const loop = (last: number) => (now: number) => {\n    setP((v) => {\n      const next = Math.min(1, Math.max(0, v + (holding.current ? 1 : -4) * (now - last) / holdDuration));\n      if (next >= 1) { setDone(true); onConfirm(); }\n      else if (next > 0 || holding.current) raf.current = requestAnimationFrame(loop(now));\n      return next;\n    });\n  };\n  const go = (h: boolean) => { if (done) return; holding.current = h; cancelAnimationFrame(raf.current); raf.current = requestAnimationFrame(loop(performance.now())); };\n  return (\n    <button\n      type=\"button\"\n      onPointerDown={() => go(true)} onPointerUp={() => go(false)} onPointerLeave={() => go(false)}\n      onKeyDown={(e) => { if ((e.key === \" \" || e.key === \"Enter\") && !e.repeat) { e.preventDefault(); go(true); } }}\n      onKeyUp={() => go(false)}\n      className=\"relative h-10 select-none overflow-hidden rounded-lg border border-zinc-800 bg-zinc-900 px-5 text-sm font-medium text-zinc-100 touch-none\"\n    >\n      <span aria-hidden=\"true\" className=\"absolute inset-0 origin-left bg-red-500\" style={{ transform: `scaleX(${p})` }} />\n      <span className=\"relative\">{done ? \"Deleted\" : p > 0 ? \"Keep holding…\" : \"Hold to delete\"}</span>\n    </button>\n  );\n}"
+}

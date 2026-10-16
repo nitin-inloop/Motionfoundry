@@ -1,0 +1,184 @@
+{
+  "slug": "context-menu",
+  "name": "ContextMenu",
+  "category": "Overlays and Menus",
+  "collection": "ui",
+  "featured": false,
+  "addedAt": "2026-10-16",
+  "version": "2.3.0",
+  "requiresMotion": true,
+  "dependencies": [
+    "motion",
+    "react"
+  ],
+  "description": "A right-click menu that scales in at the pointer inside a dashed target area, clamped and flipped to stay inside the viewport. It supports shortcut hints, separators, group labels, checkbox items with an animated check and a nested submenu, with full keyboard navigation.",
+  "tags": [
+    "context-menu",
+    "right-click",
+    "menu",
+    "submenu",
+    "overlay",
+    "ui"
+  ],
+  "a11yNotes": "Implements the WAI-ARIA menu pattern: role=\"menu\" panels with menuitem / menuitemcheckbox (aria-checked) rows, role=\"separator\", aria-disabled, and submenu triggers with aria-haspopup=\"menu\" and aria-expanded. The target area is focusable and opens the menu with Shift+F10, the ContextMenu key, Enter or Space (focus moves to the first item). Arrow Up/Down move focus (wrapping), Home/End jump, typing a letter jumps to a matching item, Enter/Space activate, Arrow Right opens and Arrow Left closes a submenu, Escape closes the current level and Tab closes everything. Focus returns to the target area on close; outside click, scroll, resize and window blur dismiss. The last action is announced through an aria-live region. Under prefers-reduced-motion the menu only fades.",
+  "defaultProps": {
+    "areaLabel": "Right click here",
+    "hint": "or focus and press Shift+F10",
+    "width": 380,
+    "height": 200,
+    "menuWidth": 224,
+    "accentColor": "#6366f1",
+    "showShortcuts": true,
+    "showSubmenu": true,
+    "disabled": false
+  },
+  "controls": [
+    {
+      "prop": "areaLabel",
+      "label": "Area label",
+      "type": "text"
+    },
+    {
+      "prop": "hint",
+      "label": "Hint",
+      "type": "text"
+    },
+    {
+      "prop": "width",
+      "label": "Area width (px)",
+      "type": "range",
+      "min": 240,
+      "max": 640,
+      "step": 10
+    },
+    {
+      "prop": "height",
+      "label": "Area height (px)",
+      "type": "range",
+      "min": 120,
+      "max": 360,
+      "step": 10
+    },
+    {
+      "prop": "menuWidth",
+      "label": "Menu width (px)",
+      "type": "range",
+      "min": 180,
+      "max": 320,
+      "step": 4
+    },
+    {
+      "prop": "accentColor",
+      "label": "Accent color",
+      "type": "color"
+    },
+    {
+      "prop": "showShortcuts",
+      "label": "Shortcut hints",
+      "type": "boolean"
+    },
+    {
+      "prop": "showSubmenu",
+      "label": "Submenu",
+      "type": "boolean"
+    },
+    {
+      "prop": "disabled",
+      "label": "Disabled",
+      "type": "boolean"
+    }
+  ],
+  "propsApi": [
+    {
+      "name": "items",
+      "type": "ContextMenuItem[]",
+      "default": "browser-style page menu",
+      "description": "Rows: { label, type?: \"item\" | \"checkbox\" | \"separator\" | \"label\", shortcut?, disabled?, checked?, items? (submenu) }."
+    },
+    {
+      "name": "onSelect",
+      "type": "(label: string) => void",
+      "default": "undefined",
+      "description": "Called with the label of the activated item."
+    },
+    {
+      "name": "areaLabel",
+      "type": "string",
+      "default": "\"Right click here\"",
+      "description": "Text inside the dashed target area."
+    },
+    {
+      "name": "hint",
+      "type": "string",
+      "default": "\"or focus and press Shift+F10\"",
+      "description": "Secondary hint text inside the area."
+    },
+    {
+      "name": "width",
+      "type": "number",
+      "default": "380",
+      "description": "Target area width in pixels (max 100%)."
+    },
+    {
+      "name": "height",
+      "type": "number",
+      "default": "200",
+      "description": "Target area height in pixels."
+    },
+    {
+      "name": "menuWidth",
+      "type": "number",
+      "default": "224",
+      "description": "Menu panel width in pixels."
+    },
+    {
+      "name": "accentColor",
+      "type": "string",
+      "default": "\"#6366f1\"",
+      "description": "Accent for checks, the hover border and focus highlights."
+    },
+    {
+      "name": "showShortcuts",
+      "type": "boolean",
+      "default": "true",
+      "description": "Show keyboard shortcut hints."
+    },
+    {
+      "name": "showSubmenu",
+      "type": "boolean",
+      "default": "true",
+      "description": "Include items that open a submenu."
+    },
+    {
+      "name": "disabled",
+      "type": "boolean",
+      "default": "false",
+      "description": "Disable the custom menu (the native menu shows instead)."
+    },
+    {
+      "name": "className",
+      "type": "string",
+      "default": "\"\"",
+      "description": "Class merged onto the root."
+    },
+    {
+      "name": "style",
+      "type": "React.CSSProperties",
+      "default": "undefined",
+      "description": "Inline styles merged onto the root."
+    }
+  ],
+  "files": [
+    {
+      "path": "components/ui/context-menu.tsx",
+      "type": "registry:component",
+      "content": "\"use client\";\n\nimport * as React from \"react\";\nimport { createPortal } from \"react-dom\";\nimport { AnimatePresence, motion, useReducedMotion } from \"motion/react\";\nimport styles from \"../styles/context-menu.module.css\";\n\nexport interface ContextMenuItem {\n  /** Visible label (also the value passed to onSelect) */\n  label?: string;\n  /** Row kind */\n  type?: \"item\" | \"checkbox\" | \"separator\" | \"label\";\n  /** Keyboard shortcut hint shown on the right */\n  shortcut?: string;\n  /** Disable the row */\n  disabled?: boolean;\n  /** Initial checked state for checkbox rows */\n  checked?: boolean;\n  /** Nested items, turning this row into a submenu trigger */\n  items?: ContextMenuItem[];\n}\n\nexport interface ContextMenuProps {\n  /** Menu items; defaults to a browser-style page menu */\n  items?: ContextMenuItem[];\n  /** Called with the label of the activated item */\n  onSelect?: (label: string) => void;\n  /** Text inside the dashed target area */\n  areaLabel?: string;\n  /** Secondary hint text inside the area */\n  hint?: string;\n  /** Target area width in pixels */\n  width?: number;\n  /** Target area height in pixels */\n  height?: number;\n  /** Menu panel width in pixels */\n  menuWidth?: number;\n  /** Accent color for checks, highlights and the focus ring */\n  accentColor?: string;\n  /** Show keyboard shortcut hints */\n  showShortcuts?: boolean;\n  /** Include items that open a submenu */\n  showSubmenu?: boolean;\n  /** Disable the context menu (native menu is shown instead) */\n  disabled?: boolean;\n  /** Optional className merged onto the root */\n  className?: string;\n  /** Optional inline styles merged onto the root */\n  style?: React.CSSProperties;\n}\n\nconst DEFAULT_ITEMS: ContextMenuItem[] = [\n  { label: \"Back\", shortcut: \"⌘[\" },\n  { label: \"Forward\", shortcut: \"⌘]\", disabled: true },\n  { label: \"Reload\", shortcut: \"⌘R\" },\n  {\n    label: \"More tools\",\n    items: [\n      { label: \"Save page as…\", shortcut: \"⇧⌘S\" },\n      { label: \"Create shortcut…\" },\n      { label: \"Name window…\" },\n      { type: \"separator\" },\n      { label: \"Developer tools\", shortcut: \"⌥⌘I\" },\n    ],\n  },\n  { type: \"separator\" },\n  { type: \"label\", label: \"View\" },\n  { type: \"checkbox\", label: \"Show bookmarks bar\", shortcut: \"⇧⌘B\", checked: true },\n  { type: \"checkbox\", label: \"Show full URLs\" },\n];\nconst THEME_TOKENS = [\"--mf-bg\", \"--mf-fg\", \"--mf-surface\", \"--mf-surface-raised\", \"--mf-muted\", \"--mf-subtle\", \"--mf-border\", \"--mf-border-strong\", \"--mf-accent\"];\nconst useIsoLayoutEffect = typeof window !== \"undefined\" ? React.useLayoutEffect : React.useEffect;\nconst clamp = (v: number, min: number, max: number) => Math.max(min, Math.min(v, max));\nconst isAction = (it: ContextMenuItem) => (it.type ?? \"item\") === \"item\" || it.type === \"checkbox\";\n\nfunction readThemeVars(el: Element | null): Record<string, string> {\n  const out: Record<string, string> = {};\n  if (!el) return out;\n  const cs = getComputedStyle(el);\n  for (const t of THEME_TOKENS) {\n    const v = cs.getPropertyValue(t).trim();\n    if (v) out[t] = v;\n  }\n  return out;\n}\n\ninterface Anchor {\n  x: number;\n  y: number;\n  w: number;\n  h: number;\n}\n\ninterface PanelProps {\n  items: ContextMenuItem[];\n  anchor: Anchor;\n  isSub: boolean;\n  focusFirst: boolean;\n  labelledBy?: string;\n  showShortcuts: boolean;\n  checked: Record<string, boolean>;\n  layerStyle: React.CSSProperties;\n  onActivate: (item: ContextMenuItem) => void;\n  onCloseAll: () => void;\n  onCloseSelf: () => void;\n}\n\nfunction MenuPanel({ items, anchor, isSub, focusFirst, labelledBy, showShortcuts, checked, layerStyle, onActivate, onCloseAll, onCloseSelf }: PanelProps) {\n  const reduce = useReducedMotion();\n  const id = React.useId();\n  const ref = React.useRef<HTMLDivElement>(null);\n  const [pos, setPos] = React.useState<{ left: number; top: number; origin: string } | null>(null);\n  const [active, setActive] = React.useState(-1);\n  const [sub, setSub] = React.useState<{ index: number; anchor: Anchor; focus: boolean } | null>(null);\n  const enabled = items.map((it, i) => (isAction(it) && !it.disabled ? i : -1)).filter((i) => i >= 0);\n\n  useIsoLayoutEffect(() => {\n    const el = ref.current;\n    if (!el) return;\n    const w = el.offsetWidth;\n    const h = el.offsetHeight;\n    const vw = window.innerWidth;\n    const vh = window.innerHeight;\n    const pad = 8;\n    const fitsRight = anchor.x + anchor.w + w <= vw - pad;\n    const left = clamp(fitsRight ? anchor.x + anchor.w - (isSub ? 2 : 0) : anchor.x - w + (isSub ? 2 : 0), pad, vw - w - pad);\n    const startY = isSub ? anchor.y - 5 : anchor.y;\n    const fitsDown = startY + h <= vh - pad;\n    const top = clamp(fitsDown ? startY : (isSub ? anchor.y + anchor.h + 5 : anchor.y) - h, pad, vh - h - pad);\n    setPos({ left, top, origin: `${fitsRight ? \"left\" : \"right\"} ${fitsDown ? \"top\" : \"bottom\"}` });\n    if (focusFirst && enabled.length) setActive(enabled[0]);\n    else el.focus();\n  }, []);\n\n  React.useEffect(() => {\n    if (active >= 0) ref.current?.querySelector<HTMLElement>(`[data-index=\"${active}\"]`)?.focus();\n  }, [active]);\n\n  const openSub = (i: number, focus: boolean) => {\n    const node = ref.current?.querySelector<HTMLElement>(`[data-index=\"${i}\"]`);\n    if (!node) return;\n    const r = node.getBoundingClientRect();\n    setSub({ index: i, anchor: { x: r.left, y: r.top, w: r.width, h: r.height }, focus });\n  };\n\n  const activate = (i: number, viaKey: boolean) => {\n    const it = items[i];\n    if (!it || !isAction(it) || it.disabled) return;\n    if (it.items?.length) openSub(i, viaKey);\n    else onActivate(it);\n  };\n\n  const onKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {\n    if (!ref.current?.contains(e.target as Node) || !enabled.length) return;\n    const k = e.key;\n    const at = enabled.indexOf(active);\n    const move = (n: number) => {\n      e.preventDefault();\n      setActive(enabled[(n + enabled.length) % enabled.length]);\n    };\n    if (k === \"ArrowDown\") move(at < 0 ? 0 : at + 1);\n    else if (k === \"ArrowUp\") move(at < 0 ? enabled.length - 1 : at - 1);\n    else if (k === \"Home\") move(0);\n    else if (k === \"End\") move(enabled.length - 1);\n    else if (k === \"Enter\" || k === \" \") {\n      e.preventDefault();\n      activate(active, true);\n    } else if (k === \"ArrowRight\" && items[active]?.items?.length) {\n      e.preventDefault();\n      openSub(active, true);\n    } else if (k === \"ArrowLeft\" && isSub) {\n      e.preventDefault();\n      onCloseSelf();\n    } else if (k === \"Escape\") {\n      e.preventDefault();\n      e.stopPropagation();\n      if (isSub) onCloseSelf();\n      else onCloseAll();\n    } else if (k === \"Tab\") {\n      e.preventDefault();\n      onCloseAll();\n    } else if (k.length === 1 && !e.ctrlKey && !e.metaKey && !e.altKey) {\n      const q = k.toLowerCase();\n      const order = enabled.map((_, n) => enabled[(at + 1 + n) % enabled.length]);\n      const hit = order.find((i) => items[i].label?.toLowerCase().startsWith(q));\n      if (hit !== undefined) setActive(hit);\n    }\n  };\n\n  return (\n    <motion.div\n      ref={ref}\n      role=\"menu\"\n      aria-label={labelledBy ? undefined : \"Context menu\"}\n      aria-labelledby={labelledBy}\n      aria-orientation=\"vertical\"\n      tabIndex={-1}\n      data-mf-cm-panel=\"\"\n      className={styles.menu}\n      style={{ ...layerStyle, left: pos?.left ?? anchor.x, top: pos?.top ?? anchor.y, visibility: pos ? \"visible\" : \"hidden\", transformOrigin: pos?.origin ?? \"left top\" }}\n      initial={reduce ? { opacity: 0 } : { opacity: 0, scale: 0.95 }}\n      animate={reduce ? { opacity: 1 } : { opacity: 1, scale: 1 }}\n      exit={reduce ? { opacity: 0 } : { opacity: 0, scale: 0.97, transition: { duration: 0.1 } }}\n      transition={{ duration: reduce ? 0.08 : 0.15, ease: [0.16, 1, 0.3, 1] }}\n      onKeyDown={onKeyDown}\n      onContextMenu={(e) => e.preventDefault()}\n      onPointerLeave={() => {\n        if (!sub) {\n          setActive(-1);\n          ref.current?.focus();\n        }\n      }}\n    >\n      {items.map((it, i) => {\n        const kind = it.type ?? \"item\";\n        if (kind === \"separator\") return <div key={`sep-${i}`} role=\"separator\" className={styles.separator} />;\n        if (kind === \"label\") return <div key={`lbl-${i}`} role=\"presentation\" className={styles.groupLabel}>{it.label}</div>;\n        const hasSub = !!it.items?.length;\n        const isChecked = kind === \"checkbox\" && !!checked[it.label ?? \"\"];\n        return (\n          <div\n            key={`${it.label}-${i}`}\n            id={`${id}-${i}`}\n            role={kind === \"checkbox\" ? \"menuitemcheckbox\" : \"menuitem\"}\n            aria-checked={kind === \"checkbox\" ? isChecked : undefined}\n            aria-disabled={it.disabled || undefined}\n            aria-haspopup={hasSub ? \"menu\" : undefined}\n            aria-expanded={hasSub ? sub?.index === i : undefined}\n            tabIndex={-1}\n            data-index={i}\n            data-active={active === i || sub?.index === i ? \"\" : undefined}\n            className={styles.item}\n            onPointerMove={() => {\n              if (it.disabled) return;\n              if (active !== i) setActive(i);\n              if (hasSub && sub?.index !== i) openSub(i, false);\n              else if (!hasSub && sub) setSub(null);\n            }}\n            onClick={() => activate(i, false)}\n          >\n            <span aria-hidden=\"true\" className={styles.indicator}>\n              {isChecked && (\n                <svg width=\"14\" height=\"14\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" strokeWidth=\"2.6\" strokeLinecap=\"round\" strokeLinejoin=\"round\">\n                  <motion.path d=\"M5 12.5l4.5 4.5L19 7.5\" initial={reduce ? false : { pathLength: 0 }} animate={{ pathLength: 1 }} transition={{ duration: 0.22 }} />\n                </svg>\n              )}\n            </span>\n            <span className={styles.label}>{it.label}</span>\n            {showShortcuts && it.shortcut && !hasSub && <span className={styles.shortcut}>{it.shortcut}</span>}\n            {hasSub && (\n              <svg aria-hidden=\"true\" className={styles.chevron} width=\"14\" height=\"14\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" strokeWidth=\"2\" strokeLinecap=\"round\" strokeLinejoin=\"round\">\n                <path d=\"m9 6 6 6-6 6\" />\n              </svg>\n            )}\n          </div>\n        );\n      })}\n      {createPortal(\n        <AnimatePresence>\n          {sub && items[sub.index]?.items && (\n            <MenuPanel\n              key={sub.index}\n              items={items[sub.index].items ?? []}\n              anchor={sub.anchor}\n              isSub\n              focusFirst={sub.focus}\n              labelledBy={`${id}-${sub.index}`}\n              showShortcuts={showShortcuts}\n              checked={checked}\n              layerStyle={layerStyle}\n              onActivate={onActivate}\n              onCloseAll={onCloseAll}\n              onCloseSelf={() => {\n                const i = sub.index;\n                setSub(null);\n                setActive(i);\n                ref.current?.querySelector<HTMLElement>(`[data-index=\"${i}\"]`)?.focus();\n              }}\n            />\n          )}\n        </AnimatePresence>,\n        document.body,\n      )}\n    </motion.div>\n  );\n}\n\nexport function ContextMenu({\n  items = DEFAULT_ITEMS,\n  onSelect,\n  areaLabel = \"Right click here\",\n  hint = \"or focus and press Shift+F10\",\n  width = 380,\n  height = 200,\n  menuWidth = 224,\n  accentColor = \"#6366f1\",\n  showShortcuts = true,\n  showSubmenu = true,\n  disabled = false,\n  className = \"\",\n  style,\n}: ContextMenuProps) {\n  const areaRef = React.useRef<HTMLDivElement>(null);\n  const keyOpenedAt = React.useRef(0);\n  const [mounted, setMounted] = React.useState(false);\n  const [menu, setMenu] = React.useState<{ x: number; y: number; keyboard: boolean; n: number } | null>(null);\n  const [themeVars, setThemeVars] = React.useState<Record<string, string>>({});\n  const [last, setLast] = React.useState(\"\");\n  const list = React.useMemo(() => (showSubmenu ? items : items.filter((it) => !it.items?.length)), [items, showSubmenu]);\n  const [checked, setChecked] = React.useState<Record<string, boolean>>(() => {\n    const out: Record<string, boolean> = {};\n    const walk = (arr: ContextMenuItem[]) => arr.forEach((it) => (it.type === \"checkbox\" && it.label ? (out[it.label] = !!it.checked) : it.items && walk(it.items)));\n    walk(items);\n    return out;\n  });\n\n  React.useEffect(() => setMounted(true), []);\n\n  const close = React.useCallback(() => {\n    setMenu(null);\n    const ae = document.activeElement;\n    if (!ae || ae === document.body || ae.closest(\"[data-mf-cm-panel]\")) areaRef.current?.focus({ preventScroll: true });\n  }, []);\n\n  const openAt = (x: number, y: number, keyboard: boolean) => {\n    setThemeVars(readThemeVars(areaRef.current));\n    setMenu((m) => ({ x, y, keyboard, n: (m?.n ?? 0) + 1 }));\n  };\n\n  React.useEffect(() => {\n    if (!menu) return;\n    const onDown = (e: PointerEvent) => {\n      const t = e.target as Element | null;\n      if (!t?.closest?.(\"[data-mf-cm-panel]\") && !(e.button === 2 && areaRef.current?.contains(t))) close();\n    };\n    const dismiss = () => close();\n    document.addEventListener(\"pointerdown\", onDown, true);\n    window.addEventListener(\"resize\", dismiss);\n    window.addEventListener(\"blur\", dismiss);\n    window.addEventListener(\"scroll\", dismiss, true);\n    return () => {\n      document.removeEventListener(\"pointerdown\", onDown, true);\n      window.removeEventListener(\"resize\", dismiss);\n      window.removeEventListener(\"blur\", dismiss);\n      window.removeEventListener(\"scroll\", dismiss, true);\n    };\n  }, [menu, close]);\n\n  const onKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {\n    if (disabled || e.target !== e.currentTarget) return;\n    if (e.key === \"ContextMenu\" || (e.shiftKey && e.key === \"F10\") || e.key === \"Enter\" || e.key === \" \") {\n      e.preventDefault();\n      keyOpenedAt.current = performance.now();\n      const r = e.currentTarget.getBoundingClientRect();\n      openAt(r.left + 24, r.top + 24, true);\n    }\n  };\n\n  const layerStyle = { ...themeVars, \"--mf-cm-accent\": accentColor, \"--mf-cm-w\": `${menuWidth}px` } as React.CSSProperties;\n\n  return (\n    <div className={`${styles.root} ${className}`.trim()} style={{ \"--mf-cm-accent\": accentColor, ...style } as React.CSSProperties}>\n      <div\n        ref={areaRef}\n        role=\"button\"\n        tabIndex={disabled ? -1 : 0}\n        aria-haspopup=\"menu\"\n        aria-expanded={!!menu}\n        aria-disabled={disabled || undefined}\n        aria-label={`${areaLabel}. ${hint}`}\n        className={styles.area}\n        data-open={menu ? \"\" : undefined}\n        style={{ width, height }}\n        onKeyDown={onKeyDown}\n        onContextMenu={(e) => {\n          if (disabled) return;\n          e.preventDefault();\n          if (performance.now() - keyOpenedAt.current < 400) return;\n          openAt(e.clientX, e.clientY, false);\n        }}\n      >\n        <span className={styles.areaLabel}>{areaLabel}</span>\n        <span className={styles.hint}>{hint}</span>\n        <span className={styles.last} aria-live=\"polite\">\n          {last ? `Last action: ${last}` : \"\"}\n        </span>\n      </div>\n      {mounted &&\n        createPortal(\n          <AnimatePresence>\n            {menu && (\n              <MenuPanel\n                key={menu.n}\n                items={list}\n                anchor={{ x: menu.x, y: menu.y, w: 0, h: 0 }}\n                isSub={false}\n                focusFirst={menu.keyboard}\n                showShortcuts={showShortcuts}\n                checked={checked}\n                layerStyle={layerStyle}\n                onActivate={(it) => {\n                  const label = it.label ?? \"\";\n                  if (it.type === \"checkbox\") setChecked((c) => ({ ...c, [label]: !c[label] }));\n                  setLast(it.type === \"checkbox\" ? `${label} ${checked[label] ? \"off\" : \"on\"}` : label);\n                  onSelect?.(label);\n                  close();\n                }}\n                onCloseAll={close}\n                onCloseSelf={close}\n              />\n            )}\n          </AnimatePresence>,\n          document.body,\n        )}\n    </div>\n  );\n}\n"
+    },
+    {
+      "path": "components/styles/context-menu.module.css",
+      "type": "registry:style",
+      "content": ".root {\n  display: inline-flex;\n  max-width: 100%;\n  color: var(--mf-fg, #f4f4f6);\n  font-size: 0.875rem;\n}\n\n.area {\n  box-sizing: border-box;\n  display: flex;\n  flex-direction: column;\n  align-items: center;\n  justify-content: center;\n  gap: 0.25rem;\n  max-width: 100%;\n  padding: 1rem;\n  border-radius: 0.75rem;\n  border: 1.5px dashed var(--mf-border-strong, #52525b);\n  background-color: color-mix(in srgb, var(--mf-surface, #141419) 60%, transparent);\n  color: var(--mf-fg, #f4f4f6);\n  text-align: center;\n  cursor: context-menu;\n  user-select: none;\n  -webkit-user-select: none;\n  -webkit-touch-callout: none;\n  transition: border-color 160ms ease, background-color 160ms ease;\n}\n\n.area:hover,\n.area[data-open] {\n  border-color: var(--mf-cm-accent, #6366f1);\n  background-color: color-mix(in srgb, var(--mf-cm-accent, #6366f1) 7%, var(--mf-surface, #141419));\n}\n\n.area:focus-visible {\n  outline: 2px solid var(--mf-fg, #e4e4e7);\n  outline-offset: 3px;\n}\n\n.area[aria-disabled=\"true\"] {\n  opacity: 0.5;\n  cursor: not-allowed;\n}\n\n.areaLabel {\n  font-size: 0.9375rem;\n  font-weight: 500;\n}\n\n.hint {\n  color: var(--mf-muted, #a1a1aa);\n  font-size: 0.8125rem;\n}\n\n.last {\n  min-height: 1.1rem;\n  margin-top: 0.5rem;\n  color: var(--mf-cm-accent, #6366f1);\n  font-size: 0.75rem;\n  font-weight: 500;\n}\n\n.menu {\n  position: fixed;\n  z-index: 1100;\n  box-sizing: border-box;\n  width: var(--mf-cm-w, 224px);\n  max-width: calc(100vw - 16px);\n  padding: 0.25rem;\n  border-radius: 0.625rem;\n  border: 1px solid var(--mf-border, #2e2e38);\n  background-color: var(--mf-surface, #141419);\n  color: var(--mf-fg, #f4f4f6);\n  font-family: inherit;\n  font-size: 0.875rem;\n  box-shadow: 0 16px 40px -12px rgba(0, 0, 0, 0.5), 0 2px 6px rgba(0, 0, 0, 0.15);\n  outline: none;\n  user-select: none;\n  -webkit-user-select: none;\n}\n\n.item {\n  display: flex;\n  align-items: center;\n  gap: 0.5rem;\n  height: 2rem;\n  padding: 0 0.5rem 0 0.25rem;\n  border-radius: 0.375rem;\n  cursor: default;\n  outline: none;\n  transition: background-color 100ms ease, color 100ms ease;\n}\n\n.item[data-active] {\n  background-color: var(--mf-surface-raised, #1b1b22);\n}\n\n.item:focus-visible {\n  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--mf-cm-accent, #6366f1) 70%, transparent);\n}\n\n.item[aria-disabled=\"true\"] {\n  opacity: 0.45;\n}\n\n.indicator {\n  display: inline-flex;\n  flex-shrink: 0;\n  align-items: center;\n  justify-content: center;\n  width: 1.125rem;\n  color: var(--mf-cm-accent, #6366f1);\n}\n\n.label {\n  flex: 1;\n  min-width: 0;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n}\n\n.shortcut {\n  margin-left: auto;\n  color: var(--mf-subtle, #71717a);\n  font-size: 0.75rem;\n  letter-spacing: 0.06em;\n}\n\n.chevron {\n  flex-shrink: 0;\n  margin-left: auto;\n  color: var(--mf-muted, #a1a1aa);\n}\n\n.separator {\n  height: 1px;\n  margin: 0.25rem -0.25rem;\n  background-color: var(--mf-border, #2e2e38);\n}\n\n.groupLabel {\n  padding: 0.375rem 0.5rem 0.25rem 1.875rem;\n  color: var(--mf-muted, #a1a1aa);\n  font-size: 0.75rem;\n  font-weight: 600;\n}\n\n@media (prefers-reduced-motion: reduce) {\n  .area,\n  .item {\n    transition: none;\n  }\n\n  .menu {\n    transform: none !important;\n  }\n}\n"
+    }
+  ],
+  "tailwindExample": "\"use client\";\n\nimport { AnimatePresence, motion } from \"motion/react\";\nimport { useEffect, useRef, useState } from \"react\";\n\nconst ITEMS = [\n  { label: \"Back\", shortcut: \"⌘[\" },\n  { label: \"Reload\", shortcut: \"⌘R\" },\n  { label: \"Save page as…\", shortcut: \"⇧⌘S\" },\n];\n\nexport function ContextMenuTailwind() {\n  const [pos, setPos] = useState<{ x: number; y: number } | null>(null);\n  const menu = useRef<HTMLDivElement>(null);\n  useEffect(() => {\n    if (!pos) return;\n    menu.current?.querySelector<HTMLElement>(\"[role=menuitem]\")?.focus();\n    const close = (e: Event) => { if (!(e.target instanceof Node && menu.current?.contains(e.target))) setPos(null); };\n    document.addEventListener(\"pointerdown\", close);\n    return () => document.removeEventListener(\"pointerdown\", close);\n  }, [pos]);\n  const onKey = (e: React.KeyboardEvent) => {\n    const items = Array.from(menu.current?.querySelectorAll<HTMLElement>(\"[role=menuitem]\") ?? []);\n    const i = items.indexOf(document.activeElement as HTMLElement);\n    if (e.key === \"ArrowDown\") items[(i + 1) % items.length]?.focus();\n    if (e.key === \"ArrowUp\") items[(i - 1 + items.length) % items.length]?.focus();\n    if (e.key === \"Escape\" || e.key === \"Tab\") setPos(null);\n  };\n  return (\n    <div tabIndex={0} onContextMenu={(e) => { e.preventDefault(); setPos({ x: Math.min(e.clientX, innerWidth - 232), y: Math.min(e.clientY, innerHeight - 140) }); }} className=\"grid h-48 w-96 place-items-center rounded-xl border-2 border-dashed border-zinc-700 text-sm text-zinc-300\">\n      Right click here\n      <AnimatePresence>\n        {pos && (\n          <motion.div ref={menu} role=\"menu\" onKeyDown={onKey} initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.15 }} style={{ left: pos.x, top: pos.y, transformOrigin: \"top left\" }} className=\"fixed z-50 w-56 rounded-lg border border-zinc-800 bg-zinc-900 p-1 text-zinc-100 shadow-2xl\">\n            {ITEMS.map((it) => (\n              <div key={it.label} role=\"menuitem\" tabIndex={-1} onClick={() => setPos(null)} className=\"flex h-8 items-center rounded-md px-2 outline-none hover:bg-zinc-800 focus:bg-zinc-800\">\n                {it.label}<span className=\"ml-auto text-xs text-zinc-500\">{it.shortcut}</span>\n              </div>\n            ))}\n          </motion.div>\n        )}\n      </AnimatePresence>\n    </div>\n  );\n}"
+}

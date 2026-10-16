@@ -1,0 +1,198 @@
+{
+  "slug": "segmented-control",
+  "name": "SegmentedControl",
+  "category": "Forms and Inputs",
+  "collection": "ui",
+  "featured": true,
+  "addedAt": "2026-10-16",
+  "version": "2.3.0",
+  "requiresMotion": true,
+  "dependencies": [
+    "motion",
+    "react"
+  ],
+  "description": "An iOS-style segmented control whose raised thumb springs between segments and squishes slightly while pressed. Hairline dividers fade around the active segment, with a neutral or solid accent thumb.",
+  "tags": [
+    "segmented-control",
+    "toggle-group",
+    "tabs",
+    "radio",
+    "ios",
+    "ui"
+  ],
+  "a11yNotes": "Uses the WAI-ARIA radio group pattern: a role=\"radiogroup\" with an accessible name (aria-label, or the visible caption via aria-labelledby) containing role=\"radio\" buttons with aria-checked. Roving tabindex keeps one Tab stop; Arrow keys move and select with wrapping, Home/End jump to the first/last segment. Focus is shown with a 2px outline. Under prefers-reduced-motion the thumb jumps without spring or squish.",
+  "defaultProps": {
+    "options": [
+      "Daily",
+      "Weekly",
+      "Monthly",
+      "Yearly"
+    ],
+    "label": "Billing period",
+    "showLabel": false,
+    "size": "md",
+    "variant": "neutral",
+    "accentColor": "#6366f1",
+    "fullWidth": false,
+    "stiffness": 520,
+    "disabled": false
+  },
+  "controls": [
+    {
+      "prop": "options",
+      "label": "Segments (comma separated)",
+      "type": "list"
+    },
+    {
+      "prop": "label",
+      "label": "Label",
+      "type": "text"
+    },
+    {
+      "prop": "showLabel",
+      "label": "Show label",
+      "type": "boolean"
+    },
+    {
+      "prop": "size",
+      "label": "Size",
+      "type": "select",
+      "options": [
+        "sm",
+        "md",
+        "lg"
+      ]
+    },
+    {
+      "prop": "variant",
+      "label": "Variant",
+      "type": "select",
+      "options": [
+        "neutral",
+        "accent"
+      ]
+    },
+    {
+      "prop": "accentColor",
+      "label": "Accent color",
+      "type": "color"
+    },
+    {
+      "prop": "fullWidth",
+      "label": "Full width",
+      "type": "boolean"
+    },
+    {
+      "prop": "stiffness",
+      "label": "Spring stiffness",
+      "type": "range",
+      "min": 100,
+      "max": 1000,
+      "step": 20
+    },
+    {
+      "prop": "disabled",
+      "label": "Disabled",
+      "type": "boolean"
+    }
+  ],
+  "propsApi": [
+    {
+      "name": "options",
+      "type": "string[]",
+      "default": "['Daily', 'Weekly', 'Monthly', 'Yearly']",
+      "description": "Segment labels; each label is also its value."
+    },
+    {
+      "name": "value",
+      "type": "string",
+      "default": "undefined",
+      "description": "Controlled selected value."
+    },
+    {
+      "name": "defaultValue",
+      "type": "string",
+      "default": "second option",
+      "description": "Initial selected value when uncontrolled (falls back to the second, then first option)."
+    },
+    {
+      "name": "onValueChange",
+      "type": "(value: string) => void",
+      "default": "undefined",
+      "description": "Called with the newly selected value."
+    },
+    {
+      "name": "label",
+      "type": "string",
+      "default": "'Billing period'",
+      "description": "Accessible name of the control."
+    },
+    {
+      "name": "showLabel",
+      "type": "boolean",
+      "default": "false",
+      "description": "Render the label as a visible caption above the control."
+    },
+    {
+      "name": "size",
+      "type": "'sm' | 'md' | 'lg'",
+      "default": "'md'",
+      "description": "Height, padding and type size preset."
+    },
+    {
+      "name": "variant",
+      "type": "'neutral' | 'accent'",
+      "default": "'neutral'",
+      "description": "Raised neutral thumb (iOS look) or a solid accent thumb with white text."
+    },
+    {
+      "name": "accentColor",
+      "type": "string",
+      "default": "'#6366f1'",
+      "description": "Thumb color of the accent variant."
+    },
+    {
+      "name": "fullWidth",
+      "type": "boolean",
+      "default": "false",
+      "description": "Stretch the control to the container width with equal segments."
+    },
+    {
+      "name": "stiffness",
+      "type": "number",
+      "default": "520",
+      "description": "Spring stiffness of the sliding thumb."
+    },
+    {
+      "name": "disabled",
+      "type": "boolean",
+      "default": "false",
+      "description": "Disable the whole control."
+    },
+    {
+      "name": "className",
+      "type": "string",
+      "default": "''",
+      "description": "Additional class merged onto the root element."
+    },
+    {
+      "name": "style",
+      "type": "React.CSSProperties",
+      "default": "undefined",
+      "description": "Inline styles merged onto the root element."
+    }
+  ],
+  "files": [
+    {
+      "path": "components/ui/segmented-control.tsx",
+      "type": "registry:component",
+      "content": "\"use client\";\n\nimport * as React from \"react\";\nimport { motion, useReducedMotion } from \"motion/react\";\nimport styles from \"../styles/segmented-control.module.css\";\n\nexport interface SegmentedControlProps {\n  /** Segment labels (each label is also its value) */\n  options?: string[];\n  /** Controlled selected value */\n  value?: string;\n  /** Initial selected value when uncontrolled */\n  defaultValue?: string;\n  /** Called with the newly selected value */\n  onValueChange?: (value: string) => void;\n  /** Accessible name of the control (rendered as a visible caption when showLabel is true) */\n  label?: string;\n  /** Show the label as a caption above the control */\n  showLabel?: boolean;\n  /** Size preset */\n  size?: \"sm\" | \"md\" | \"lg\";\n  /** Thumb style: a raised neutral pill (iOS) or a solid accent pill */\n  variant?: \"neutral\" | \"accent\";\n  /** Accent color used by the accent variant and focus tint */\n  accentColor?: string;\n  /** Stretch to fill the container width */\n  fullWidth?: boolean;\n  /** Spring stiffness of the sliding thumb */\n  stiffness?: number;\n  /** Disable the whole control */\n  disabled?: boolean;\n  /** Optional className merged onto the root */\n  className?: string;\n  /** Optional inline styles merged onto the root */\n  style?: React.CSSProperties;\n}\n\nconst DEFAULT_OPTIONS = [\"Daily\", \"Weekly\", \"Monthly\", \"Yearly\"];\n\nexport function SegmentedControl({\n  options = DEFAULT_OPTIONS,\n  value: valueProp,\n  defaultValue,\n  onValueChange,\n  label = \"Billing period\",\n  showLabel = false,\n  size = \"md\",\n  variant = \"neutral\",\n  accentColor = \"#6366f1\",\n  fullWidth = false,\n  stiffness = 520,\n  disabled = false,\n  className = \"\",\n  style,\n}: SegmentedControlProps) {\n  const reduce = useReducedMotion();\n  const id = React.useId();\n  const [inner, setInner] = React.useState<string | undefined>(defaultValue ?? options[1] ?? options[0]);\n  const controlled = valueProp !== undefined;\n  const selected = controlled ? valueProp : inner;\n  const refs = React.useRef<Array<HTMLButtonElement | null>>([]);\n  const [pressed, setPressed] = React.useState<number | null>(null);\n\n  const selectedIndex = Math.max(0, options.indexOf(selected ?? \"\"));\n\n  const select = (i: number) => {\n    const v = options[i];\n    if (v === undefined || disabled) return;\n    if (!controlled) setInner(v);\n    if (v !== selected) onValueChange?.(v);\n  };\n\n  const onKeyDown = (e: React.KeyboardEvent<HTMLButtonElement>, i: number) => {\n    const n = options.length;\n    let next = -1;\n    if (e.key === \"ArrowRight\" || e.key === \"ArrowDown\") next = (i + 1) % n;\n    else if (e.key === \"ArrowLeft\" || e.key === \"ArrowUp\") next = (i - 1 + n) % n;\n    else if (e.key === \"Home\") next = 0;\n    else if (e.key === \"End\") next = n - 1;\n    if (next < 0) return;\n    e.preventDefault();\n    select(next);\n    refs.current[next]?.focus();\n  };\n\n  const transition = reduce ? { duration: 0 } : { type: \"spring\" as const, stiffness: Math.max(50, stiffness), damping: 36, mass: 0.9 };\n\n  return (\n    <div\n      className={`${styles.root} ${styles[size] ?? \"\"} ${fullWidth ? styles.full : \"\"} ${className}`.trim()}\n      data-variant={variant}\n      style={{ \"--mf-sc-accent\": accentColor, ...style } as React.CSSProperties}\n    >\n      {showLabel && label && (\n        <span id={`${id}-label`} className={styles.caption}>\n          {label}\n        </span>\n      )}\n      <div\n        role=\"radiogroup\"\n        aria-labelledby={showLabel && label ? `${id}-label` : undefined}\n        aria-label={showLabel && label ? undefined : label || \"Options\"}\n        aria-disabled={disabled || undefined}\n        className={styles.track}\n      >\n        {options.map((opt, i) => {\n          const active = i === selectedIndex;\n          return (\n            <button\n              key={`${opt}-${i}`}\n              ref={(el) => {\n                refs.current[i] = el;\n              }}\n              type=\"button\"\n              role=\"radio\"\n              aria-checked={active}\n              tabIndex={active ? 0 : -1}\n              disabled={disabled}\n              data-state={active ? \"on\" : \"off\"}\n              className={styles.segment}\n              onClick={() => select(i)}\n              onKeyDown={(e) => onKeyDown(e, i)}\n              onPointerDown={() => setPressed(i)}\n              onPointerUp={() => setPressed(null)}\n              onPointerLeave={() => setPressed(null)}\n            >\n              {active && (\n                <motion.span\n                  aria-hidden=\"true\"\n                  layoutId={`${id}-thumb`}\n                  className={styles.thumb}\n                  initial={false}\n                  animate={{ scale: pressed === i && !reduce ? 0.95 : 1 }}\n                  transition={transition}\n                />\n              )}\n              {i > 0 && <span aria-hidden=\"true\" className={styles.divider} data-hidden={active || i - 1 === selectedIndex ? \"true\" : \"false\"} />}\n              <span className={styles.text}>{opt}</span>\n            </button>\n          );\n        })}\n      </div>\n    </div>\n  );\n}\n"
+    },
+    {
+      "path": "components/styles/segmented-control.module.css",
+      "type": "registry:style",
+      "content": ".root {\n  display: inline-flex;\n  flex-direction: column;\n  gap: 0.5rem;\n  color: var(--mf-fg, #f4f4f6);\n  font-size: 0.875rem;\n  --mf-sc-h: 2.25rem;\n  --mf-sc-pad: 0.1875rem;\n  --mf-sc-px: 1rem;\n}\n\n.full {\n  display: flex;\n  width: 100%;\n}\n\n.sm {\n  font-size: 0.8125rem;\n  --mf-sc-h: 1.875rem;\n  --mf-sc-px: 0.75rem;\n}\n\n.lg {\n  font-size: 0.9375rem;\n  --mf-sc-h: 2.75rem;\n  --mf-sc-pad: 0.25rem;\n  --mf-sc-px: 1.375rem;\n}\n\n.caption {\n  font-size: 0.8125rem;\n  font-weight: 500;\n  color: var(--mf-muted, #a1a1aa);\n}\n\n.track {\n  position: relative;\n  display: inline-flex;\n  align-items: stretch;\n  height: var(--mf-sc-h);\n  padding: var(--mf-sc-pad);\n  box-sizing: border-box;\n  border-radius: 0.625rem;\n  background-color: var(--mf-surface-raised, #1b1b22);\n  box-shadow: inset 0 0 0 1px var(--mf-border, #2e2e38);\n}\n\n.full .track {\n  display: flex;\n}\n\n.track[aria-disabled=\"true\"] {\n  opacity: 0.5;\n}\n\n.segment {\n  position: relative;\n  flex: 1 1 0;\n  display: inline-flex;\n  align-items: center;\n  justify-content: center;\n  min-width: 0;\n  padding: 0 var(--mf-sc-px);\n  border: 0;\n  border-radius: 0.5rem;\n  background: transparent;\n  color: var(--mf-muted, #a1a1aa);\n  font: inherit;\n  font-weight: 500;\n  white-space: nowrap;\n  cursor: pointer;\n  -webkit-tap-highlight-color: transparent;\n  transition: color 180ms ease;\n}\n\n.segment:hover:not(:disabled) {\n  color: var(--mf-fg, #f4f4f6);\n}\n\n.segment:disabled {\n  cursor: not-allowed;\n}\n\n.segment[data-state=\"on\"] {\n  color: var(--mf-fg, #f4f4f6);\n}\n\n.segment:focus-visible {\n  outline: 2px solid var(--mf-fg, #e4e4e7);\n  outline-offset: 1px;\n  z-index: 2;\n}\n\n.thumb {\n  position: absolute;\n  inset: 0;\n  border-radius: 0.5rem;\n  background-color: var(--mf-surface, #141419);\n  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.25), 0 3px 8px -2px rgba(0, 0, 0, 0.3), inset 0 0 0 1px var(--mf-border, #2e2e38);\n}\n\n.root[data-variant=\"accent\"] .thumb {\n  background-color: var(--mf-sc-accent, #6366f1);\n  box-shadow: 0 2px 10px -2px color-mix(in srgb, var(--mf-sc-accent, #6366f1) 60%, transparent);\n}\n\n.root[data-variant=\"accent\"] .segment[data-state=\"on\"] {\n  color: #ffffff;\n}\n\n.divider {\n  position: absolute;\n  left: 0;\n  top: 25%;\n  bottom: 25%;\n  width: 1px;\n  background-color: var(--mf-border, #2e2e38);\n  transition: opacity 180ms ease;\n}\n\n.divider[data-hidden=\"true\"] {\n  opacity: 0;\n}\n\n.text {\n  position: relative;\n  z-index: 1;\n  overflow: hidden;\n  text-overflow: ellipsis;\n}\n\n@media (prefers-reduced-motion: reduce) {\n  .segment,\n  .divider {\n    transition: none;\n  }\n\n  .thumb {\n    transform: none !important;\n  }\n}\n"
+    }
+  ],
+  "tailwindExample": "\"use client\";\n\nimport { motion } from \"motion/react\";\nimport { useRef, useState } from \"react\";\n\nconst options = [\"Daily\", \"Weekly\", \"Monthly\", \"Yearly\"];\n\nexport function SegmentedControlTailwind() {\n  const [value, setValue] = useState(\"Weekly\");\n  const refs = useRef<(HTMLButtonElement | null)[]>([]);\n  const onKey = (e: React.KeyboardEvent, i: number) => {\n    const d = e.key === \"ArrowRight\" ? 1 : e.key === \"ArrowLeft\" ? -1 : 0;\n    if (!d) return;\n    e.preventDefault();\n    const n = (i + d + options.length) % options.length;\n    setValue(options[n]);\n    refs.current[n]?.focus();\n  };\n  return (\n    <div role=\"radiogroup\" aria-label=\"Billing period\" className=\"inline-flex h-9 rounded-[10px] bg-zinc-800/80 p-[3px] ring-1 ring-inset ring-zinc-700\">\n      {options.map((o, i) => (\n        <button key={o} ref={(el) => { refs.current[i] = el; }} type=\"button\" role=\"radio\" aria-checked={o === value} tabIndex={o === value ? 0 : -1} onClick={() => setValue(o)} onKeyDown={(e) => onKey(e, i)} className={`relative flex-1 rounded-lg px-4 text-sm font-medium outline-none focus-visible:ring-2 focus-visible:ring-zinc-200 ${o === value ? \"text-zinc-100\" : \"text-zinc-400 hover:text-zinc-100\"}`}>\n          {o === value && <motion.span layoutId=\"sc-thumb\" className=\"absolute inset-0 rounded-lg bg-zinc-900 shadow ring-1 ring-inset ring-zinc-700\" transition={{ type: \"spring\", stiffness: 520, damping: 36 }} />}\n          <span className=\"relative\">{o}</span>\n        </button>\n      ))}\n    </div>\n  );\n}"
+}

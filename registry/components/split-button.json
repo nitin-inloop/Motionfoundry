@@ -1,0 +1,228 @@
+{
+  "slug": "split-button",
+  "name": "SplitButton",
+  "category": "Interactive Buttons and Controls",
+  "collection": "ui",
+  "featured": false,
+  "addedAt": "2026-10-16",
+  "version": "2.3.0",
+  "requiresMotion": true,
+  "dependencies": [
+    "motion",
+    "react"
+  ],
+  "description": "A primary action fused to a chevron that opens an animated menu of secondary actions. The chevron flips, the menu scales in from its anchored corner with staggered items, flips above the button when there is no room below, and can promote the chosen action into the primary slot.",
+  "tags": [
+    "split-button",
+    "menu",
+    "dropdown",
+    "button",
+    "actions",
+    "ui"
+  ],
+  "a11yNotes": "Follows the WAI-ARIA menu button pattern: the chevron has aria-label, aria-haspopup=\"menu\", aria-expanded and aria-controls; the panel is role=\"menu\" with role=\"menuitem\" buttons. Enter/Space or ArrowDown opens and focuses the first item, ArrowUp the last; inside the menu ArrowUp/Down wrap, Home/End jump, printable characters type-ahead, Enter/Space activate, Escape closes and returns focus to the chevron, Tab closes, and outside clicks close. Under prefers-reduced-motion the menu only fades.",
+  "defaultProps": {
+    "label": "Deploy to production",
+    "actions": [
+      "Deploy to preview",
+      "Deploy without cache",
+      "Schedule deploy…",
+      "Roll back to previous"
+    ],
+    "rememberLast": false,
+    "menuLabel": "More deploy options",
+    "variant": "default",
+    "size": "md",
+    "side": "bottom",
+    "align": "end",
+    "accentColor": "#6366f1",
+    "disabled": false
+  },
+  "controls": [
+    {
+      "prop": "label",
+      "label": "Primary label",
+      "type": "text"
+    },
+    {
+      "prop": "actions",
+      "label": "Menu actions (comma separated)",
+      "type": "list"
+    },
+    {
+      "prop": "rememberLast",
+      "label": "Promote chosen action",
+      "type": "boolean"
+    },
+    {
+      "prop": "menuLabel",
+      "label": "Menu label",
+      "type": "text"
+    },
+    {
+      "prop": "variant",
+      "label": "Variant",
+      "type": "select",
+      "options": [
+        "default",
+        "secondary",
+        "outline"
+      ]
+    },
+    {
+      "prop": "size",
+      "label": "Size",
+      "type": "select",
+      "options": [
+        "sm",
+        "md",
+        "lg"
+      ]
+    },
+    {
+      "prop": "side",
+      "label": "Side",
+      "type": "select",
+      "options": [
+        "bottom",
+        "top"
+      ]
+    },
+    {
+      "prop": "align",
+      "label": "Align",
+      "type": "select",
+      "options": [
+        "start",
+        "end"
+      ]
+    },
+    {
+      "prop": "accentColor",
+      "label": "Accent color",
+      "type": "color"
+    },
+    {
+      "prop": "disabled",
+      "label": "Disabled",
+      "type": "boolean"
+    }
+  ],
+  "propsApi": [
+    {
+      "name": "label",
+      "type": "string",
+      "default": "'Deploy to production'",
+      "description": "Label of the primary action."
+    },
+    {
+      "name": "actions",
+      "type": "string[]",
+      "default": "['Deploy to preview', 'Deploy without cache', 'Schedule deploy…', 'Roll back to previous']",
+      "description": "Secondary actions listed in the menu (must be unique)."
+    },
+    {
+      "name": "onClick",
+      "type": "(label: string) => void",
+      "default": "undefined",
+      "description": "Called when the primary part is pressed, with its current label."
+    },
+    {
+      "name": "onAction",
+      "type": "(action: string, index: number) => void",
+      "default": "undefined",
+      "description": "Called when a menu action is chosen."
+    },
+    {
+      "name": "rememberLast",
+      "type": "boolean",
+      "default": "false",
+      "description": "Swap the chosen action into the primary slot (the old primary takes its place in the menu)."
+    },
+    {
+      "name": "open",
+      "type": "boolean",
+      "default": "undefined",
+      "description": "Controlled menu open state."
+    },
+    {
+      "name": "defaultOpen",
+      "type": "boolean",
+      "default": "false",
+      "description": "Initial open state when uncontrolled."
+    },
+    {
+      "name": "onOpenChange",
+      "type": "(open: boolean) => void",
+      "default": "undefined",
+      "description": "Called when the menu requests to open or close."
+    },
+    {
+      "name": "menuLabel",
+      "type": "string",
+      "default": "'More deploy options'",
+      "description": "Accessible label of the chevron trigger and the menu."
+    },
+    {
+      "name": "variant",
+      "type": "'default' | 'secondary' | 'outline'",
+      "default": "'default'",
+      "description": "Visual style."
+    },
+    {
+      "name": "size",
+      "type": "'sm' | 'md' | 'lg'",
+      "default": "'md'",
+      "description": "Size preset."
+    },
+    {
+      "name": "side",
+      "type": "'bottom' | 'top'",
+      "default": "'bottom'",
+      "description": "Preferred menu side; flips when it does not fit in the viewport."
+    },
+    {
+      "name": "align",
+      "type": "'start' | 'end'",
+      "default": "'end'",
+      "description": "Align the menu with the left or right edge of the button."
+    },
+    {
+      "name": "accentColor",
+      "type": "string",
+      "default": "'#6366f1'",
+      "description": "Brand color for the default variant."
+    },
+    {
+      "name": "disabled",
+      "type": "boolean",
+      "default": "false",
+      "description": "Disable both parts."
+    },
+    {
+      "name": "className",
+      "type": "string",
+      "default": "''",
+      "description": "Additional class merged onto the root element."
+    },
+    {
+      "name": "style",
+      "type": "React.CSSProperties",
+      "default": "undefined",
+      "description": "Inline styles merged onto the root element."
+    }
+  ],
+  "files": [
+    {
+      "path": "components/ui/split-button.tsx",
+      "type": "registry:component",
+      "content": "\"use client\";\n\nimport * as React from \"react\";\nimport { AnimatePresence, motion, useReducedMotion } from \"motion/react\";\nimport styles from \"../styles/split-button.module.css\";\n\nexport interface SplitButtonProps {\n  /** Label of the primary action */\n  label?: string;\n  /** Secondary actions listed in the menu */\n  actions?: string[];\n  /** Called when the primary part is pressed, with its current label */\n  onClick?: (label: string) => void;\n  /** Called when a menu action is chosen */\n  onAction?: (action: string, index: number) => void;\n  /** Swap a chosen menu action into the primary slot */\n  rememberLast?: boolean;\n  /** Controlled menu open state */\n  open?: boolean;\n  /** Initial menu open state when uncontrolled */\n  defaultOpen?: boolean;\n  /** Called when the menu requests to open or close */\n  onOpenChange?: (open: boolean) => void;\n  /** Accessible label of the chevron trigger */\n  menuLabel?: string;\n  /** Visual style */\n  variant?: \"default\" | \"secondary\" | \"outline\";\n  /** Size preset */\n  size?: \"sm\" | \"md\" | \"lg\";\n  /** Preferred side of the menu (flips when it does not fit) */\n  side?: \"bottom\" | \"top\";\n  /** Menu alignment against the button */\n  align?: \"start\" | \"end\";\n  /** Brand color for the default variant */\n  accentColor?: string;\n  /** Disable both parts */\n  disabled?: boolean;\n  /** Optional className merged onto the root */\n  className?: string;\n  /** Optional inline styles merged onto the root */\n  style?: React.CSSProperties;\n}\n\nconst DEFAULT_ACTIONS = [\"Deploy to preview\", \"Deploy without cache\", \"Schedule deploy…\", \"Roll back to previous\"];\n\nexport function SplitButton({\n  label = \"Deploy to production\",\n  actions = DEFAULT_ACTIONS,\n  onClick,\n  onAction,\n  rememberLast = false,\n  open: openProp,\n  defaultOpen = false,\n  onOpenChange,\n  menuLabel = \"More deploy options\",\n  variant = \"default\",\n  size = \"md\",\n  side = \"bottom\",\n  align = \"end\",\n  accentColor = \"#6366f1\",\n  disabled = false,\n  className = \"\",\n  style,\n}: SplitButtonProps) {\n  const reduce = useReducedMotion();\n  const [innerOpen, setInnerOpen] = React.useState(defaultOpen);\n  const open = openProp ?? innerOpen;\n  const [list, setList] = React.useState<string[]>(() => [label, ...actions]);\n  const [placement, setPlacement] = React.useState(side);\n  const rootRef = React.useRef<HTMLDivElement>(null);\n  const triggerRef = React.useRef<HTMLButtonElement>(null);\n  const menuRef = React.useRef<HTMLDivElement>(null);\n  const itemRefs = React.useRef<(HTMLButtonElement | null)[]>([]);\n  const focusOnOpen = React.useRef<\"first\" | \"last\">(\"first\");\n  const menuId = React.useId();\n\n  const actionsKey = actions.join(\"\\n\");\n  React.useEffect(() => {\n    setList([label, ...actionsKey.split(\"\\n\").filter(Boolean)]);\n  }, [label, actionsKey]);\n\n  const primary = list[0];\n  const menuItems = list.slice(1);\n\n  const setOpen = React.useCallback(\n    (v: boolean, restoreFocus = false) => {\n      if (openProp === undefined) setInnerOpen(v);\n      onOpenChange?.(v);\n      if (!v && restoreFocus) triggerRef.current?.focus();\n    },\n    [openProp, onOpenChange],\n  );\n\n  // Placement flip, initial focus and outside click while open.\n  React.useEffect(() => {\n    if (!open) return;\n    const trigger = rootRef.current?.getBoundingClientRect();\n    const menuH = menuRef.current?.offsetHeight ?? 0;\n    if (trigger) {\n      const below = window.innerHeight - trigger.bottom;\n      const above = trigger.top;\n      if (side === \"bottom\" && below < menuH + 12 && above > below) setPlacement(\"top\");\n      else if (side === \"top\" && above < menuH + 12 && below > above) setPlacement(\"bottom\");\n      else setPlacement(side);\n    }\n    const raf = requestAnimationFrame(() => {\n      const nodes = itemRefs.current.filter((n): n is HTMLButtonElement => !!n);\n      (focusOnOpen.current === \"last\" ? nodes[nodes.length - 1] : nodes[0])?.focus();\n    });\n    const onDown = (e: PointerEvent) => {\n      if (rootRef.current && !rootRef.current.contains(e.target as Node)) setOpen(false);\n    };\n    document.addEventListener(\"pointerdown\", onDown);\n    return () => {\n      cancelAnimationFrame(raf);\n      document.removeEventListener(\"pointerdown\", onDown);\n    };\n  }, [open, side, setOpen]);\n\n  const choose = (index: number) => {\n    const action = menuItems[index];\n    onAction?.(action, index);\n    if (rememberLast) setList((l) => [action, ...l.slice(1).map((a) => (a === action ? l[0] : a))]);\n    setOpen(false, true);\n  };\n\n  const onTriggerKey = (e: React.KeyboardEvent<HTMLButtonElement>) => {\n    if (e.key === \"ArrowDown\" || e.key === \"ArrowUp\") {\n      e.preventDefault();\n      focusOnOpen.current = e.key === \"ArrowUp\" ? \"last\" : \"first\";\n      setOpen(true);\n    }\n  };\n\n  const onMenuKey = (e: React.KeyboardEvent<HTMLDivElement>) => {\n    const nodes = itemRefs.current.filter((n): n is HTMLButtonElement => !!n);\n    const i = nodes.indexOf(document.activeElement as HTMLButtonElement);\n    let next = -1;\n    if (e.key === \"ArrowDown\") next = (i + 1) % nodes.length;\n    else if (e.key === \"ArrowUp\") next = (i - 1 + nodes.length) % nodes.length;\n    else if (e.key === \"Home\") next = 0;\n    else if (e.key === \"End\") next = nodes.length - 1;\n    else if (e.key === \"Escape\") {\n      e.preventDefault();\n      setOpen(false, true);\n      return;\n    } else if (e.key === \"Tab\") {\n      setOpen(false);\n      return;\n    } else if (e.key.length === 1 && /\\S/.test(e.key)) {\n      const ch = e.key.toLowerCase();\n      for (let k = 1; k <= nodes.length; k++) {\n        const j = (i + k) % nodes.length;\n        if (menuItems[j]?.toLowerCase().startsWith(ch)) {\n          next = j;\n          break;\n        }\n      }\n    }\n    if (next < 0) return;\n    e.preventDefault();\n    nodes[next]?.focus();\n  };\n\n  const origin = `${placement === \"bottom\" ? \"top\" : \"bottom\"} ${align === \"end\" ? \"right\" : \"left\"}`;\n\n  return (\n    <div\n      ref={rootRef}\n      className={[styles.root, styles[variant], styles[size], className].filter(Boolean).join(\" \")}\n      style={{ \"--mf-sb-accent\": accentColor, ...style } as React.CSSProperties}\n    >\n      <button type=\"button\" className={styles.main} disabled={disabled} onClick={() => onClick?.(primary)}>\n        {primary}\n      </button>\n      <span className={styles.divider} aria-hidden=\"true\" />\n      <button\n        ref={triggerRef}\n        type=\"button\"\n        className={styles.trigger}\n        disabled={disabled}\n        aria-label={menuLabel}\n        aria-haspopup=\"menu\"\n        aria-expanded={open}\n        aria-controls={open ? menuId : undefined}\n        onKeyDown={onTriggerKey}\n        onClick={() => {\n          focusOnOpen.current = \"first\";\n          setOpen(!open);\n        }}\n      >\n        <svg aria-hidden=\"true\" className={styles.chevron} width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" strokeWidth=\"2\" strokeLinecap=\"round\" strokeLinejoin=\"round\">\n          <path d=\"m6 9 6 6 6-6\" />\n        </svg>\n      </button>\n      <AnimatePresence>\n        {open && !disabled ? (\n          <motion.div\n            ref={menuRef}\n            id={menuId}\n            role=\"menu\"\n            aria-label={menuLabel}\n            tabIndex={-1}\n            onKeyDown={onMenuKey}\n            className={styles.menu}\n            data-side={placement}\n            data-align={align}\n            style={{ transformOrigin: origin }}\n            initial={reduce ? { opacity: 0 } : { opacity: 0, scale: 0.95, y: placement === \"bottom\" ? -4 : 4 }}\n            animate={reduce ? { opacity: 1 } : { opacity: 1, scale: 1, y: 0 }}\n            exit={reduce ? { opacity: 0 } : { opacity: 0, scale: 0.97, y: placement === \"bottom\" ? -2 : 2 }}\n            transition={{ duration: reduce ? 0.1 : 0.16, ease: [0.16, 1, 0.3, 1] }}\n          >\n            {menuItems.map((action, i) => (\n              <motion.button\n                key={action}\n                ref={(el: HTMLButtonElement | null) => {\n                  itemRefs.current[i] = el;\n                }}\n                type=\"button\"\n                role=\"menuitem\"\n                tabIndex={-1}\n                className={styles.item}\n                onClick={() => choose(i)}\n                onPointerMove={(e) => e.currentTarget.focus()}\n                initial={reduce ? false : { opacity: 0, x: align === \"end\" ? 6 : -6 }}\n                animate={{ opacity: 1, x: 0 }}\n                transition={{ duration: 0.18, delay: reduce ? 0 : 0.03 + i * 0.025 }}\n              >\n                {action}\n              </motion.button>\n            ))}\n          </motion.div>\n        ) : null}\n      </AnimatePresence>\n    </div>\n  );\n}\n"
+    },
+    {
+      "path": "components/styles/split-button.module.css",
+      "type": "registry:style",
+      "content": ".root {\n  --mf-sb-h: 2.375rem;\n  position: relative;\n  display: inline-flex;\n  align-items: stretch;\n  border-radius: 0.5rem;\n  font-size: 0.875rem;\n  color: var(--mf-fg, #f4f4f6);\n}\n\n.sm {\n  --mf-sb-h: 2rem;\n  font-size: 0.8125rem;\n}\n\n.md {\n  --mf-sb-h: 2.375rem;\n}\n\n.lg {\n  --mf-sb-h: 2.75rem;\n  font-size: 0.9375rem;\n}\n\n.main,\n.trigger {\n  display: inline-flex;\n  align-items: center;\n  justify-content: center;\n  height: var(--mf-sb-h);\n  border: 1px solid transparent;\n  font: inherit;\n  font-weight: 500;\n  white-space: nowrap;\n  cursor: pointer;\n  -webkit-tap-highlight-color: transparent;\n  transition: background-color 160ms ease, border-color 160ms ease, color 160ms ease, transform 160ms ease;\n}\n\n.main {\n  padding: 0 0.875rem 0 1rem;\n  border-radius: 0.5rem 0 0 0.5rem;\n  border-right-width: 0;\n}\n\n.trigger {\n  width: calc(var(--mf-sb-h) - 0.25rem);\n  padding: 0;\n  border-radius: 0 0.5rem 0.5rem 0;\n  border-left-width: 0;\n}\n\n.main:active:not(:disabled),\n.trigger:active:not(:disabled) {\n  transform: scale(0.97);\n}\n\n.main:focus-visible,\n.trigger:focus-visible {\n  position: relative;\n  z-index: 1;\n  outline: 2px solid var(--mf-fg, #e4e4e7);\n  outline-offset: 2px;\n}\n\n.main:disabled,\n.trigger:disabled {\n  opacity: 0.5;\n  cursor: not-allowed;\n}\n\n.divider {\n  width: 1px;\n  align-self: stretch;\n}\n\n.chevron {\n  transition: transform 220ms cubic-bezier(0.34, 1.56, 0.64, 1);\n}\n\n.trigger[aria-expanded=\"true\"] .chevron {\n  transform: rotate(180deg);\n}\n\n/* Variants */\n.default .main,\n.default .trigger {\n  background-color: var(--mf-sb-accent, #6366f1);\n  border-color: var(--mf-sb-accent, #6366f1);\n  color: #ffffff;\n}\n\n.default .main:hover:not(:disabled),\n.default .trigger:hover:not(:disabled),\n.default .trigger[aria-expanded=\"true\"] {\n  background-color: color-mix(in srgb, var(--mf-sb-accent, #6366f1) 86%, #ffffff);\n}\n\n.default .divider {\n  background-color: color-mix(in srgb, #ffffff 30%, var(--mf-sb-accent, #6366f1));\n}\n\n.secondary .main,\n.secondary .trigger {\n  background-color: var(--mf-surface-raised, #1b1b22);\n  color: var(--mf-fg, #f4f4f6);\n}\n\n.secondary .main:hover:not(:disabled),\n.secondary .trigger:hover:not(:disabled),\n.secondary .trigger[aria-expanded=\"true\"] {\n  background-color: color-mix(in srgb, var(--mf-surface-raised, #1b1b22) 82%, var(--mf-fg, #f4f4f6));\n}\n\n.secondary .divider {\n  background-color: var(--mf-border, #2e2e38);\n}\n\n.outline .main,\n.outline .trigger {\n  background-color: var(--mf-surface, #141419);\n  border-color: var(--mf-border, #2e2e38);\n  color: var(--mf-fg, #f4f4f6);\n}\n\n.outline .main:hover:not(:disabled),\n.outline .trigger:hover:not(:disabled),\n.outline .trigger[aria-expanded=\"true\"] {\n  background-color: var(--mf-surface-raised, #1b1b22);\n}\n\n.outline .divider {\n  background-color: var(--mf-border, #2e2e38);\n}\n\n/* Menu */\n.menu {\n  position: absolute;\n  z-index: 50;\n  min-width: max(100%, 13rem);\n  padding: 0.3125rem;\n  border-radius: 0.625rem;\n  border: 1px solid var(--mf-border, #2e2e38);\n  background-color: var(--mf-surface, #141419);\n  color: var(--mf-fg, #f4f4f6);\n  box-shadow: 0 16px 40px -12px rgba(0, 0, 0, 0.5), 0 2px 6px rgba(0, 0, 0, 0.15);\n  outline: none;\n}\n\n.menu[data-side=\"bottom\"] {\n  top: calc(100% + 0.375rem);\n}\n\n.menu[data-side=\"top\"] {\n  bottom: calc(100% + 0.375rem);\n}\n\n.menu[data-align=\"end\"] {\n  right: 0;\n}\n\n.menu[data-align=\"start\"] {\n  left: 0;\n}\n\n.item {\n  display: flex;\n  align-items: center;\n  width: 100%;\n  min-height: 2.125rem;\n  padding: 0 0.625rem;\n  border: 0;\n  border-radius: 0.375rem;\n  background: transparent;\n  color: var(--mf-fg, #f4f4f6);\n  font: inherit;\n  font-size: 0.875rem;\n  text-align: left;\n  white-space: nowrap;\n  cursor: pointer;\n  outline: none;\n  transition: background-color 120ms ease;\n}\n\n.item:focus,\n.item:hover {\n  background-color: var(--mf-surface-raised, #1b1b22);\n}\n\n.item:focus-visible {\n  box-shadow: inset 0 0 0 1px var(--mf-border-strong, #52525b);\n}\n\n@media (prefers-reduced-motion: reduce) {\n  .main,\n  .trigger,\n  .chevron,\n  .item {\n    transition: none;\n  }\n\n  .main:active:not(:disabled),\n  .trigger:active:not(:disabled) {\n    transform: none;\n  }\n}\n"
+    }
+  ],
+  "tailwindExample": "\"use client\";\n\nimport { AnimatePresence, motion } from \"motion/react\";\nimport { useEffect, useRef, useState } from \"react\";\n\nexport function SplitButtonTailwind({ actions = [\"Deploy to preview\", \"Deploy without cache\", \"Roll back\"] }) {\n  const [open, setOpen] = useState(false);\n  const root = useRef<HTMLDivElement>(null);\n  const trigger = useRef<HTMLButtonElement>(null);\n  const items = useRef<(HTMLButtonElement | null)[]>([]);\n  useEffect(() => {\n    if (!open) return;\n    items.current[0]?.focus();\n    const out = (e: PointerEvent) => !root.current?.contains(e.target as Node) && setOpen(false);\n    document.addEventListener(\"pointerdown\", out);\n    return () => document.removeEventListener(\"pointerdown\", out);\n  }, [open]);\n  const onKey = (e: React.KeyboardEvent) => {\n    const i = items.current.indexOf(document.activeElement as HTMLButtonElement);\n    if (e.key === \"Escape\") { setOpen(false); trigger.current?.focus(); }\n    if (e.key === \"ArrowDown\" || e.key === \"ArrowUp\") { e.preventDefault(); items.current[(i + (e.key === \"ArrowDown\" ? 1 : -1) + actions.length) % actions.length]?.focus(); }\n  };\n  return (\n    <div ref={root} className=\"relative inline-flex text-sm font-medium text-white\">\n      <button type=\"button\" className=\"h-9 rounded-l-lg bg-indigo-500 px-4 hover:bg-indigo-400\">Deploy to production</button>\n      <button ref={trigger} type=\"button\" aria-label=\"More deploy options\" aria-haspopup=\"menu\" aria-expanded={open} onClick={() => setOpen(!open)} className=\"grid h-9 w-8 place-items-center rounded-r-lg border-l border-white/30 bg-indigo-500 hover:bg-indigo-400\">\n        <svg aria-hidden=\"true\" width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" strokeWidth=\"2\" className={`transition-transform ${open ? \"rotate-180\" : \"\"}`}><path d=\"m6 9 6 6 6-6\" /></svg>\n      </button>\n      <AnimatePresence>\n        {open && (\n          <motion.div role=\"menu\" onKeyDown={onKey} initial={{ opacity: 0, scale: 0.95, y: -4 }} animate={{ opacity: 1, scale: 1, y: 0 }} exit={{ opacity: 0, scale: 0.97 }} transition={{ duration: 0.16 }} className=\"absolute right-0 top-full z-50 mt-1.5 min-w-52 origin-top-right rounded-xl border border-zinc-800 bg-zinc-900 p-1 text-zinc-100 shadow-xl\">\n            {actions.map((a, i) => (\n              <button key={a} ref={(el) => { items.current[i] = el; }} role=\"menuitem\" tabIndex={-1} type=\"button\" onClick={() => { setOpen(false); trigger.current?.focus(); }} className=\"flex h-8 w-full items-center rounded-md px-2.5 text-left outline-none hover:bg-zinc-800 focus:bg-zinc-800\">{a}</button>\n            ))}\n          </motion.div>\n        )}\n      </AnimatePresence>\n    </div>\n  );\n}"
+}

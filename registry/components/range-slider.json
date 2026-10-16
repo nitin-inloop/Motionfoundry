@@ -1,0 +1,231 @@
+{
+  "slug": "range-slider",
+  "name": "RangeSlider",
+  "category": "Forms and Inputs",
+  "collection": "ui",
+  "featured": false,
+  "addedAt": "2026-10-16",
+  "version": "2.3.0",
+  "requiresMotion": true,
+  "dependencies": [
+    "motion",
+    "react"
+  ],
+  "description": "A single or dual-thumb slider with a gradient-filled track, thumbs that glide to keyboard steps and swell while dragged, and a value tooltip that springs up above the active thumb.",
+  "tags": [
+    "slider",
+    "range",
+    "dual thumb",
+    "price filter",
+    "input",
+    "form",
+    "ui"
+  ],
+  "a11yNotes": "Implements the WAI-ARIA slider (and multi-thumb slider) pattern: each thumb is a focusable role=\"slider\" with aria-valuenow, aria-valuetext (formatted with prefix/suffix) and aria-valuemin/max that follow the other thumb in range mode, so thumbs cannot cross. Single sliders are labelled by the visible label; range thumbs are named 'Minimum <label>' / 'Maximum <label>'. Arrow keys step, PageUp/PageDown take 10% steps, Home/End jump to the bounds. Clicking the track moves the nearest thumb and focuses it. The tooltip and readout are aria-hidden duplicates. Under prefers-reduced-motion thumbs and fill move without easing and the tooltip only fades.",
+  "defaultProps": {
+    "range": true,
+    "min": 0,
+    "max": 1000,
+    "step": 10,
+    "label": "Price range",
+    "prefix": "$",
+    "suffix": "",
+    "tooltip": "active",
+    "size": "md",
+    "accentColor": "#6366f1",
+    "disabled": false
+  },
+  "controls": [
+    {
+      "prop": "range",
+      "label": "Dual thumb",
+      "type": "boolean"
+    },
+    {
+      "prop": "min",
+      "label": "Min",
+      "type": "range",
+      "min": 0,
+      "max": 500,
+      "step": 10
+    },
+    {
+      "prop": "max",
+      "label": "Max",
+      "type": "range",
+      "min": 100,
+      "max": 5000,
+      "step": 100
+    },
+    {
+      "prop": "step",
+      "label": "Step",
+      "type": "range",
+      "min": 1,
+      "max": 100,
+      "step": 1
+    },
+    {
+      "prop": "label",
+      "label": "Label",
+      "type": "text"
+    },
+    {
+      "prop": "prefix",
+      "label": "Prefix",
+      "type": "text"
+    },
+    {
+      "prop": "suffix",
+      "label": "Suffix",
+      "type": "text"
+    },
+    {
+      "prop": "tooltip",
+      "label": "Tooltip",
+      "type": "select",
+      "options": [
+        "always",
+        "active",
+        "never"
+      ]
+    },
+    {
+      "prop": "size",
+      "label": "Size",
+      "type": "select",
+      "options": [
+        "sm",
+        "md",
+        "lg"
+      ]
+    },
+    {
+      "prop": "accentColor",
+      "label": "Accent color",
+      "type": "color"
+    },
+    {
+      "prop": "disabled",
+      "label": "Disabled",
+      "type": "boolean"
+    }
+  ],
+  "propsApi": [
+    {
+      "name": "value",
+      "type": "number[]",
+      "default": "undefined",
+      "description": "Controlled values: one number for a single thumb, two for a range."
+    },
+    {
+      "name": "defaultValue",
+      "type": "number[]",
+      "default": "[20%, 80%] of the range, or [50%]",
+      "description": "Initial values when uncontrolled."
+    },
+    {
+      "name": "onValueChange",
+      "type": "(value: number[]) => void",
+      "default": "undefined",
+      "description": "Called continuously while values change."
+    },
+    {
+      "name": "onValueCommit",
+      "type": "(value: number[]) => void",
+      "default": "undefined",
+      "description": "Called when a drag ends or after a key step."
+    },
+    {
+      "name": "range",
+      "type": "boolean",
+      "default": "true",
+      "description": "Render two thumbs (a range) instead of one."
+    },
+    {
+      "name": "min",
+      "type": "number",
+      "default": "0",
+      "description": "Minimum value."
+    },
+    {
+      "name": "max",
+      "type": "number",
+      "default": "1000",
+      "description": "Maximum value."
+    },
+    {
+      "name": "step",
+      "type": "number",
+      "default": "10",
+      "description": "Step increment; values snap to it."
+    },
+    {
+      "name": "label",
+      "type": "string",
+      "default": "'Price range'",
+      "description": "Visible label and accessible name."
+    },
+    {
+      "name": "prefix",
+      "type": "string",
+      "default": "'$'",
+      "description": "Text before each formatted value."
+    },
+    {
+      "name": "suffix",
+      "type": "string",
+      "default": "''",
+      "description": "Text after each formatted value, e.g. '%'."
+    },
+    {
+      "name": "tooltip",
+      "type": "'always' | 'active' | 'never'",
+      "default": "'active'",
+      "description": "Show the value tooltip always, only on hover/focus/drag, or never."
+    },
+    {
+      "name": "size",
+      "type": "'sm' | 'md' | 'lg'",
+      "default": "'md'",
+      "description": "Rail and thumb size preset."
+    },
+    {
+      "name": "accentColor",
+      "type": "string",
+      "default": "'#6366f1'",
+      "description": "Fill, thumb ring and tooltip color."
+    },
+    {
+      "name": "disabled",
+      "type": "boolean",
+      "default": "false",
+      "description": "Disable the slider."
+    },
+    {
+      "name": "className",
+      "type": "string",
+      "default": "''",
+      "description": "Additional class merged onto the root element."
+    },
+    {
+      "name": "style",
+      "type": "React.CSSProperties",
+      "default": "undefined",
+      "description": "Inline styles merged onto the root element."
+    }
+  ],
+  "files": [
+    {
+      "path": "components/ui/range-slider.tsx",
+      "type": "registry:component",
+      "content": "\"use client\";\n\nimport * as React from \"react\";\nimport { AnimatePresence, motion, useReducedMotion } from \"motion/react\";\nimport styles from \"../styles/range-slider.module.css\";\n\nexport interface RangeSliderProps {\n  /** Controlled values: one number for a single thumb, two for a range */\n  value?: number[];\n  /** Initial values when uncontrolled (defaults to [20, 80] for a range, [50] otherwise) */\n  defaultValue?: number[];\n  /** Called continuously while values change */\n  onValueChange?: (value: number[]) => void;\n  /** Called when a drag or key interaction ends */\n  onValueCommit?: (value: number[]) => void;\n  /** Two thumbs (range) instead of one */\n  range?: boolean;\n  /** Minimum value */\n  min?: number;\n  /** Maximum value */\n  max?: number;\n  /** Step increment */\n  step?: number;\n  /** Visible label (also the accessible name) */\n  label?: string;\n  /** Text before each value, e.g. \"$\" */\n  prefix?: string;\n  /** Text after each value, e.g. \"%\" */\n  suffix?: string;\n  /** When the value tooltip is shown */\n  tooltip?: \"always\" | \"active\" | \"never\";\n  /** Size preset */\n  size?: \"sm\" | \"md\" | \"lg\";\n  /** Fill, thumb ring and tooltip color */\n  accentColor?: string;\n  /** Disable the slider */\n  disabled?: boolean;\n  /** Optional className merged onto the root */\n  className?: string;\n  /** Optional inline styles merged onto the root */\n  style?: React.CSSProperties;\n}\n\nexport function RangeSlider({\n  value: valueProp,\n  defaultValue,\n  onValueChange,\n  onValueCommit,\n  range = true,\n  min = 0,\n  max = 1000,\n  step = 10,\n  label = \"Price range\",\n  prefix = \"$\",\n  suffix = \"\",\n  tooltip = \"active\",\n  size = \"md\",\n  accentColor = \"#6366f1\",\n  disabled = false,\n  className = \"\",\n  style,\n}: RangeSliderProps) {\n  const reduce = useReducedMotion();\n  const lo = Math.min(min, max);\n  const hi = Math.max(min, max) === lo ? lo + 1 : Math.max(min, max);\n  const inc = step > 0 ? step : 1;\n  const count = range ? 2 : 1;\n  const snap = React.useCallback((n: number) => Math.min(hi, Math.max(lo, lo + Math.round((n - lo) / inc) * inc)), [hi, lo, inc]);\n  const normalize = React.useCallback(\n    (vals: number[] | undefined) => {\n      const base = vals && vals.length ? vals : range ? [lo + (hi - lo) * 0.2, lo + (hi - lo) * 0.8] : [lo + (hi - lo) / 2];\n      const out = (count === 2 ? [base[0], base[1] ?? base[0]] : [base[0]]).map(snap);\n      return out.sort((a, b) => a - b);\n    },\n    [count, hi, lo, range, snap],\n  );\n  const [inner, setInner] = React.useState(() => normalize(defaultValue));\n  const values = normalize(valueProp ?? inner);\n  const valuesRef = React.useRef(values);\n  valuesRef.current = values;\n  const [active, setActive] = React.useState<number | null>(null);\n  const [dragging, setDragging] = React.useState(false);\n  const trackRef = React.useRef<HTMLDivElement>(null);\n  const thumbRefs = React.useRef<Array<HTMLDivElement | null>>([]);\n  const labelId = React.useId();\n\n  const pct = (v: number) => ((v - lo) / (hi - lo)) * 100;\n  const fmt = (v: number) => `${prefix}${Number(v.toFixed(6)).toLocaleString(\"en-US\")}${suffix}`;\n\n  const setThumb = (index: number, raw: number) => {\n    const next = [...valuesRef.current];\n    const lower = index === 1 ? next[0] : lo;\n    const upper = index === 0 && count === 2 ? next[1] : hi;\n    const v = Math.min(upper, Math.max(lower, snap(raw)));\n    if (v === next[index]) return;\n    next[index] = v;\n    valuesRef.current = next;\n    if (valueProp === undefined) setInner(next);\n    onValueChange?.(next);\n  };\n\n  const valueAt = (clientX: number) => {\n    const rect = trackRef.current?.getBoundingClientRect();\n    if (!rect || rect.width === 0) return lo;\n    return lo + ((clientX - rect.left) / rect.width) * (hi - lo);\n  };\n\n  const onPointerDown = (e: React.PointerEvent<HTMLDivElement>) => {\n    if (disabled || e.button !== 0) return;\n    e.preventDefault();\n    const raw = valueAt(e.clientX);\n    const cur = valuesRef.current;\n    let index = 0;\n    if (count === 2) {\n      const d0 = Math.abs(raw - cur[0]);\n      const d1 = Math.abs(raw - cur[1]);\n      index = d0 === d1 ? (raw > cur[1] ? 1 : 0) : d1 < d0 ? 1 : 0;\n    }\n    e.currentTarget.setPointerCapture(e.pointerId);\n    setActive(index);\n    setDragging(true);\n    thumbRefs.current[index]?.focus();\n    setThumb(index, raw);\n  };\n\n  const onPointerMove = (e: React.PointerEvent<HTMLDivElement>) => {\n    if (!dragging || active === null) return;\n    setThumb(active, valueAt(e.clientX));\n  };\n\n  const endDrag = () => {\n    if (!dragging) return;\n    setDragging(false);\n    onValueCommit?.(valuesRef.current);\n  };\n\n  const onKeyDown = (index: number) => (e: React.KeyboardEvent<HTMLDivElement>) => {\n    if (disabled) return;\n    const v = valuesRef.current[index];\n    const big = Math.max(inc, Math.round((hi - lo) / 10 / inc) * inc);\n    const map: Record<string, number | undefined> = {\n      ArrowRight: v + inc,\n      ArrowUp: v + inc,\n      ArrowLeft: v - inc,\n      ArrowDown: v - inc,\n      PageUp: v + big,\n      PageDown: v - big,\n      Home: lo,\n      End: hi,\n    };\n    const next = map[e.key];\n    if (next === undefined) return;\n    e.preventDefault();\n    setThumb(index, next);\n    onValueCommit?.(valuesRef.current);\n  };\n\n  const start = count === 2 ? pct(values[0]) : 0;\n  const end = pct(values[count - 1]);\n  const pop = reduce ? { duration: 0.08 } : { type: \"spring\" as const, stiffness: 520, damping: 30 };\n  const names = count === 2 ? [\"Minimum\", \"Maximum\"] : [\"\"];\n\n  return (\n    <div\n      className={`${styles.root} ${className}`.trim()}\n      data-size={size}\n      data-dragging={dragging ? \"\" : undefined}\n      data-disabled={disabled ? \"\" : undefined}\n      style={{ \"--mf-rs-accent\": accentColor, ...style } as React.CSSProperties}\n    >\n      <div className={styles.header}>\n        <span id={labelId} className={styles.label}>\n          {label}\n        </span>\n        <span className={styles.readout} aria-hidden=\"true\">\n          {values.map(fmt).join(\" – \")}\n        </span>\n      </div>\n      <div ref={trackRef} className={styles.track} onPointerDown={onPointerDown} onPointerMove={onPointerMove} onPointerUp={endDrag} onPointerCancel={endDrag}>\n        <div className={styles.rail} aria-hidden=\"true\">\n          <div className={styles.fill} style={{ left: `${start}%`, width: `${end - start}%` }} />\n        </div>\n        {values.map((v, i) => {\n          const show = tooltip === \"always\" || (tooltip === \"active\" && active === i);\n          return (\n            <div\n              key={i}\n              ref={(el) => {\n                thumbRefs.current[i] = el;\n              }}\n              role=\"slider\"\n              tabIndex={disabled ? -1 : 0}\n              aria-labelledby={names[i] ? undefined : labelId}\n              aria-label={names[i] ? `${names[i]} ${label.toLowerCase()}` : undefined}\n              aria-valuemin={i === 1 ? values[0] : lo}\n              aria-valuemax={i === 0 && count === 2 ? values[1] : hi}\n              aria-valuenow={v}\n              aria-valuetext={fmt(v)}\n              aria-orientation=\"horizontal\"\n              aria-disabled={disabled || undefined}\n              className={styles.thumb}\n              data-active={active === i ? \"\" : undefined}\n              style={{ left: `${pct(v)}%`, zIndex: active === i ? 3 : 2 }}\n              onKeyDown={onKeyDown(i)}\n              onFocus={() => setActive(i)}\n              onBlur={() => !dragging && setActive(null)}\n              onPointerEnter={() => !dragging && tooltip === \"active\" && setActive(i)}\n              onPointerLeave={() => !dragging && document.activeElement !== thumbRefs.current[i] && setActive(null)}\n            >\n              <AnimatePresence>\n                {show && (\n                  <motion.span\n                    aria-hidden=\"true\"\n                    className={styles.tip}\n                    initial={{ opacity: 0, y: reduce ? 0 : 6, scale: reduce ? 1 : 0.8, x: \"-50%\" }}\n                    animate={{ opacity: 1, y: 0, scale: 1, x: \"-50%\" }}\n                    exit={{ opacity: 0, y: reduce ? 0 : 4, scale: reduce ? 1 : 0.85, x: \"-50%\" }}\n                    transition={pop}\n                  >\n                    {fmt(v)}\n                  </motion.span>\n                )}\n              </AnimatePresence>\n            </div>\n          );\n        })}\n      </div>\n      <div className={styles.scale} aria-hidden=\"true\">\n        <span>{fmt(lo)}</span>\n        <span>{fmt(hi)}</span>\n      </div>\n    </div>\n  );\n}\n"
+    },
+    {
+      "path": "components/styles/range-slider.module.css",
+      "type": "registry:style",
+      "content": ".root {\n  --mf-rs-rail: 0.375rem;\n  --mf-rs-thumb: 1.25rem;\n  display: flex;\n  flex-direction: column;\n  gap: 0.75rem;\n  width: 100%;\n  max-width: 26rem;\n  color: var(--mf-fg, #f4f4f6);\n  user-select: none;\n}\n\n.root[data-size=\"sm\"] {\n  --mf-rs-rail: 0.25rem;\n  --mf-rs-thumb: 1rem;\n}\n\n.root[data-size=\"lg\"] {\n  --mf-rs-rail: 0.5rem;\n  --mf-rs-thumb: 1.5rem;\n}\n\n.header {\n  display: flex;\n  align-items: baseline;\n  justify-content: space-between;\n  gap: 1rem;\n}\n\n.label {\n  font-size: 0.875rem;\n  font-weight: 500;\n}\n\n.readout {\n  font-size: 0.875rem;\n  font-weight: 600;\n  font-variant-numeric: tabular-nums;\n  color: var(--mf-muted, #a1a1aa);\n}\n\n.track {\n  position: relative;\n  display: flex;\n  align-items: center;\n  height: calc(var(--mf-rs-thumb) + 0.75rem);\n  margin-top: 1.75rem;\n  cursor: pointer;\n  touch-action: none;\n}\n\n.rail {\n  position: relative;\n  width: 100%;\n  height: var(--mf-rs-rail);\n  overflow: hidden;\n  border-radius: 999px;\n  background-color: var(--mf-surface-raised, #1b1b22);\n  box-shadow: inset 0 0 0 1px var(--mf-border, #2e2e38);\n}\n\n.fill {\n  position: absolute;\n  top: 0;\n  bottom: 0;\n  border-radius: inherit;\n  background-color: var(--mf-rs-accent, #6366f1);\n  background-image: linear-gradient(90deg, color-mix(in srgb, var(--mf-rs-accent, #6366f1) 70%, #ffffff), var(--mf-rs-accent, #6366f1));\n  transition: left 160ms cubic-bezier(0.16, 1, 0.3, 1), width 160ms cubic-bezier(0.16, 1, 0.3, 1);\n}\n\n.thumb {\n  position: absolute;\n  top: 50%;\n  width: var(--mf-rs-thumb);\n  height: var(--mf-rs-thumb);\n  border-radius: 999px;\n  border: 2px solid var(--mf-rs-accent, #6366f1);\n  background-color: #ffffff;\n  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.35);\n  transform: translate(-50%, -50%);\n  outline: none;\n  cursor: grab;\n  transition: left 160ms cubic-bezier(0.16, 1, 0.3, 1), box-shadow 180ms ease, transform 180ms cubic-bezier(0.34, 1.56, 0.64, 1);\n}\n\n.thumb:hover,\n.thumb[data-active] {\n  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.35), 0 0 0 6px color-mix(in srgb, var(--mf-rs-accent, #6366f1) 22%, transparent);\n}\n\n.thumb:focus-visible {\n  outline: 2px solid var(--mf-fg, #e4e4e7);\n  outline-offset: 3px;\n}\n\n.root[data-dragging] .thumb,\n.root[data-dragging] .fill {\n  transition: box-shadow 180ms ease, transform 180ms cubic-bezier(0.34, 1.56, 0.64, 1);\n}\n\n.root[data-dragging] .thumb[data-active] {\n  transform: translate(-50%, -50%) scale(1.15);\n  cursor: grabbing;\n}\n\n.root[data-dragging] .track {\n  cursor: grabbing;\n}\n\n.tip {\n  position: absolute;\n  bottom: calc(100% + 0.625rem);\n  left: 50%;\n  padding: 0.25rem 0.5rem;\n  border-radius: 0.375rem;\n  background-color: var(--mf-rs-accent, #6366f1);\n  color: #ffffff;\n  font-size: 0.75rem;\n  font-weight: 600;\n  font-variant-numeric: tabular-nums;\n  line-height: 1.2;\n  white-space: nowrap;\n  pointer-events: none;\n  transform-origin: 50% 100%;\n}\n\n.tip::after {\n  content: \"\";\n  position: absolute;\n  top: 100%;\n  left: 50%;\n  border: 5px solid transparent;\n  border-top-color: var(--mf-rs-accent, #6366f1);\n  transform: translateX(-50%);\n}\n\n.scale {\n  display: flex;\n  justify-content: space-between;\n  font-size: 0.75rem;\n  font-variant-numeric: tabular-nums;\n  color: var(--mf-subtle, #71717a);\n}\n\n.root[data-disabled] {\n  opacity: 0.55;\n}\n\n.root[data-disabled] .track,\n.root[data-disabled] .thumb {\n  cursor: not-allowed;\n}\n\n@media (prefers-reduced-motion: reduce) {\n  .fill,\n  .thumb {\n    transition: none;\n  }\n\n  .root[data-dragging] .thumb[data-active] {\n    transform: translate(-50%, -50%);\n  }\n}\n"
+    }
+  ],
+  "tailwindExample": "\"use client\";\n\nimport { useRef, useState } from \"react\";\n\nexport function RangeSliderTailwind({ min = 0, max = 1000, step = 10 }) {\n  const [vals, setVals] = useState([200, 800]);\n  const [active, setActive] = useState<number | null>(null);\n  const track = useRef<HTMLDivElement>(null);\n  const pct = (v: number) => ((v - min) / (max - min)) * 100;\n  const set = (i: number, raw: number) => { const v = Math.round(raw / step) * step; const n = [...vals]; n[i] = Math.min(i ? max : n[1], Math.max(i ? n[0] : min, v)); setVals(n); };\n  const at = (x: number) => { const r = track.current!.getBoundingClientRect(); return min + ((x - r.left) / r.width) * (max - min); };\n  return (\n    <div className=\"w-full max-w-md space-y-3 text-zinc-100\">\n      <div className=\"flex justify-between text-sm\"><span className=\"font-medium\">Price range</span><span className=\"text-zinc-400\">${vals[0]} – ${vals[1]}</span></div>\n      <div ref={track} className=\"relative mt-7 flex h-8 touch-none items-center\" onPointerDown={(e) => { const r = at(e.clientX); const i = Math.abs(r - vals[0]) <= Math.abs(r - vals[1]) ? 0 : 1; setActive(i); e.currentTarget.setPointerCapture(e.pointerId); set(i, r); }} onPointerMove={(e) => active !== null && e.buttons && set(active, at(e.clientX))} onPointerUp={() => setActive(null)}>\n        <div className=\"relative h-1.5 w-full overflow-hidden rounded-full bg-zinc-800\"><div className=\"absolute inset-y-0 bg-indigo-500\" style={{ left: `${pct(vals[0])}%`, width: `${pct(vals[1]) - pct(vals[0])}%` }} /></div>\n        {vals.map((v, i) => (\n          <div key={i} role=\"slider\" tabIndex={0} aria-label={i ? \"Maximum price\" : \"Minimum price\"} aria-valuemin={i ? vals[0] : min} aria-valuemax={i ? max : vals[1]} aria-valuenow={v} onKeyDown={(e) => { if (e.key === \"ArrowRight\") set(i, v + step); if (e.key === \"ArrowLeft\") set(i, v - step); }} className=\"absolute top-1/2 size-5 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-indigo-500 bg-white shadow transition-transform data-[a=true]:scale-110\" data-a={active === i} style={{ left: `${pct(v)}%` }}>\n            {active === i && <span className=\"absolute bottom-full left-1/2 mb-2.5 -translate-x-1/2 rounded-md bg-indigo-500 px-2 py-1 text-xs font-semibold text-white\">${v}</span>}\n          </div>\n        ))}\n      </div>\n    </div>\n  );\n}"
+}

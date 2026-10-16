@@ -1,6 +1,6 @@
 export const BRAND_CONFIG = {
   name: "MotionFoundry",
-  tagline: "Animated UI primitives, gradients, text effects & smooth scroll for React",
+  tagline: "Animated UI primitives, shaders & smooth scroll for React",
   packageScope: "@motionfoundry/ui",
   cliName: "motionfoundry",
   version: "2.2.0",

@@ -26,6 +26,13 @@ const THUMB_SCALE: Record<string, number> = {
   "High-End Animated Cards": 0.55,
   "Reveals and Continuous Motion": 0.5,
   "Developer-Interface Animations": 0.55,
+  // UI primitives are small — keep them close to full size so they read at thumbnail scale.
+  "Forms and Inputs": 0.8,
+  // Overlays render their closed trigger; the open state is explored on the detail page.
+  "Overlays and Menus": 0.8,
+  Navigation: 0.75,
+  // Tables, charts, and lists need more room.
+  "Data Display": 0.6,
 };
 
 export function ComponentCard({ component, collectionName }: { component: CatalogComponent; collectionName?: string }) {
@@ -166,10 +173,9 @@ export function ComponentCatalog({
 
   const order = React.useMemo(() => new Map(components.map((c, i) => [c.slug, i])), [components]);
   const collectionNames = React.useMemo(() => new Map(collections.map((c) => [c.id, c.name])), [collections]);
-  const shownCollections = React.useMemo(
-    () => collections.filter((c) => components.some((comp) => comp.collection === c.id)),
-    [collections, components]
-  );
+  // The server passes only listed collections (already sorted by order); keep every one as a chip,
+  // even if it is still empty, so the chip row is stable (Scroll, Shaders, UI).
+  const shownCollections = collections;
 
   /** Components matching search, engine and the "new" toggle — the base for every faceted count. */
   const base = React.useMemo(

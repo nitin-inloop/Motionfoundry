@@ -7,9 +7,10 @@ import type { ControlDef, PropValue, RegistryComponent } from "../lib/registry";
 import type { DesignPreset } from "../lib/designs";
 import { BRAND_CONFIG } from "../lib/brand";
 import { buildUsage } from "../lib/component-doc";
-import { themeColorFor, themeStyle } from "../lib/theme-style";
+import { NEUTRAL_THEMES, stageStyle, themeColorFor, themeForMode, type PreviewMode } from "../lib/theme-style";
 import { CodeBlock } from "./code-block";
 import { ComponentPreview } from "./component-preview";
+import { PreviewModeToggle, useStoredPreviewMode } from "./preview-mode";
 import { SectionHeading } from "./docs-page";
 
 function ControlField({ control, value, onChange }: { control: ControlDef; value: PropValue; onChange: (v: PropValue) => void }) {
@@ -124,6 +125,17 @@ export function ComponentPlayground({ component, presets }: { component: Registr
   const [source, setSource] = React.useState<"tsx" | "css" | "tailwind">("tsx");
 
   const preset = presets.find((p) => p.id === presetId);
+  // Dark | Light stage. Without a preset the stored preference applies; a preset starts in its own
+  // mode and the toggle overrides it (deriving a dark/light variant of the preset).
+  const [storedMode, setStoredMode] = useStoredPreviewMode();
+  const [modeOverride, setModeOverride] = React.useState<PreviewMode | null>(null);
+  const mode: PreviewMode = preset ? modeOverride ?? preset.mode : storedMode;
+  const changeMode = (next: PreviewMode) => {
+    setStoredMode(next);
+    setModeOverride(preset ? next : null);
+  };
+  // The plain dark stage keeps the site default (.mf-stage, component CSS defaults); everything else sets --mf-* vars.
+  const stageTheme = preset ? themeForMode(preset.theme, mode) : mode === "light" ? NEUTRAL_THEMES.light : null;
   const tsx = component.files.find((f) => f.path.endsWith(".tsx"));
   const css = component.files.find((f) => f.path.endsWith(".css"));
   const cli = `npx ${BRAND_CONFIG.cliName} add ${component.slug}`;
@@ -131,6 +143,7 @@ export function ComponentPlayground({ component, presets }: { component: Registr
 
   const applyPreset = (id: string) => {
     setPresetId(id);
+    setModeOverride(null);
     const next = presets.find((p) => p.id === id);
     if (!next) {
       setProps(defaults);
@@ -171,11 +184,13 @@ export function ComponentPlayground({ component, presets }: { component: Registr
               )}
             </label>
             <div className="flex items-center gap-1">
+              <PreviewModeToggle mode={mode} onChange={changeMode} />
               <button
                 type="button"
                 onClick={() => {
                   setProps(defaults);
                   setPresetId("");
+                  setModeOverride(null);
                 }}
                 className="flex h-8 items-center gap-1.5 rounded-md px-2.5 text-sm text-muted-foreground hover:bg-muted hover:text-foreground"
               >
@@ -186,9 +201,13 @@ export function ComponentPlayground({ component, presets }: { component: Registr
               </button>
             </div>
           </div>
-          <div className={`${preset ? "" : "mf-stage"} flex min-h-[400px] items-center justify-center overflow-hidden p-8 transition-colors`} style={preset ? themeStyle(preset.theme) : undefined}>
+          <div
+            data-preview-mode={mode}
+            className={`${stageTheme ? "" : "mf-stage"} flex min-h-[400px] items-center justify-center overflow-hidden p-8 transition-colors`}
+            style={stageTheme ? stageStyle(stageTheme, mode) : undefined}
+          >
             {/* Remount on every prop change so mount-triggered animations replay with the new values. */}
-            <div className="flex w-full items-center justify-center" key={`${replayKey}-${presetId}-${JSON.stringify(props)}`}>
+            <div className="flex w-full items-center justify-center" key={`${replayKey}-${presetId}-${mode}-${JSON.stringify(props)}`}>
               <ComponentPreview name={component.name} props={props} />
             </div>
           </div>

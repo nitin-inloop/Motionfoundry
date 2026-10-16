@@ -1,0 +1,209 @@
+.root {
+  --mf-ic-pos: 50%;
+  --mf-ic-handle: #ffffff;
+  --mf-ic-accent: #6366f1;
+  position: relative;
+  width: 100%;
+  max-width: 44rem;
+  overflow: hidden;
+  border: 1px solid var(--mf-border, #2e2e38);
+  background-color: var(--mf-surface, #141419);
+  cursor: ew-resize;
+  touch-action: pan-y;
+  user-select: none;
+  -webkit-user-select: none;
+  isolation: isolate;
+}
+
+.root[data-orientation="vertical"] {
+  cursor: ns-resize;
+  touch-action: pan-x;
+}
+
+.layer {
+  position: absolute;
+  inset: 0;
+}
+
+.before {
+  clip-path: inset(0 calc(100% - var(--mf-ic-pos)) 0 0);
+}
+
+.root[data-orientation="vertical"] .before {
+  clip-path: inset(0 0 calc(100% - var(--mf-ic-pos)) 0);
+}
+
+.img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  pointer-events: none;
+}
+
+/* Default gradient scene */
+.scene {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  background: linear-gradient(180deg, #1e1b4b 0%, #7c3aed 38%, #f472b6 62%, #fb923c 78%);
+  filter: grayscale(0.92) contrast(0.82) brightness(0.78);
+}
+
+.scene[data-vivid] {
+  filter: saturate(1.15);
+}
+
+.sun {
+  position: absolute;
+  left: 58%;
+  top: 34%;
+  width: 22%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: radial-gradient(circle at 50% 45%, #fff7ed 0%, #fde68a 40%, #fb923c 100%);
+  box-shadow: 0 0 80px 30px rgb(251 146 60 / 0.45);
+  transform: translate(-50%, -50%);
+}
+
+.ridge {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+
+.ridgeBack {
+  height: 52%;
+  background: linear-gradient(180deg, #6d28d9, #4c1d95);
+  clip-path: polygon(0 48%, 12% 30%, 24% 44%, 38% 18%, 52% 40%, 66% 22%, 80% 42%, 92% 28%, 100% 36%, 100% 100%, 0 100%);
+  opacity: 0.85;
+}
+
+.ridgeMid {
+  height: 42%;
+  background: linear-gradient(180deg, #4338ca, #1e1b4b);
+  clip-path: polygon(0 38%, 16% 58%, 30% 30%, 46% 56%, 60% 34%, 76% 60%, 90% 40%, 100% 52%, 100% 100%, 0 100%);
+}
+
+.ridgeFront {
+  height: 30%;
+  background: linear-gradient(180deg, #1e1b4b, #0b0a1f);
+  clip-path: polygon(0 30%, 20% 60%, 36% 40%, 54% 70%, 72% 44%, 88% 64%, 100% 46%, 100% 100%, 0 100%);
+}
+
+.water {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 14%;
+  background: linear-gradient(180deg, rgb(251 146 60 / 0.35), rgb(15 12 41 / 0.95));
+}
+
+.tag {
+  position: absolute;
+  top: 0.875rem;
+  z-index: 2;
+  padding: 0.25rem 0.625rem;
+  border-radius: 999px;
+  background-color: rgb(9 9 11 / 0.55);
+  backdrop-filter: blur(8px);
+  color: #fafafa;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  pointer-events: none;
+  transition: opacity 200ms ease;
+}
+
+.tagBefore {
+  left: 0.875rem;
+}
+
+.tagAfter {
+  right: 0.875rem;
+}
+
+.root[data-orientation="vertical"] .tagAfter {
+  top: auto;
+  bottom: 0.875rem;
+}
+
+.tag[data-hidden] {
+  opacity: 0;
+}
+
+.divider {
+  position: absolute;
+  z-index: 3;
+  top: 0;
+  bottom: 0;
+  left: var(--mf-ic-pos);
+  width: 2px;
+  background-color: var(--mf-ic-handle);
+  box-shadow: 0 0 12px rgb(0 0 0 / 0.35);
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+
+.root[data-orientation="vertical"] .divider {
+  top: var(--mf-ic-pos);
+  bottom: auto;
+  left: 0;
+  right: 0;
+  width: auto;
+  height: 2px;
+  transform: translateY(-50%);
+}
+
+.handle {
+  position: absolute;
+  z-index: 4;
+  top: 50%;
+  left: var(--mf-ic-pos);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  border-radius: 999px;
+  background-color: var(--mf-ic-handle);
+  color: var(--mf-ic-accent);
+  box-shadow: 0 4px 16px rgb(0 0 0 / 0.35), 0 0 0 4px rgb(255 255 255 / 0.18);
+  transform: translate(-50%, -50%);
+  outline: none;
+  transition: scale 180ms cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 180ms ease;
+}
+
+.root[data-orientation="vertical"] .handle {
+  top: var(--mf-ic-pos);
+  left: 50%;
+}
+
+.root[data-orientation="vertical"] .handle svg {
+  transform: rotate(90deg);
+}
+
+.root:hover .handle,
+.root[data-dragging] .handle {
+  scale: 1.08;
+}
+
+.handle:focus-visible {
+  outline: 2px solid var(--mf-fg, #e4e4e7);
+  outline-offset: 3px;
+  box-shadow: 0 4px 16px rgb(0 0 0 / 0.35), 0 0 0 6px color-mix(in srgb, var(--mf-ic-accent) 45%, transparent);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .handle,
+  .tag {
+    transition: none;
+  }
+
+  .root:hover .handle,
+  .root[data-dragging] .handle {
+    scale: 1;
+  }
+}

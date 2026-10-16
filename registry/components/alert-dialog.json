@@ -1,0 +1,213 @@
+{
+  "slug": "alert-dialog",
+  "name": "AlertDialog",
+  "category": "Overlays and Menus",
+  "collection": "ui",
+  "featured": false,
+  "addedAt": "2026-10-16",
+  "version": "2.3.0",
+  "requiresMotion": true,
+  "dependencies": [
+    "motion",
+    "react"
+  ],
+  "description": "A confirmation dialog for destructive or irreversible actions that scales in over a blurred backdrop with Cancel focused by default. Clicking the backdrop does not dismiss it; the panel gives a gentle pulse instead, so a decision is always explicit.",
+  "tags": [
+    "alert-dialog",
+    "confirm",
+    "destructive",
+    "modal",
+    "overlay",
+    "focus-trap",
+    "ui"
+  ],
+  "a11yNotes": "Implements the WAI-ARIA alertdialog pattern: role=\"alertdialog\" with aria-modal, aria-labelledby (title) and aria-describedby (description) so the consequence is announced. Focus moves to the Cancel button (the least destructive action) on open, Tab/Shift+Tab are trapped inside, Escape cancels, and focus returns to the trigger on close. Backdrop clicks never confirm or dismiss; they refocus Cancel. Body scroll is locked while open. The warning icon is decorative. Under prefers-reduced-motion the panel only fades and the pulse is disabled.",
+  "defaultProps": {
+    "triggerLabel": "Delete account",
+    "title": "Are you absolutely sure?",
+    "description": "This action cannot be undone. This will permanently delete your account and remove your data from our servers.",
+    "confirmLabel": "Yes, delete account",
+    "cancelLabel": "Cancel",
+    "variant": "destructive",
+    "accentColor": "#6366f1",
+    "destructiveColor": "#ef4444",
+    "showIcon": true,
+    "backdropBlur": 4
+  },
+  "controls": [
+    {
+      "prop": "triggerLabel",
+      "label": "Trigger label",
+      "type": "text"
+    },
+    {
+      "prop": "title",
+      "label": "Title",
+      "type": "text"
+    },
+    {
+      "prop": "description",
+      "label": "Description",
+      "type": "text"
+    },
+    {
+      "prop": "confirmLabel",
+      "label": "Confirm label",
+      "type": "text"
+    },
+    {
+      "prop": "cancelLabel",
+      "label": "Cancel label",
+      "type": "text"
+    },
+    {
+      "prop": "variant",
+      "label": "Variant",
+      "type": "select",
+      "options": [
+        "destructive",
+        "default"
+      ]
+    },
+    {
+      "prop": "accentColor",
+      "label": "Accent color (default variant)",
+      "type": "color"
+    },
+    {
+      "prop": "destructiveColor",
+      "label": "Destructive color",
+      "type": "color"
+    },
+    {
+      "prop": "showIcon",
+      "label": "Show icon",
+      "type": "boolean"
+    },
+    {
+      "prop": "backdropBlur",
+      "label": "Backdrop blur (px)",
+      "type": "range",
+      "min": 0,
+      "max": 20,
+      "step": 1
+    }
+  ],
+  "propsApi": [
+    {
+      "name": "open",
+      "type": "boolean",
+      "default": "undefined",
+      "description": "Controlled open state."
+    },
+    {
+      "name": "defaultOpen",
+      "type": "boolean",
+      "default": "false",
+      "description": "Initial open state when uncontrolled."
+    },
+    {
+      "name": "onOpenChange",
+      "type": "(open: boolean) => void",
+      "default": "undefined",
+      "description": "Called whenever the dialog requests to open or close."
+    },
+    {
+      "name": "onConfirm",
+      "type": "() => void",
+      "default": "undefined",
+      "description": "Called when the confirm action is pressed; the dialog then closes."
+    },
+    {
+      "name": "onCancel",
+      "type": "() => void",
+      "default": "undefined",
+      "description": "Called when the dialog is dismissed with Cancel or Escape."
+    },
+    {
+      "name": "triggerLabel",
+      "type": "string",
+      "default": "'Delete account'",
+      "description": "Label of the trigger button."
+    },
+    {
+      "name": "title",
+      "type": "string",
+      "default": "'Are you absolutely sure?'",
+      "description": "Dialog title, used as the accessible name."
+    },
+    {
+      "name": "description",
+      "type": "string",
+      "default": "'This action cannot be undone. This will permanently delete your account and remove your data from our servers.'",
+      "description": "Explanation of the consequences, used as the accessible description."
+    },
+    {
+      "name": "confirmLabel",
+      "type": "string",
+      "default": "'Yes, delete account'",
+      "description": "Label of the confirm action."
+    },
+    {
+      "name": "cancelLabel",
+      "type": "string",
+      "default": "'Cancel'",
+      "description": "Label of the cancel action, which receives focus on open."
+    },
+    {
+      "name": "variant",
+      "type": "'destructive' | 'default'",
+      "default": "'destructive'",
+      "description": "Red destructive styling or neutral accent styling for the trigger, icon and confirm action."
+    },
+    {
+      "name": "accentColor",
+      "type": "string",
+      "default": "'#6366f1'",
+      "description": "Tone used by the default variant."
+    },
+    {
+      "name": "destructiveColor",
+      "type": "string",
+      "default": "'#ef4444'",
+      "description": "Tone used by the destructive variant."
+    },
+    {
+      "name": "showIcon",
+      "type": "boolean",
+      "default": "true",
+      "description": "Show the warning icon beside the title."
+    },
+    {
+      "name": "backdropBlur",
+      "type": "number",
+      "default": "4",
+      "description": "Backdrop blur radius in pixels."
+    },
+    {
+      "name": "className",
+      "type": "string",
+      "default": "''",
+      "description": "Additional class merged onto the root element."
+    },
+    {
+      "name": "style",
+      "type": "React.CSSProperties",
+      "default": "undefined",
+      "description": "Inline styles merged onto the root element."
+    }
+  ],
+  "files": [
+    {
+      "path": "components/ui/alert-dialog.tsx",
+      "type": "registry:component",
+      "content": "\"use client\";\n\nimport * as React from \"react\";\nimport { createPortal } from \"react-dom\";\nimport { AnimatePresence, motion, useReducedMotion } from \"motion/react\";\nimport styles from \"../styles/alert-dialog.module.css\";\n\nexport interface AlertDialogProps {\n  /** Controlled open state */\n  open?: boolean;\n  /** Initial open state when uncontrolled */\n  defaultOpen?: boolean;\n  /** Called whenever the dialog requests to open or close */\n  onOpenChange?: (open: boolean) => void;\n  /** Called when the confirm action is pressed (the dialog then closes) */\n  onConfirm?: () => void;\n  /** Called when the dialog is dismissed with Cancel or Escape */\n  onCancel?: () => void;\n  /** Label of the trigger button */\n  triggerLabel?: string;\n  /** Dialog title (accessible name) */\n  title?: string;\n  /** Explanation of the consequences (accessible description) */\n  description?: string;\n  /** Label of the confirm action */\n  confirmLabel?: string;\n  /** Label of the cancel action (focused by default) */\n  cancelLabel?: string;\n  /** Destructive styling (red) or neutral styling (accent) for the confirm action */\n  variant?: \"destructive\" | \"default\";\n  /** Accent color used by the default variant */\n  accentColor?: string;\n  /** Color used by the destructive variant */\n  destructiveColor?: string;\n  /** Show the warning icon next to the title */\n  showIcon?: boolean;\n  /** Backdrop blur in pixels */\n  backdropBlur?: number;\n  /** Optional className merged onto the root */\n  className?: string;\n  /** Optional inline styles merged onto the root */\n  style?: React.CSSProperties;\n}\n\nconst THEME_TOKENS = [\"--mf-bg\", \"--mf-fg\", \"--mf-surface\", \"--mf-surface-raised\", \"--mf-muted\", \"--mf-subtle\", \"--mf-border\", \"--mf-border-strong\", \"--mf-accent\"];\nconst FOCUSABLE = 'a[href],button:not([disabled]),input:not([disabled]),select:not([disabled]),textarea:not([disabled]),[tabindex]:not([tabindex=\"-1\"])';\nconst useIsoLayoutEffect = typeof window !== \"undefined\" ? React.useLayoutEffect : React.useEffect;\n\nfunction readThemeVars(el: Element | null): Record<string, string> {\n  const out: Record<string, string> = {};\n  if (!el) return out;\n  const cs = getComputedStyle(el);\n  for (const t of THEME_TOKENS) {\n    const v = cs.getPropertyValue(t).trim();\n    if (v) out[t] = v;\n  }\n  return out;\n}\n\nexport function AlertDialog({\n  open: openProp,\n  defaultOpen = false,\n  onOpenChange,\n  onConfirm,\n  onCancel,\n  triggerLabel = \"Delete account\",\n  title = \"Are you absolutely sure?\",\n  description = \"This action cannot be undone. This will permanently delete your account and remove your data from our servers.\",\n  confirmLabel = \"Yes, delete account\",\n  cancelLabel = \"Cancel\",\n  variant = \"destructive\",\n  accentColor = \"#6366f1\",\n  destructiveColor = \"#ef4444\",\n  showIcon = true,\n  backdropBlur = 4,\n  className = \"\",\n  style,\n}: AlertDialogProps) {\n  const reduce = useReducedMotion();\n  const [inner, setInner] = React.useState(defaultOpen);\n  const open = openProp !== undefined ? openProp : inner;\n  const setOpen = React.useCallback(\n    (v: boolean) => {\n      if (openProp === undefined) setInner(v);\n      onOpenChange?.(v);\n    },\n    [openProp, onOpenChange],\n  );\n  const cancelRef = React.useRef(() => {});\n  cancelRef.current = () => {\n    onCancel?.();\n    setOpen(false);\n  };\n  const [mounted, setMounted] = React.useState(false);\n  const [themeVars, setThemeVars] = React.useState<Record<string, string>>({});\n  const [nudge, setNudge] = React.useState(false);\n  const rootRef = React.useRef<HTMLDivElement>(null);\n  const triggerRef = React.useRef<HTMLButtonElement>(null);\n  const panelRef = React.useRef<HTMLDivElement>(null);\n  const cancelBtnRef = React.useRef<HTMLButtonElement>(null);\n  const wasOpen = React.useRef(false);\n  const id = React.useId();\n  const tone = variant === \"destructive\" ? destructiveColor : accentColor;\n\n  React.useEffect(() => setMounted(true), []);\n  useIsoLayoutEffect(() => {\n    if (open) setThemeVars(readThemeVars(rootRef.current));\n  }, [open]);\n\n  React.useEffect(() => {\n    if (!nudge) return;\n    const t = window.setTimeout(() => setNudge(false), 320);\n    return () => window.clearTimeout(t);\n  }, [nudge]);\n\n  React.useEffect(() => {\n    if (!open) {\n      if (wasOpen.current) triggerRef.current?.focus();\n      wasOpen.current = false;\n      return;\n    }\n    wasOpen.current = true;\n    const body = document.body;\n    const prev = [body.style.overflow, body.style.paddingRight];\n    const gap = window.innerWidth - document.documentElement.clientWidth;\n    body.style.overflow = \"hidden\";\n    if (gap > 0) body.style.paddingRight = `${gap}px`;\n    const onKey = (e: KeyboardEvent) => {\n      if (e.key !== \"Escape\") return;\n      e.preventDefault();\n      cancelRef.current();\n    };\n    document.addEventListener(\"keydown\", onKey);\n    const raf = requestAnimationFrame(() => (cancelBtnRef.current ?? panelRef.current)?.focus());\n    return () => {\n      cancelAnimationFrame(raf);\n      document.removeEventListener(\"keydown\", onKey);\n      body.style.overflow = prev[0];\n      body.style.paddingRight = prev[1];\n    };\n  }, [open]);\n\n  const trapFocus = (e: React.KeyboardEvent<HTMLDivElement>) => {\n    if (e.key !== \"Tab\" || !panelRef.current) return;\n    const nodes = Array.from(panelRef.current.querySelectorAll<HTMLElement>(FOCUSABLE));\n    if (!nodes.length) return e.preventDefault();\n    const [first, last] = [nodes[0], nodes[nodes.length - 1]];\n    if (e.shiftKey && (document.activeElement === first || document.activeElement === panelRef.current)) {\n      e.preventDefault();\n      last.focus();\n    } else if (!e.shiftKey && document.activeElement === last) {\n      e.preventDefault();\n      first.focus();\n    }\n  };\n\n  const ease = [0.16, 1, 0.3, 1] as const;\n\n  return (\n    <div ref={rootRef} className={`${styles.root} ${className}`.trim()} style={{ \"--mf-ad-tone\": tone, ...style } as React.CSSProperties}>\n      <button ref={triggerRef} type=\"button\" aria-haspopup=\"dialog\" aria-expanded={open} data-variant={variant} className={styles.trigger} onClick={() => setOpen(true)}>\n        {triggerLabel}\n      </button>\n      {mounted &&\n        createPortal(\n          <AnimatePresence>\n            {open && (\n              <div className={styles.layer} style={{ ...themeVars, \"--mf-ad-tone\": tone, \"--mf-ad-blur\": `${Math.max(0, backdropBlur)}px` } as React.CSSProperties}>\n                <motion.div aria-hidden=\"true\" className={styles.backdrop} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: reduce ? 0.1 : 0.2 }} />\n                <div\n                  className={styles.center}\n                  onPointerDown={(e) => {\n                    if (e.target !== e.currentTarget) return;\n                    e.preventDefault();\n                    if (!reduce) setNudge(true);\n                    cancelBtnRef.current?.focus();\n                  }}\n                >\n                  <motion.div\n                    ref={panelRef}\n                    role=\"alertdialog\"\n                    aria-modal=\"true\"\n                    aria-labelledby={`${id}-title`}\n                    aria-describedby={`${id}-desc`}\n                    tabIndex={-1}\n                    data-nudge={nudge ? \"\" : undefined}\n                    className={styles.panel}\n                    onKeyDown={trapFocus}\n                    initial={reduce ? { opacity: 0 } : { opacity: 0, scale: 0.94, y: 10 }}\n                    animate={reduce ? { opacity: 1 } : { opacity: 1, scale: 1, y: 0 }}\n                    exit={reduce ? { opacity: 0 } : { opacity: 0, scale: 0.97, y: 4 }}\n                    transition={reduce ? { duration: 0.1 } : { duration: 0.22, ease }}\n                  >\n                    <div className={styles.content}>\n                      {showIcon && (\n                        <span aria-hidden=\"true\" className={styles.icon}>\n                          <svg width=\"20\" height=\"20\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" strokeWidth=\"2\" strokeLinecap=\"round\" strokeLinejoin=\"round\">\n                            <path d=\"M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0zM12 9v4M12 17h.01\" />\n                          </svg>\n                        </span>\n                      )}\n                      <div className={styles.text}>\n                        <h2 id={`${id}-title`} className={styles.title}>\n                          {title}\n                        </h2>\n                        <p id={`${id}-desc`} className={styles.description}>\n                          {description}\n                        </p>\n                      </div>\n                    </div>\n                    <div className={styles.footer}>\n                      <button ref={cancelBtnRef} type=\"button\" className={styles.cancel} onClick={() => cancelRef.current()}>\n                        {cancelLabel}\n                      </button>\n                      <button\n                        type=\"button\"\n                        className={styles.confirm}\n                        onClick={() => {\n                          onConfirm?.();\n                          setOpen(false);\n                        }}\n                      >\n                        {confirmLabel}\n                      </button>\n                    </div>\n                  </motion.div>\n                </div>\n              </div>\n            )}\n          </AnimatePresence>,\n          document.body,\n        )}\n    </div>\n  );\n}\n"
+    },
+    {
+      "path": "components/styles/alert-dialog.module.css",
+      "type": "registry:style",
+      "content": ".root {\n  display: inline-flex;\n  color: var(--mf-fg, #f4f4f6);\n}\n\n.trigger,\n.cancel,\n.confirm {\n  display: inline-flex;\n  align-items: center;\n  justify-content: center;\n  height: 2.375rem;\n  padding: 0 1rem;\n  border-radius: 0.5rem;\n  font: inherit;\n  font-size: 0.875rem;\n  font-weight: 500;\n  cursor: pointer;\n  transition: background-color 150ms ease, border-color 150ms ease, color 150ms ease, opacity 150ms ease, transform 150ms ease;\n}\n\n.trigger,\n.cancel {\n  border: 1px solid var(--mf-border, #2e2e38);\n  background-color: var(--mf-surface, #141419);\n  color: var(--mf-fg, #f4f4f6);\n}\n\n.trigger[data-variant=\"destructive\"] {\n  border-color: color-mix(in srgb, var(--mf-ad-tone, #ef4444) 45%, transparent);\n  color: var(--mf-ad-tone, #ef4444);\n}\n\n.trigger:hover,\n.cancel:hover {\n  background-color: var(--mf-surface-raised, #1b1b22);\n  border-color: var(--mf-border-strong, #52525b);\n}\n\n.trigger[data-variant=\"destructive\"]:hover {\n  background-color: color-mix(in srgb, var(--mf-ad-tone, #ef4444) 12%, transparent);\n  border-color: var(--mf-ad-tone, #ef4444);\n}\n\n.trigger:active,\n.cancel:active,\n.confirm:active {\n  transform: scale(0.98);\n}\n\n.confirm {\n  border: 1px solid var(--mf-ad-tone, #ef4444);\n  background-color: var(--mf-ad-tone, #ef4444);\n  color: #ffffff;\n}\n\n.confirm:hover {\n  opacity: 0.9;\n}\n\n.trigger:focus-visible,\n.cancel:focus-visible,\n.confirm:focus-visible {\n  outline: 2px solid var(--mf-fg, #e4e4e7);\n  outline-offset: 2px;\n}\n\n.layer {\n  position: fixed;\n  inset: 0;\n  z-index: 1000;\n  color: var(--mf-fg, #f4f4f6);\n}\n\n.backdrop {\n  position: absolute;\n  inset: 0;\n  background-color: rgba(9, 9, 11, 0.6);\n  backdrop-filter: blur(var(--mf-ad-blur, 4px));\n  -webkit-backdrop-filter: blur(var(--mf-ad-blur, 4px));\n}\n\n.center {\n  position: absolute;\n  inset: 0;\n  display: grid;\n  place-items: center;\n  padding: 1rem;\n  overflow-y: auto;\n}\n\n.panel {\n  position: relative;\n  box-sizing: border-box;\n  width: 100%;\n  max-width: 28rem;\n  padding: 1.5rem;\n  border-radius: 0.75rem;\n  border: 1px solid var(--mf-border, #2e2e38);\n  background-color: var(--mf-surface, #141419);\n  color: var(--mf-fg, #f4f4f6);\n  box-shadow: 0 24px 64px -16px rgba(0, 0, 0, 0.55);\n  outline: none;\n}\n\n.panel[data-nudge] {\n  animation: mf-ad-nudge 300ms cubic-bezier(0.36, 0, 0.3, 1);\n}\n\n@keyframes mf-ad-nudge {\n  40% {\n    scale: 1.025;\n  }\n  100% {\n    scale: 1;\n  }\n}\n\n.content {\n  display: flex;\n  align-items: flex-start;\n  gap: 1rem;\n}\n\n.icon {\n  display: grid;\n  place-items: center;\n  flex-shrink: 0;\n  width: 2.5rem;\n  height: 2.5rem;\n  border-radius: 50%;\n  background-color: color-mix(in srgb, var(--mf-ad-tone, #ef4444) 15%, transparent);\n  color: var(--mf-ad-tone, #ef4444);\n}\n\n.text {\n  display: grid;\n  gap: 0.5rem;\n  min-width: 0;\n}\n\n.title {\n  margin: 0;\n  font-size: 1.125rem;\n  font-weight: 600;\n  line-height: 1.3;\n  letter-spacing: -0.01em;\n}\n\n.description {\n  margin: 0;\n  font-size: 0.875rem;\n  line-height: 1.55;\n  color: var(--mf-muted, #a1a1aa);\n}\n\n.footer {\n  display: flex;\n  justify-content: flex-end;\n  gap: 0.5rem;\n  margin-top: 1.5rem;\n}\n\n@media (max-width: 480px) {\n  .footer {\n    flex-direction: column-reverse;\n  }\n}\n\n@media (prefers-reduced-motion: reduce) {\n  .trigger,\n  .cancel,\n  .confirm {\n    transition: none;\n  }\n\n  .panel {\n    transform: none !important;\n    animation: none !important;\n  }\n}\n"
+    }
+  ],
+  "tailwindExample": "\"use client\";\n\nimport { AnimatePresence, motion } from \"motion/react\";\nimport { useEffect, useRef, useState } from \"react\";\n\nexport function AlertDialogTailwind({ onConfirm }: { onConfirm?: () => void }) {\n  const [open, setOpen] = useState(false);\n  const trigger = useRef<HTMLButtonElement>(null);\n  const cancel = useRef<HTMLButtonElement>(null);\n  useEffect(() => {\n    if (!open) return;\n    cancel.current?.focus();\n    const onKey = (e: KeyboardEvent) => e.key === \"Escape\" && setOpen(false);\n    document.addEventListener(\"keydown\", onKey);\n    return () => { document.removeEventListener(\"keydown\", onKey); trigger.current?.focus(); };\n  }, [open]);\n  return (\n    <>\n      <button ref={trigger} onClick={() => setOpen(true)} className=\"h-9 rounded-lg border border-red-500/40 px-4 text-sm font-medium text-red-500 hover:bg-red-500/10\">Delete account</button>\n      <AnimatePresence>\n        {open && (\n          <div className=\"fixed inset-0 z-50 grid place-items-center p-4\">\n            <motion.div className=\"absolute inset-0 bg-black/60 backdrop-blur-sm\" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} />\n            <motion.div role=\"alertdialog\" aria-modal=\"true\" aria-labelledby=\"ad-title\" aria-describedby=\"ad-desc\" className=\"relative w-full max-w-md rounded-xl border border-zinc-800 bg-zinc-950 p-6 text-zinc-100\" initial={{ opacity: 0, scale: 0.94, y: 10 }} animate={{ opacity: 1, scale: 1, y: 0 }} exit={{ opacity: 0, scale: 0.97 }} transition={{ duration: 0.22, ease: [0.16, 1, 0.3, 1] }}>\n              <h2 id=\"ad-title\" className=\"text-lg font-semibold\">Are you absolutely sure?</h2>\n              <p id=\"ad-desc\" className=\"mt-2 text-sm text-zinc-400\">This action cannot be undone.</p>\n              <div className=\"mt-6 flex justify-end gap-2\">\n                <button ref={cancel} onClick={() => setOpen(false)} className=\"h-9 rounded-lg border border-zinc-800 px-4 text-sm\">Cancel</button>\n                <button onClick={() => { onConfirm?.(); setOpen(false); }} className=\"h-9 rounded-lg bg-red-500 px-4 text-sm font-medium text-white\">Yes, delete account</button>\n              </div>\n            </motion.div>\n          </div>\n        )}\n      </AnimatePresence>\n    </>\n  );\n}\n"
+}

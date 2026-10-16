@@ -16,10 +16,9 @@ import {
 import { BRAND_CONFIG, repoFileUrl } from "../../../../lib/brand";
 import { DESIGN_SOURCE, getDesign, getDesigns } from "../../../../lib/designs";
 import { tocFromMarkdown } from "../../../../lib/slug";
-import { themeStyle } from "../../../../lib/theme-style";
 import { Callout, DocsPage, SectionHeading } from "../../../../components/docs-page";
 import { PageHeader, PagerFooter } from "../../../../components/page-header";
-import { DesignMock } from "../../../../components/design-mock";
+import { DesignThemePreview } from "../../../../components/design-theme-preview";
 import { ColorSwatch, DownloadDesignButton } from "../../../../components/design-client";
 import { CodeBlock } from "../../../../components/code-block";
 import { Prose } from "../../../../components/prose";
@@ -108,11 +107,8 @@ export default async function DesignDetailPage({ params }: { params: Promise<{ i
 
       <section className="space-y-4">
         <SectionHeading id="theme-preview">Theme Preview</SectionHeading>
-        <p className="text-muted-foreground">A landing-page sketch built from the tokens, followed by live MotionFoundry components re-skinned with this theme.</p>
-        <div className="overflow-hidden rounded-xl border border-border">
-          <DesignMock brand={design.brand} theme={theme} size="lg" />
-        </div>
-        <div className="space-y-3 rounded-xl border border-border p-4" style={themeStyle(theme)}>
+        <p className="text-muted-foreground">A landing-page sketch built from the tokens, followed by live MotionFoundry components re-skinned with this theme. Switch Dark | Light to preview a derived variant that keeps the brand accent, radius, and fonts.</p>
+        <DesignThemePreview brand={design.brand} theme={theme} initialMode={design.mode}>
           <div className="px-1 pt-1 text-2xl" style={{ fontFamily: theme.fontDisplay, fontWeight: theme.displayWeight, letterSpacing: theme.displayTracking }}>
             <RotatingWords prefix={design.brand} words={["moves", "ships", "delights"]} accentColor={theme.accent} />
           </div>
@@ -145,7 +141,7 @@ export default async function DesignDetailPage({ params }: { params: Promise<{ i
               <NotificationStack messages={[`${design.brand} build passed`, "Deployed to production"]} maxVisible={2} />
             </Tile>
           </div>
-        </div>
+        </DesignThemePreview>
       </section>
 
       <section className="space-y-4">

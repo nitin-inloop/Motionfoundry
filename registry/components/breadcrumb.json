@@ -1,0 +1,165 @@
+{
+  "slug": "breadcrumb",
+  "name": "Breadcrumb",
+  "category": "Navigation",
+  "collection": "ui",
+  "featured": false,
+  "addedAt": "2026-10-16",
+  "version": "2.3.0",
+  "requiresMotion": true,
+  "dependencies": [
+    "motion",
+    "react"
+  ],
+  "description": "A breadcrumb trail with chevron, slash, dot or arrow separators, an accent underline that sweeps in on hover, and long trails whose middle pages collapse into an animated ellipsis dropdown.",
+  "tags": [
+    "breadcrumb",
+    "navigation",
+    "trail",
+    "ellipsis",
+    "dropdown",
+    "ui"
+  ],
+  "a11yNotes": "Rendered as <nav aria-label> containing an ordered list; separators are aria-hidden presentation items. The last item carries aria-current=\"page\". The ellipsis is a labelled button ('Show N more') with aria-haspopup=menu and aria-expanded; its menu uses role=menu/menuitem, focuses the first item on open, supports ArrowUp/ArrowDown/Home/End, closes on Escape (returning focus to the button), Tab and outside click. Hover/focus underline is decorative; reduced motion removes transitions.",
+  "defaultProps": {
+    "separator": "chevron",
+    "maxItems": 4,
+    "collapsible": true,
+    "showHomeIcon": true,
+    "size": "md",
+    "accentColor": "#6366f1",
+    "ariaLabel": "Breadcrumb"
+  },
+  "controls": [
+    {
+      "prop": "separator",
+      "label": "Separator",
+      "type": "select",
+      "options": [
+        "chevron",
+        "slash",
+        "dot",
+        "arrow"
+      ]
+    },
+    {
+      "prop": "maxItems",
+      "label": "Max visible items",
+      "type": "range",
+      "min": 2,
+      "max": 6,
+      "step": 1
+    },
+    {
+      "prop": "collapsible",
+      "label": "Collapse middle",
+      "type": "boolean"
+    },
+    {
+      "prop": "showHomeIcon",
+      "label": "Home icon",
+      "type": "boolean"
+    },
+    {
+      "prop": "size",
+      "label": "Size",
+      "type": "select",
+      "options": [
+        "sm",
+        "md",
+        "lg"
+      ]
+    },
+    {
+      "prop": "accentColor",
+      "label": "Accent color",
+      "type": "color"
+    },
+    {
+      "prop": "ariaLabel",
+      "label": "Nav label",
+      "type": "text"
+    }
+  ],
+  "propsApi": [
+    {
+      "name": "items",
+      "type": "{ label: string; href?: string }[]",
+      "default": "6-level demo trail",
+      "description": "Pages from root to the current page; the last item is the current page."
+    },
+    {
+      "name": "separator",
+      "type": "'chevron' | 'slash' | 'dot' | 'arrow'",
+      "default": "'chevron'",
+      "description": "Glyph rendered between items."
+    },
+    {
+      "name": "maxItems",
+      "type": "number",
+      "default": "4",
+      "description": "When the trail is longer, middle items collapse into an ellipsis menu (first item plus the last maxItems - 1 stay visible)."
+    },
+    {
+      "name": "collapsible",
+      "type": "boolean",
+      "default": "true",
+      "description": "Enable collapsing of middle items."
+    },
+    {
+      "name": "showHomeIcon",
+      "type": "boolean",
+      "default": "true",
+      "description": "Show a home icon before the first label."
+    },
+    {
+      "name": "size",
+      "type": "'sm' | 'md' | 'lg'",
+      "default": "'md'",
+      "description": "Text size and spacing preset."
+    },
+    {
+      "name": "accentColor",
+      "type": "string",
+      "default": "'#6366f1'",
+      "description": "Color of the hover underline and menu highlight."
+    },
+    {
+      "name": "ariaLabel",
+      "type": "string",
+      "default": "'Breadcrumb'",
+      "description": "Accessible label of the nav landmark."
+    },
+    {
+      "name": "onNavigate",
+      "type": "(item: BreadcrumbItem, index: number) => void",
+      "default": "undefined",
+      "description": "Called when a link is activated. Links with href '#' are not followed."
+    },
+    {
+      "name": "className",
+      "type": "string",
+      "default": "''",
+      "description": "Class merged onto the root element."
+    },
+    {
+      "name": "style",
+      "type": "React.CSSProperties",
+      "default": "undefined",
+      "description": "Inline styles merged onto the root element."
+    }
+  ],
+  "files": [
+    {
+      "path": "components/ui/breadcrumb.tsx",
+      "type": "registry:component",
+      "content": "\"use client\";\n\nimport * as React from \"react\";\nimport { AnimatePresence, motion, useReducedMotion } from \"motion/react\";\nimport styles from \"../styles/breadcrumb.module.css\";\n\nexport interface BreadcrumbItem {\n  /** Visible label */\n  label: string;\n  /** Link target (omit for the current page) */\n  href?: string;\n}\n\nexport interface BreadcrumbProps {\n  /** Trail of pages from root to the current page */\n  items?: BreadcrumbItem[];\n  /** Separator glyph between items */\n  separator?: \"chevron\" | \"slash\" | \"dot\" | \"arrow\";\n  /** Collapse middle items into an ellipsis menu when the trail is longer than this */\n  maxItems?: number;\n  /** Enable collapsing of middle items */\n  collapsible?: boolean;\n  /** Show a home icon before the first label */\n  showHomeIcon?: boolean;\n  /** Size preset */\n  size?: \"sm\" | \"md\" | \"lg\";\n  /** Accent color for the hover underline and focus highlights */\n  accentColor?: string;\n  /** Accessible label of the nav landmark */\n  ariaLabel?: string;\n  /** Called when a link is activated; links with href \"#\" are not followed */\n  onNavigate?: (item: BreadcrumbItem, index: number) => void;\n  /** Optional className merged onto the root */\n  className?: string;\n  /** Optional inline styles merged onto the root */\n  style?: React.CSSProperties;\n}\n\nconst DEFAULT_ITEMS: BreadcrumbItem[] = [\n  { label: \"Home\", href: \"#\" },\n  { label: \"Workspace\", href: \"#\" },\n  { label: \"Projects\", href: \"#\" },\n  { label: \"MotionFoundry\", href: \"#\" },\n  { label: \"Components\", href: \"#\" },\n  { label: \"Breadcrumb\" },\n];\n\nfunction Separator({ kind }: { kind: NonNullable<BreadcrumbProps[\"separator\"]> }) {\n  return (\n    <li role=\"presentation\" aria-hidden=\"true\" className={styles.sep}>\n      {kind === \"slash\" ? (\n        \"/\"\n      ) : kind === \"dot\" ? (\n        <span className={styles.dot} />\n      ) : (\n        <svg width=\"14\" height=\"14\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" strokeWidth=\"2\" strokeLinecap=\"round\" strokeLinejoin=\"round\">\n          <path d={kind === \"arrow\" ? \"M5 12h14M13 6l6 6-6 6\" : \"m9 6 6 6-6 6\"} />\n        </svg>\n      )}\n    </li>\n  );\n}\n\nexport function Breadcrumb({\n  items = DEFAULT_ITEMS,\n  separator = \"chevron\",\n  maxItems = 4,\n  collapsible = true,\n  showHomeIcon = true,\n  size = \"md\",\n  accentColor = \"#6366f1\",\n  ariaLabel = \"Breadcrumb\",\n  onNavigate,\n  className = \"\",\n  style,\n}: BreadcrumbProps) {\n  const reduce = useReducedMotion();\n  const [open, setOpen] = React.useState(false);\n  const menuId = React.useId();\n  const wrapRef = React.useRef<HTMLLIElement>(null);\n  const triggerRef = React.useRef<HTMLButtonElement>(null);\n  const itemRefs = React.useRef<Array<HTMLAnchorElement | null>>([]);\n\n  const max = Math.max(2, Math.round(maxItems));\n  const collapse = collapsible && items.length > max;\n  const tailCount = Math.max(1, max - 1);\n  const hidden = collapse ? items.slice(1, items.length - tailCount) : [];\n  const visible = collapse\n    ? [{ item: items[0], index: 0 }, ...items.slice(items.length - tailCount).map((item, i) => ({ item, index: items.length - tailCount + i }))]\n    : items.map((item, index) => ({ item, index }));\n\n  React.useEffect(() => {\n    if (!open) return;\n    const raf = requestAnimationFrame(() => itemRefs.current[0]?.focus());\n    const onDown = (e: PointerEvent) => {\n      if (wrapRef.current && !wrapRef.current.contains(e.target as Node)) setOpen(false);\n    };\n    document.addEventListener(\"pointerdown\", onDown);\n    return () => {\n      cancelAnimationFrame(raf);\n      document.removeEventListener(\"pointerdown\", onDown);\n    };\n  }, [open]);\n\n  const close = (refocus: boolean) => {\n    setOpen(false);\n    if (refocus) triggerRef.current?.focus();\n  };\n\n  const onMenuKey = (e: React.KeyboardEvent<HTMLUListElement>) => {\n    const nodes = itemRefs.current.filter((n): n is HTMLAnchorElement => !!n);\n    const i = nodes.findIndex((n) => n === document.activeElement);\n    let next = -1;\n    if (e.key === \"ArrowDown\") next = (i + 1) % nodes.length;\n    else if (e.key === \"ArrowUp\") next = (i - 1 + nodes.length) % nodes.length;\n    else if (e.key === \"Home\") next = 0;\n    else if (e.key === \"End\") next = nodes.length - 1;\n    else if (e.key === \"Escape\") {\n      e.preventDefault();\n      close(true);\n      return;\n    } else if (e.key === \"Tab\") close(false);\n    if (next < 0) return;\n    e.preventDefault();\n    nodes[next]?.focus();\n  };\n\n  const activate = (e: React.MouseEvent<HTMLAnchorElement>, item: BreadcrumbItem, index: number) => {\n    if (!item.href || item.href === \"#\") e.preventDefault();\n    onNavigate?.(item, index);\n  };\n\n  const renderLink = (item: BreadcrumbItem, index: number) => {\n    const isLast = index === items.length - 1;\n    const icon =\n      showHomeIcon && index === 0 ? (\n        <svg aria-hidden=\"true\" width=\"15\" height=\"15\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" strokeWidth=\"2\" strokeLinecap=\"round\" strokeLinejoin=\"round\">\n          <path d=\"M3 10.5 12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z\" />\n        </svg>\n      ) : null;\n    if (isLast || item.href === undefined) {\n      return (\n        <span className={styles.current} aria-current={isLast ? \"page\" : undefined}>\n          {icon}\n          {item.label}\n        </span>\n      );\n    }\n    return (\n      <a href={item.href} className={styles.link} onClick={(e) => activate(e, item, index)}>\n        {icon}\n        <span className={styles.text}>{item.label}</span>\n      </a>\n    );\n  };\n\n  return (\n    <nav\n      aria-label={ariaLabel}\n      className={`${styles.root} ${className}`.trim()}\n      data-size={size}\n      style={{ \"--mf-bc-accent\": accentColor, ...style } as React.CSSProperties}\n    >\n      <ol className={styles.list}>\n        {visible.map(({ item, index }, pos) => (\n          <React.Fragment key={`${item.label}-${index}`}>\n            {pos > 0 && <Separator kind={separator} />}\n            <li className={styles.item}>{renderLink(item, index)}</li>\n            {pos === 0 && hidden.length > 0 && (\n              <>\n                <Separator kind={separator} />\n                <li ref={wrapRef} className={`${styles.item} ${styles.more}`}>\n                  <button\n                    ref={triggerRef}\n                    type=\"button\"\n                    className={styles.ellipsis}\n                    aria-label={`Show ${hidden.length} more`}\n                    aria-haspopup=\"menu\"\n                    aria-expanded={open}\n                    aria-controls={open ? menuId : undefined}\n                    onClick={() => setOpen((o) => !o)}\n                    onKeyDown={(e) => {\n                      if (e.key === \"ArrowDown\") {\n                        e.preventDefault();\n                        setOpen(true);\n                      }\n                    }}\n                  >\n                    <svg aria-hidden=\"true\" width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"currentColor\">\n                      <circle cx=\"5\" cy=\"12\" r=\"1.8\" />\n                      <circle cx=\"12\" cy=\"12\" r=\"1.8\" />\n                      <circle cx=\"19\" cy=\"12\" r=\"1.8\" />\n                    </svg>\n                  </button>\n                  <AnimatePresence>\n                    {open && (\n                      <motion.ul\n                        id={menuId}\n                        role=\"menu\"\n                        aria-label=\"Hidden pages\"\n                        className={styles.menu}\n                        onKeyDown={onMenuKey}\n                        initial={{ opacity: 0, y: reduce ? 0 : -6, scale: reduce ? 1 : 0.97 }}\n                        animate={{ opacity: 1, y: 0, scale: 1 }}\n                        exit={{ opacity: 0, y: reduce ? 0 : -4, scale: reduce ? 1 : 0.98 }}\n                        transition={{ duration: reduce ? 0.1 : 0.18, ease: [0.16, 1, 0.3, 1] }}\n                      >\n                        {hidden.map((h, i) => (\n                          <li key={`${h.label}-${i}`} role=\"none\">\n                            <a\n                              ref={(el) => {\n                                itemRefs.current[i] = el;\n                              }}\n                              role=\"menuitem\"\n                              tabIndex={-1}\n                              href={h.href ?? \"#\"}\n                              className={styles.menuItem}\n                              onClick={(e) => {\n                                activate(e, h, i + 1);\n                                close(true);\n                              }}\n                            >\n                              {h.label}\n                            </a>\n                          </li>\n                        ))}\n                      </motion.ul>\n                    )}\n                  </AnimatePresence>\n                </li>\n              </>\n            )}\n          </React.Fragment>\n        ))}\n      </ol>\n    </nav>\n  );\n}\n"
+    },
+    {
+      "path": "components/styles/breadcrumb.module.css",
+      "type": "registry:style",
+      "content": ".root {\n  --mf-bc-fs: 0.875rem;\n  --mf-bc-gap: 0.375rem;\n  color: var(--mf-muted, #a1a1aa);\n  font-size: var(--mf-bc-fs);\n}\n\n.root[data-size=\"sm\"] {\n  --mf-bc-fs: 0.8125rem;\n  --mf-bc-gap: 0.25rem;\n}\n\n.root[data-size=\"lg\"] {\n  --mf-bc-fs: 1rem;\n  --mf-bc-gap: 0.5rem;\n}\n\n.list {\n  display: flex;\n  flex-wrap: wrap;\n  align-items: center;\n  gap: var(--mf-bc-gap);\n  margin: 0;\n  padding: 0.5rem 0.875rem;\n  list-style: none;\n  border-radius: 0.75rem;\n  border: 1px solid var(--mf-border, #2e2e38);\n  background-color: var(--mf-surface, #141419);\n}\n\n.item {\n  display: inline-flex;\n  align-items: center;\n}\n\n.more {\n  position: relative;\n}\n\n.sep {\n  display: inline-flex;\n  align-items: center;\n  color: var(--mf-subtle, #71717a);\n  user-select: none;\n}\n\n.dot {\n  width: 4px;\n  height: 4px;\n  border-radius: 999px;\n  background-color: currentColor;\n}\n\n.link,\n.current {\n  display: inline-flex;\n  align-items: center;\n  gap: 0.375rem;\n  padding: 0.25rem 0.125rem;\n  border-radius: 0.375rem;\n  line-height: 1.4;\n}\n\n.link {\n  color: var(--mf-muted, #a1a1aa);\n  text-decoration: none;\n  transition: color 150ms ease;\n}\n\n.text {\n  position: relative;\n}\n\n.text::after {\n  content: \"\";\n  position: absolute;\n  left: 0;\n  right: 0;\n  bottom: -2px;\n  height: 1.5px;\n  border-radius: 2px;\n  background-color: var(--mf-bc-accent, #6366f1);\n  transform: scaleX(0);\n  transform-origin: right center;\n  transition: transform 220ms cubic-bezier(0.16, 1, 0.3, 1);\n}\n\n.link:hover {\n  color: var(--mf-fg, #f4f4f6);\n}\n\n.link:hover .text::after {\n  transform: scaleX(1);\n  transform-origin: left center;\n}\n\n.link:focus-visible,\n.ellipsis:focus-visible,\n.menuItem:focus-visible {\n  outline: 2px solid var(--mf-fg, #e4e4e7);\n  outline-offset: 2px;\n}\n\n.current {\n  color: var(--mf-fg, #f4f4f6);\n  font-weight: 500;\n}\n\n.ellipsis {\n  display: inline-flex;\n  align-items: center;\n  justify-content: center;\n  width: 1.75rem;\n  height: 1.75rem;\n  border: 0;\n  border-radius: 0.5rem;\n  background: transparent;\n  color: var(--mf-muted, #a1a1aa);\n  cursor: pointer;\n  transition: background-color 150ms ease, color 150ms ease;\n}\n\n.ellipsis:hover,\n.ellipsis[aria-expanded=\"true\"] {\n  color: var(--mf-fg, #f4f4f6);\n  background-color: var(--mf-surface-raised, #1b1b22);\n}\n\n.menu {\n  position: absolute;\n  top: calc(100% + 0.5rem);\n  left: 0;\n  z-index: 20;\n  min-width: 11rem;\n  margin: 0;\n  padding: 0.3125rem;\n  list-style: none;\n  border-radius: 0.625rem;\n  border: 1px solid var(--mf-border, #2e2e38);\n  background-color: var(--mf-surface-raised, #1b1b22);\n  box-shadow: 0 12px 32px -8px rgba(0, 0, 0, 0.45);\n  transform-origin: top left;\n}\n\n.menuItem {\n  display: block;\n  padding: 0.4375rem 0.625rem;\n  border-radius: 0.375rem;\n  color: var(--mf-fg, #f4f4f6);\n  text-decoration: none;\n  outline: none;\n  transition: background-color 120ms ease;\n}\n\n.menuItem:hover,\n.menuItem:focus {\n  background-color: color-mix(in srgb, var(--mf-bc-accent, #6366f1) 18%, transparent);\n}\n\n@media (prefers-reduced-motion: reduce) {\n  .link,\n  .text::after,\n  .ellipsis,\n  .menuItem {\n    transition: none;\n  }\n}\n"
+    }
+  ],
+  "tailwindExample": "\"use client\";\n\nimport { useState } from \"react\";\n\nconst ITEMS = [\"Home\", \"Workspace\", \"Projects\", \"Components\", \"Breadcrumb\"];\n\nexport function BreadcrumbTailwind() {\n  const [open, setOpen] = useState(false);\n  const hidden = ITEMS.slice(1, -2);\n  const shown = [ITEMS[0], ...ITEMS.slice(-2)];\n  return (\n    <nav aria-label=\"Breadcrumb\">\n      <ol className=\"flex items-center gap-1.5 rounded-xl border border-zinc-800 bg-zinc-900 px-3.5 py-2 text-sm text-zinc-400\">\n        {shown.map((label, i) => (\n          <li key={label} className=\"flex items-center gap-1.5\">\n            {i > 0 && <span aria-hidden className=\"text-zinc-600\">/</span>}\n            {i === shown.length - 1 ? (\n              <span aria-current=\"page\" className=\"font-medium text-zinc-100\">{label}</span>\n            ) : (\n              <a href=\"#\" className=\"group relative hover:text-zinc-100\">{label}<span className=\"absolute inset-x-0 -bottom-0.5 h-px origin-right scale-x-0 bg-indigo-500 transition-transform group-hover:origin-left group-hover:scale-x-100\" /></a>\n            )}\n            {i === 0 && (\n              <span className=\"relative flex items-center gap-1.5\">\n                <span aria-hidden className=\"text-zinc-600\">/</span>\n                <button aria-haspopup=\"menu\" aria-expanded={open} aria-label=\"Show more\" onClick={() => setOpen(!open)} className=\"rounded-md px-1.5 hover:bg-zinc-800\">...</button>\n                {open && (\n                  <ul role=\"menu\" className=\"absolute left-4 top-7 min-w-40 rounded-lg border border-zinc-800 bg-zinc-900 p-1 shadow-xl\">\n                    {hidden.map((h) => <li key={h} role=\"none\"><a role=\"menuitem\" href=\"#\" className=\"block rounded-md px-2.5 py-1.5 text-zinc-100 hover:bg-indigo-500/20\">{h}</a></li>)}\n                  </ul>\n                )}\n              </span>\n            )}\n          </li>\n        ))}\n      </ol>\n    </nav>\n  );\n}\n"
+}

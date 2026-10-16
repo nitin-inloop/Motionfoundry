@@ -1,0 +1,201 @@
+{
+  "slug": "scroll-word-swap",
+  "name": "ScrollWordSwap",
+  "category": "Scroll Animations",
+  "collection": "scroll",
+  "featured": false,
+  "addedAt": "2026-10-16",
+  "version": "2.3.0",
+  "requiresMotion": false,
+  "dependencies": [
+    "react"
+  ],
+  "description": "A big pinned headline inside its own smooth-scroll viewport whose key word swaps once per scroll section with a masked slide, blur or flip, while the word color, background wash and segmented progress bar shift to each word's tint.",
+  "tags": [
+    "scroll",
+    "headline",
+    "word-swap",
+    "typography",
+    "pinned",
+    "mask",
+    "smooth-scroll"
+  ],
+  "a11yNotes": "The viewport is a focusable role=\"region\" whose aria-label carries the full sentence with every word, so keyboard users can Tab to it and scroll with arrow/Page keys/Space (native, unsmoothed) with a 2px :focus-visible outline. The heading exposes the complete text (prefix, all words, suffix) through a visually hidden span while the animated word stack is aria-hidden, so screen readers are not spammed while scrolling. Wheel input is smoothed only while the viewport can still move; at the edges wheel events are released to the page, and touch and scrollbar dragging stay native. Background washes and progress segments are decorative. Under prefers-reduced-motion the wheel is not intercepted and words switch instantly without slide, blur, flip or color transitions.",
+  "defaultProps": {
+    "prefix": "Interfaces that feel",
+    "words": [
+      "fast",
+      "alive",
+      "honest",
+      "effortless",
+      "yours"
+    ],
+    "suffix": ".",
+    "colors": [
+      "#38bdf8",
+      "#f472b6",
+      "#fbbf24",
+      "#34d399",
+      "#a78bfa"
+    ],
+    "effect": "slide",
+    "duration": 600,
+    "lerp": 0.1,
+    "wheelMultiplier": 1,
+    "smooth": true
+  },
+  "controls": [
+    {
+      "prop": "prefix",
+      "label": "Prefix",
+      "type": "text"
+    },
+    {
+      "prop": "words",
+      "label": "Words (comma separated)",
+      "type": "list"
+    },
+    {
+      "prop": "suffix",
+      "label": "Suffix",
+      "type": "text"
+    },
+    {
+      "prop": "colors",
+      "label": "Tints (comma separated hex)",
+      "type": "list"
+    },
+    {
+      "prop": "effect",
+      "label": "Swap effect",
+      "type": "select",
+      "options": [
+        "slide",
+        "blur",
+        "flip"
+      ]
+    },
+    {
+      "prop": "duration",
+      "label": "Duration (ms)",
+      "type": "range",
+      "min": 0,
+      "max": 1500,
+      "step": 50
+    },
+    {
+      "prop": "lerp",
+      "label": "Lerp (smoothness)",
+      "type": "range",
+      "min": 0.05,
+      "max": 0.3,
+      "step": 0.01
+    },
+    {
+      "prop": "wheelMultiplier",
+      "label": "Wheel multiplier",
+      "type": "range",
+      "min": 0.5,
+      "max": 2,
+      "step": 0.1
+    },
+    {
+      "prop": "smooth",
+      "label": "Smooth scrolling",
+      "type": "boolean"
+    }
+  ],
+  "propsApi": [
+    {
+      "name": "prefix",
+      "type": "string",
+      "default": "'Interfaces that feel'",
+      "description": "Text before the swapping word."
+    },
+    {
+      "name": "words",
+      "type": "string[]",
+      "default": "['fast', 'alive', 'honest', 'effortless', 'yours']",
+      "description": "Words swapped in, one per equal scroll section."
+    },
+    {
+      "name": "suffix",
+      "type": "string",
+      "default": "'.'",
+      "description": "Text after the swapping word."
+    },
+    {
+      "name": "colors",
+      "type": "string[]",
+      "default": "['#38bdf8', '#f472b6', '#fbbf24', '#34d399', '#a78bfa']",
+      "description": "Tint per word (cycled) used for the word color, background wash and progress fill."
+    },
+    {
+      "name": "effect",
+      "type": "'slide' | 'blur' | 'flip'",
+      "default": "'slide'",
+      "description": "Transition used when the word swaps; all are clipped by the word's mask slot."
+    },
+    {
+      "name": "duration",
+      "type": "number",
+      "default": "600",
+      "description": "Swap transition duration in ms (the background wash crossfades slightly slower)."
+    },
+    {
+      "name": "height",
+      "type": "number",
+      "default": "380",
+      "description": "Height of the component's own scroll viewport in px (width is always 100%)."
+    },
+    {
+      "name": "borderRadius",
+      "type": "number",
+      "default": "20",
+      "description": "Corner radius of the viewport in px."
+    },
+    {
+      "name": "lerp",
+      "type": "number",
+      "default": "0.1",
+      "description": "Interpolation factor per 60fps frame for wheel smoothing (0.05 floaty, 0.3 snappy)."
+    },
+    {
+      "name": "wheelMultiplier",
+      "type": "number",
+      "default": "1",
+      "description": "Multiplier applied to wheel and trackpad deltas."
+    },
+    {
+      "name": "smooth",
+      "type": "boolean",
+      "default": "true",
+      "description": "Enable smooth wheel scrolling; false (or prefers-reduced-motion) uses native scrolling."
+    },
+    {
+      "name": "className",
+      "type": "string",
+      "default": "''",
+      "description": "Additional class merged onto the root element."
+    },
+    {
+      "name": "style",
+      "type": "React.CSSProperties",
+      "default": "undefined",
+      "description": "Inline styles merged onto the root element."
+    }
+  ],
+  "files": [
+    {
+      "path": "components/ui/scroll-word-swap.tsx",
+      "type": "registry:component",
+      "content": "\"use client\";\n\nimport * as React from \"react\";\nimport styles from \"../styles/scroll-word-swap.module.css\";\n\ninterface SmoothScrollState {\n  /** Current scrollTop of the viewport in px */\n  scroll: number;\n  /** Maximum scrollTop in px */\n  limit: number;\n  /** scroll / limit, 0..1 */\n  progress: number;\n}\n\ninterface SmoothScrollOptions {\n  lerp: number;\n  wheelMultiplier: number;\n  smooth: boolean;\n  onScroll?: (state: SmoothScrollState) => void;\n}\n\nconst clamp = (v: number, min: number, max: number) => Math.min(max, Math.max(min, v));\n\nfunction usePrefersReducedMotion(): boolean {\n  const [reduced, setReduced] = React.useState(false);\n  React.useEffect(() => {\n    const mq = window.matchMedia(\"(prefers-reduced-motion: reduce)\");\n    const update = () => setReduced(mq.matches);\n    update();\n    mq.addEventListener(\"change\", update);\n    return () => mq.removeEventListener(\"change\", update);\n  }, []);\n  return reduced;\n}\n\n/** True when a nested scrollable element under the pointer can still scroll in the wheel direction. */\nfunction nestedCanScroll(node: EventTarget | null, root: HTMLElement, dy: number): boolean {\n  let el: Element | null = node instanceof Element ? node : null;\n  while (el && el !== root) {\n    if (el instanceof HTMLElement) {\n      if (el.dataset.mfScrollPrevent !== undefined) return true;\n      const oy = window.getComputedStyle(el).overflowY;\n      if ((oy === \"auto\" || oy === \"scroll\") && el.scrollHeight > el.clientHeight + 1) {\n        if (dy < 0 ? el.scrollTop > 0 : el.scrollTop + el.clientHeight < el.scrollHeight - 1) return true;\n      }\n    }\n    el = el.parentElement;\n  }\n  return false;\n}\n\n/**\n * Self-contained smooth scroller for an overflow container: wheel input sets a target, a rAF\n * loop eases scrollTop toward it (frame-rate independent) and stops when settled. Touch,\n * keyboard and scrollbar stay native; at the edges wheel events are released to the page.\n */\nfunction useSmoothScroll(\n  containerRef: React.RefObject<HTMLElement | null>,\n  { lerp, wheelMultiplier, smooth, onScroll }: SmoothScrollOptions,\n) {\n  const callbackRef = React.useRef(onScroll);\n  React.useEffect(() => {\n    callbackRef.current = onScroll;\n  }, [onScroll]);\n\n  React.useEffect(() => {\n    const el = containerRef.current;\n    if (!el) return;\n    const ease = clamp(Number.isFinite(lerp) ? lerp : 0.1, 0.01, 1);\n    const multiplier = Number.isFinite(wheelMultiplier) ? wheelMultiplier : 1;\n    let target = el.scrollTop;\n    let current = target;\n    let raf = 0;\n    let lastTime = 0;\n    const getLimit = () => Math.max(0, el.scrollHeight - el.clientHeight);\n    const emit = () => {\n      const limit = getLimit();\n      const scroll = clamp(el.scrollTop, 0, limit);\n      callbackRef.current?.({ scroll, limit, progress: limit > 0 ? scroll / limit : 0 });\n    };\n    const stop = () => {\n      raf = 0;\n      lastTime = 0;\n    };\n    const tick = (time: number) => {\n      const frames = (lastTime ? clamp(time - lastTime, 1, 64) : 16.667) / 16.667;\n      lastTime = time;\n      target = clamp(target, 0, getLimit());\n      if (Math.abs(el.scrollTop - current) > 2) {\n        // Scrollbar drag, keyboard or touch moved the viewport: hand control back.\n        current = target = el.scrollTop;\n        stop();\n        emit();\n        return;\n      }\n      current += (target - current) * (1 - Math.pow(1 - ease, frames));\n      if (Math.abs(target - current) < 0.35) current = target;\n      el.scrollTop = current;\n      emit();\n      if (current === target) stop();\n      else raf = requestAnimationFrame(tick);\n    };\n    const onWheel = (event: WheelEvent) => {\n      if (event.ctrlKey || event.defaultPrevented || Math.abs(event.deltaX) > Math.abs(event.deltaY)) return;\n      let dy = event.deltaY;\n      if (event.deltaMode === 1) dy *= 16;\n      else if (event.deltaMode === 2) dy *= el.clientHeight;\n      dy *= multiplier;\n      if (dy === 0 || nestedCanScroll(event.target, el, dy)) return;\n      const limit = getLimit();\n      if (!raf) current = target = el.scrollTop;\n      // Release to native scrolling at the edges so the page is never trapped.\n      if ((dy < 0 && target <= 0) || (dy > 0 && target >= limit - 0.5)) return;\n      event.preventDefault();\n      target = clamp(target + dy, 0, limit);\n      if (!raf) raf = requestAnimationFrame(tick);\n    };\n    const onNativeScroll = () => {\n      if (raf) return;\n      current = target = el.scrollTop;\n      emit();\n    };\n    if (smooth) el.addEventListener(\"wheel\", onWheel, { passive: false });\n    el.addEventListener(\"scroll\", onNativeScroll, { passive: true });\n    const ro = new ResizeObserver(emit);\n    ro.observe(el);\n    if (el.firstElementChild) ro.observe(el.firstElementChild);\n    emit();\n    return () => {\n      if (smooth) el.removeEventListener(\"wheel\", onWheel);\n      el.removeEventListener(\"scroll\", onNativeScroll);\n      ro.disconnect();\n      if (raf) cancelAnimationFrame(raf);\n    };\n  }, [containerRef, lerp, wheelMultiplier, smooth]);\n}\n\nexport interface ScrollWordSwapProps {\n  /** Text before the swapping word */\n  prefix?: string;\n  /** Words swapped in one per scroll section */\n  words?: string[];\n  /** Text after the swapping word */\n  suffix?: string;\n  /** Tint colors per word (word color and background wash), cycled */\n  colors?: string[];\n  /** Transition used when the word swaps */\n  effect?: \"slide\" | \"blur\" | \"flip\";\n  /** Swap transition duration in ms */\n  duration?: number;\n  /** Viewport height in px */\n  height?: number;\n  /** Viewport corner radius in px */\n  borderRadius?: number;\n  /** Interpolation factor per 60fps frame (0.05 = floaty, 0.3 = snappy) */\n  lerp?: number;\n  /** Multiplier applied to wheel / trackpad deltas */\n  wheelMultiplier?: number;\n  /** Enable smooth wheel scrolling (native scrolling when false or under reduced motion) */\n  smooth?: boolean;\n  /** Optional className merged onto the root */\n  className?: string;\n  /** Inline styles merged onto the root */\n  style?: React.CSSProperties;\n}\n\nconst DEFAULT_WORDS = [\"fast\", \"alive\", \"honest\", \"effortless\", \"yours\"];\nconst DEFAULT_COLORS = [\"#38bdf8\", \"#f472b6\", \"#fbbf24\", \"#34d399\", \"#a78bfa\"];\n\nexport function ScrollWordSwap({\n  prefix = \"Interfaces that feel\",\n  words = DEFAULT_WORDS,\n  suffix = \".\",\n  colors = DEFAULT_COLORS,\n  effect = \"slide\",\n  duration = 600,\n  height = 380,\n  borderRadius = 20,\n  lerp = 0.1,\n  wheelMultiplier = 1,\n  smooth = true,\n  className = \"\",\n  style,\n}: ScrollWordSwapProps) {\n  const reduced = usePrefersReducedMotion();\n  const viewportRef = React.useRef<HTMLDivElement>(null);\n  const stageRef = React.useRef<HTMLDivElement>(null);\n  const headlineRef = React.useRef<HTMLSpanElement>(null);\n  const wordRefs = React.useRef<(HTMLSpanElement | null)[]>([]);\n  const [active, setActive] = React.useState(0);\n  const [widths, setWidths] = React.useState<number[] | null>(null);\n  const list = words.length > 0 ? words : DEFAULT_WORDS;\n  const tints = colors.length > 0 ? colors : DEFAULT_COLORS;\n  const total = list.length;\n\n  const handleScroll = React.useCallback(\n    ({ progress }: SmoothScrollState) => {\n      const t = progress * total;\n      stageRef.current?.style.setProperty(\"--mf-sws-t\", t.toFixed(4));\n      setActive(clamp(Math.floor(t), 0, total - 1));\n    },\n    [total],\n  );\n\n  useSmoothScroll(viewportRef, { lerp, wheelMultiplier, smooth: smooth && !reduced, onScroll: handleScroll });\n\n  React.useEffect(() => {\n    const headline = headlineRef.current;\n    if (!headline) return;\n    const measure = () => setWidths(wordRefs.current.slice(0, total).map((w) => (w ? Math.ceil(w.scrollWidth) : 0)));\n    measure();\n    const ro = new ResizeObserver(measure);\n    ro.observe(headline);\n    return () => ro.disconnect();\n  }, [total, list.join(\"|\")]);\n\n  const tint = tints[active % tints.length];\n  const slotWidth = widths && widths[active] ? `${widths[active]}px` : `${Math.max(2, list[active].length * 0.56)}em`;\n\n  const vars = {\n    \"--mf-sws-h\": `${height}px`,\n    \"--mf-sws-r\": `${borderRadius}px`,\n    \"--mf-sws-dur\": `${Math.max(0, duration)}ms`,\n    \"--mf-sws-tint\": tint,\n    ...style,\n  } as React.CSSProperties;\n\n  return (\n    <div style={vars} className={`${styles.root} ${className}`.trim()} data-effect={effect}>\n      <div ref={viewportRef} className={styles.viewport} tabIndex={0} role=\"region\" aria-label={`${prefix} ${list.join(\", \")}${suffix}`}>\n        <div style={{ height: height + total * Math.round(height * 0.7) }}>\n          <div ref={stageRef} className={styles.stage}>\n            {list.map((word, i) => (\n              <span\n                key={`${word}-bg-${i}`}\n                aria-hidden=\"true\"\n                className={styles.wash}\n                data-active={i === active ? \"\" : undefined}\n                style={{ \"--mf-sws-c\": tints[i % tints.length] } as React.CSSProperties}\n              />\n            ))}\n            <span className={styles.kicker}>{`${String(active + 1).padStart(2, \"0\")} / ${String(total).padStart(2, \"0\")}`}</span>\n            <h3 className={styles.headline}>\n              <span className={styles.srOnly}>{`${prefix} ${list.join(\", \")}${suffix}`}</span>\n              <span ref={headlineRef} aria-hidden=\"true\" className={styles.visual}>\n                {prefix}{\" \"}\n                <span className={styles.slot} style={{ width: slotWidth }}>\n                  {list.map((word, i) => (\n                    <span\n                      key={`${word}-${i}`}\n                      ref={(node) => {\n                        wordRefs.current[i] = node;\n                      }}\n                      className={styles.word}\n                      data-state={i === active ? \"active\" : i < active ? \"before\" : \"after\"}\n                      style={{ \"--mf-sws-c\": tints[i % tints.length] } as React.CSSProperties}\n                    >\n                      {word}\n                    </span>\n                  ))}\n                </span>\n                {suffix}\n              </span>\n            </h3>\n            <div className={styles.progress} aria-hidden=\"true\">\n              {list.map((word, i) => (\n                <span key={`${word}-p-${i}`} className={styles.segment} data-active={i === active ? \"\" : undefined}>\n                  <span className={styles.track}>\n                    <span className={styles.fill} style={{ \"--mf-sws-i\": i } as React.CSSProperties} />\n                  </span>\n                  <span className={styles.segmentLabel}>{word}</span>\n                </span>\n              ))}\n            </div>\n          </div>\n        </div>\n      </div>\n    </div>\n  );\n}\n"
+    },
+    {
+      "path": "components/styles/scroll-word-swap.module.css",
+      "type": "registry:style",
+      "content": ".root {\n  position: relative;\n  width: 100%;\n  height: var(--mf-sws-h, 380px);\n  border-radius: var(--mf-sws-r, 20px);\n  overflow: hidden;\n  border: 1px solid var(--mf-border, #2e2e38);\n  background: var(--mf-surface, #141419);\n  color: var(--mf-fg, #f4f4f6);\n  container-type: inline-size;\n  isolation: isolate;\n}\n\n.root *,\n.root *::before,\n.root *::after {\n  box-sizing: border-box;\n}\n\n.viewport {\n  position: relative;\n  height: 100%;\n  overflow-x: hidden;\n  overflow-y: auto;\n  overscroll-behavior: auto;\n  scroll-behavior: auto;\n  scrollbar-width: thin;\n  scrollbar-color: var(--mf-border, #2e2e38) transparent;\n}\n\n.viewport:focus-visible {\n  outline: 2px solid var(--mf-fg, #e4e4e7);\n  outline-offset: -2px;\n}\n\n.stage {\n  --mf-sws-t: 0;\n  position: sticky;\n  top: 0;\n  display: flex;\n  flex-direction: column;\n  align-items: center;\n  justify-content: center;\n  gap: 1.1rem;\n  height: var(--mf-sws-h, 380px);\n  padding: 1.5rem clamp(1rem, 6cqi, 3.5rem) 4.25rem;\n  overflow: hidden;\n  isolation: isolate;\n}\n\n.wash {\n  position: absolute;\n  inset: 0;\n  z-index: -1;\n  background:\n    radial-gradient(70% 85% at 50% 115%, color-mix(in srgb, var(--mf-sws-c, #38bdf8) 42%, transparent), transparent 70%),\n    radial-gradient(45% 55% at 8% 0%, color-mix(in srgb, var(--mf-sws-c, #38bdf8) 22%, transparent), transparent 70%),\n    radial-gradient(40% 50% at 95% 10%, color-mix(in srgb, var(--mf-sws-c, #38bdf8) 16%, transparent), transparent 70%);\n  opacity: 0;\n  transition: opacity calc(var(--mf-sws-dur, 600ms) * 1.4) ease;\n  pointer-events: none;\n}\n\n.wash[data-active] {\n  opacity: 1;\n}\n\n.kicker {\n  padding: 0.25rem 0.7rem;\n  border: 1px solid var(--mf-border, #2e2e38);\n  border-radius: 999px;\n  background: color-mix(in srgb, var(--mf-surface, #141419) 60%, transparent);\n  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;\n  font-size: 0.7rem;\n  color: var(--mf-sws-tint, #38bdf8);\n  transition: color var(--mf-sws-dur, 600ms) ease;\n}\n\n.headline {\n  margin: 0;\n  font-size: clamp(1.9rem, 6.2cqi, 3.4rem);\n  font-weight: 750;\n  line-height: 1.2;\n  letter-spacing: -0.045em;\n  text-align: center;\n  text-wrap: balance;\n}\n\n.srOnly {\n  position: absolute;\n  width: 1px;\n  height: 1px;\n  margin: -1px;\n  padding: 0;\n  overflow: hidden;\n  clip: rect(0 0 0 0);\n  white-space: nowrap;\n  border: 0;\n}\n\n.visual {\n  display: block;\n}\n\n.slot {\n  position: relative;\n  display: inline-block;\n  height: 1.2em;\n  vertical-align: bottom;\n  overflow: hidden;\n  perspective: 600px;\n  transition: width var(--mf-sws-dur, 600ms) cubic-bezier(0.65, 0, 0.25, 1);\n}\n\n.word {\n  position: absolute;\n  top: 0;\n  left: 0;\n  display: inline-block;\n  line-height: 1.2em;\n  white-space: nowrap;\n  color: var(--mf-sws-c, #38bdf8);\n  transform-origin: 50% 50% -0.4em;\n  transition:\n    transform var(--mf-sws-dur, 600ms) cubic-bezier(0.65, 0, 0.25, 1),\n    opacity var(--mf-sws-dur, 600ms) ease,\n    filter var(--mf-sws-dur, 600ms) ease;\n}\n\n.root[data-effect=\"slide\"] .word[data-state=\"after\"] {\n  transform: translateY(105%);\n}\n\n.root[data-effect=\"slide\"] .word[data-state=\"before\"] {\n  transform: translateY(-105%);\n}\n\n.root[data-effect=\"blur\"] .word[data-state=\"after\"] {\n  opacity: 0;\n  filter: blur(12px);\n  transform: translateY(45%) scale(0.96);\n}\n\n.root[data-effect=\"blur\"] .word[data-state=\"before\"] {\n  opacity: 0;\n  filter: blur(12px);\n  transform: translateY(-45%) scale(1.04);\n}\n\n.root[data-effect=\"flip\"] .word[data-state=\"after\"] {\n  opacity: 0;\n  transform: rotateX(-90deg);\n}\n\n.root[data-effect=\"flip\"] .word[data-state=\"before\"] {\n  opacity: 0;\n  transform: rotateX(90deg);\n}\n\n.progress {\n  position: absolute;\n  right: clamp(1rem, 6cqi, 3.5rem);\n  bottom: 1.25rem;\n  left: clamp(1rem, 6cqi, 3.5rem);\n  display: flex;\n  gap: 0.6rem;\n}\n\n.segment {\n  display: flex;\n  flex: 1;\n  flex-direction: column;\n  gap: 0.4rem;\n  min-width: 0;\n}\n\n.track {\n  position: relative;\n  height: 2px;\n  border-radius: 2px;\n  background: var(--mf-border, #2e2e38);\n  overflow: hidden;\n}\n\n.fill {\n  position: absolute;\n  inset: 0;\n  background: var(--mf-sws-tint, #38bdf8);\n  transform: scaleX(clamp(0, calc(var(--mf-sws-t) - var(--mf-sws-i, 0)), 1));\n  transform-origin: 0% 50%;\n}\n\n.segmentLabel {\n  overflow: hidden;\n  color: var(--mf-muted, #a1a1aa);\n  font-size: 0.68rem;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n  transition: color 250ms ease;\n}\n\n.segment[data-active] .segmentLabel {\n  color: var(--mf-fg, #f4f4f6);\n}\n\n@media (prefers-reduced-motion: reduce) {\n  .wash,\n  .kicker,\n  .slot,\n  .word,\n  .segmentLabel {\n    transition: none;\n  }\n\n  .root .word[data-state=\"before\"],\n  .root .word[data-state=\"after\"] {\n    opacity: 0;\n    filter: none;\n    transform: none;\n  }\n}\n"
+    }
+  ],
+  "tailwindExample": "\"use client\";\n\nimport { useEffect, useRef, useState } from \"react\";\n\nconst words = [\"fast\", \"alive\", \"honest\", \"effortless\", \"yours\"];\nconst tints = [\"#38bdf8\", \"#f472b6\", \"#fbbf24\", \"#34d399\", \"#a78bfa\"];\n\nexport function ScrollWordSwapTailwind() {\n  const ref = useRef(null);\n  const [active, setActive] = useState(0);\n  useEffect(() => {\n    const el = ref.current;\n    const update = () => {\n      const max = el.scrollHeight - el.clientHeight;\n      const p = max > 0 ? el.scrollTop / max : 0;\n      setActive(Math.min(words.length - 1, Math.floor(p * words.length)));\n    };\n    el.addEventListener(\"scroll\", update, { passive: true });\n    return () => el.removeEventListener(\"scroll\", update);\n  }, []);\n  return (\n    <div ref={ref} tabIndex={0} className=\"h-[380px] w-full overflow-y-auto rounded-[20px] border border-zinc-800 bg-zinc-900 text-zinc-100\">\n      <div style={{ height: 380 + words.length * 266 }}>\n        <div className=\"sticky top-0 grid h-[380px] place-items-center px-10 transition-colors duration-700\" style={{ background: `radial-gradient(70% 85% at 50% 115%, ${tints[active]}66, transparent 70%)` }}>\n          <h3 className=\"text-center text-5xl font-bold tracking-tight\">\n            Interfaces that feel{\" \"}\n            <span className=\"relative inline-block h-[1.2em] overflow-hidden align-bottom\">\n              <span className=\"invisible\">effortless</span>\n              {words.map((w, i) => (\n                <span key={w} style={{ color: tints[i] }} className={`absolute left-0 top-0 transition-transform duration-500 ${i === active ? \"translate-y-0\" : i < active ? \"-translate-y-full\" : \"translate-y-full\"}`}>{w}</span>\n              ))}\n            </span>\n            .\n          </h3>\n        </div>\n      </div>\n    </div>\n  );\n}"
+}

@@ -1,0 +1,197 @@
+{
+  "slug": "parallax-columns",
+  "name": "ParallaxColumns",
+  "category": "Scroll Animations",
+  "collection": "scroll",
+  "featured": false,
+  "addedAt": "2026-10-16",
+  "version": "2.3.0",
+  "requiresMotion": false,
+  "dependencies": [
+    "react"
+  ],
+  "description": "Three masonry columns of gradient tiles pinned inside their own smooth-scroll viewport; scrolling drives each column at a different speed while the middle column counter-moves, under a frosted title card.",
+  "tags": [
+    "scroll",
+    "parallax",
+    "masonry",
+    "gallery",
+    "columns",
+    "pinned",
+    "smooth-scroll"
+  ],
+  "a11yNotes": "The viewport is a focusable role=\"region\" labelled by the title, so keyboard users can Tab to it and scroll with arrow/Page keys/Space (native, unsmoothed) with a 2px :focus-visible outline. Wheel input is smoothed only while the viewport can still move; at the edges wheel events are released to the page, and touch and scrollbar dragging stay native. The tile columns are decorative and aria-hidden; the title is a real heading. Under prefers-reduced-motion the wheel is not intercepted and the columns stay still.",
+  "defaultProps": {
+    "title": "A gallery that moves with you",
+    "tilesPerColumn": 6,
+    "gap": 12,
+    "speed": 0.8,
+    "counterMiddle": true,
+    "palette": [
+      "#f472b6",
+      "#a78bfa",
+      "#60a5fa",
+      "#2dd4bf",
+      "#fbbf24",
+      "#fb7185"
+    ],
+    "lerp": 0.1,
+    "wheelMultiplier": 1,
+    "smooth": true
+  },
+  "controls": [
+    {
+      "prop": "title",
+      "label": "Title",
+      "type": "text"
+    },
+    {
+      "prop": "tilesPerColumn",
+      "label": "Tiles per column",
+      "type": "range",
+      "min": 4,
+      "max": 10,
+      "step": 1
+    },
+    {
+      "prop": "gap",
+      "label": "Gap (px)",
+      "type": "range",
+      "min": 0,
+      "max": 32,
+      "step": 1
+    },
+    {
+      "prop": "speed",
+      "label": "Outer column speed",
+      "type": "range",
+      "min": 0.1,
+      "max": 1,
+      "step": 0.05
+    },
+    {
+      "prop": "counterMiddle",
+      "label": "Counter-move middle",
+      "type": "boolean"
+    },
+    {
+      "prop": "palette",
+      "label": "Palette (comma separated hex)",
+      "type": "list"
+    },
+    {
+      "prop": "lerp",
+      "label": "Lerp (smoothness)",
+      "type": "range",
+      "min": 0.05,
+      "max": 0.3,
+      "step": 0.01
+    },
+    {
+      "prop": "wheelMultiplier",
+      "label": "Wheel multiplier",
+      "type": "range",
+      "min": 0.5,
+      "max": 2,
+      "step": 0.1
+    },
+    {
+      "prop": "smooth",
+      "label": "Smooth scrolling",
+      "type": "boolean"
+    }
+  ],
+  "propsApi": [
+    {
+      "name": "title",
+      "type": "string",
+      "default": "'A gallery that moves with you'",
+      "description": "Heading on the frosted card over the columns; an empty string hides the card."
+    },
+    {
+      "name": "tilesPerColumn",
+      "type": "number",
+      "default": "6",
+      "description": "Number of gradient tiles in each of the three columns."
+    },
+    {
+      "name": "gap",
+      "type": "number",
+      "default": "12",
+      "description": "Gap in px between columns and tiles."
+    },
+    {
+      "name": "speed",
+      "type": "number",
+      "default": "0.8",
+      "description": "Travel speed of the outer columns as a fraction (0..1) of their available distance; the right column moves at 55% of the left."
+    },
+    {
+      "name": "counterMiddle",
+      "type": "boolean",
+      "default": "true",
+      "description": "Move the middle column in the opposite direction (downward) as you scroll."
+    },
+    {
+      "name": "palette",
+      "type": "string[]",
+      "default": "['#f472b6', '#a78bfa', '#60a5fa', '#2dd4bf', '#fbbf24', '#fb7185']",
+      "description": "Colors cycled through the tile gradients."
+    },
+    {
+      "name": "height",
+      "type": "number",
+      "default": "380",
+      "description": "Height of the component's own scroll viewport in px (width is always 100%)."
+    },
+    {
+      "name": "borderRadius",
+      "type": "number",
+      "default": "20",
+      "description": "Corner radius of the viewport in px."
+    },
+    {
+      "name": "lerp",
+      "type": "number",
+      "default": "0.1",
+      "description": "Interpolation factor per 60fps frame for wheel smoothing (0.05 floaty, 0.3 snappy)."
+    },
+    {
+      "name": "wheelMultiplier",
+      "type": "number",
+      "default": "1",
+      "description": "Multiplier applied to wheel and trackpad deltas."
+    },
+    {
+      "name": "smooth",
+      "type": "boolean",
+      "default": "true",
+      "description": "Enable smooth wheel scrolling; false (or prefers-reduced-motion) uses native scrolling."
+    },
+    {
+      "name": "className",
+      "type": "string",
+      "default": "''",
+      "description": "Additional class merged onto the root element."
+    },
+    {
+      "name": "style",
+      "type": "React.CSSProperties",
+      "default": "undefined",
+      "description": "Inline styles merged onto the root element."
+    }
+  ],
+  "files": [
+    {
+      "path": "components/ui/parallax-columns.tsx",
+      "type": "registry:component",
+      "content": "\"use client\";\n\nimport * as React from \"react\";\nimport styles from \"../styles/parallax-columns.module.css\";\n\ninterface SmoothScrollState {\n  /** Current scrollTop of the viewport in px */\n  scroll: number;\n  /** Maximum scrollTop in px */\n  limit: number;\n  /** scroll / limit, 0..1 */\n  progress: number;\n}\n\ninterface SmoothScrollOptions {\n  lerp: number;\n  wheelMultiplier: number;\n  smooth: boolean;\n  onScroll?: (state: SmoothScrollState) => void;\n}\n\nconst clamp = (v: number, min: number, max: number) => Math.min(max, Math.max(min, v));\n\nfunction usePrefersReducedMotion(): boolean {\n  const [reduced, setReduced] = React.useState(false);\n  React.useEffect(() => {\n    const mq = window.matchMedia(\"(prefers-reduced-motion: reduce)\");\n    const update = () => setReduced(mq.matches);\n    update();\n    mq.addEventListener(\"change\", update);\n    return () => mq.removeEventListener(\"change\", update);\n  }, []);\n  return reduced;\n}\n\n/** True when a nested scrollable element under the pointer can still scroll in the wheel direction. */\nfunction nestedCanScroll(node: EventTarget | null, root: HTMLElement, dy: number): boolean {\n  let el: Element | null = node instanceof Element ? node : null;\n  while (el && el !== root) {\n    if (el instanceof HTMLElement) {\n      if (el.dataset.mfScrollPrevent !== undefined) return true;\n      const oy = window.getComputedStyle(el).overflowY;\n      if ((oy === \"auto\" || oy === \"scroll\") && el.scrollHeight > el.clientHeight + 1) {\n        if (dy < 0 ? el.scrollTop > 0 : el.scrollTop + el.clientHeight < el.scrollHeight - 1) return true;\n      }\n    }\n    el = el.parentElement;\n  }\n  return false;\n}\n\n/**\n * Self-contained smooth scroller for an overflow container: wheel input sets a target, a rAF\n * loop eases scrollTop toward it (frame-rate independent) and stops when settled. Touch,\n * keyboard and scrollbar stay native; at the edges wheel events are released to the page.\n */\nfunction useSmoothScroll(\n  containerRef: React.RefObject<HTMLElement | null>,\n  { lerp, wheelMultiplier, smooth, onScroll }: SmoothScrollOptions,\n) {\n  const callbackRef = React.useRef(onScroll);\n  React.useEffect(() => {\n    callbackRef.current = onScroll;\n  }, [onScroll]);\n\n  React.useEffect(() => {\n    const el = containerRef.current;\n    if (!el) return;\n    const ease = clamp(Number.isFinite(lerp) ? lerp : 0.1, 0.01, 1);\n    const multiplier = Number.isFinite(wheelMultiplier) ? wheelMultiplier : 1;\n    let target = el.scrollTop;\n    let current = target;\n    let raf = 0;\n    let lastTime = 0;\n    const getLimit = () => Math.max(0, el.scrollHeight - el.clientHeight);\n    const emit = () => {\n      const limit = getLimit();\n      const scroll = clamp(el.scrollTop, 0, limit);\n      callbackRef.current?.({ scroll, limit, progress: limit > 0 ? scroll / limit : 0 });\n    };\n    const stop = () => {\n      raf = 0;\n      lastTime = 0;\n    };\n    const tick = (time: number) => {\n      const frames = (lastTime ? clamp(time - lastTime, 1, 64) : 16.667) / 16.667;\n      lastTime = time;\n      target = clamp(target, 0, getLimit());\n      if (Math.abs(el.scrollTop - current) > 2) {\n        // Scrollbar drag, keyboard or touch moved the viewport: hand control back.\n        current = target = el.scrollTop;\n        stop();\n        emit();\n        return;\n      }\n      current += (target - current) * (1 - Math.pow(1 - ease, frames));\n      if (Math.abs(target - current) < 0.35) current = target;\n      el.scrollTop = current;\n      emit();\n      if (current === target) stop();\n      else raf = requestAnimationFrame(tick);\n    };\n    const onWheel = (event: WheelEvent) => {\n      if (event.ctrlKey || event.defaultPrevented || Math.abs(event.deltaX) > Math.abs(event.deltaY)) return;\n      let dy = event.deltaY;\n      if (event.deltaMode === 1) dy *= 16;\n      else if (event.deltaMode === 2) dy *= el.clientHeight;\n      dy *= multiplier;\n      if (dy === 0 || nestedCanScroll(event.target, el, dy)) return;\n      const limit = getLimit();\n      if (!raf) current = target = el.scrollTop;\n      // Release to native scrolling at the edges so the page is never trapped.\n      if ((dy < 0 && target <= 0) || (dy > 0 && target >= limit - 0.5)) return;\n      event.preventDefault();\n      target = clamp(target + dy, 0, limit);\n      if (!raf) raf = requestAnimationFrame(tick);\n    };\n    const onNativeScroll = () => {\n      if (raf) return;\n      current = target = el.scrollTop;\n      emit();\n    };\n    if (smooth) el.addEventListener(\"wheel\", onWheel, { passive: false });\n    el.addEventListener(\"scroll\", onNativeScroll, { passive: true });\n    const ro = new ResizeObserver(emit);\n    ro.observe(el);\n    if (el.firstElementChild) ro.observe(el.firstElementChild);\n    emit();\n    return () => {\n      if (smooth) el.removeEventListener(\"wheel\", onWheel);\n      el.removeEventListener(\"scroll\", onNativeScroll);\n      ro.disconnect();\n      if (raf) cancelAnimationFrame(raf);\n    };\n  }, [containerRef, lerp, wheelMultiplier, smooth]);\n}\n\nexport interface ParallaxColumnsProps {\n  /** Heading shown on the frosted card over the columns (empty string hides it) */\n  title?: string;\n  /** Number of tiles in each of the three columns */\n  tilesPerColumn?: number;\n  /** Gap in px between columns and tiles */\n  gap?: number;\n  /** Travel speed of the outer columns, 0..1 of their available distance */\n  speed?: number;\n  /** Move the middle column in the opposite direction */\n  counterMiddle?: boolean;\n  /** Gradient colors cycled through the tiles */\n  palette?: string[];\n  /** Viewport height in px */\n  height?: number;\n  /** Viewport corner radius in px */\n  borderRadius?: number;\n  /** Interpolation factor per 60fps frame (0.05 = floaty, 0.3 = snappy) */\n  lerp?: number;\n  /** Multiplier applied to wheel / trackpad deltas */\n  wheelMultiplier?: number;\n  /** Enable smooth wheel scrolling (native scrolling when false or under reduced motion) */\n  smooth?: boolean;\n  /** Optional className merged onto the root */\n  className?: string;\n  /** Inline styles merged onto the root */\n  style?: React.CSSProperties;\n}\n\nconst DEFAULT_PALETTE = [\"#f472b6\", \"#a78bfa\", \"#60a5fa\", \"#2dd4bf\", \"#fbbf24\", \"#fb7185\"];\nconst LABELS = [\"Aurora\", \"Dune\", \"Lagoon\", \"Ember\", \"Nebula\", \"Orchard\", \"Glacier\", \"Saffron\", \"Tidal\", \"Velvet\"];\n\nconst rand = (n: number) => {\n  const x = Math.sin(n * 9301 + 49297) * 233280;\n  return x - Math.floor(x);\n};\n\nexport function ParallaxColumns({\n  title = \"A gallery that moves with you\",\n  tilesPerColumn = 6,\n  gap = 12,\n  speed = 0.8,\n  counterMiddle = true,\n  palette = DEFAULT_PALETTE,\n  height = 380,\n  borderRadius = 20,\n  lerp = 0.1,\n  wheelMultiplier = 1,\n  smooth = true,\n  className = \"\",\n  style,\n}: ParallaxColumnsProps) {\n  const reduced = usePrefersReducedMotion();\n  const viewportRef = React.useRef<HTMLDivElement>(null);\n  const stageRef = React.useRef<HTMLDivElement>(null);\n  const colRefs = React.useRef<(HTMLDivElement | null)[]>([]);\n  const travelRef = React.useRef<number[]>([0, 0, 0]);\n  const progressRef = React.useRef(0);\n  const colors = palette.length > 0 ? palette : DEFAULT_PALETTE;\n  const count = Math.max(2, Math.round(tilesPerColumn));\n\n  const apply = React.useCallback(() => {\n    const p = progressRef.current;\n    const k = clamp(speed, 0, 1);\n    const factors = [p * k, counterMiddle ? 1 - p : p, p * k * 0.55];\n    for (let c = 0; c < 3; c++) {\n      const col = colRefs.current[c];\n      if (!col) continue;\n      const y = reduced ? 0 : -factors[c] * travelRef.current[c];\n      col.style.transform = `translate3d(0, ${y.toFixed(2)}px, 0)`;\n    }\n  }, [speed, counterMiddle, reduced]);\n\n  const handleScroll = React.useCallback(\n    ({ progress }: SmoothScrollState) => {\n      progressRef.current = progress;\n      apply();\n    },\n    [apply],\n  );\n\n  useSmoothScroll(viewportRef, { lerp, wheelMultiplier, smooth: smooth && !reduced, onScroll: handleScroll });\n\n  React.useEffect(() => {\n    const stage = stageRef.current;\n    if (!stage) return;\n    const measure = () => {\n      const h = stage.clientHeight;\n      travelRef.current = colRefs.current.map((col) => (col ? Math.max(0, col.offsetHeight - h) : 0));\n      apply();\n    };\n    measure();\n    const ro = new ResizeObserver(measure);\n    ro.observe(stage);\n    colRefs.current.forEach((col) => col && ro.observe(col));\n    return () => ro.disconnect();\n  }, [apply, count, gap]);\n\n  const vars = {\n    \"--mf-pcl-h\": `${height}px`,\n    \"--mf-pcl-r\": `${borderRadius}px`,\n    \"--mf-pcl-gap\": `${Math.max(0, gap)}px`,\n    ...style,\n  } as React.CSSProperties;\n\n  return (\n    <div style={vars} className={`${styles.root} ${className}`.trim()}>\n      <div ref={viewportRef} className={styles.viewport} tabIndex={0} role=\"region\" aria-label={title || \"Parallax gallery\"}>\n        <div style={{ height: height * 3 }}>\n          <div ref={stageRef} className={styles.stage}>\n            {[0, 1, 2].map((c) => (\n              <div key={c} className={styles.lane} aria-hidden=\"true\">\n                <div\n                  ref={(node) => {\n                    colRefs.current[c] = node;\n                  }}\n                  className={styles.column}\n                >\n                  {Array.from({ length: count }, (_, t) => {\n                    const seed = c * 41 + t * 7;\n                    const c1 = colors[(c + t * 2) % colors.length];\n                    const c2 = colors[(c + t * 2 + 1) % colors.length];\n                    return (\n                      <div\n                        key={t}\n                        className={styles.tile}\n                        style={\n                          {\n                            height: Math.round(height * (0.3 + rand(seed) * 0.32)),\n                            \"--mf-pcl-c1\": c1,\n                            \"--mf-pcl-c2\": c2,\n                            \"--mf-pcl-a\": `${Math.round(110 + rand(seed + 3) * 140)}deg`,\n                            \"--mf-pcl-gx\": `${Math.round(15 + rand(seed + 5) * 70)}%`,\n                          } as React.CSSProperties\n                        }\n                      >\n                        {rand(seed + 9) > 0.45 && <span className={styles.label}>{LABELS[(seed + t) % LABELS.length]}</span>}\n                      </div>\n                    );\n                  })}\n                </div>\n              </div>\n            ))}\n            {title && (\n              <div className={styles.overlay}>\n                <div className={styles.card}>\n                  <span className={styles.kicker}>Parallax Columns</span>\n                  <h3 className={styles.title}>{title}</h3>\n                </div>\n              </div>\n            )}\n          </div>\n        </div>\n      </div>\n    </div>\n  );\n}\n"
+    },
+    {
+      "path": "components/styles/parallax-columns.module.css",
+      "type": "registry:style",
+      "content": ".root {\n  position: relative;\n  width: 100%;\n  height: var(--mf-pcl-h, 380px);\n  border-radius: var(--mf-pcl-r, 20px);\n  overflow: hidden;\n  border: 1px solid var(--mf-border, #2e2e38);\n  background: var(--mf-surface, #141419);\n  color: var(--mf-fg, #f4f4f6);\n  container-type: inline-size;\n  isolation: isolate;\n}\n\n.root *,\n.root *::before,\n.root *::after {\n  box-sizing: border-box;\n}\n\n.viewport {\n  position: relative;\n  height: 100%;\n  overflow-x: hidden;\n  overflow-y: auto;\n  overscroll-behavior: auto;\n  scroll-behavior: auto;\n  scrollbar-width: thin;\n  scrollbar-color: var(--mf-border, #2e2e38) transparent;\n}\n\n.viewport:focus-visible {\n  outline: 2px solid var(--mf-fg, #e4e4e7);\n  outline-offset: -2px;\n}\n\n.stage {\n  position: sticky;\n  top: 0;\n  display: grid;\n  grid-template-columns: repeat(3, minmax(0, 1fr));\n  gap: var(--mf-pcl-gap, 12px);\n  height: var(--mf-pcl-h, 380px);\n  padding: 0 var(--mf-pcl-gap, 12px);\n  overflow: hidden;\n}\n\n.lane {\n  position: relative;\n  height: 100%;\n  overflow: hidden;\n}\n\n.column {\n  display: flex;\n  flex-direction: column;\n  gap: var(--mf-pcl-gap, 12px);\n  padding: var(--mf-pcl-gap, 12px) 0;\n  will-change: transform;\n}\n\n.tile {\n  position: relative;\n  flex: none;\n  display: flex;\n  align-items: flex-end;\n  padding: 0.65rem;\n  border-radius: 14px;\n  overflow: hidden;\n  background:\n    radial-gradient(90% 70% at var(--mf-pcl-gx, 30%) 15%, rgba(255, 255, 255, 0.35), transparent 60%),\n    linear-gradient(var(--mf-pcl-a, 160deg), var(--mf-pcl-c1, #f472b6), var(--mf-pcl-c2, #60a5fa));\n  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.14);\n}\n\n.label {\n  padding: 0.2rem 0.55rem;\n  border-radius: 999px;\n  background: rgba(0, 0, 0, 0.28);\n  color: #ffffff;\n  font-size: 0.68rem;\n  font-weight: 600;\n  letter-spacing: 0.02em;\n  backdrop-filter: blur(6px);\n}\n\n.overlay {\n  position: absolute;\n  inset: 0;\n  display: grid;\n  place-items: center;\n  padding: 1rem;\n  background:\n    linear-gradient(180deg, var(--mf-surface, #141419) 0%, transparent 18%, transparent 82%, var(--mf-surface, #141419) 100%);\n  pointer-events: none;\n}\n\n.card {\n  display: flex;\n  flex-direction: column;\n  align-items: center;\n  gap: 0.4rem;\n  max-width: 24rem;\n  padding: 1rem 1.4rem;\n  border: 1px solid color-mix(in srgb, var(--mf-border, #2e2e38) 80%, transparent);\n  border-radius: 18px;\n  background: color-mix(in srgb, var(--mf-surface, #141419) 72%, transparent);\n  backdrop-filter: blur(14px) saturate(1.3);\n  text-align: center;\n  box-shadow: 0 24px 50px -24px rgba(0, 0, 0, 0.6);\n}\n\n.kicker {\n  font-size: 0.66rem;\n  letter-spacing: 0.1em;\n  text-transform: uppercase;\n  color: var(--mf-muted, #a1a1aa);\n}\n\n.title {\n  margin: 0;\n  font-size: clamp(1.25rem, 3.8cqi, 1.9rem);\n  font-weight: 700;\n  line-height: 1.08;\n  letter-spacing: -0.035em;\n}\n\n@media (prefers-reduced-motion: reduce) {\n  .column {\n    transform: none;\n    will-change: auto;\n  }\n}\n"
+    }
+  ],
+  "tailwindExample": "\"use client\";\n\nimport { useEffect, useRef } from \"react\";\n\nconst grads = [\"from-pink-400 to-violet-400\", \"from-violet-400 to-sky-400\", \"from-sky-400 to-teal-400\", \"from-teal-400 to-amber-400\", \"from-amber-400 to-rose-400\", \"from-rose-400 to-pink-400\"];\nconst heights = [[150, 190, 130, 210, 160, 180], [200, 140, 170, 150, 220, 130], [160, 210, 140, 180, 130, 200]];\n\nexport function ParallaxColumnsTailwind() {\n  const ref = useRef(null);\n  const cols = useRef([]);\n  useEffect(() => {\n    const el = ref.current;\n    const update = () => {\n      const max = el.scrollHeight - el.clientHeight;\n      const p = max > 0 ? el.scrollTop / max : 0;\n      const f = [p * 0.8, 1 - p, p * 0.45];\n      cols.current.forEach((c, i) => {\n        const travel = Math.max(0, c.offsetHeight - 380);\n        c.style.transform = `translateY(${-f[i] * travel}px)`;\n      });\n    };\n    update();\n    el.addEventListener(\"scroll\", update, { passive: true });\n    return () => el.removeEventListener(\"scroll\", update);\n  }, []);\n  return (\n    <div ref={ref} tabIndex={0} className=\"h-[380px] w-full overflow-y-auto rounded-[20px] border border-zinc-800 bg-zinc-900\">\n      <div className=\"h-[1140px]\">\n        <div className=\"sticky top-0 grid h-[380px] grid-cols-3 gap-3 overflow-hidden px-3\">\n          {heights.map((col, c) => (\n            <div key={c} ref={(n) => (cols.current[c] = n)} className=\"flex flex-col gap-3 py-3\">\n              {col.map((h, t) => (\n                <div key={t} style={{ height: h }} className={`shrink-0 rounded-2xl bg-gradient-to-br ${grads[(c + t * 2) % grads.length]}`} />\n              ))}\n            </div>\n          ))}\n          <div className=\"pointer-events-none absolute inset-0 grid place-items-center\">\n            <h3 className=\"rounded-2xl border border-zinc-700/70 bg-zinc-900/70 px-6 py-4 text-2xl font-bold text-zinc-100 backdrop-blur-md\">A gallery that moves with you</h3>\n          </div>\n        </div>\n      </div>\n    </div>\n  );\n}"
+}

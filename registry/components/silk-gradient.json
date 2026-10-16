@@ -1,0 +1,168 @@
+{
+  "slug": "silk-gradient",
+  "name": "SilkGradient",
+  "category": "Gradient Backgrounds",
+  "collection": "shaders",
+  "featured": true,
+  "addedAt": "2026-10-16",
+  "version": "2.3.0",
+  "requiresMotion": false,
+  "dependencies": [
+    "react"
+  ],
+  "description": "A raw WebGL satin shader: a warped multi-sine height field is lit per pixel with diffuse shading, a tight specular highlight and a broad sheen lobe, so dark fabric folds ripple and catch light. Falls back to blurred, skewing CSS fold bands when WebGL is unavailable.",
+  "tags": [
+    "silk",
+    "satin",
+    "shader",
+    "webgl",
+    "fabric",
+    "specular",
+    "dark",
+    "background",
+    "hero"
+  ],
+  "a11yNotes": "The canvas (or CSS fallback) is an aria-hidden decorative layer; children render above with light, shadowed text. Animation stops off-screen, at speed 0, and under prefers-reduced-motion (one static frame). GL resources are deleted on unmount and a lost context switches to the CSS fallback.",
+  "defaultProps": {
+    "color1": "#6d28d9",
+    "color2": "#1e40af",
+    "highlightColor": "#f5d0fe",
+    "backgroundColor": "#030306",
+    "speed": 1,
+    "foldScale": 1,
+    "sheen": 1
+  },
+  "controls": [
+    {
+      "prop": "color1",
+      "label": "Fabric color 1",
+      "type": "color"
+    },
+    {
+      "prop": "color2",
+      "label": "Fabric color 2",
+      "type": "color"
+    },
+    {
+      "prop": "highlightColor",
+      "label": "Sheen color",
+      "type": "color"
+    },
+    {
+      "prop": "backgroundColor",
+      "label": "Shadow color",
+      "type": "color"
+    },
+    {
+      "prop": "speed",
+      "label": "Speed",
+      "type": "range",
+      "min": 0,
+      "max": 3,
+      "step": 0.1
+    },
+    {
+      "prop": "foldScale",
+      "label": "Fold scale",
+      "type": "range",
+      "min": 0.3,
+      "max": 3,
+      "step": 0.1
+    },
+    {
+      "prop": "sheen",
+      "label": "Sheen",
+      "type": "range",
+      "min": 0,
+      "max": 2,
+      "step": 0.05
+    }
+  ],
+  "propsApi": [
+    {
+      "name": "color1",
+      "type": "string",
+      "default": "'#6d28d9'",
+      "description": "Primary fabric color (hex)."
+    },
+    {
+      "name": "color2",
+      "type": "string",
+      "default": "'#1e40af'",
+      "description": "Secondary fabric color blended across the folds (hex)."
+    },
+    {
+      "name": "highlightColor",
+      "type": "string",
+      "default": "'#f5d0fe'",
+      "description": "Specular sheen color on the fold crests (hex)."
+    },
+    {
+      "name": "backgroundColor",
+      "type": "string",
+      "default": "'#030306'",
+      "description": "Shadow color deep in the folds (hex)."
+    },
+    {
+      "name": "speed",
+      "type": "number",
+      "default": "1",
+      "description": "Flow speed multiplier (0 pauses)."
+    },
+    {
+      "name": "foldScale",
+      "type": "number",
+      "default": "1",
+      "description": "Size of the folds; higher = broader, softer drapes (0.3–3)."
+    },
+    {
+      "name": "sheen",
+      "type": "number",
+      "default": "1",
+      "description": "Specular sheen strength, 0 (matte) to 2 (glossy)."
+    },
+    {
+      "name": "height",
+      "type": "number",
+      "default": "380",
+      "description": "Height of the background in px."
+    },
+    {
+      "name": "borderRadius",
+      "type": "number",
+      "default": "20",
+      "description": "Corner radius in px."
+    },
+    {
+      "name": "children",
+      "type": "React.ReactNode",
+      "default": "undefined",
+      "description": "Content rendered centered on top; defaults to a heading and subline."
+    },
+    {
+      "name": "className",
+      "type": "string",
+      "default": "''",
+      "description": "Additional class merged onto the root element."
+    },
+    {
+      "name": "style",
+      "type": "React.CSSProperties",
+      "default": "undefined",
+      "description": "Inline styles merged onto the root element."
+    }
+  ],
+  "files": [
+    {
+      "path": "components/ui/silk-gradient.tsx",
+      "type": "registry:component",
+      "content": "\"use client\";\n\nimport * as React from \"react\";\nimport styles from \"../styles/silk-gradient.module.css\";\n\nexport interface SilkGradientProps {\n  /** Primary fabric color */\n  color1?: string;\n  /** Secondary fabric color blended across the folds */\n  color2?: string;\n  /** Specular sheen color on the fold crests */\n  highlightColor?: string;\n  /** Shadow color deep in the folds */\n  backgroundColor?: string;\n  /** Flow speed multiplier (1 = default, 0 = paused) */\n  speed?: number;\n  /** Size of the folds (higher = broader, softer drapes) */\n  foldScale?: number;\n  /** Specular sheen strength (0 = matte, 2 = glossy) */\n  sheen?: number;\n  /** Height of the background in px */\n  height?: number;\n  /** Corner radius in px */\n  borderRadius?: number;\n  /** Foreground content rendered centered on top */\n  children?: React.ReactNode;\n  /** Optional className merged onto the root */\n  className?: string;\n  /** Inline styles merged onto the root */\n  style?: React.CSSProperties;\n}\n\ntype RGB = [number, number, number];\ntype UniformMap = Record<string, number | readonly number[]>;\n\nconst FRAG = `\n#ifdef GL_FRAGMENT_PRECISION_HIGH\nprecision highp float;\n#else\nprecision mediump float;\n#endif\nuniform vec2 u_res; uniform float u_time;\nuniform vec3 u_c1; uniform vec3 u_c2; uniform vec3 u_hl; uniform vec3 u_bg;\nuniform float u_fold; uniform float u_sheen;\nfloat H(vec2 p, float t){\n  p.x += 0.42 * sin(p.y * 1.25 + t * 0.7);\n  p.y += 0.3 * sin(p.x * 0.85 - t * 0.5);\n  return sin(p.x * 1.7 + p.y * 0.55 + t) * 0.55\n       + sin(p.x * 0.65 - p.y * 1.3 - t * 0.8) * 0.33\n       + sin((p.x + p.y) * 2.5 + t * 1.25) * 0.12;\n}\nvoid main(){\n  vec2 uv = (gl_FragCoord.xy - 0.5 * u_res) / u_res.y;\n  float t = u_time * 0.35;\n  mat2 rot = mat2(0.866, -0.5, 0.5, 0.866);\n  vec2 p = rot * uv * (3.2 / u_fold);\n  float e = 0.012;\n  float h = H(p, t);\n  vec2 grad = vec2(H(p + vec2(e, 0.0), t) - h, H(p + vec2(0.0, e), t) - h) / e;\n  vec3 n = normalize(vec3(-grad * 0.42, 1.0));\n  vec3 L = normalize(vec3(-0.55, 0.65, 0.75));\n  vec3 Hv = normalize(L + vec3(0.0, 0.0, 1.0));\n  float diff = clamp(dot(n, L), 0.0, 1.0);\n  float nh = max(dot(n, Hv), 0.0);\n  float spec = pow(nh, 48.0);\n  float broad = pow(nh, 7.0);\n  vec3 base = mix(u_c1, u_c2, smoothstep(-0.9, 0.9, h * 0.8 + uv.x * 0.7));\n  float shade = smoothstep(-1.1, 0.6, h) * 0.75 + 0.25;\n  vec3 col = u_bg + base * diff * diff * 1.15 * shade;\n  col += u_hl * (spec * 0.85 + broad * 0.18 * shade) * u_sheen;\n  col += u_hl * pow(1.0 - n.z, 2.0) * 0.08 * u_sheen;\n  col *= 1.0 - 0.32 * dot(uv * vec2(0.8, 1.0), uv * vec2(0.8, 1.0));\n  gl_FragColor = vec4(col, 1.0);\n}`;\n\nconst VERT = \"attribute vec2 a_pos;void main(){gl_Position=vec4(a_pos,0.0,1.0);}\";\n\nfunction hexRgb(hex: string, fb: RGB): RGB {\n  const m = hex.trim().replace(/^#/, \"\");\n  const full = m.length === 3 ? m.split(\"\").map((ch) => ch + ch).join(\"\") : m;\n  if (!/^[0-9a-fA-F]{6}$/.test(full)) return fb;\n  const n = parseInt(full, 16);\n  return [((n >> 16) & 255) / 255, ((n >> 8) & 255) / 255, (n & 255) / 255];\n}\n\nconst rgba = (c: RGB, a: number) => `rgba(${Math.round(c[0] * 255)},${Math.round(c[1] * 255)},${Math.round(c[2] * 255)},${a})`;\n\nfunction useReducedMotionPref() {\n  const [reduced, setReduced] = React.useState(false);\n  React.useEffect(() => {\n    if (typeof window === \"undefined\" || !window.matchMedia) return;\n    const mq = window.matchMedia(\"(prefers-reduced-motion: reduce)\");\n    const update = () => setReduced(mq.matches);\n    update();\n    mq.addEventListener(\"change\", update);\n    return () => mq.removeEventListener(\"change\", update);\n  }, []);\n  return reduced;\n}\n\nfunction useInView(ref: React.RefObject<HTMLElement | null>) {\n  const [inView, setInView] = React.useState(true);\n  React.useEffect(() => {\n    const el = ref.current;\n    if (!el || typeof IntersectionObserver === \"undefined\") return;\n    const io = new IntersectionObserver((entries) => {\n      const entry = entries[entries.length - 1];\n      if (entry) setInView(entry.isIntersecting);\n    }, { rootMargin: \"80px\" });\n    io.observe(el);\n    return () => io.disconnect();\n  }, [ref]);\n  return inView;\n}\n\nfunction compile(gl: WebGLRenderingContext, type: number, src: string) {\n  const sh = gl.createShader(type);\n  if (!sh) return null;\n  gl.shaderSource(sh, src);\n  gl.compileShader(sh);\n  if (gl.getShaderParameter(sh, gl.COMPILE_STATUS)) return sh;\n  gl.deleteShader(sh);\n  return null;\n}\n\n/** Full-screen-triangle WebGL renderer; returns true when the CSS fallback should be shown instead */\nfunction useShader(\n  rootRef: React.RefObject<HTMLDivElement | null>,\n  canvasRef: React.RefObject<HTMLCanvasElement | null>,\n  frag: string,\n  uniforms: () => UniformMap,\n  running: boolean,\n  speed: number,\n  paramsKey: string,\n  maxDpr = 2,\n) {\n  const [fallback, setFallback] = React.useState(false);\n  const timeRef = React.useRef(12);\n  const drawRef = React.useRef<(() => void) | null>(null);\n  const uniRef = React.useRef(uniforms);\n  uniRef.current = uniforms;\n  const speedRef = React.useRef(speed);\n  speedRef.current = speed;\n\n  React.useEffect(() => {\n    const root = rootRef.current;\n    const canvas = canvasRef.current;\n    if (!root || !canvas || fallback) return;\n    const gl = canvas.getContext(\"webgl\", { alpha: false, antialias: false, depth: false, stencil: false, powerPreference: \"low-power\" });\n    if (!gl) { setFallback(true); return; }\n    const vs = compile(gl, gl.VERTEX_SHADER, VERT);\n    const fs = compile(gl, gl.FRAGMENT_SHADER, frag);\n    const prog = gl.createProgram();\n    const buf = gl.createBuffer();\n    const dispose = () => {\n      gl.deleteBuffer(buf);\n      gl.deleteProgram(prog);\n      gl.deleteShader(vs);\n      gl.deleteShader(fs);\n    };\n    if (!vs || !fs || !prog || !buf) { dispose(); setFallback(true); return; }\n    gl.attachShader(prog, vs);\n    gl.attachShader(prog, fs);\n    gl.linkProgram(prog);\n    if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) { dispose(); setFallback(true); return; }\n    gl.useProgram(prog);\n    gl.bindBuffer(gl.ARRAY_BUFFER, buf);\n    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);\n    const aPos = gl.getAttribLocation(prog, \"a_pos\");\n    gl.enableVertexAttribArray(aPos);\n    gl.vertexAttribPointer(aPos, 2, gl.FLOAT, false, 0, 0);\n    const locs = new Map<string, WebGLUniformLocation | null>();\n    const loc = (n: string) => {\n      if (!locs.has(n)) locs.set(n, gl.getUniformLocation(prog, n));\n      return locs.get(n) ?? null;\n    };\n    const resize = () => {\n      const rect = root.getBoundingClientRect();\n      const dpr = Math.min(maxDpr, window.devicePixelRatio || 1);\n      canvas.width = Math.max(1, Math.round(rect.width * dpr));\n      canvas.height = Math.max(1, Math.round(rect.height * dpr));\n      gl.viewport(0, 0, canvas.width, canvas.height);\n    };\n    const draw = () => {\n      if (gl.isContextLost()) return;\n      gl.uniform2f(loc(\"u_res\"), canvas.width, canvas.height);\n      gl.uniform1f(loc(\"u_time\"), timeRef.current);\n      const u = uniRef.current();\n      for (const k in u) {\n        const v = u[k];\n        if (typeof v === \"number\") gl.uniform1f(loc(k), v);\n        else if (v.length === 2) gl.uniform2f(loc(k), v[0], v[1]);\n        else gl.uniform3f(loc(k), v[0], v[1], v[2]);\n      }\n      gl.drawArrays(gl.TRIANGLES, 0, 3);\n    };\n    resize();\n    draw();\n    drawRef.current = draw;\n    const ro = new ResizeObserver(() => { resize(); draw(); });\n    ro.observe(root);\n    const onLost = (e: Event) => { e.preventDefault(); drawRef.current = null; setFallback(true); };\n    canvas.addEventListener(\"webglcontextlost\", onLost);\n    return () => {\n      ro.disconnect();\n      canvas.removeEventListener(\"webglcontextlost\", onLost);\n      drawRef.current = null;\n      if (!gl.isContextLost()) dispose();\n    };\n  }, [frag, fallback, maxDpr, rootRef, canvasRef]);\n\n  React.useEffect(() => {\n    if (!running || fallback) return;\n    let raf = 0;\n    let last = performance.now();\n    const tick = (now: number) => {\n      const dt = Math.min(0.05, (now - last) / 1000);\n      last = now;\n      timeRef.current += dt * speedRef.current;\n      drawRef.current?.();\n      raf = requestAnimationFrame(tick);\n    };\n    raf = requestAnimationFrame(tick);\n    return () => cancelAnimationFrame(raf);\n  }, [running, fallback]);\n\n  React.useEffect(() => { drawRef.current?.(); }, [paramsKey]);\n\n  return fallback;\n}\n\nexport function SilkGradient({\n  color1 = \"#6d28d9\",\n  color2 = \"#1e40af\",\n  highlightColor = \"#f5d0fe\",\n  backgroundColor = \"#030306\",\n  speed = 1,\n  foldScale = 1,\n  sheen = 1,\n  height = 380,\n  borderRadius = 20,\n  children,\n  className = \"\",\n  style,\n}: SilkGradientProps) {\n  const rootRef = React.useRef<HTMLDivElement>(null);\n  const canvasRef = React.useRef<HTMLCanvasElement>(null);\n  const reduced = useReducedMotionPref();\n  const inView = useInView(rootRef);\n  const safeSpeed = Math.max(0, speed);\n  const safeFold = Math.max(0.3, Math.min(3, foldScale));\n  const safeSheen = Math.max(0, Math.min(2, sheen));\n  const c1 = hexRgb(color1, [0.43, 0.16, 0.85]);\n  const c2 = hexRgb(color2, [0.12, 0.25, 0.69]);\n  const hl = hexRgb(highlightColor, [0.96, 0.82, 1]);\n  const bg = hexRgb(backgroundColor, [0.012, 0.012, 0.024]);\n\n  const fallback = useShader(\n    rootRef,\n    canvasRef,\n    FRAG,\n    () => ({ u_c1: c1, u_c2: c2, u_hl: hl, u_bg: bg, u_fold: safeFold, u_sheen: safeSheen }),\n    !reduced && inView && safeSpeed > 0,\n    safeSpeed,\n    [color1, color2, highlightColor, backgroundColor, safeFold, safeSheen].join(\"|\"),\n    1.5,\n  );\n\n  const band = (40 * safeFold).toFixed(0);\n  const styleVars = {\n    \"--mf-sk-bg\": backgroundColor,\n    \"--mf-sk-folds\": `repeating-linear-gradient(115deg, ${rgba(bg, 1)} 0px, ${rgba(c1, 0.85)} ${(+band * 0.45).toFixed(0)}px, ${rgba(hl, 0.35 * safeSheen)} ${(+band * 0.55).toFixed(0)}px, ${rgba(c2, 0.8)} ${(+band * 0.7).toFixed(0)}px, ${rgba(bg, 1)} ${band}px)`,\n    \"--mf-sk-dur\": `${(18 / Math.max(0.1, safeSpeed)).toFixed(1)}s`,\n    height: `${height}px`,\n    borderRadius: `${borderRadius}px`,\n    ...style,\n  } as React.CSSProperties;\n\n  return (\n    <div ref={rootRef} style={styleVars} className={`${styles.root} ${className}`.trim()}>\n      {fallback ? (\n        <div aria-hidden=\"true\" className={`${styles.fallback} ${safeSpeed === 0 ? styles.paused : \"\"}`.trim()}>\n          <div className={styles.folds} />\n          <div className={styles.shade} />\n        </div>\n      ) : (\n        <canvas ref={canvasRef} aria-hidden=\"true\" className={styles.canvas} />\n      )}\n      <div className={styles.content}>\n        {children ?? (\n          <div className={styles.copy}>\n            <h3 className={styles.title}>Silk Gradient</h3>\n            <p className={styles.subtitle}>Dark satin folds catching a slow specular sheen.</p>\n          </div>\n        )}\n      </div>\n    </div>\n  );\n}\n"
+    },
+    {
+      "path": "components/styles/silk-gradient.module.css",
+      "type": "registry:style",
+      "content": ".root {\n  position: relative;\n  isolation: isolate;\n  overflow: hidden;\n  display: flex;\n  width: 100%;\n  border: 1px solid var(--mf-border, #2e2e38);\n  background: var(--mf-sk-bg, #030306);\n  color: #f5f5f7;\n}\n\n.canvas {\n  position: absolute;\n  inset: 0;\n  width: 100%;\n  height: 100%;\n  display: block;\n  pointer-events: none;\n}\n\n.fallback {\n  position: absolute;\n  inset: 0;\n  pointer-events: none;\n  overflow: hidden;\n}\n\n.folds {\n  position: absolute;\n  inset: -30%;\n  background: var(--mf-sk-folds);\n  filter: blur(14px) saturate(1.15);\n  transform: skewY(-6deg);\n  animation: mf-sk-flow var(--mf-sk-dur, 18s) ease-in-out infinite alternate;\n}\n\n.shade {\n  position: absolute;\n  inset: 0;\n  background: radial-gradient(70% 60% at 30% 20%, rgba(255, 255, 255, 0.06), transparent 60%),\n    radial-gradient(90% 90% at 50% 50%, transparent 40%, rgba(0, 0, 0, 0.6) 100%);\n}\n\n.paused .folds {\n  animation-play-state: paused;\n}\n\n@keyframes mf-sk-flow {\n  0% {\n    transform: skewY(-6deg) translateX(-6%) scaleY(1);\n  }\n  100% {\n    transform: skewY(4deg) translateX(6%) scaleY(1.12);\n  }\n}\n\n.content {\n  position: relative;\n  z-index: 1;\n  display: flex;\n  flex: 1;\n  align-items: center;\n  justify-content: center;\n  padding: 2rem;\n}\n\n.copy {\n  text-align: center;\n  text-shadow: 0 2px 28px rgba(0, 0, 0, 0.6);\n}\n\n.title {\n  margin: 0;\n  font-size: 2rem;\n  font-weight: 700;\n  letter-spacing: -0.035em;\n  color: #f8f8fb;\n}\n\n.subtitle {\n  margin: 0.5rem 0 0;\n  font-size: 0.9375rem;\n  color: rgba(240, 240, 248, 0.78);\n}\n\n@media (prefers-reduced-motion: reduce) {\n  .folds {\n    animation: none;\n  }\n}\n"
+    }
+  ],
+  "tailwindExample": "\"use client\";\n\nexport function SilkGradientTailwind({ children }: { children?: React.ReactNode }) {\n  return (\n    <div className=\"relative isolate flex h-[380px] w-full items-center justify-center overflow-hidden rounded-[20px] border border-zinc-800 bg-[#030306]\">\n      <div aria-hidden className=\"absolute -inset-[30%] -skew-y-6 animate-[pulse_9s_ease-in-out_infinite] bg-[repeating-linear-gradient(115deg,#030306_0px,rgba(109,40,217,.85)_18px,rgba(245,208,254,.35)_22px,rgba(30,64,175,.8)_28px,#030306_40px)] blur-[14px]\" />\n      <div aria-hidden className=\"absolute inset-0 bg-[radial-gradient(90%_90%_at_50%_50%,transparent_40%,rgba(0,0,0,.6))]\" />\n      <div className=\"relative text-center [text-shadow:0_2px_28px_rgba(0,0,0,.6)]\">\n        {children ?? (\n          <>\n            <h3 className=\"text-3xl font-bold tracking-tight text-white\">Silk Gradient</h3>\n            <p className=\"mt-2 text-sm text-white/80\">Dark satin folds catching a slow specular sheen.</p>\n          </>\n        )}\n      </div>\n    </div>\n  );\n}\n"
+}

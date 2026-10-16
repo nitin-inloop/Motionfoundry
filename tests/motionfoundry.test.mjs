@@ -99,13 +99,42 @@ const SCROLL_SLUGS = [
   "scroll-timeline",
 ];
 
+const SHADER_V23_SLUGS = ["nebula-gradient", "plasma-gradient", "silk-gradient", "ember-gradient", "eclipse-gradient"];
+
+const SCROLL_V23_SLUGS = [
+  "scroll-coverflow",
+  "split-screen-scroll",
+  "pinned-steps",
+  "parallax-columns",
+  "scroll-word-swap",
+  "scroll-tilt-cards",
+  "scroll-path-draw",
+  "scroll-focus-list",
+  "snap-sections",
+  "scroll-color-shift",
+];
+
+const UI_SLUGS = [
+  "button", "icon-button", "button-group", "copy-button", "toggle-group", "like-button", "split-button", "hold-to-confirm",
+  "floating-input", "otp-input", "password-input", "tag-input", "number-stepper", "range-slider", "radio-cards",
+  "segmented-control", "select", "combobox", "file-dropzone", "star-rating",
+  "tabs", "breadcrumb", "pagination", "stepper", "accordion",
+  "navigation-menu", "sidebar-nav", "menubar",
+  "dialog", "drawer", "bottom-sheet", "popover", "dropdown-menu", "context-menu", "hover-card", "tooltip", "toast", "alert-dialog",
+  "avatar-group", "badge", "progress-ring", "stat-card", "data-table", "activity-feed", "bar-chart", "sparkline", "tree-view",
+  "contribution-heatmap", "image-compare", "carousel",
+];
+
+// Registry order follows packages/ui/src/index.ts export order (grouped by collection).
 const COLLECTION_SLUGS = {
   core: CORE_SLUGS,
   "studio-kit": STUDIO_KIT_SLUGS,
-  gradients: GRADIENT_SLUGS,
+  shaders: [...GRADIENT_SLUGS, ...SHADER_V23_SLUGS],
   "text-fx": TEXT_FX_SLUGS,
-  scroll: SCROLL_SLUGS,
+  scroll: [...SCROLL_SLUGS, ...SCROLL_V23_SLUGS],
+  ui: UI_SLUGS,
 };
+const LISTED_ORDER = ["scroll", "shaders", "ui"];
 
 const EXPECTED_SLUGS = Object.values(COLLECTION_SLUGS).flat();
 const TOTAL = EXPECTED_SLUGS.length;
@@ -137,17 +166,19 @@ const RETIRED_SLUGS = [
   "bento-grid-card",
 ];
 
-test("1. Registry contains all 72 components across 5 collections and 9 categories", () => {
-  assert.equal(TOTAL, 72);
+test("1. Registry contains all 137 components across 6 collections and 13 categories", () => {
+  assert.equal(TOTAL, 137);
   assert.equal(registry.components.length, TOTAL, `Expected exactly ${TOTAL} components in registry`);
   assert.equal(registry.totalComponents, TOTAL);
-  assert.equal(registry.categories.length, 9, "Expected 9 categories");
+  assert.equal(registry.categories.length, 13, "Expected 13 categories");
   const actualSlugs = registry.components.map((c) => c.slug);
-  assert.deepEqual(actualSlugs, EXPECTED_SLUGS, "Registry component slugs must match the specified components");
+  assert.deepEqual([...actualSlugs].sort(), [...EXPECTED_SLUGS].sort(), "Registry component slugs must match the specified components");
   assert.deepEqual(
-    registry.collections.map((c) => [c.id, c.count]),
-    Object.entries(COLLECTION_SLUGS).map(([id, slugs]) => [id, slugs.length])
+    Object.fromEntries(registry.collections.map((c) => [c.id, c.count])),
+    Object.fromEntries(Object.entries(COLLECTION_SLUGS).map(([id, slugs]) => [id, slugs.length]))
   );
+  const listed = registry.collections.filter((c) => c.listed).sort((a, b) => a.order - b.order).map((c) => c.id);
+  assert.deepEqual(listed, LISTED_ORDER, "Docs navigation lists Scroll, Shaders, then UI");
   for (const comp of registry.components) {
     const expectedCollection = Object.keys(COLLECTION_SLUGS).find((id) => COLLECTION_SLUGS[id].includes(comp.slug));
     assert.equal(comp.collection, expectedCollection, `${comp.slug} must belong to ${expectedCollection}`);
@@ -179,7 +210,7 @@ test("2. Registry source code matches actual packages/ui/src implementation file
   }
 });
 
-test("3. Accessibility & Reduced Motion support verified for all 72 components", () => {
+test("3. Accessibility & Reduced Motion support verified for all 137 components", () => {
   for (const comp of registry.components) {
     const tsx = comp.files[0].content;
     const css = comp.files[1].content;
@@ -308,7 +339,7 @@ test("7. All 18 documentation pages exist, including the Studio Kit, Design Syst
 
 test("8. Registry JSON is in sync with packages/ui source (scripts/build-registry.mjs --check)", () => {
   const out = execFileSync(process.execPath, [path.join(rootDir, "scripts/build-registry.mjs"), "--check"], { encoding: "utf8" });
-  assert.match(out, /Verified 72 components/);
+  assert.match(out, /Verified 137 components/);
 });
 
 const EXPECTED_DESIGNS = ["vercel", "cursor", "claude", "framer", "apple", "airbnb", "expo", "elevenlabs", "runwayml", "resend", "spotify"];
@@ -340,7 +371,7 @@ test("10. Component CSS Modules read theme variables with their original values 
   assert.ok(themed > 250, "Expected component palettes to be themeable");
 });
 
-test("11. v2.2 collections: complete metadata, rich controls, and no third-party animation engines", () => {
+test("11. v2.2 additions keep complete metadata, rich controls, and no third-party animation engines", () => {
   for (const slug of [...GRADIENT_SLUGS, ...TEXT_FX_SLUGS, ...SCROLL_SLUGS]) {
     const comp = registry.components.find((c) => c.slug === slug);
     assert.ok(comp, `${slug} missing from registry`);
@@ -353,4 +384,26 @@ test("11. v2.2 collections: complete metadata, rich controls, and no third-party
       assert.ok(comp.controls.filter((c) => c.type === "color").length >= 2, `${slug} must expose its gradient colors`);
     }
   }
+});
+
+test("12. v2.3 additions: dark shaders, more scroll, and 50 UI primitives built from scratch", () => {
+  const forbidden = /from ["'](gsap|lenis|@studio-freight\/lenis|framer-motion|@radix-ui\/[^"']+|radix-ui|@headlessui\/react|@floating-ui\/[^"']+|three|lucide-react)["']/;
+  for (const slug of [...SHADER_V23_SLUGS, ...SCROLL_V23_SLUGS, ...UI_SLUGS]) {
+    const comp = registry.components.find((c) => c.slug === slug);
+    assert.ok(comp, `${slug} missing from registry`);
+    assert.equal(comp.version, "2.3.0", `${slug} must be versioned 2.3.0`);
+    assert.ok(comp.controls.length >= 4, `${slug} must be customizable (>= 4 controls)`);
+    assert.ok(comp.dependencies.every((d) => d === "react" || d === "motion"), `${slug} may only depend on react/motion`);
+    assert.ok(!forbidden.test(comp.files[0].content), `${slug} must be built from scratch`);
+  }
+  const uiCategories = new Set(UI_SLUGS.map((slug) => registry.components.find((c) => c.slug === slug).category));
+  for (const cat of ["Interactive Buttons and Controls", "Forms and Inputs", "Overlays and Menus", "Navigation", "Data Display"]) {
+    assert.ok(uiCategories.has(cat), `UI collection should include ${cat}`);
+  }
+});
+
+test("13. CLI keeps the renamed 'gradients' collection working as an alias for 'shaders'", () => {
+  const res = runCli(["list", "--collection", "gradients"]);
+  assert.equal(res.code, 0);
+  assert.equal(res.count, COLLECTION_SLUGS.shaders.length);
 });

@@ -1,0 +1,197 @@
+{
+  "slug": "scroll-tilt-cards",
+  "name": "ScrollTiltCards",
+  "category": "Scroll Animations",
+  "collection": "scroll",
+  "featured": false,
+  "addedAt": "2026-10-16",
+  "version": "2.3.0",
+  "requiresMotion": false,
+  "dependencies": [
+    "react"
+  ],
+  "description": "Feature cards inside a smooth-scroll viewport rotate in 3D as they enter from below, settle perfectly flat at the viewport center, and tilt away again as they leave the top, with scale, depth shadow and glow tied to scroll position.",
+  "tags": [
+    "scroll",
+    "tilt",
+    "3d",
+    "perspective",
+    "cards",
+    "smooth-scroll"
+  ],
+  "a11yNotes": "The viewport is a focusable role=\"region\" labelled by the title, so keyboard users can Tab to it and scroll with arrows/Page keys/Space (native) with a 2px :focus-visible outline. Wheel input is smoothed only while the viewport can still move and is released at the top/bottom edge so the page keeps scrolling; touch and scrollbar dragging stay native. Cards are a list with real text; glow and grid layers are aria-hidden. Under prefers-reduced-motion the wheel is not intercepted and cards render flat with no rotation, scale or fade.",
+  "defaultProps": {
+    "items": [
+      "Realtime sync",
+      "Edge caching",
+      "Typed APIs",
+      "Audit trails",
+      "Instant rollbacks",
+      "Usage insights"
+    ],
+    "title": "Tilted into view",
+    "tiltAngle": 38,
+    "perspective": 900,
+    "axis": "x",
+    "accentColor": "#38bdf8",
+    "lerp": 0.1,
+    "wheelMultiplier": 1,
+    "smooth": true
+  },
+  "controls": [
+    {
+      "prop": "items",
+      "label": "Cards (comma separated)",
+      "type": "list"
+    },
+    {
+      "prop": "title",
+      "label": "Title",
+      "type": "text"
+    },
+    {
+      "prop": "tiltAngle",
+      "label": "Tilt angle (deg)",
+      "type": "range",
+      "min": 0,
+      "max": 75,
+      "step": 1
+    },
+    {
+      "prop": "perspective",
+      "label": "Perspective (px)",
+      "type": "range",
+      "min": 300,
+      "max": 2000,
+      "step": 50
+    },
+    {
+      "prop": "axis",
+      "label": "Axis",
+      "type": "select",
+      "options": [
+        "x",
+        "y"
+      ]
+    },
+    {
+      "prop": "accentColor",
+      "label": "Accent",
+      "type": "color"
+    },
+    {
+      "prop": "lerp",
+      "label": "Lerp (smoothness)",
+      "type": "range",
+      "min": 0.05,
+      "max": 0.3,
+      "step": 0.01
+    },
+    {
+      "prop": "wheelMultiplier",
+      "label": "Wheel multiplier",
+      "type": "range",
+      "min": 0.5,
+      "max": 2,
+      "step": 0.1
+    },
+    {
+      "prop": "smooth",
+      "label": "Smooth scrolling",
+      "type": "boolean"
+    }
+  ],
+  "propsApi": [
+    {
+      "name": "items",
+      "type": "string[]",
+      "default": "['Realtime sync', 'Edge caching', 'Typed APIs', 'Audit trails', 'Instant rollbacks', 'Usage insights']",
+      "description": "Card titles, one tilting card per item."
+    },
+    {
+      "name": "title",
+      "type": "string",
+      "default": "'Tilted into view'",
+      "description": "Heading shown above the cards (also the region label)."
+    },
+    {
+      "name": "tiltAngle",
+      "type": "number",
+      "default": "38",
+      "description": "Maximum rotation in degrees while a card enters or leaves."
+    },
+    {
+      "name": "perspective",
+      "type": "number",
+      "default": "900",
+      "description": "CSS perspective distance in px; smaller values look more dramatic."
+    },
+    {
+      "name": "axis",
+      "type": "'x' | 'y'",
+      "default": "'x'",
+      "description": "Rotation axis: x tips cards forward/back, y swings them sideways."
+    },
+    {
+      "name": "accentColor",
+      "type": "string",
+      "default": "'#38bdf8'",
+      "description": "Accent color for card glow and index numbers."
+    },
+    {
+      "name": "height",
+      "type": "number",
+      "default": "380",
+      "description": "Height of the component's own scroll viewport in px (width is always 100%)."
+    },
+    {
+      "name": "borderRadius",
+      "type": "number",
+      "default": "20",
+      "description": "Corner radius of the viewport in px."
+    },
+    {
+      "name": "lerp",
+      "type": "number",
+      "default": "0.1",
+      "description": "Interpolation factor per 60fps frame for wheel smoothing (0.05 floaty, 0.3 snappy)."
+    },
+    {
+      "name": "wheelMultiplier",
+      "type": "number",
+      "default": "1",
+      "description": "Multiplier applied to wheel and trackpad deltas."
+    },
+    {
+      "name": "smooth",
+      "type": "boolean",
+      "default": "true",
+      "description": "Enable smooth wheel scrolling; false (or prefers-reduced-motion) uses native scrolling."
+    },
+    {
+      "name": "className",
+      "type": "string",
+      "default": "''",
+      "description": "Additional class merged onto the root element."
+    },
+    {
+      "name": "style",
+      "type": "React.CSSProperties",
+      "default": "undefined",
+      "description": "Inline styles merged onto the root element."
+    }
+  ],
+  "files": [
+    {
+      "path": "components/ui/scroll-tilt-cards.tsx",
+      "type": "registry:component",
+      "content": "\"use client\";\n\nimport * as React from \"react\";\nimport styles from \"../styles/scroll-tilt-cards.module.css\";\n\ninterface SmoothScrollState {\n  /** Current scrollTop of the viewport in px */\n  scroll: number;\n  /** Maximum scrollTop in px */\n  limit: number;\n  /** scroll / limit, 0..1 */\n  progress: number;\n}\n\ninterface SmoothScrollOptions {\n  lerp: number;\n  wheelMultiplier: number;\n  smooth: boolean;\n  onScroll?: (state: SmoothScrollState) => void;\n}\n\nconst clamp = (v: number, min: number, max: number) => Math.min(max, Math.max(min, v));\n\nfunction usePrefersReducedMotion(): boolean {\n  const [reduced, setReduced] = React.useState(false);\n  React.useEffect(() => {\n    const mq = window.matchMedia(\"(prefers-reduced-motion: reduce)\");\n    const update = () => setReduced(mq.matches);\n    update();\n    mq.addEventListener(\"change\", update);\n    return () => mq.removeEventListener(\"change\", update);\n  }, []);\n  return reduced;\n}\n\n/** True when a nested scrollable element under the pointer can still scroll in the wheel direction. */\nfunction nestedCanScroll(node: EventTarget | null, root: HTMLElement, dy: number): boolean {\n  let el: Element | null = node instanceof Element ? node : null;\n  while (el && el !== root) {\n    if (el instanceof HTMLElement) {\n      const overflowY = window.getComputedStyle(el).overflowY;\n      if ((overflowY === \"auto\" || overflowY === \"scroll\") && el.scrollHeight > el.clientHeight + 1) {\n        if (dy < 0 ? el.scrollTop > 0 : el.scrollTop + el.clientHeight < el.scrollHeight - 1) return true;\n      }\n    }\n    el = el.parentElement;\n  }\n  return false;\n}\n\n/**\n * Self-contained smooth scroller for an overflow container: wheel input sets a target and a rAF\n * loop eases scrollTop toward it. Touch, keyboard and scrollbar stay native; wheel is released at\n * the edges so the page keeps scrolling.\n */\nfunction useSmoothScroll(\n  containerRef: React.RefObject<HTMLElement | null>,\n  { lerp, wheelMultiplier, smooth, onScroll }: SmoothScrollOptions,\n) {\n  const callbackRef = React.useRef(onScroll);\n  React.useEffect(() => {\n    callbackRef.current = onScroll;\n  }, [onScroll]);\n\n  React.useEffect(() => {\n    const el = containerRef.current;\n    if (!el) return;\n    const ease = clamp(Number.isFinite(lerp) ? lerp : 0.1, 0.01, 1);\n    const multiplier = Number.isFinite(wheelMultiplier) ? wheelMultiplier : 1;\n    let target = el.scrollTop;\n    let current = target;\n    let raf = 0;\n    let lastTime = 0;\n    const getLimit = () => Math.max(0, el.scrollHeight - el.clientHeight);\n    const emit = () => {\n      const limit = getLimit();\n      const scroll = clamp(el.scrollTop, 0, limit);\n      callbackRef.current?.({ scroll, limit, progress: limit > 0 ? scroll / limit : 0 });\n    };\n    const tick = (time: number) => {\n      const dt = lastTime ? Math.min(64, Math.max(1, time - lastTime)) : 16.667;\n      lastTime = time;\n      target = clamp(target, 0, getLimit());\n      if (Math.abs(el.scrollTop - current) > 2) {\n        current = target = el.scrollTop;\n        raf = 0;\n        lastTime = 0;\n        emit();\n        return;\n      }\n      current += (target - current) * (1 - Math.pow(1 - ease, dt / 16.667));\n      if (Math.abs(target - current) < 0.35) current = target;\n      el.scrollTop = current;\n      emit();\n      if (current === target) {\n        raf = 0;\n        lastTime = 0;\n        return;\n      }\n      raf = requestAnimationFrame(tick);\n    };\n    const onWheel = (event: WheelEvent) => {\n      if (event.ctrlKey || event.defaultPrevented || Math.abs(event.deltaX) > Math.abs(event.deltaY)) return;\n      let dy = event.deltaY;\n      if (event.deltaMode === 1) dy *= 16;\n      else if (event.deltaMode === 2) dy *= el.clientHeight;\n      dy *= multiplier;\n      if (dy === 0 || nestedCanScroll(event.target, el, dy)) return;\n      const limit = getLimit();\n      if (!raf) current = target = el.scrollTop;\n      if ((dy < 0 && target <= 0) || (dy > 0 && target >= limit - 0.5)) return;\n      event.preventDefault();\n      target = clamp(target + dy, 0, limit);\n      if (!raf) {\n        lastTime = 0;\n        raf = requestAnimationFrame(tick);\n      }\n    };\n    const onNativeScroll = () => {\n      if (raf) return;\n      current = target = el.scrollTop;\n      emit();\n    };\n    if (smooth) el.addEventListener(\"wheel\", onWheel, { passive: false });\n    el.addEventListener(\"scroll\", onNativeScroll, { passive: true });\n    const ro = new ResizeObserver(emit);\n    ro.observe(el);\n    if (el.firstElementChild) ro.observe(el.firstElementChild);\n    emit();\n    return () => {\n      if (smooth) el.removeEventListener(\"wheel\", onWheel);\n      el.removeEventListener(\"scroll\", onNativeScroll);\n      ro.disconnect();\n      if (raf) cancelAnimationFrame(raf);\n    };\n  }, [containerRef, lerp, wheelMultiplier, smooth]);\n}\n\nexport interface ScrollTiltCardsProps {\n  /** Card titles, one tilting card per item */\n  items?: string[];\n  /** Heading shown above the cards */\n  title?: string;\n  /** Maximum rotation in degrees while a card enters or leaves */\n  tiltAngle?: number;\n  /** CSS perspective distance in px (smaller = more dramatic) */\n  perspective?: number;\n  /** Rotation axis: \"x\" tips cards forward/back, \"y\" swings them sideways */\n  axis?: \"x\" | \"y\";\n  /** Accent color for card glow and details */\n  accentColor?: string;\n  /** Viewport height in px */\n  height?: number;\n  /** Viewport corner radius in px */\n  borderRadius?: number;\n  /** Interpolation factor per 60fps frame (0.05 = floaty, 0.3 = snappy) */\n  lerp?: number;\n  /** Multiplier applied to wheel / trackpad deltas */\n  wheelMultiplier?: number;\n  /** Enable smooth wheel scrolling (native scrolling when false or under reduced motion) */\n  smooth?: boolean;\n  /** Optional className merged onto the root */\n  className?: string;\n  /** Inline styles merged onto the root */\n  style?: React.CSSProperties;\n}\n\nconst DEFAULT_ITEMS = [\"Realtime sync\", \"Edge caching\", \"Typed APIs\", \"Audit trails\", \"Instant rollbacks\", \"Usage insights\"];\nconst BLURBS = [\n  \"Every change lands on every device in under 80 ms.\",\n  \"Static and dynamic responses served from 40+ regions.\",\n  \"Schemas flow end to end, from database to UI.\",\n  \"Know who changed what, and exactly when it happened.\",\n  \"Ship boldly. Revert any deploy with a single click.\",\n  \"Live dashboards that explain where the time goes.\",\n];\n\nexport function ScrollTiltCards({\n  items = DEFAULT_ITEMS,\n  title = \"Tilted into view\",\n  tiltAngle = 38,\n  perspective = 900,\n  axis = \"x\",\n  accentColor = \"#38bdf8\",\n  height = 380,\n  borderRadius = 20,\n  lerp = 0.1,\n  wheelMultiplier = 1,\n  smooth = true,\n  className = \"\",\n  style,\n}: ScrollTiltCardsProps) {\n  const reduced = usePrefersReducedMotion();\n  const viewportRef = React.useRef<HTMLDivElement>(null);\n  const cardRefs = React.useRef<(HTMLLIElement | null)[]>([]);\n  const scrollRef = React.useRef(0);\n\n  const apply = React.useCallback(() => {\n    const vp = viewportRef.current;\n    if (!vp) return;\n    const center = scrollRef.current + vp.clientHeight / 2;\n    for (const card of cardRefs.current) {\n      if (!card) continue;\n      const mid = card.offsetTop + card.offsetHeight / 2;\n      const range = vp.clientHeight / 2 + card.offsetHeight / 2;\n      const p = clamp((mid - center) / Math.max(1, range), -1, 1);\n      card.style.setProperty(\"--mf-stc-p\", p.toFixed(4));\n      card.style.setProperty(\"--mf-stc-a\", Math.abs(p).toFixed(4));\n    }\n  }, []);\n\n  const handleScroll = React.useCallback(\n    (state: SmoothScrollState) => {\n      scrollRef.current = state.scroll;\n      apply();\n    },\n    [apply],\n  );\n\n  useSmoothScroll(viewportRef, { lerp, wheelMultiplier, smooth: smooth && !reduced, onScroll: handleScroll });\n\n  React.useEffect(() => {\n    apply();\n  }, [apply, items, height]);\n\n  const vars = {\n    \"--mf-stc-h\": `${height}px`,\n    \"--mf-stc-r\": `${borderRadius}px`,\n    \"--mf-stc-accent\": accentColor,\n    \"--mf-stc-tilt\": reduced ? 0 : tiltAngle,\n    \"--mf-stc-persp\": `${perspective}px`,\n    \"--mf-stc-card-h\": `${Math.round(height * 0.5)}px`,\n    ...style,\n  } as React.CSSProperties;\n\n  return (\n    <div style={vars} className={`${styles.root} ${className}`.trim()} data-axis={axis}>\n      <div ref={viewportRef} className={styles.viewport} tabIndex={0} role=\"region\" aria-label={title}>\n        <div className={styles.content}>\n          <header className={styles.intro}>\n            <span className={styles.kicker}>Scroll Tilt</span>\n            <h3 className={styles.title}>{title}</h3>\n            <p className={styles.subtitle}>Cards tip in, settle flat at center, then tilt away.</p>\n          </header>\n          <ul className={styles.list}>\n            {items.map((item, i) => (\n              <li\n                key={`${item}-${i}`}\n                ref={(node) => {\n                  cardRefs.current[i] = node;\n                }}\n                className={styles.card}\n                style={{ \"--mf-stc-i\": i } as React.CSSProperties}\n              >\n                <div className={styles.face}>\n                  <span aria-hidden=\"true\" className={styles.glow} />\n                  <span aria-hidden=\"true\" className={styles.grid} />\n                  <span className={styles.index}>{String(i + 1).padStart(2, \"0\")}</span>\n                  <span className={styles.cardTitle}>{item}</span>\n                  <span className={styles.blurb}>{BLURBS[i % BLURBS.length]}</span>\n                </div>\n              </li>\n            ))}\n          </ul>\n          <p className={styles.outro}>Flat when it matters, dimensional in between.</p>\n        </div>\n      </div>\n    </div>\n  );\n}\n"
+    },
+    {
+      "path": "components/styles/scroll-tilt-cards.module.css",
+      "type": "registry:style",
+      "content": ".root {\n  position: relative;\n  width: 100%;\n  height: var(--mf-stc-h, 380px);\n  border-radius: var(--mf-stc-r, 20px);\n  overflow: hidden;\n  border: 1px solid var(--mf-border, #2e2e38);\n  background: var(--mf-surface, #141419);\n  color: var(--mf-fg, #f4f4f6);\n  container-type: inline-size;\n  isolation: isolate;\n}\n\n.root *,\n.root *::before,\n.root *::after {\n  box-sizing: border-box;\n}\n\n.viewport {\n  position: relative;\n  height: 100%;\n  overflow-x: hidden;\n  overflow-y: auto;\n  overscroll-behavior: auto;\n  scroll-behavior: auto;\n  scrollbar-width: thin;\n  scrollbar-color: var(--mf-border, #2e2e38) transparent;\n}\n\n.viewport:focus-visible {\n  outline: 2px solid var(--mf-fg, #e4e4e7);\n  outline-offset: -2px;\n}\n\n.content {\n  position: relative;\n  padding: 0 clamp(1rem, 8cqi, 5rem);\n}\n\n.intro {\n  display: flex;\n  flex-direction: column;\n  align-items: center;\n  justify-content: center;\n  gap: 0.6rem;\n  min-height: calc(var(--mf-stc-h, 380px) * 0.7);\n  text-align: center;\n}\n\n.kicker {\n  padding: 0.3rem 0.75rem;\n  border: 1px solid var(--mf-border, #2e2e38);\n  border-radius: 999px;\n  font-size: 0.72rem;\n  letter-spacing: 0.08em;\n  text-transform: uppercase;\n  color: var(--mf-stc-accent, #38bdf8);\n}\n\n.title {\n  margin: 0;\n  font-size: clamp(1.8rem, 6cqi, 3rem);\n  font-weight: 700;\n  line-height: 1.05;\n  letter-spacing: -0.035em;\n}\n\n.subtitle {\n  margin: 0;\n  color: var(--mf-muted, #a1a1aa);\n  font-size: 0.92rem;\n}\n\n.list {\n  margin: 0 auto;\n  padding: 0;\n  max-width: 34rem;\n  list-style: none;\n  display: flex;\n  flex-direction: column;\n  gap: calc(var(--mf-stc-h, 380px) * 0.12);\n}\n\n.card {\n  --mf-stc-p: 0;\n  --mf-stc-a: 0;\n  height: var(--mf-stc-card-h, 190px);\n  perspective: var(--mf-stc-persp, 900px);\n}\n\n.face {\n  position: relative;\n  display: flex;\n  flex-direction: column;\n  justify-content: flex-end;\n  gap: 0.35rem;\n  height: 100%;\n  padding: 1.2rem 1.35rem;\n  border: 1px solid var(--mf-border-strong, #3f3f4a);\n  border-radius: 18px;\n  background: var(--mf-surface-raised, #1b1b22);\n  overflow: hidden;\n  transform: rotateX(calc(var(--mf-stc-p) * var(--mf-stc-tilt, 38) * 1deg))\n    scale(calc(1 - var(--mf-stc-a) * 0.12));\n  transform-origin: 50% 50%;\n  opacity: calc(1 - var(--mf-stc-a) * 0.55);\n  box-shadow: 0 calc(20px - var(--mf-stc-a) * 14px) 50px -24px rgba(0, 0, 0, 0.65);\n  will-change: transform, opacity;\n}\n\n.root[data-axis=\"y\"] .face {\n  transform: rotateY(calc(var(--mf-stc-p) * var(--mf-stc-tilt, 38) * -1deg))\n    scale(calc(1 - var(--mf-stc-a) * 0.12));\n}\n\n.glow {\n  position: absolute;\n  top: -55%;\n  left: calc(-20% + var(--mf-stc-i, 0) * 13%);\n  width: 75%;\n  aspect-ratio: 1;\n  border-radius: 50%;\n  background: radial-gradient(circle, color-mix(in srgb, var(--mf-stc-accent, #38bdf8) 50%, transparent), transparent 65%);\n  opacity: calc(0.35 + (1 - var(--mf-stc-a)) * 0.65);\n  pointer-events: none;\n}\n\n.grid {\n  position: absolute;\n  inset: 0;\n  background-image:\n    linear-gradient(color-mix(in srgb, var(--mf-fg, #f4f4f6) 6%, transparent) 1px, transparent 1px),\n    linear-gradient(90deg, color-mix(in srgb, var(--mf-fg, #f4f4f6) 6%, transparent) 1px, transparent 1px);\n  background-size: 28px 28px;\n  mask-image: linear-gradient(180deg, #000, transparent 75%);\n  pointer-events: none;\n}\n\n.index {\n  position: absolute;\n  top: 1.1rem;\n  left: 1.35rem;\n  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;\n  font-size: 0.78rem;\n  color: var(--mf-stc-accent, #38bdf8);\n}\n\n.cardTitle {\n  position: relative;\n  font-size: clamp(1.35rem, 4.4cqi, 1.9rem);\n  font-weight: 650;\n  letter-spacing: -0.03em;\n}\n\n.blurb {\n  position: relative;\n  color: var(--mf-muted, #a1a1aa);\n  font-size: 0.9rem;\n  line-height: 1.45;\n}\n\n.outro {\n  margin: 0;\n  padding: calc(var(--mf-stc-h, 380px) * 0.3) 0 calc(var(--mf-stc-h, 380px) * 0.3);\n  text-align: center;\n  color: var(--mf-muted, #a1a1aa);\n  font-size: 0.9rem;\n}\n\n@media (prefers-reduced-motion: reduce) {\n  .face,\n  .root[data-axis=\"y\"] .face {\n    transform: none;\n    opacity: 1;\n    will-change: auto;\n  }\n}\n"
+    }
+  ],
+  "tailwindExample": "\"use client\";\n\nimport { useEffect, useRef } from \"react\";\n\nexport function ScrollTiltCardsTailwind() {\n  const ref = useRef(null);\n  const cards = useRef([]);\n  const items = [\"Realtime sync\", \"Edge caching\", \"Typed APIs\", \"Audit trails\", \"Instant rollbacks\"];\n  useEffect(() => {\n    const el = ref.current;\n    const update = () => {\n      const center = el.scrollTop + el.clientHeight / 2;\n      cards.current.forEach((c) => {\n        const p = Math.max(-1, Math.min(1, (c.offsetTop + c.offsetHeight / 2 - center) / (el.clientHeight / 2 + c.offsetHeight / 2)));\n        c.firstChild.style.transform = `rotateX(${p * 38}deg) scale(${1 - Math.abs(p) * 0.12})`;\n        c.firstChild.style.opacity = String(1 - Math.abs(p) * 0.55);\n      });\n    };\n    update();\n    el.addEventListener(\"scroll\", update, { passive: true });\n    return () => el.removeEventListener(\"scroll\", update);\n  }, []);\n  return (\n    <div ref={ref} tabIndex={0} className=\"relative h-[380px] w-full overflow-y-auto rounded-[20px] border border-zinc-800 bg-zinc-900 px-16 text-zinc-100\">\n      <h3 className=\"flex h-64 items-center justify-center text-3xl font-bold\">Tilted into view</h3>\n      <ul className=\"mx-auto flex max-w-lg flex-col gap-12 pb-32\">\n        {items.map((t, i) => (\n          <li key={t} ref={(n) => (cards.current[i] = n)} className=\"h-48 [perspective:900px]\">\n            <div className=\"flex h-full flex-col justify-end rounded-2xl border border-zinc-700 bg-zinc-800 p-5\">\n              <span className=\"text-xs text-sky-400\">0{i + 1}</span>\n              <p className=\"text-2xl font-semibold\">{t}</p>\n            </div>\n          </li>\n        ))}\n      </ul>\n    </div>\n  );\n}"
+}

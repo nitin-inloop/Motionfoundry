@@ -1,0 +1,108 @@
+.root {
+  position: relative;
+  width: 100%;
+  height: var(--mf-scs-h, 380px);
+  border-radius: var(--mf-scs-r, 20px);
+  overflow: hidden;
+  border: 1px solid var(--mf-border, #2e2e38);
+  background: var(--mf-scs-bg, var(--mf-surface, #141419));
+  color: var(--mf-scs-fg, var(--mf-fg, #f4f4f6));
+  container-type: inline-size;
+  isolation: isolate;
+}
+
+.root *,
+.root *::before,
+.root *::after {
+  box-sizing: border-box;
+}
+
+.counter {
+  position: absolute;
+  z-index: 2;
+  top: 1rem;
+  right: 1.25rem;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.78rem;
+  font-variant-numeric: tabular-nums;
+  opacity: 0.7;
+  pointer-events: none;
+}
+
+.viewport {
+  position: relative;
+  height: 100%;
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior: auto;
+  scroll-behavior: auto;
+  scrollbar-width: thin;
+  scrollbar-color: color-mix(in srgb, currentColor 30%, transparent) transparent;
+}
+
+.viewport:focus-visible {
+  outline: 2px solid var(--mf-scs-fg, var(--mf-fg, #e4e4e7));
+  outline-offset: -2px;
+}
+
+.content {
+  position: relative;
+}
+
+.section {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 0.6rem;
+  min-height: calc(var(--mf-scs-h, 380px) * 0.92);
+  padding: 2rem clamp(1.5rem, 10cqi, 6rem);
+  overflow: hidden;
+}
+
+.rings {
+  position: absolute;
+  top: 50%;
+  right: calc(-8% + var(--mf-scs-i, 0) * 3%);
+  width: min(62cqi, 420px);
+  aspect-ratio: 1;
+  transform: translateY(-50%) rotate(calc(var(--mf-scs-i, 0) * 37deg));
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1;
+  opacity: 0.22;
+  pointer-events: none;
+}
+
+.kicker {
+  position: relative;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.78rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  opacity: 0.7;
+}
+
+.title {
+  position: relative;
+  margin: 0;
+  font-size: clamp(2.4rem, 11cqi, 5rem);
+  font-weight: 800;
+  line-height: 0.95;
+  letter-spacing: -0.05em;
+}
+
+.text {
+  position: relative;
+  margin: 0;
+  max-width: 24rem;
+  font-size: 1rem;
+  line-height: 1.5;
+  opacity: 0.78;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rings {
+    transform: translateY(-50%);
+  }
+}

@@ -1,0 +1,210 @@
+.root {
+  position: relative;
+  width: 100%;
+  height: var(--mf-scf-h, 380px);
+  border-radius: var(--mf-scf-r, 20px);
+  overflow: hidden;
+  border: 1px solid var(--mf-border, #2e2e38);
+  background:
+    radial-gradient(120% 70% at 50% 110%, color-mix(in srgb, var(--mf-scf-accent, #a78bfa) 22%, transparent), transparent 70%),
+    var(--mf-surface, #141419);
+  color: var(--mf-fg, #f4f4f6);
+  container-type: inline-size;
+  isolation: isolate;
+}
+
+.root *,
+.root *::before,
+.root *::after {
+  box-sizing: border-box;
+}
+
+.viewport {
+  position: relative;
+  height: 100%;
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior: auto;
+  scroll-behavior: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--mf-border, #2e2e38) transparent;
+}
+
+.viewport:focus-visible {
+  outline: 2px solid var(--mf-fg, #e4e4e7);
+  outline-offset: -2px;
+}
+
+.track {
+  position: relative;
+}
+
+.stage {
+  position: sticky;
+  top: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  height: var(--mf-scf-h, 380px);
+  padding: 1.1rem 1rem 0.9rem;
+  overflow: hidden;
+}
+
+.header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.35rem;
+  text-align: center;
+}
+
+.kicker {
+  padding: 0.22rem 0.65rem;
+  border: 1px solid var(--mf-border, #2e2e38);
+  border-radius: 999px;
+  font-size: 0.66rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--mf-scf-accent, #a78bfa);
+}
+
+.title {
+  margin: 0;
+  font-size: clamp(1.05rem, 3.2cqi, 1.45rem);
+  font-weight: 650;
+  letter-spacing: -0.025em;
+}
+
+.ring {
+  position: relative;
+  flex: 1;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  perspective: 900px;
+  perspective-origin: 50% 45%;
+  transform-style: preserve-3d;
+}
+
+.card {
+  --mf-scf-x: 0px;
+  --mf-scf-z: 0px;
+  --mf-scf-ry: 0deg;
+  --mf-scf-b: 1;
+  --mf-scf-o: 1;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  width: var(--mf-scf-card-w, 152px);
+  height: var(--mf-scf-card-h, 190px);
+  margin: calc(var(--mf-scf-card-h, 190px) / -2) 0 0 calc(var(--mf-scf-card-w, 152px) / -2);
+  padding: 0.7rem 0.8rem;
+  border-radius: 16px;
+  overflow: hidden;
+  background: linear-gradient(150deg, var(--mf-scf-c1, #f472b6), var(--mf-scf-c2, #60a5fa));
+  color: #ffffff;
+  box-shadow:
+    0 24px 40px -18px rgba(0, 0, 0, 0.65),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.18);
+  transform: translateX(var(--mf-scf-x)) translateZ(var(--mf-scf-z)) rotateY(var(--mf-scf-ry));
+  filter: brightness(var(--mf-scf-b));
+  opacity: var(--mf-scf-o);
+  will-change: transform, filter, opacity;
+  backface-visibility: hidden;
+}
+
+.art {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.num {
+  position: relative;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.7rem;
+  opacity: 0.85;
+}
+
+.cardText {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+}
+
+.cardTitle {
+  font-size: 0.98rem;
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  text-shadow: 0 1px 8px rgba(0, 0, 0, 0.25);
+}
+
+.cardMeta {
+  font-size: 0.68rem;
+  opacity: 0.85;
+}
+
+.footer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.caption {
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.count {
+  margin-left: 0.4rem;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.72rem;
+  font-weight: 400;
+  color: var(--mf-muted, #a1a1aa);
+}
+
+.dots {
+  display: flex;
+  gap: 6px;
+}
+
+.dot {
+  width: 7px;
+  height: 7px;
+  padding: 0;
+  border: 0;
+  border-radius: 999px;
+  background: var(--mf-border-strong, #3f3f4a);
+  cursor: pointer;
+  transition: width 200ms ease, background-color 200ms ease;
+}
+
+.dot[data-active] {
+  width: 20px;
+  background: var(--mf-scf-accent, #a78bfa);
+}
+
+.dot:focus-visible {
+  outline: 2px solid var(--mf-fg, #e4e4e7);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card {
+    transform: translateX(var(--mf-scf-x));
+    will-change: auto;
+  }
+
+  .dot {
+    transition: none;
+  }
+}

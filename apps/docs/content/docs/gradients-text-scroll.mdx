@@ -1,59 +1,134 @@
 ---
-title: "Gradients, Text FX & Scroll"
+title: "Scroll, Shaders & UI"
 category: "Overview"
-summary: "The three v2.2 collections: 8 animated gradient backgrounds, 8 GSAP-style text animations, and 8 Lenis-style smooth-scroll effects — all built from scratch."
+summary: "The three headline collections — 18 Lenis-style scroll effects, 13 shader backgrounds, and 50 animated UI primitives — plus the Text FX animations, all built from scratch."
 ---
 
-# Gradients, Text FX & Scroll
+# Scroll, Shaders & UI
 
-MotionFoundry v2.2 adds three collections, 24 components in total. They are written from scratch: no GSAP, no Lenis, and no WebGL dependency. Every component renders a complete demo with zero props, exposes its knobs as typed props (and as live controls on its component page), pauses its animation loop when off-screen, and respects `prefers-reduced-motion`.
+MotionFoundry's site is organised around three collections: **Scroll**, **Shaders**, and **UI**. Every component in them is written from scratch — no GSAP, Lenis, Radix, shadcn, headless-ui, floating-ui, or WebGL library — renders a complete demo with zero props, exposes its knobs as typed props (and as live controls on its component page), pauses animation loops off-screen, and respects `prefers-reduced-motion`. Use the **Dark / Light** toggle and the **Design** picker above any preview to see a component on both canvases and in 11 brand themes.
 
-### Gradients
+### Scroll (18)
 
-Animated backgrounds that render your `children` centered on top. All of them accept `height`, `borderRadius`, `speed` (`0` pauses), and individual color props such as `color1`–`color4` and `backgroundColor`.
+Lenis-style smooth scrolling: each component contains a small `useSmoothScroll` hook that catches wheel input, eases the scroll position toward a target every frame, and reports progress and velocity. Each renders its own scroll viewport (`height`, default 380), so it works anywhere — inside a card, a modal, or a docs preview — and it releases the page at the top and bottom edges instead of trapping it. Shared props: `lerp` (smoothing), `wheelMultiplier`, and `smooth` (set `false` for native scrolling). Touch, keyboard, and scrollbar dragging stay native.
 
-- [`MeshGradient`](/components/mesh-gradient) (`mesh-gradient`) — drifting blurred color blobs with optional film grain.
-- [`AuroraRibbons`](/components/aurora-ribbons) (`aurora-ribbons`) — flowing aurora curtains over a starry sky.
-- [`ConicGradient`](/components/conic-gradient) (`conic-gradient`) — a rotating conic core with a glow ring and pointer tilt.
-- [`LiquidGradient`](/components/liquid-gradient) (`liquid-gradient`) — a Canvas 2D warped color field that looks like liquid.
-- [`WaveGradient`](/components/wave-gradient) (`wave-gradient`) — Stripe-style layered gradient waves.
-- [`GradientOrbs`](/components/gradient-orbs) (`gradient-orbs`) — glowing orbs with depth-based pointer parallax.
-- [`GrainGradient`](/components/grain-gradient) (`grain-gradient`) — shifting linear or radial gradient under SVG film grain.
-- [`SpotlightGradient`](/components/spotlight-gradient) (`spotlight-gradient`) — a pointer-following spotlight over a dot or line grid.
+- [`SmoothScroll`](/components/smooth-scroll) (`smooth-scroll`) — a Lenis-style smooth scroll viewport built from scratch: wheel input drives a target position that a frame-rate independent lerp chases each frame, with an optional progress bar and live velocity readout that make the inertia visible.
+- [`ParallaxLayers`](/components/parallax-layers) (`parallax-layers`) — a self-contained smooth-scroll scene where up to five decorative planes (glow orbs, rings, glass cards, dots and sparks) translate at different fractions of the scroll distance behind native-speed headlines, creating layered depth.
+- [`ScrollFillText`](/components/scroll-fill-text) (`scroll-fill-text`) — an Apple-style reading effect: a pinned paragraph inside its own smooth-scroll viewport whose words blend from a dim color to full color one by one in sync with scroll progress.
+- [`HorizontalScroll`](/components/horizontal-scroll) (`horizontal-scroll`) — Vertical wheel or touch scrolling inside a smooth-scroll viewport drives a pinned horizontal track of cards; the scroll distance is measured from the track width so the last card lands exactly at the end, with a counter and progress line.
+- [`StickyStackCards`](/components/sticky-stack-cards) (`sticky-stack-cards`) — Cards pin one after another inside a smooth-scroll viewport, each settling a few pixels below the last, while the cards underneath scale down and dim in proportion to how many cards cover them.
+- [`VelocityMarquee`](/components/velocity-marquee) (`velocity-marquee`) — Two counter-direction marquee rows pinned inside a smooth-scroll viewport: they drift at a base speed, then accelerate, flip direction and skew with scroll velocity, easing back smoothly when scrolling stops.
+- [`ScrollZoomReveal`](/components/scroll-zoom-reveal) (`scroll-zoom-reveal`) — a pinned panel of pure-CSS synthwave art starts as a small rounded inset and expands to full-bleed as you scroll (clip-path inset plus counter-scale tied to eased progress), then a headline fades up over it.
+- [`ScrollTimeline`](/components/scroll-timeline) (`scroll-timeline`) — a vertical milestone timeline inside a smooth-scroll viewport: the line draws with scroll, and each dot lights up with a springy scale while its card slides in the moment the line tip reaches it.
+- [`ScrollCoverflow`](/components/scroll-coverflow) (`scroll-coverflow`) — a pinned 3D coverflow carousel inside its own smooth-scroll viewport: scrolling glides the cards past the center, where the active card faces forward while its neighbours rotate away and recede in depth.
+- [`SplitScreenScroll`](/components/split-screen-scroll) (`split-screen-scroll`) — a pinned two-column story inside its own smooth-scroll viewport: as you scroll, the text column travels up while the gradient visual column travels down, so each heading meets its paired visual mid-screen, with a progress divider and counter between them.
+- [`PinnedSteps`](/components/pinned-steps) (`pinned-steps`) — a pinned two-column walkthrough inside its own smooth-scroll viewport: scrolling advances through the steps, highlighting and expanding the active step with a live progress line while the visual on the right crossfades to that step's illustration.
+- [`ParallaxColumns`](/components/parallax-columns) (`parallax-columns`) — Three masonry columns of gradient tiles pinned inside their own smooth-scroll viewport; scrolling drives each column at a different speed while the middle column counter-moves, under a frosted title card.
+- [`ScrollWordSwap`](/components/scroll-word-swap) (`scroll-word-swap`) — a big pinned headline inside its own smooth-scroll viewport whose key word swaps once per scroll section with a masked slide, blur or flip, while the word color, background wash and segmented progress bar shift to each word's tint.
+- [`ScrollTiltCards`](/components/scroll-tilt-cards) (`scroll-tilt-cards`) — Feature cards inside a smooth-scroll viewport rotate in 3D as they enter from below, settle perfectly flat at the viewport center, and tilt away again as they leave the top, with scale, depth shadow and glow tied to scroll position.
+- [`ScrollPathDraw`](/components/scroll-path-draw) (`scroll-path-draw`) — a pinned SVG route draws itself in a two-color gradient as you scroll a smooth-scroll viewport, led by a glowing head dot, while milestone markers light up and their labels rise into place the moment the line reaches them.
+- [`ScrollFocusList`](/components/scroll-focus-list) (`scroll-focus-list`) — a large-type list inside a smooth-scroll viewport where the entry nearest the center is sharp, bright, scaled up and underlined in the accent color, while every other entry blurs and dims continuously with its distance from center.
+- [`SnapSections`](/components/snap-sections) (`snap-sections`) — Full-height sections inside their own viewport that advance exactly one section per wheel or trackpad gesture with an eased snap animation, plus clickable dot navigation and PageUp/PageDown/Arrow/Space/Home/End keys; each section's content rises in as it becomes active.
+- [`ScrollColorShift`](/components/scroll-color-shift) (`scroll-color-shift`) — Chapter sections inside a smooth-scroll viewport where the whole background and text color interpolate between up to four colors as each section reaches the center, with automatic light/dark text for contrast and a tunable blend window.
 
-### Text FX
+### Shaders (13)
 
-GSAP-style text animation, implemented in each file with its own small easing and stagger helpers. Most accept `ease` (`power2.out`, `power3.out`, `power4.out`, `expo.out`, `back.out`, `elastic.out`, `sine.inOut`, `circ.out`), `duration`, `stagger`, `staggerFrom` (`start`, `center`, `end`, `edges`, `random`), and `trigger` (`mount`, `inView`, `hover`). Screen readers always receive the full, unsplit text.
+Animated backgrounds that render your `children` centered on top. All accept `height`, `borderRadius`, `speed` (`0` pauses), and individual color props. The five dark shaders — `NebulaGradient`, `PlasmaGradient`, `SilkGradient`, `EmberGradient`, and `EclipseGradient` — are hand-written WebGL fragment shaders with a CSS fallback when WebGL is unavailable or the context is lost; the rest use Canvas 2D, SVG, and CSS. The collection was called **Gradients** in v2.2; `npx motionfoundry list --collection gradients` still works.
 
-- [`SplitText`](/components/split-text) (`split-text`) — split by chars, words, or measured lines and animate from offset, rotation, opacity, and blur.
-- [`MaskWipeText`](/components/mask-wipe-text) (`mask-wipe-text`) — lines wipe in from behind a mask, optionally led by a color bar.
-- [`ElasticLetters`](/components/elastic-letters) (`elastic-letters`) — letters spring toward the pointer and settle elastically.
-- [`TextOnPath`](/components/text-on-path) (`text-on-path`) — text looping along a wave, circle, or arc path.
-- [`RollingText`](/components/rolling-text) (`rolling-text`) — characters roll up on hover or focus; renders a link or button when given `href` or `onClick`.
-- [`MarkerHighlight`](/components/marker-highlight) (`marker-highlight`) — hand-drawn marker sweeps behind chosen words.
-- [`ScatterText`](/components/scatter-text) (`scatter-text`) — letters assemble from a scatter and burst apart on hover.
-- [`CubeFlipWords`](/components/cube-flip-words) (`cube-flip-words`) — a word that rotates through a list on a 3D cube.
+- [`MeshGradient`](/components/mesh-gradient) (`mesh-gradient`) — Five large, heavily blurred color blobs drift on independent CSS keyframe loops over a deep base color, with an optional animated film-grain overlay for a Stripe-style mesh hero.
+- [`AuroraRibbons`](/components/aurora-ribbons) (`aurora-ribbons`) — Translucent aurora curtains drawn as SVG bands whose edges follow layered sine waves, flowing continuously over a starry night sky with adjustable intensity, blur and tilt.
+- [`ConicGradient`](/components/conic-gradient) (`conic-gradient`) — a rotating conic-gradient core with a wide blurred halo, a crisp counter-rotating inner ring and fine noise; the whole origin leans slightly toward the pointer with a lerped tilt.
+- [`LiquidGradient`](/components/liquid-gradient) (`liquid-gradient`) — a Canvas 2D fluid color field: eight Lissajous attractors blended by inverse-distance weighting through a domain-warped coordinate space, rendered at low resolution and smoothly upscaled for a liquid look.
+- [`WaveGradient`](/components/wave-gradient) (`wave-gradient`) — Stripe-style stacked bands of gradient color drawn on Canvas 2D, each layer undulating on two summed sine waves with a fine highlight ridge, over a tilted field with configurable layer count and amplitude.
+- [`GradientOrbs`](/components/gradient-orbs) (`gradient-orbs`) — Glowing radial-gradient orbs float on seeded CSS loops and lean toward the pointer with lerped parallax, where nearer (larger, sharper) orbs move further than distant, softer ones.
+- [`GrainGradient`](/components/grain-gradient) (`grain-gradient`) — a four-stop linear or radial repeating gradient whose color stops travel continuously along the gradient line, finished with an SVG feTurbulence film-grain overlay and soft depth lighting.
+- [`SpotlightGradient`](/components/spotlight-gradient) (`spotlight-gradient`) — a dark dot or line grid lit by a two-tone radial spotlight that follows the pointer with frame-rate-independent easing, brightening the grid beneath it, and drifts along a slow Lissajous path when the pointer leaves.
+- [`NebulaGradient`](/components/nebula-gradient) (`nebula-gradient`) — a raw WebGL fragment shader that layers three passes of domain-warped fbm into glowing nebula clouds with dark dust lanes over near-black space, plus an optional field of softly twinkling stars.
+- [`PlasmaGradient`](/components/plasma-gradient) (`plasma-gradient`) — a raw WebGL plasma shader: three domain-warped fbm iso-contours glow as hyperbolic electric filaments with white-hot cores over a near-black field, finished with an adjustable vignette.
+- [`SilkGradient`](/components/silk-gradient) (`silk-gradient`) — a raw WebGL satin shader: a warped multi-sine height field is lit per pixel with diffuse shading, a tight specular highlight and a broad sheen lobe, so dark fabric folds ripple and catch light.
+- [`EmberGradient`](/components/ember-gradient) (`ember-gradient`) — a raw WebGL fire shader: an fbm-turbulent heat glow climbs from the bottom edge through two heat colors into a dark top, while three parallax layers of flickering, swaying ember particles drift upward and burn out.
+- [`EclipseGradient`](/components/eclipse-gradient) (`eclipse-gradient`) — a raw WebGL eclipse shader: a pure black disk ringed by a slowly turning corona of noise-driven rays, a hot inner glow and an RGB-split chromatic rim, with optional pointer tilt that parallaxes the disk against its corona.
 
-### Scroll
+### UI (50)
 
-Lenis-style smooth scrolling: each component contains a small `useSmoothScroll` hook that catches wheel input, eases the scroll position toward a target every frame, and reports progress and velocity. Each component renders its own scroll viewport (`height`, default 380), so it works anywhere — including inside a card or a docs preview — and it releases the page at the top and bottom edges instead of trapping it. Shared props: `lerp` (smoothing, 0.05–0.3), `wheelMultiplier`, and `smooth` (set `false` for native scrolling). Touch, keyboard, and scrollbar dragging stay native.
+Animated primitives in the spirit of shadcn/ui, built from scratch on React and Motion. Each follows its WAI-ARIA Authoring Practices pattern (roles, roving focus or `aria-activedescendant`, full keyboard support, focus trapping for modal overlays) and supports controlled and uncontrolled use where it makes sense (`value` / `defaultValue` / `onValueChange`, `open` / `defaultOpen` / `onOpenChange`). Overlays portal to `document.body` after mount and position themselves with measured, viewport-aware placement.
 
-- [`SmoothScroll`](/components/smooth-scroll) (`smooth-scroll`) — the base smooth scroller with optional progress bar and velocity readout.
-- [`ParallaxLayers`](/components/parallax-layers) (`parallax-layers`) — layered planes moving at different depths.
-- [`ScrollFillText`](/components/scroll-fill-text) (`scroll-fill-text`) — a pinned paragraph that fills word by word with scroll.
-- [`HorizontalScroll`](/components/horizontal-scroll) (`horizontal-scroll`) — vertical scrolling drives a horizontal card track.
-- [`StickyStackCards`](/components/sticky-stack-cards) (`sticky-stack-cards`) — cards stack while covered cards scale down and dim.
-- [`VelocityMarquee`](/components/velocity-marquee) (`velocity-marquee`) — marquee rows that speed up, skew, and flip with scroll velocity.
-- [`ScrollZoomReveal`](/components/scroll-zoom-reveal) (`scroll-zoom-reveal`) — an inset panel expands to full-bleed as you scroll.
-- [`ScrollTimeline`](/components/scroll-timeline) (`scroll-timeline`) — a timeline line draws with progress and milestones activate.
+#### Interactive Buttons and Controls
+
+- [`Button`](/components/button) (`button`) — a versatile button with six variants, four sizes, a springy press scale, leading/trailing icon slots and a loading state where a spinner slides in beside the label.
+- [`IconButton`](/components/icon-button) (`icon-button`) — a round or square icon-only button with a floating label that springs in on hover or keyboard focus and a ripple that expands from the exact press point.
+- [`ButtonGroup`](/components/button-group) (`button-group`) — an attached single-select button group (segmented control) whose active indicator springs between options, measured from the real button widths.
+- [`CopyButton`](/components/copy-button) (`copy-button`) — Copies text to the clipboard while the copy icon spins into a self-drawing check mark and the label rolls to "Copied", then resets after a configurable delay.
+- [`ToggleGroup`](/components/toggle-group) (`toggle-group`) — a group of pressable toggles (bold / italic / underline, alignment, or view switches) in single or multiple mode.
+- [`LikeButton`](/components/like-button) (`like-button`) — a like toggle whose heart squashes and pops as it fills, firing a shockwave ring and a burst of particles while the counter rolls to the next number.
+- [`SplitButton`](/components/split-button) (`split-button`) — a primary action fused to a chevron that opens an animated menu of secondary actions.
+- [`HoldToConfirm`](/components/hold-to-confirm) (`hold-to-confirm`) — a press-and-hold button for destructive actions: holding sweeps an accent fill across the button (the label inverts as it is covered), releasing early drains it back, and completing the hold fires onConfirm with a pop and a check mark before resetting.
+
+#### Forms and Inputs
+
+- [`FloatingInput`](/components/floating-input) (`floating-input`) — a text field whose label glides up and shrinks when focused or filled, with an animated accent focus ring, helper or error text that cross-fades in place, and an optional clear button that pops in once there is a value.
+- [`OtpInput`](/components/otp-input) (`otp-input`) — a one-time-code field rendered as separate slots: characters spring into place as you type, the active slot glows with a blinking caret, pasting fills every slot at once, and a completed code flashes green.
+- [`PasswordInput`](/components/password-input) (`password-input`) — a password field with an animated eye toggle, a four-segment strength meter that springs and recolors as you type, and a rule checklist whose check marks draw themselves in as each requirement is met.
+- [`TagInput`](/components/tag-input) (`tag-input`) — a text box that turns entries into chips: Enter or comma adds a tag that pops in while its neighbours slide aside, Backspace arms then removes the last chip, duplicates shake the existing chip, and pasted comma lists are split automatically.
+- [`NumberStepper`](/components/number-stepper) (`number-stepper`) — a minus/plus number stepper whose digits roll up or down like an odometer on every change, clamps to min/max/step, accelerates while a button is held, and supports arrow, Page and Home/End keys.
+- [`RangeSlider`](/components/range-slider) (`range-slider`) — a single or dual-thumb slider with a gradient-filled track, thumbs that glide to keyboard steps and swell while dragged, and a value tooltip that springs up above the active thumb.
+- [`RadioCards`](/components/radio-cards) (`radio-cards`) — Selectable option cards that behave as a single radio group.
+- [`SegmentedControl`](/components/segmented-control) (`segmented-control`) — an iOS-style segmented control whose raised thumb springs between segments and squishes slightly while pressed.
+- [`Select`](/components/select) (`select`) — a custom single-select built on the select-only combobox pattern: the listbox scales and fades out of the trigger, flips above it when there is no room, and draws a check next to the selected option.
+- [`Combobox`](/components/combobox) (`combobox`) — a filterable autocomplete input: typing narrows a popover listbox, highlights the matched characters and shows an animated empty state when nothing matches.
+- [`FileDropzone`](/components/file-dropzone) (`file-dropzone`) — a drag-and-drop upload area that lifts and glows in the accent color while files hover over it, with a file list that springs new entries in, animates simulated upload progress, draws a check on completion and slides removed files out.
+- [`StarRating`](/components/star-rating) (`star-rating`) — a star rating input that previews the score as you hover (down to half stars), springs the hovered star up, and pops the stars in sequence when a rating is committed.
+
+#### Navigation
+
+- [`Tabs`](/components/tabs) (`tabs`) — a tab list whose active indicator springs between tabs as a sliding underline or pill, with panels that slide or fade in the direction of travel.
+- [`Breadcrumb`](/components/breadcrumb) (`breadcrumb`) — a breadcrumb trail with chevron, slash, dot or arrow separators, an accent underline that sweeps in on hover, and long trails whose middle pages collapse into an animated ellipsis dropdown.
+- [`Pagination`](/components/pagination) (`pagination`) — Page navigation with smart ellipsis truncation (boundary and sibling counts), Previous/Next buttons and an active-page indicator that springs from page to page.
+- [`Stepper`](/components/stepper) (`stepper`) — a horizontal or vertical multi-step progress indicator whose connectors fill with the accent color and whose step numbers morph into drawn check marks as you advance.
+- [`Accordion`](/components/accordion) (`accordion`) — a vertically stacked set of disclosure sections that open with a smooth height animation and a spring-rotating chevron or plus icon.
+- [`NavigationMenu`](/components/navigation-menu) (`navigation-menu`) — a site header navigation with a pill or underline indicator that glides under the hovered item and a shared dropdown panel that springs open, slides between triggers and cross-fades its sub-links and feature card.
+- [`SidebarNav`](/components/sidebar-nav) (`sidebar-nav`) — an app sidebar with grouped links, an accent pill that glides to the active item, count badges, and a toggle that springs the panel down to an icon rail.
+- [`Menubar`](/components/menubar) (`menubar`) — a desktop-app style menubar (File, Edit, View, Profiles) whose menus fade and lift in, switch on hover once one is open, and support shortcuts, separators, disabled items, and checkbox items.
+
+#### Overlays and Menus
+
+- [`Dialog`](/components/dialog) (`dialog`) — a modal dialog that fades in a blurred backdrop and scales the panel up with a soft ease, with a title, description, body content and footer actions.
+- [`Drawer`](/components/drawer) (`drawer`) — a modal side sheet that springs in from any edge of the viewport over a blurred backdrop, with a title, description, scrollable body and footer actions.
+- [`BottomSheet`](/components/bottom-sheet) (`bottom-sheet`) — a mobile-style modal sheet that springs up from the bottom edge with a drag handle and snap points.
+- [`Popover`](/components/popover) (`popover`) — a click-triggered floating panel with a pointing arrow that scales in from the trigger.
+- [`HoverCard`](/components/hover-card) (`hover-card`) — a delayed preview card that springs out from a link on hover or keyboard focus, showing a user profile with avatar initials, name, bio, follower stats and join date.
+- [`Tooltip`](/components/tooltip) (`tooltip`) — a delayed hover and keyboard-focus tooltip that fades and slides in from its side with a pointing arrow, measured placement and an automatic viewport flip.
+- [`DropdownMenu`](/components/dropdown-menu) (`dropdown-menu`) — an account-style dropdown menu built on the WAI-ARIA menu button pattern, with icons, shortcut hints, group labels, separators, animated checkbox items and a flyout submenu.
+- [`ContextMenu`](/components/context-menu) (`context-menu`) — a right-click menu that scales in at the pointer inside a dashed target area, clamped and flipped to stay inside the viewport.
+- [`AlertDialog`](/components/alert-dialog) (`alert-dialog`) — a confirmation dialog for destructive or irreversible actions that scales in over a blurred backdrop with Cancel focused by default.
+- [`Toast`](/components/toast) (`toast`) — a stacked toaster: notifications pile up with depth, fan out on hover or focus, auto-dismiss with pause-on-hover, swipe away sideways, and include success, error, and promise (loading → done) variants.
+
+#### Data Display
+
+- [`AvatarGroup`](/components/avatar-group) (`avatar-group`) — an overlapping stack of initials avatars with deterministic per-name gradients that cascade in, lift on hover and fan apart when the group is hovered or focused.
+- [`Badge`](/components/badge) (`badge`) — a compact status badge in six variants (default, secondary, outline, success, warning, destructive) that springs in on mount, with an optional pulsing status dot and a remove button that animates the badge out.
+- [`ProgressRing`](/components/progress-ring) (`progress-ring`) — a circular SVG progress indicator whose arc and center percentage tween smoothly to each new value, with an optional two-color gradient stroke, soft glow, rounded caps and a caption.
+- [`StatCard`](/components/stat-card) (`stat-card`) — a dashboard KPI card whose headline number counts up with an ease-out curve while a gradient-filled sparkline draws itself in and an end-point dot pops on.
+- [`BarChart`](/components/bar-chart) (`bar-chart`) — a dependency-free SVG bar chart card whose bars grow in with a staggered spring-like ease, with nice-rounded gridlines, an axis, value labels and a hover/keyboard tooltip.
+- [`Sparkline`](/components/sparkline) (`sparkline`) — a tiny SVG trend line that draws itself in, fills a fading gradient area and lands on a pulsing end dot.
+- [`TreeView`](/components/tree-view) (`tree-view`) — a nested, file-explorer style tree whose folders expand and collapse with an animated height reveal and a rotating chevron.
+- [`DataTable`](/components/data-table) (`data-table`) — a clean data table with sortable column headers, row hover, row selection with a tri-state select-all checkbox, colored status pills and simple pagination.
+- [`ActivityFeed`](/components/activity-feed) (`activity-feed`) — a vertical activity timeline whose events slide in one after another, each with a springy color-coded inline-SVG icon (commit, comment, deploy, merge, alert, star) and a connector line that draws down to the next event.
+- [`ContributionHeatmap`](/components/contribution-heatmap) (`contribution-heatmap`) — a GitHub-style calendar heatmap whose cells pop in along a diagonal wave, shaded in five intensity levels mixed from a single accent color.
+- [`ImageCompare`](/components/image-compare) (`image-compare`) — a before/after comparison slider with a draggable divider and round grab handle that clips one image over the other, split left/right or top/bottom.
+- [`Carousel`](/components/carousel) (`carousel`) — a spring-driven slide carousel with drag/swipe, previous/next arrows and pill dots whose active pill fills as the autoplay timer runs.
+
+### Text FX (8)
+
+GSAP-style text animation — named eases (`power2.out`, `expo.out`, `back.out`, `elastic.out`, …), staggers with `staggerFrom` (`start`, `center`, `end`, `edges`, `random`), and `trigger` (`mount`, `inView`, `hover`). These power the landing page and stay in the package, but are no longer listed in the site navigation: [`SplitText`](/components/split-text), [`MaskWipeText`](/components/mask-wipe-text), [`ElasticLetters`](/components/elastic-letters), [`TextOnPath`](/components/text-on-path), [`RollingText`](/components/rolling-text), [`MarkerHighlight`](/components/marker-highlight), [`ScatterText`](/components/scatter-text), [`CubeFlipWords`](/components/cube-flip-words).
 
 ### Installing
 
-Use the CLI to copy any of them into your project, or import from the package. Apart from React, these 24 components have no dependencies — not even `motion`.
+Copy any component into your project with the CLI, or import it from the package.
 
 ```bash
-npx motionfoundry list --collection gradients
-npx motionfoundry add mesh-gradient split-text smooth-scroll
+npx motionfoundry list --collection scroll
+npx motionfoundry add scroll-coverflow nebula-gradient data-table
 
 # or import them from the package
 pnpm add @motionfoundry/ui motion

@@ -1,0 +1,60 @@
+.root {
+  position: relative;
+  display: inline-grid;
+  place-items: center;
+  width: var(--mf-pr-size, 168px);
+  height: var(--mf-pr-size, 168px);
+  color: var(--mf-fg, #f4f4f6);
+}
+
+.svg {
+  position: absolute;
+  inset: 0;
+  overflow: visible;
+}
+
+.track {
+  stroke: var(--mf-border, #2e2e38);
+}
+
+.bar {
+  filter: drop-shadow(0 0 6px color-mix(in srgb, var(--mf-pr-color, #6366f1) 45%, transparent));
+}
+
+.center {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.125rem;
+  max-width: 72%;
+  text-align: center;
+}
+
+.value {
+  font-size: calc(var(--mf-pr-size, 168px) * 0.22);
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.03em;
+  font-variant-numeric: tabular-nums;
+}
+
+.unit {
+  margin-left: 0.05em;
+  font-size: 0.5em;
+  font-weight: 600;
+  color: var(--mf-muted, #a1a1aa);
+}
+
+.label {
+  font-size: max(0.6875rem, calc(var(--mf-pr-size, 168px) * 0.075));
+  line-height: 1.25;
+  color: var(--mf-muted, #a1a1aa);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bar {
+    transition: none;
+  }
+}

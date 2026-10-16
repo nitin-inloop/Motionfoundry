@@ -1,0 +1,221 @@
+.root {
+  position: relative;
+  width: 100%;
+  height: var(--mf-sws-h, 380px);
+  border-radius: var(--mf-sws-r, 20px);
+  overflow: hidden;
+  border: 1px solid var(--mf-border, #2e2e38);
+  background: var(--mf-surface, #141419);
+  color: var(--mf-fg, #f4f4f6);
+  container-type: inline-size;
+  isolation: isolate;
+}
+
+.root *,
+.root *::before,
+.root *::after {
+  box-sizing: border-box;
+}
+
+.viewport {
+  position: relative;
+  height: 100%;
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior: auto;
+  scroll-behavior: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--mf-border, #2e2e38) transparent;
+}
+
+.viewport:focus-visible {
+  outline: 2px solid var(--mf-fg, #e4e4e7);
+  outline-offset: -2px;
+}
+
+.stage {
+  --mf-sws-t: 0;
+  position: sticky;
+  top: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1.1rem;
+  height: var(--mf-sws-h, 380px);
+  padding: 1.5rem clamp(1rem, 6cqi, 3.5rem) 4.25rem;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.wash {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background:
+    radial-gradient(70% 85% at 50% 115%, color-mix(in srgb, var(--mf-sws-c, #38bdf8) 42%, transparent), transparent 70%),
+    radial-gradient(45% 55% at 8% 0%, color-mix(in srgb, var(--mf-sws-c, #38bdf8) 22%, transparent), transparent 70%),
+    radial-gradient(40% 50% at 95% 10%, color-mix(in srgb, var(--mf-sws-c, #38bdf8) 16%, transparent), transparent 70%);
+  opacity: 0;
+  transition: opacity calc(var(--mf-sws-dur, 600ms) * 1.4) ease;
+  pointer-events: none;
+}
+
+.wash[data-active] {
+  opacity: 1;
+}
+
+.kicker {
+  padding: 0.25rem 0.7rem;
+  border: 1px solid var(--mf-border, #2e2e38);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--mf-surface, #141419) 60%, transparent);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.7rem;
+  color: var(--mf-sws-tint, #38bdf8);
+  transition: color var(--mf-sws-dur, 600ms) ease;
+}
+
+.headline {
+  margin: 0;
+  font-size: clamp(1.9rem, 6.2cqi, 3.4rem);
+  font-weight: 750;
+  line-height: 1.2;
+  letter-spacing: -0.045em;
+  text-align: center;
+  text-wrap: balance;
+}
+
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.visual {
+  display: block;
+}
+
+.slot {
+  position: relative;
+  display: inline-block;
+  height: 1.2em;
+  vertical-align: bottom;
+  overflow: hidden;
+  perspective: 600px;
+  transition: width var(--mf-sws-dur, 600ms) cubic-bezier(0.65, 0, 0.25, 1);
+}
+
+.word {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: inline-block;
+  line-height: 1.2em;
+  white-space: nowrap;
+  color: var(--mf-sws-c, #38bdf8);
+  transform-origin: 50% 50% -0.4em;
+  transition:
+    transform var(--mf-sws-dur, 600ms) cubic-bezier(0.65, 0, 0.25, 1),
+    opacity var(--mf-sws-dur, 600ms) ease,
+    filter var(--mf-sws-dur, 600ms) ease;
+}
+
+.root[data-effect="slide"] .word[data-state="after"] {
+  transform: translateY(105%);
+}
+
+.root[data-effect="slide"] .word[data-state="before"] {
+  transform: translateY(-105%);
+}
+
+.root[data-effect="blur"] .word[data-state="after"] {
+  opacity: 0;
+  filter: blur(12px);
+  transform: translateY(45%) scale(0.96);
+}
+
+.root[data-effect="blur"] .word[data-state="before"] {
+  opacity: 0;
+  filter: blur(12px);
+  transform: translateY(-45%) scale(1.04);
+}
+
+.root[data-effect="flip"] .word[data-state="after"] {
+  opacity: 0;
+  transform: rotateX(-90deg);
+}
+
+.root[data-effect="flip"] .word[data-state="before"] {
+  opacity: 0;
+  transform: rotateX(90deg);
+}
+
+.progress {
+  position: absolute;
+  right: clamp(1rem, 6cqi, 3.5rem);
+  bottom: 1.25rem;
+  left: clamp(1rem, 6cqi, 3.5rem);
+  display: flex;
+  gap: 0.6rem;
+}
+
+.segment {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 0.4rem;
+  min-width: 0;
+}
+
+.track {
+  position: relative;
+  height: 2px;
+  border-radius: 2px;
+  background: var(--mf-border, #2e2e38);
+  overflow: hidden;
+}
+
+.fill {
+  position: absolute;
+  inset: 0;
+  background: var(--mf-sws-tint, #38bdf8);
+  transform: scaleX(clamp(0, calc(var(--mf-sws-t) - var(--mf-sws-i, 0)), 1));
+  transform-origin: 0% 50%;
+}
+
+.segmentLabel {
+  overflow: hidden;
+  color: var(--mf-muted, #a1a1aa);
+  font-size: 0.68rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  transition: color 250ms ease;
+}
+
+.segment[data-active] .segmentLabel {
+  color: var(--mf-fg, #f4f4f6);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .wash,
+  .kicker,
+  .slot,
+  .word,
+  .segmentLabel {
+    transition: none;
+  }
+
+  .root .word[data-state="before"],
+  .root .word[data-state="after"] {
+    opacity: 0;
+    filter: none;
+    transform: none;
+  }
+}

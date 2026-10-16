@@ -1,0 +1,213 @@
+{
+  "slug": "progress-ring",
+  "name": "ProgressRing",
+  "category": "Data Display",
+  "collection": "ui",
+  "featured": false,
+  "addedAt": "2026-10-16",
+  "version": "2.3.0",
+  "requiresMotion": false,
+  "dependencies": [
+    "react"
+  ],
+  "description": "A circular SVG progress indicator whose arc and center percentage tween smoothly to each new value, with an optional two-color gradient stroke, soft glow, rounded caps and a caption.",
+  "tags": [
+    "progress",
+    "ring",
+    "radial",
+    "gauge",
+    "svg",
+    "ui"
+  ],
+  "a11yNotes": "The root has role=\"progressbar\" with aria-valuemin, aria-valuemax, aria-valuenow (the target, not the tweening value), aria-valuetext as a percentage and aria-label from the caption. The SVG is aria-hidden. Under prefers-reduced-motion the value jumps without tweening.",
+  "defaultProps": {
+    "value": 72,
+    "max": 100,
+    "size": 168,
+    "thickness": 12,
+    "color": "#6366f1",
+    "color2": "#22d3ee",
+    "gradient": true,
+    "label": "Storage used",
+    "showValue": true,
+    "roundedCaps": true,
+    "duration": 1200
+  },
+  "controls": [
+    {
+      "prop": "value",
+      "label": "Value",
+      "type": "range",
+      "min": 0,
+      "max": 100,
+      "step": 1
+    },
+    {
+      "prop": "max",
+      "label": "Max",
+      "type": "range",
+      "min": 10,
+      "max": 200,
+      "step": 10
+    },
+    {
+      "prop": "size",
+      "label": "Size (px)",
+      "type": "range",
+      "min": 64,
+      "max": 280,
+      "step": 4
+    },
+    {
+      "prop": "thickness",
+      "label": "Thickness (px)",
+      "type": "range",
+      "min": 2,
+      "max": 32,
+      "step": 1
+    },
+    {
+      "prop": "color",
+      "label": "Color",
+      "type": "color"
+    },
+    {
+      "prop": "color2",
+      "label": "Gradient end color",
+      "type": "color"
+    },
+    {
+      "prop": "gradient",
+      "label": "Gradient stroke",
+      "type": "boolean"
+    },
+    {
+      "prop": "label",
+      "label": "Caption",
+      "type": "text"
+    },
+    {
+      "prop": "showValue",
+      "label": "Show value",
+      "type": "boolean"
+    },
+    {
+      "prop": "roundedCaps",
+      "label": "Rounded caps",
+      "type": "boolean"
+    },
+    {
+      "prop": "duration",
+      "label": "Duration (ms)",
+      "type": "range",
+      "min": 0,
+      "max": 3000,
+      "step": 100
+    }
+  ],
+  "propsApi": [
+    {
+      "name": "value",
+      "type": "number",
+      "default": "72",
+      "description": "Current progress, clamped between 0 and max; changes tween smoothly."
+    },
+    {
+      "name": "max",
+      "type": "number",
+      "default": "100",
+      "description": "Value representing a full ring."
+    },
+    {
+      "name": "size",
+      "type": "number",
+      "default": "168",
+      "description": "Outer diameter in pixels."
+    },
+    {
+      "name": "thickness",
+      "type": "number",
+      "default": "12",
+      "description": "Stroke thickness in pixels."
+    },
+    {
+      "name": "color",
+      "type": "string",
+      "default": "'#6366f1'",
+      "description": "Progress stroke color (gradient start)."
+    },
+    {
+      "name": "color2",
+      "type": "string",
+      "default": "'#22d3ee'",
+      "description": "Gradient end color, used when gradient is true."
+    },
+    {
+      "name": "gradient",
+      "type": "boolean",
+      "default": "true",
+      "description": "Blend color into color2 along the arc."
+    },
+    {
+      "name": "trackColor",
+      "type": "string",
+      "default": "undefined",
+      "description": "Track color; defaults to the theme border color."
+    },
+    {
+      "name": "label",
+      "type": "string",
+      "default": "'Storage used'",
+      "description": "Caption under the number; also the accessible name."
+    },
+    {
+      "name": "showValue",
+      "type": "boolean",
+      "default": "true",
+      "description": "Show the percentage in the center."
+    },
+    {
+      "name": "roundedCaps",
+      "type": "boolean",
+      "default": "true",
+      "description": "Round the ends of the progress arc."
+    },
+    {
+      "name": "duration",
+      "type": "number",
+      "default": "1200",
+      "description": "Tween duration in milliseconds (0 = instant)."
+    },
+    {
+      "name": "children",
+      "type": "React.ReactNode",
+      "default": "undefined",
+      "description": "Custom center content replacing the number and caption."
+    },
+    {
+      "name": "className",
+      "type": "string",
+      "default": "''",
+      "description": "Additional class merged onto the root element."
+    },
+    {
+      "name": "style",
+      "type": "React.CSSProperties",
+      "default": "undefined",
+      "description": "Inline styles merged onto the root element."
+    }
+  ],
+  "files": [
+    {
+      "path": "components/ui/progress-ring.tsx",
+      "type": "registry:component",
+      "content": "\"use client\";\n\nimport * as React from \"react\";\nimport styles from \"../styles/progress-ring.module.css\";\n\nexport interface ProgressRingProps {\n  /** Current progress, clamped between 0 and `max` */\n  value?: number;\n  /** Value that represents a full ring */\n  max?: number;\n  /** Outer diameter in pixels */\n  size?: number;\n  /** Stroke thickness in pixels */\n  thickness?: number;\n  /** Progress stroke color */\n  color?: string;\n  /** Second color for a gradient stroke (used when `gradient` is true) */\n  color2?: string;\n  /** Blend `color` into `color2` along the arc */\n  gradient?: boolean;\n  /** Track color (defaults to the theme border color) */\n  trackColor?: string;\n  /** Caption shown under the number */\n  label?: string;\n  /** Show the numeric percentage in the center */\n  showValue?: boolean;\n  /** Round the ends of the progress arc */\n  roundedCaps?: boolean;\n  /** Tween duration in milliseconds (0 = instant) */\n  duration?: number;\n  /** Optional custom center content (replaces the number + caption) */\n  children?: React.ReactNode;\n  /** Optional className merged onto the root */\n  className?: string;\n  /** Optional inline styles merged onto the root */\n  style?: React.CSSProperties;\n}\n\nconst easeOutCubic = (t: number) => 1 - Math.pow(1 - t, 3);\n\nexport function ProgressRing({\n  value = 72,\n  max = 100,\n  size = 168,\n  thickness = 12,\n  color = \"#6366f1\",\n  color2 = \"#22d3ee\",\n  gradient = true,\n  trackColor,\n  label = \"Storage used\",\n  showValue = true,\n  roundedCaps = true,\n  duration = 1200,\n  children,\n  className = \"\",\n  style,\n}: ProgressRingProps) {\n  const id = React.useId().replace(/:/g, \"\");\n  const safeMax = max > 0 ? max : 100;\n  const target = Math.min(safeMax, Math.max(0, value));\n  const [shown, setShown] = React.useState(0);\n  const shownRef = React.useRef(0);\n\n  React.useEffect(() => {\n    const reduce = window.matchMedia(\"(prefers-reduced-motion: reduce)\").matches;\n    const from = shownRef.current;\n    if (reduce || duration <= 0 || from === target) {\n      shownRef.current = target;\n      setShown(target);\n      return;\n    }\n    let raf = 0;\n    let start = 0;\n    const tick = (now: number) => {\n      if (!start) start = now;\n      const t = Math.min(1, (now - start) / duration);\n      const v = from + (target - from) * easeOutCubic(t);\n      shownRef.current = v;\n      setShown(v);\n      if (t < 1) raf = requestAnimationFrame(tick);\n    };\n    raf = requestAnimationFrame(tick);\n    return () => cancelAnimationFrame(raf);\n  }, [target, duration]);\n\n  const stroke = Math.max(1, Math.min(thickness, size / 2 - 1));\n  const r = (size - stroke) / 2;\n  const c = 2 * Math.PI * r;\n  const pct = shown / safeMax;\n  const offset = c * (1 - pct);\n  const percent = Math.round(pct * 100);\n  const strokeColor = gradient ? `url(#${id}-g)` : color;\n\n  return (\n    <div\n      role=\"progressbar\"\n      aria-valuemin={0}\n      aria-valuemax={safeMax}\n      aria-valuenow={Math.round(target)}\n      aria-valuetext={`${Math.round((target / safeMax) * 100)}%`}\n      aria-label={label || \"Progress\"}\n      className={`${styles.root} ${className}`.trim()}\n      style={{ \"--mf-pr-size\": `${size}px`, \"--mf-pr-color\": color, ...style } as React.CSSProperties}\n    >\n      <svg aria-hidden=\"true\" className={styles.svg} width={size} height={size} viewBox={`0 0 ${size} ${size}`}>\n        {gradient && (\n          <defs>\n            <linearGradient id={`${id}-g`} x1=\"0\" y1=\"0\" x2=\"1\" y2=\"1\">\n              <stop offset=\"0%\" stopColor={color} />\n              <stop offset=\"100%\" stopColor={color2} />\n            </linearGradient>\n          </defs>\n        )}\n        <circle\n          className={styles.track}\n          cx={size / 2}\n          cy={size / 2}\n          r={r}\n          fill=\"none\"\n          strokeWidth={stroke}\n          style={trackColor ? { stroke: trackColor } : undefined}\n        />\n        <circle\n          className={styles.bar}\n          cx={size / 2}\n          cy={size / 2}\n          r={r}\n          fill=\"none\"\n          stroke={strokeColor}\n          strokeWidth={stroke}\n          strokeLinecap={roundedCaps && pct > 0.002 ? \"round\" : \"butt\"}\n          strokeDasharray={c}\n          strokeDashoffset={offset}\n          transform={`rotate(-90 ${size / 2} ${size / 2})`}\n        />\n      </svg>\n      <div className={styles.center}>\n        {children ?? (\n          <>\n            {showValue && (\n              <span className={styles.value}>\n                {percent}\n                <span className={styles.unit}>%</span>\n              </span>\n            )}\n            {label && <span className={styles.label}>{label}</span>}\n          </>\n        )}\n      </div>\n    </div>\n  );\n}\n"
+    },
+    {
+      "path": "components/styles/progress-ring.module.css",
+      "type": "registry:style",
+      "content": ".root {\n  position: relative;\n  display: inline-grid;\n  place-items: center;\n  width: var(--mf-pr-size, 168px);\n  height: var(--mf-pr-size, 168px);\n  color: var(--mf-fg, #f4f4f6);\n}\n\n.svg {\n  position: absolute;\n  inset: 0;\n  overflow: visible;\n}\n\n.track {\n  stroke: var(--mf-border, #2e2e38);\n}\n\n.bar {\n  filter: drop-shadow(0 0 6px color-mix(in srgb, var(--mf-pr-color, #6366f1) 45%, transparent));\n}\n\n.center {\n  position: relative;\n  display: flex;\n  flex-direction: column;\n  align-items: center;\n  justify-content: center;\n  gap: 0.125rem;\n  max-width: 72%;\n  text-align: center;\n}\n\n.value {\n  font-size: calc(var(--mf-pr-size, 168px) * 0.22);\n  font-weight: 700;\n  line-height: 1;\n  letter-spacing: -0.03em;\n  font-variant-numeric: tabular-nums;\n}\n\n.unit {\n  margin-left: 0.05em;\n  font-size: 0.5em;\n  font-weight: 600;\n  color: var(--mf-muted, #a1a1aa);\n}\n\n.label {\n  font-size: max(0.6875rem, calc(var(--mf-pr-size, 168px) * 0.075));\n  line-height: 1.25;\n  color: var(--mf-muted, #a1a1aa);\n}\n\n@media (prefers-reduced-motion: reduce) {\n  .bar {\n    transition: none;\n  }\n}\n"
+    }
+  ],
+  "tailwindExample": "\"use client\";\n\nimport { useEffect, useState } from \"react\";\n\nexport function ProgressRingTailwind({ value = 72, size = 168, thickness = 12, label = \"Storage used\" }) {\n  const [shown, setShown] = useState(0);\n  useEffect(() => { const id = requestAnimationFrame(() => setShown(value)); return () => cancelAnimationFrame(id); }, [value]);\n  const r = (size - thickness) / 2;\n  const c = 2 * Math.PI * r;\n  return (\n    <div role=\"progressbar\" aria-valuemin={0} aria-valuemax={100} aria-valuenow={value} aria-label={label} className=\"relative grid place-items-center\" style={{ width: size, height: size }}>\n      <svg aria-hidden className=\"absolute inset-0 -rotate-90\" width={size} height={size}>\n        <circle cx={size / 2} cy={size / 2} r={r} fill=\"none\" strokeWidth={thickness} className=\"stroke-zinc-800\" />\n        <circle cx={size / 2} cy={size / 2} r={r} fill=\"none\" strokeWidth={thickness} strokeLinecap=\"round\" strokeDasharray={c} strokeDashoffset={c * (1 - shown / 100)} className=\"stroke-indigo-500 transition-[stroke-dashoffset] duration-1000 ease-out\" />\n      </svg>\n      <div className=\"text-center\">\n        <div className=\"text-4xl font-bold tabular-nums text-zinc-100\">{value}<span className=\"text-lg text-zinc-400\">%</span></div>\n        <div className=\"text-xs text-zinc-400\">{label}</div>\n      </div>\n    </div>\n  );\n}"
+}

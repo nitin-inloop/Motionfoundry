@@ -9,18 +9,28 @@ import type { NavIndex } from "../lib/nav";
 import { CommandPalette } from "./command-palette";
 import { GitHubIcon, LogoMark } from "./icons";
 
-const NAV = [
-  { href: "/", label: "Home", match: (p: string) => p === "/" },
-  { href: "/docs/getting-started", label: "Docs", match: (p: string) => p.startsWith("/docs") && p !== "/docs/changelog" },
-  { href: "/components", label: "Components", match: (p: string) => p.startsWith("/components") },
-  { href: "/collections/studio-kit", label: "Studio Kit", match: (p: string) => p.startsWith("/collections") },
-  { href: "/designs", label: "Designs", match: (p: string) => p.startsWith("/designs") },
-  { href: "/docs/changelog", label: "Changelog", match: (p: string) => p === "/docs/changelog" },
-];
+type NavItem = { href: string; label: string; match: (p: string) => boolean };
+
+/** Home, Docs, one entry per listed collection (Scroll, Shaders, UI…), Designs, Changelog. */
+function buildNav(nav: NavIndex): NavItem[] {
+  const collectionOf = new Map(nav.components.map((c) => [`/components/${c.slug}`, c.collection]));
+  return [
+    { href: "/", label: "Home", match: (p) => p === "/" },
+    { href: "/docs/getting-started", label: "Docs", match: (p) => p.startsWith("/docs") && p !== "/docs/changelog" },
+    ...nav.collections.map((col) => ({
+      href: `/collections/${col.id}`,
+      label: col.name,
+      match: (p: string) => p === `/collections/${col.id}` || collectionOf.get(p) === col.id,
+    })),
+    { href: "/designs", label: "Designs", match: (p) => p.startsWith("/designs") },
+    { href: "/docs/changelog", label: "Changelog", match: (p) => p === "/docs/changelog" },
+  ];
+}
 
 export function SiteHeader({ nav }: { nav: NavIndex }) {
   const pathname = usePathname() ?? "/";
   const [paletteOpen, setPaletteOpen] = React.useState(false);
+  const NAV = React.useMemo(() => buildNav(nav), [nav]);
 
   return (
     <header className="sticky top-0 z-40 h-[var(--header-height)] bg-background">

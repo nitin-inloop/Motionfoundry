@@ -1,0 +1,255 @@
+{
+  "slug": "sparkline",
+  "name": "Sparkline",
+  "category": "Data Display",
+  "collection": "ui",
+  "featured": false,
+  "addedAt": "2026-10-16",
+  "version": "2.3.0",
+  "requiresMotion": false,
+  "dependencies": [
+    "react"
+  ],
+  "description": "A tiny SVG trend line that draws itself in, fills a fading gradient area and lands on a pulsing end dot. Hover or arrow keys scrub a cursor with a live value readout, shown as a KPI card or a bare inline chip.",
+  "tags": [
+    "sparkline",
+    "chart",
+    "trend",
+    "kpi",
+    "svg",
+    "ui"
+  ],
+  "a11yNotes": "The chart is one focusable role=\"img\" whose aria-label summarizes the series (point count, first/last, low/high). Left/Right arrows, Home and End move a cursor through the points and a polite live region announces \"Point n: value\"; Escape and blur reset it. Focus is shown with a 2px outline. Under prefers-reduced-motion the line, area and end dot render immediately and the pulse loop is disabled.",
+  "defaultProps": {
+    "values": [
+      42,
+      45,
+      41,
+      48,
+      52,
+      49,
+      55,
+      53,
+      58,
+      62,
+      57,
+      64,
+      61,
+      67,
+      72,
+      69,
+      75,
+      78,
+      74,
+      81,
+      86,
+      83,
+      89,
+      94
+    ],
+    "label": "Weekly signups",
+    "variant": "card",
+    "accentColor": "#6366f1",
+    "curve": "smooth",
+    "showArea": true,
+    "showDot": true,
+    "strokeWidth": 2,
+    "duration": 1200,
+    "width": 260,
+    "height": 64,
+    "valuePrefix": "",
+    "valueSuffix": ""
+  },
+  "controls": [
+    {
+      "prop": "values",
+      "label": "Values (comma separated)",
+      "type": "list"
+    },
+    {
+      "prop": "label",
+      "label": "Label",
+      "type": "text"
+    },
+    {
+      "prop": "variant",
+      "label": "Variant",
+      "type": "select",
+      "options": [
+        "card",
+        "bare"
+      ]
+    },
+    {
+      "prop": "accentColor",
+      "label": "Line color",
+      "type": "color"
+    },
+    {
+      "prop": "curve",
+      "label": "Curve",
+      "type": "select",
+      "options": [
+        "smooth",
+        "linear"
+      ]
+    },
+    {
+      "prop": "showArea",
+      "label": "Gradient area",
+      "type": "boolean"
+    },
+    {
+      "prop": "showDot",
+      "label": "End dot",
+      "type": "boolean"
+    },
+    {
+      "prop": "strokeWidth",
+      "label": "Stroke width",
+      "type": "range",
+      "min": 1,
+      "max": 5,
+      "step": 0.5
+    },
+    {
+      "prop": "duration",
+      "label": "Draw duration (ms)",
+      "type": "range",
+      "min": 0,
+      "max": 3000,
+      "step": 100
+    },
+    {
+      "prop": "width",
+      "label": "Width",
+      "type": "range",
+      "min": 80,
+      "max": 480,
+      "step": 10
+    },
+    {
+      "prop": "height",
+      "label": "Height",
+      "type": "range",
+      "min": 24,
+      "max": 160,
+      "step": 4
+    },
+    {
+      "prop": "valuePrefix",
+      "label": "Value prefix",
+      "type": "text"
+    },
+    {
+      "prop": "valueSuffix",
+      "label": "Value suffix",
+      "type": "text"
+    }
+  ],
+  "propsApi": [
+    {
+      "name": "values",
+      "type": "Array<number | string> | string",
+      "default": "[42, 45, 41, 48, …, 89, 94]",
+      "description": "Data points; numeric strings and comma separated strings are parsed, invalid entries are skipped."
+    },
+    {
+      "name": "label",
+      "type": "string",
+      "default": "'Weekly signups'",
+      "description": "Metric name shown in the card header and used in the accessible summary."
+    },
+    {
+      "name": "variant",
+      "type": "'card' | 'bare'",
+      "default": "'card'",
+      "description": "KPI card with a big readout and trend delta, or just the line with a small readout chip."
+    },
+    {
+      "name": "accentColor",
+      "type": "string",
+      "default": "'#6366f1'",
+      "description": "Line, gradient and dot color."
+    },
+    {
+      "name": "curve",
+      "type": "'smooth' | 'linear'",
+      "default": "'smooth'",
+      "description": "Catmull-Rom smoothed curve or straight segments."
+    },
+    {
+      "name": "showArea",
+      "type": "boolean",
+      "default": "true",
+      "description": "Fill the area under the line with a fading gradient."
+    },
+    {
+      "name": "showDot",
+      "type": "boolean",
+      "default": "true",
+      "description": "Show a pulsing dot on the last point."
+    },
+    {
+      "name": "strokeWidth",
+      "type": "number",
+      "default": "2",
+      "description": "Line thickness in px."
+    },
+    {
+      "name": "duration",
+      "type": "number",
+      "default": "1200",
+      "description": "Draw-in duration in ms."
+    },
+    {
+      "name": "width",
+      "type": "number",
+      "default": "260",
+      "description": "Chart width in px (shrinks to fit narrow containers)."
+    },
+    {
+      "name": "height",
+      "type": "number",
+      "default": "64",
+      "description": "Chart height in px."
+    },
+    {
+      "name": "valuePrefix",
+      "type": "string",
+      "default": "''",
+      "description": "Text placed before formatted values."
+    },
+    {
+      "name": "valueSuffix",
+      "type": "string",
+      "default": "''",
+      "description": "Text placed after formatted values."
+    },
+    {
+      "name": "className",
+      "type": "string",
+      "default": "''",
+      "description": "Additional class merged onto the root element."
+    },
+    {
+      "name": "style",
+      "type": "React.CSSProperties",
+      "default": "undefined",
+      "description": "Inline styles merged onto the root element."
+    }
+  ],
+  "files": [
+    {
+      "path": "components/ui/sparkline.tsx",
+      "type": "registry:component",
+      "content": "\"use client\";\n\nimport * as React from \"react\";\nimport styles from \"../styles/sparkline.module.css\";\n\nexport interface SparklineProps {\n  /** Data points (numbers, numeric strings, or a comma separated string) */\n  values?: Array<number | string> | string;\n  /** Metric name shown in the card header (also the accessible name) */\n  label?: string;\n  /** \"card\" wraps the line in a KPI card with a big readout; \"bare\" renders only the line and a small readout chip */\n  variant?: \"card\" | \"bare\";\n  /** Line, dot and gradient color */\n  accentColor?: string;\n  /** Line interpolation */\n  curve?: \"smooth\" | \"linear\";\n  /** Fill the area under the line with a fading gradient */\n  showArea?: boolean;\n  /** Show a pulsing dot on the last point */\n  showDot?: boolean;\n  /** Line thickness in px */\n  strokeWidth?: number;\n  /** Draw-in duration in ms */\n  duration?: number;\n  /** Chart width in px */\n  width?: number;\n  /** Chart height in px */\n  height?: number;\n  /** Text placed before formatted values */\n  valuePrefix?: string;\n  /** Text placed after formatted values */\n  valueSuffix?: string;\n  /** Optional className merged onto the root */\n  className?: string;\n  /** Optional inline styles merged onto the root */\n  style?: React.CSSProperties;\n}\n\nconst DEFAULT_VALUES = [42, 45, 41, 48, 52, 49, 55, 53, 58, 62, 57, 64, 61, 67, 72, 69, 75, 78, 74, 81, 86, 83, 89, 94];\n\nfunction toNumbers(v: Array<number | string> | string): number[] {\n  const arr = typeof v === \"string\" ? v.split(\",\") : v;\n  return arr.map((x) => (typeof x === \"number\" ? x : parseFloat(String(x).trim()))).filter((n) => Number.isFinite(n));\n}\n\nfunction linePath(pts: Array<[number, number]>, smooth: boolean) {\n  if (!pts.length) return \"\";\n  let d = `M${pts[0][0]},${pts[0][1]}`;\n  for (let i = 1; i < pts.length; i++) {\n    const [x, y] = pts[i];\n    if (!smooth) {\n      d += `L${x},${y}`;\n      continue;\n    }\n    const p0 = pts[i - 2] ?? pts[i - 1];\n    const p1 = pts[i - 1];\n    const p2 = pts[i + 1] ?? pts[i];\n    const c1x = p1[0] + (x - p0[0]) / 6;\n    const c1y = p1[1] + (y - p0[1]) / 6;\n    const c2x = x - (p2[0] - p1[0]) / 6;\n    const c2y = y - (p2[1] - p1[1]) / 6;\n    d += `C${c1x.toFixed(2)},${c1y.toFixed(2)} ${c2x.toFixed(2)},${c2y.toFixed(2)} ${x},${y}`;\n  }\n  return d;\n}\n\nexport function Sparkline({\n  values = DEFAULT_VALUES,\n  label = \"Weekly signups\",\n  variant = \"card\",\n  accentColor = \"#6366f1\",\n  curve = \"smooth\",\n  showArea = true,\n  showDot = true,\n  strokeWidth = 2,\n  duration = 1200,\n  width = 260,\n  height = 64,\n  valuePrefix = \"\",\n  valueSuffix = \"\",\n  className = \"\",\n  style,\n}: SparklineProps) {\n  const gid = `mf-sl-${React.useId().replace(/[^a-zA-Z0-9_-]/g, \"\")}`;\n  const [active, setActive] = React.useState<number | null>(null);\n  const nums = toNumbers(values);\n  const data = nums.length > 1 ? nums : nums.length === 1 ? [nums[0], nums[0]] : [0, 0];\n  const n = data.length;\n  const min = Math.min(...data);\n  const max = Math.max(...data);\n  const pad = Math.max(strokeWidth, 4) + 1;\n  const range = max - min || 1;\n  const pts = data.map((v, i): [number, number] => [\n    +(pad + (i / (n - 1)) * (width - pad * 2)).toFixed(2),\n    +(pad + (1 - (v - min) / range) * (height - pad * 2)).toFixed(2),\n  ]);\n  const d = linePath(pts, curve === \"smooth\");\n  const area = `${d}L${pts[n - 1][0]},${height}L${pts[0][0]},${height}Z`;\n  const last = data[n - 1];\n  const first = data[0];\n  const shown = active !== null ? data[active] : last;\n  const delta = first !== 0 ? ((last - first) / Math.abs(first)) * 100 : 0;\n  const fmt = (v: number) => `${valuePrefix}${v.toLocaleString(\"en-US\")}${valueSuffix}`;\n  const end = pts[n - 1];\n  const ap = active !== null ? pts[active] : null;\n\n  const pick = (e: React.PointerEvent<SVGSVGElement>) => {\n    const r = e.currentTarget.getBoundingClientRect();\n    const x = ((e.clientX - r.left) / Math.max(1, r.width)) * width;\n    const i = Math.round(((x - pad) / Math.max(1, width - pad * 2)) * (n - 1));\n    setActive(Math.max(0, Math.min(n - 1, i)));\n  };\n\n  const onKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {\n    const cur = active ?? n - 1;\n    let next = -1;\n    if (e.key === \"ArrowRight\") next = Math.min(n - 1, cur + 1);\n    else if (e.key === \"ArrowLeft\") next = Math.max(0, cur - 1);\n    else if (e.key === \"Home\") next = 0;\n    else if (e.key === \"End\") next = n - 1;\n    else if (e.key === \"Escape\") return setActive(null);\n    if (next < 0) return;\n    e.preventDefault();\n    setActive(next);\n  };\n\n  const summary = `${label}: ${n} points from ${fmt(first)} to ${fmt(last)}, low ${fmt(min)}, high ${fmt(max)}`;\n\n  return (\n    <div\n      className={`${styles.root} ${className}`.trim()}\n      data-variant={variant}\n      style={{ \"--mf-sl-accent\": accentColor, \"--mf-sl-dur\": `${Math.max(0, duration)}ms`, ...style } as React.CSSProperties}\n    >\n      {variant === \"card\" && (\n        <div className={styles.head}>\n          <span className={styles.label}>{label}</span>\n          <div className={styles.readoutRow}>\n            <span className={styles.big}>{fmt(shown)}</span>\n            {active === null ? (\n              <span className={styles.delta} data-trend={delta >= 0 ? \"up\" : \"down\"}>\n                {delta >= 0 ? \"+\" : \"\"}\n                {delta.toFixed(1)}%\n              </span>\n            ) : (\n              <span className={styles.point}>\n                Point {active + 1} of {n}\n              </span>\n            )}\n          </div>\n        </div>\n      )}\n      <div\n        className={styles.chart}\n        tabIndex={0}\n        role=\"img\"\n        aria-label={`${summary}. Use arrow keys to read values.`}\n        onKeyDown={onKeyDown}\n        onBlur={() => setActive(null)}\n      >\n        <svg\n          width={width}\n          height={height}\n          viewBox={`0 0 ${width} ${height}`}\n          className={styles.svg}\n          aria-hidden=\"true\"\n          onPointerMove={pick}\n          onPointerDown={pick}\n          onPointerLeave={() => setActive(null)}\n        >\n          <defs>\n            <linearGradient id={gid} x1=\"0\" y1=\"0\" x2=\"0\" y2=\"1\">\n              <stop offset=\"0%\" stopColor={accentColor} stopOpacity=\"0.35\" />\n              <stop offset=\"100%\" stopColor={accentColor} stopOpacity=\"0\" />\n            </linearGradient>\n          </defs>\n          {showArea && <path className={styles.area} d={area} fill={`url(#${gid})`} />}\n          <path className={styles.line} d={d} pathLength={1} strokeWidth={strokeWidth} />\n          {ap && (\n            <g className={styles.cursor}>\n              <line x1={ap[0]} x2={ap[0]} y1={0} y2={height} className={styles.guide} />\n              <circle cx={ap[0]} cy={ap[1]} r={strokeWidth + 2.5} className={styles.hoverDot} />\n            </g>\n          )}\n          {showDot && !ap && (\n            <g className={styles.endDot}>\n              <circle cx={end[0]} cy={end[1]} r={strokeWidth + 5} className={styles.pulse} />\n              <circle cx={end[0]} cy={end[1]} r={strokeWidth + 1.5} className={styles.dot} />\n            </g>\n          )}\n        </svg>\n        {variant === \"bare\" && (\n          <span className={styles.chip} data-active={active !== null ? \"\" : undefined} aria-hidden=\"true\">\n            {fmt(shown)}\n          </span>\n        )}\n      </div>\n      <span className={styles.srOnly} aria-live=\"polite\">\n        {active !== null ? `Point ${active + 1}: ${fmt(data[active])}` : \"\"}\n      </span>\n    </div>\n  );\n}\n"
+    },
+    {
+      "path": "components/styles/sparkline.module.css",
+      "type": "registry:style",
+      "content": ".root {\n  --mf-sl-accent: #6366f1;\n  --mf-sl-dur: 1200ms;\n  position: relative;\n  display: inline-flex;\n  flex-direction: column;\n  gap: 0.75rem;\n  color: var(--mf-fg, #f4f4f6);\n  box-sizing: border-box;\n}\n\n.root[data-variant=\"card\"] {\n  padding: 1.125rem 1.25rem 1rem;\n  border: 1px solid var(--mf-border, #2e2e38);\n  border-radius: 0.75rem;\n  background-color: var(--mf-surface, #141419);\n}\n\n.root[data-variant=\"bare\"] {\n  flex-direction: row;\n  align-items: center;\n}\n\n.head {\n  display: flex;\n  flex-direction: column;\n  gap: 0.25rem;\n}\n\n.label {\n  font-size: 0.8125rem;\n  font-weight: 500;\n  color: var(--mf-muted, #a1a1aa);\n}\n\n.readoutRow {\n  display: flex;\n  align-items: baseline;\n  gap: 0.625rem;\n  min-height: 2rem;\n}\n\n.big {\n  font-size: 1.625rem;\n  font-weight: 650;\n  letter-spacing: -0.02em;\n  font-variant-numeric: tabular-nums;\n  line-height: 1.2;\n}\n\n.delta {\n  padding: 0.0625rem 0.4375rem;\n  border-radius: 999px;\n  font-size: 0.75rem;\n  font-weight: 600;\n  font-variant-numeric: tabular-nums;\n  color: #22c55e;\n  background-color: color-mix(in srgb, #22c55e 14%, transparent);\n}\n\n.delta[data-trend=\"down\"] {\n  color: #ef4444;\n  background-color: color-mix(in srgb, #ef4444 14%, transparent);\n}\n\n.point {\n  font-size: 0.75rem;\n  color: var(--mf-subtle, #71717a);\n  font-variant-numeric: tabular-nums;\n}\n\n.chart {\n  position: relative;\n  display: inline-flex;\n  align-items: center;\n  gap: 0.625rem;\n  border-radius: 0.375rem;\n  outline: none;\n}\n\n.chart:focus-visible {\n  outline: 2px solid var(--mf-fg, #e4e4e7);\n  outline-offset: 4px;\n}\n\n.svg {\n  display: block;\n  max-width: 100%;\n  height: auto;\n  overflow: visible;\n  touch-action: pan-y;\n  cursor: crosshair;\n}\n\n.line {\n  fill: none;\n  stroke: var(--mf-sl-accent);\n  stroke-linecap: round;\n  stroke-linejoin: round;\n  stroke-dasharray: 1;\n  stroke-dashoffset: 0;\n  animation: mf-sl-draw var(--mf-sl-dur) cubic-bezier(0.65, 0, 0.35, 1) both;\n}\n\n.area {\n  animation: mf-sl-fade calc(var(--mf-sl-dur) * 0.6) ease both;\n  animation-delay: calc(var(--mf-sl-dur) * 0.45);\n}\n\n.endDot {\n  transform-box: fill-box;\n  transform-origin: center;\n  animation: mf-sl-pop 320ms cubic-bezier(0.34, 1.56, 0.64, 1) both;\n  animation-delay: var(--mf-sl-dur);\n}\n\n.dot,\n.hoverDot {\n  fill: var(--mf-sl-accent);\n  stroke: var(--mf-surface, #141419);\n  stroke-width: 2;\n}\n\n.pulse {\n  fill: var(--mf-sl-accent);\n  opacity: 0;\n  transform-box: fill-box;\n  transform-origin: center;\n  animation: mf-sl-pulse 2s ease-out infinite;\n  animation-delay: var(--mf-sl-dur);\n}\n\n.guide {\n  stroke: var(--mf-border-strong, #52525b);\n  stroke-width: 1;\n  stroke-dasharray: 2 3;\n}\n\n.chip {\n  min-width: 3.5rem;\n  padding: 0.1875rem 0.5rem;\n  border: 1px solid var(--mf-border, #2e2e38);\n  border-radius: 0.375rem;\n  background-color: var(--mf-surface-raised, #1b1b22);\n  font-size: 0.75rem;\n  font-weight: 600;\n  font-variant-numeric: tabular-nums;\n  text-align: center;\n  color: var(--mf-muted, #a1a1aa);\n  transition: color 150ms ease, border-color 150ms ease;\n}\n\n.chip[data-active] {\n  color: var(--mf-fg, #f4f4f6);\n  border-color: var(--mf-sl-accent);\n}\n\n.srOnly {\n  position: absolute;\n  width: 1px;\n  height: 1px;\n  padding: 0;\n  margin: -1px;\n  overflow: hidden;\n  clip: rect(0 0 0 0);\n  white-space: nowrap;\n  border: 0;\n}\n\n@keyframes mf-sl-draw {\n  from {\n    stroke-dashoffset: 1;\n  }\n  to {\n    stroke-dashoffset: 0;\n  }\n}\n\n@keyframes mf-sl-fade {\n  from {\n    opacity: 0;\n  }\n  to {\n    opacity: 1;\n  }\n}\n\n@keyframes mf-sl-pop {\n  from {\n    opacity: 0;\n    transform: scale(0);\n  }\n  to {\n    opacity: 1;\n    transform: scale(1);\n  }\n}\n\n@keyframes mf-sl-pulse {\n  0% {\n    opacity: 0.45;\n    transform: scale(0.5);\n  }\n  100% {\n    opacity: 0;\n    transform: scale(1.6);\n  }\n}\n\n@media (prefers-reduced-motion: reduce) {\n  .line,\n  .area,\n  .endDot,\n  .pulse,\n  .chip {\n    animation: none;\n    transition: none;\n  }\n}\n"
+    }
+  ],
+  "tailwindExample": "\"use client\";\n\nconst values = [42, 45, 41, 48, 52, 49, 55, 53, 58, 62, 57, 64, 61, 67, 72, 69, 75, 78, 74, 81, 86, 83, 89, 94];\nconst W = 260, H = 64, P = 6;\nconst min = Math.min(...values), max = Math.max(...values);\nconst pts = values.map((v, i) => [P + (i / (values.length - 1)) * (W - 2 * P), P + (1 - (v - min) / (max - min)) * (H - 2 * P)]);\nconst d = pts.map(([x, y], i) => `${i ? \"L\" : \"M\"}${x},${y}`).join(\"\");\n\nexport function SparklineTailwind() {\n  const [x, y] = pts[pts.length - 1];\n  return (\n    <div className=\"inline-flex flex-col gap-3 rounded-xl border border-zinc-800 bg-zinc-950 p-5 text-zinc-100\">\n      <span className=\"text-sm text-zinc-400\">Weekly signups</span>\n      <span className=\"text-2xl font-semibold tabular-nums\">94 <span className=\"rounded-full bg-green-500/15 px-2 text-xs text-green-500\">+123.8%</span></span>\n      <svg width={W} height={H} role=\"img\" aria-label=\"Weekly signups from 42 to 94\" className=\"overflow-visible\">\n        <defs><linearGradient id=\"slg\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"1\"><stop offset=\"0\" stopColor=\"#6366f1\" stopOpacity=\".35\" /><stop offset=\"1\" stopColor=\"#6366f1\" stopOpacity=\"0\" /></linearGradient></defs>\n        <path d={`${d}L${x},${H}L${P},${H}Z`} fill=\"url(#slg)\" className=\"animate-[fade_.8s_.5s_both] motion-reduce:animate-none\" />\n        <path d={d} pathLength={1} fill=\"none\" stroke=\"#6366f1\" strokeWidth={2} strokeLinecap=\"round\" strokeDasharray={1} className=\"animate-[draw_1.2s_ease-in-out_both] motion-reduce:animate-none\" />\n        <circle cx={x} cy={y} r={3.5} fill=\"#6366f1\" />\n      </svg>\n      <style>{`@keyframes draw{from{stroke-dashoffset:1}to{stroke-dashoffset:0}}@keyframes fade{from{opacity:0}}`}</style>\n    </div>\n  );\n}"
+}

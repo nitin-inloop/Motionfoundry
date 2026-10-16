@@ -1,0 +1,230 @@
+{
+  "slug": "tooltip",
+  "name": "Tooltip",
+  "category": "Overlays and Menus",
+  "collection": "ui",
+  "featured": false,
+  "addedAt": "2026-10-16",
+  "version": "2.3.0",
+  "requiresMotion": true,
+  "dependencies": [
+    "motion",
+    "react"
+  ],
+  "description": "A delayed hover and keyboard-focus tooltip that fades and slides in from its side with a pointing arrow, measured placement and an automatic viewport flip. The demo shows a formatting toolbar with shortcut hints plus a labelled button.",
+  "tags": [
+    "tooltip",
+    "hint",
+    "overlay",
+    "popover",
+    "placement",
+    "ui"
+  ],
+  "a11yNotes": "Implements the WAI-ARIA tooltip pattern: the bubble has role=\"tooltip\" and the focusable trigger references it with aria-describedby while it is shown. Opens after a delay on mouse hover and immediately on keyboard focus (focus-visible only), stays open while the pointer is over the bubble, and closes on blur, pointer down, pointer leave or Escape. Icon-only triggers carry aria-label. The bubble is portaled to document.body only after mount and copies the --mf-* theme variables from its trigger. Under prefers-reduced-motion it only fades.",
+  "defaultProps": {
+    "content": "Add to library",
+    "triggerLabel": "Hover me",
+    "side": "top",
+    "align": "center",
+    "delayDuration": 400,
+    "skipDelayDuration": 300,
+    "sideOffset": 8,
+    "showArrow": true,
+    "variant": "default",
+    "accentColor": "#6366f1",
+    "showShortcuts": true,
+    "disabled": false
+  },
+  "controls": [
+    {
+      "prop": "content",
+      "label": "Tooltip text",
+      "type": "text"
+    },
+    {
+      "prop": "triggerLabel",
+      "label": "Trigger label",
+      "type": "text"
+    },
+    {
+      "prop": "side",
+      "label": "Side",
+      "type": "select",
+      "options": [
+        "top",
+        "right",
+        "bottom",
+        "left"
+      ]
+    },
+    {
+      "prop": "align",
+      "label": "Align",
+      "type": "select",
+      "options": [
+        "start",
+        "center",
+        "end"
+      ]
+    },
+    {
+      "prop": "delayDuration",
+      "label": "Open delay (ms)",
+      "type": "range",
+      "min": 0,
+      "max": 1500,
+      "step": 50
+    },
+    {
+      "prop": "skipDelayDuration",
+      "label": "Skip delay window (ms)",
+      "type": "range",
+      "min": 0,
+      "max": 1000,
+      "step": 50
+    },
+    {
+      "prop": "sideOffset",
+      "label": "Offset (px)",
+      "type": "range",
+      "min": 0,
+      "max": 24,
+      "step": 1
+    },
+    {
+      "prop": "showArrow",
+      "label": "Arrow",
+      "type": "boolean"
+    },
+    {
+      "prop": "variant",
+      "label": "Variant",
+      "type": "select",
+      "options": [
+        "default",
+        "subtle",
+        "accent"
+      ]
+    },
+    {
+      "prop": "accentColor",
+      "label": "Accent color",
+      "type": "color"
+    },
+    {
+      "prop": "showShortcuts",
+      "label": "Shortcut hints",
+      "type": "boolean"
+    },
+    {
+      "prop": "disabled",
+      "label": "Disabled",
+      "type": "boolean"
+    }
+  ],
+  "propsApi": [
+    {
+      "name": "content",
+      "type": "string",
+      "default": "\"Add to library\"",
+      "description": "Tooltip text for the labelled trigger, or for children when provided."
+    },
+    {
+      "name": "triggerLabel",
+      "type": "string",
+      "default": "\"Hover me\"",
+      "description": "Label of the text trigger button in the default demo."
+    },
+    {
+      "name": "children",
+      "type": "React.ReactNode",
+      "default": "undefined",
+      "description": "Custom trigger; replaces the demo toolbar. Its first focusable element receives aria-describedby."
+    },
+    {
+      "name": "side",
+      "type": "\"top\" | \"right\" | \"bottom\" | \"left\"",
+      "default": "\"top\"",
+      "description": "Preferred side; flips to the opposite side when the viewport has no room."
+    },
+    {
+      "name": "align",
+      "type": "\"start\" | \"center\" | \"end\"",
+      "default": "\"center\"",
+      "description": "Alignment along the trigger edge (clamped to the viewport)."
+    },
+    {
+      "name": "delayDuration",
+      "type": "number",
+      "default": "400",
+      "description": "Hover delay in milliseconds before the tooltip opens."
+    },
+    {
+      "name": "skipDelayDuration",
+      "type": "number",
+      "default": "300",
+      "description": "After a tooltip closes, others open instantly within this window (ms)."
+    },
+    {
+      "name": "sideOffset",
+      "type": "number",
+      "default": "8",
+      "description": "Gap between trigger and tooltip in pixels."
+    },
+    {
+      "name": "showArrow",
+      "type": "boolean",
+      "default": "true",
+      "description": "Show the pointing arrow."
+    },
+    {
+      "name": "variant",
+      "type": "\"default\" | \"subtle\" | \"accent\"",
+      "default": "\"default\"",
+      "description": "High-contrast, bordered surface, or accent-filled bubble."
+    },
+    {
+      "name": "accentColor",
+      "type": "string",
+      "default": "\"#6366f1\"",
+      "description": "Accent color used by the accent variant."
+    },
+    {
+      "name": "showShortcuts",
+      "type": "boolean",
+      "default": "true",
+      "description": "Show keyboard shortcut hints in the toolbar tooltips."
+    },
+    {
+      "name": "disabled",
+      "type": "boolean",
+      "default": "false",
+      "description": "Disable all tooltips."
+    },
+    {
+      "name": "className",
+      "type": "string",
+      "default": "\"\"",
+      "description": "Class merged onto the root."
+    },
+    {
+      "name": "style",
+      "type": "React.CSSProperties",
+      "default": "undefined",
+      "description": "Inline styles merged onto the root."
+    }
+  ],
+  "files": [
+    {
+      "path": "components/ui/tooltip.tsx",
+      "type": "registry:component",
+      "content": "\"use client\";\n\nimport * as React from \"react\";\nimport { createPortal } from \"react-dom\";\nimport { AnimatePresence, motion, useReducedMotion } from \"motion/react\";\nimport styles from \"../styles/tooltip.module.css\";\n\ntype Side = \"top\" | \"right\" | \"bottom\" | \"left\";\ntype Align = \"start\" | \"center\" | \"end\";\n\nexport interface TooltipProps {\n  /** Tooltip text for the labelled trigger (or for `children` when provided) */\n  content?: string;\n  /** Label of the text trigger button in the default demo */\n  triggerLabel?: string;\n  /** Custom trigger; replaces the demo toolbar and gets the `content` tooltip */\n  children?: React.ReactNode;\n  /** Preferred side (flips to the opposite side when there is no room) */\n  side?: Side;\n  /** Alignment along the trigger edge */\n  align?: Align;\n  /** Hover delay in milliseconds before the tooltip opens */\n  delayDuration?: number;\n  /** Window in ms after a tooltip closes during which the next one opens instantly */\n  skipDelayDuration?: number;\n  /** Gap between trigger and tooltip in pixels */\n  sideOffset?: number;\n  /** Show the pointing arrow */\n  showArrow?: boolean;\n  /** Visual style of the tooltip bubble */\n  variant?: \"default\" | \"subtle\" | \"accent\";\n  /** Accent color used by the accent variant and focus highlights */\n  accentColor?: string;\n  /** Show keyboard shortcut hints in the toolbar tooltips */\n  showShortcuts?: boolean;\n  /** Disable all tooltips */\n  disabled?: boolean;\n  /** Optional className merged onto the root */\n  className?: string;\n  /** Optional inline styles merged onto the root */\n  style?: React.CSSProperties;\n}\n\ninterface Config {\n  side: Side;\n  align: Align;\n  delay: number;\n  skip: number;\n  offset: number;\n  arrow: boolean;\n  disabled: boolean;\n  layerStyle: React.CSSProperties;\n  variantClass: string;\n}\n\nconst THEME_TOKENS = [\"--mf-bg\", \"--mf-fg\", \"--mf-surface\", \"--mf-surface-raised\", \"--mf-muted\", \"--mf-subtle\", \"--mf-border\", \"--mf-border-strong\", \"--mf-accent\"];\nconst FOCUSABLE = 'a[href],button,input,select,textarea,[tabindex]:not([tabindex=\"-1\"])';\nconst useIsoLayoutEffect = typeof window !== \"undefined\" ? React.useLayoutEffect : React.useEffect;\nconst clamp = (v: number, min: number, max: number) => Math.max(min, Math.min(v, max));\nconst OPPOSITE: Record<Side, Side> = { top: \"bottom\", bottom: \"top\", left: \"right\", right: \"left\" };\nlet lastClosedAt = -Infinity;\n\nfunction readThemeVars(el: Element | null): Record<string, string> {\n  const out: Record<string, string> = {};\n  if (!el) return out;\n  const cs = getComputedStyle(el);\n  for (const t of THEME_TOKENS) {\n    const v = cs.getPropertyValue(t).trim();\n    if (v) out[t] = v;\n  }\n  return out;\n}\n\n/** Measured placement with a collision flip and cross-axis clamping against the viewport. */\nfunction computePlacement(r: DOMRect, w: number, h: number, side: Side, align: Align, off: number) {\n  const vw = window.innerWidth;\n  const vh = window.innerHeight;\n  const pad = 8;\n  const room: Record<Side, number> = { top: r.top, bottom: vh - r.bottom, left: r.left, right: vw - r.right };\n  const need = (side === \"top\" || side === \"bottom\" ? h : w) + off + pad;\n  const s = room[side] < need && room[OPPOSITE[side]] > room[side] ? OPPOSITE[side] : side;\n  const vertical = s === \"top\" || s === \"bottom\";\n  let top: number;\n  let left: number;\n  if (vertical) {\n    top = s === \"top\" ? r.top - off - h : r.bottom + off;\n    left = align === \"start\" ? r.left : align === \"end\" ? r.right - w : r.left + r.width / 2 - w / 2;\n    left = clamp(left, pad, vw - w - pad);\n  } else {\n    left = s === \"left\" ? r.left - off - w : r.right + off;\n    top = align === \"start\" ? r.top : align === \"end\" ? r.bottom - h : r.top + r.height / 2 - h / 2;\n    top = clamp(top, pad, vh - h - pad);\n  }\n  const arrow = vertical ? clamp(r.left + r.width / 2 - left, 10, w - 10) : clamp(r.top + r.height / 2 - top, 10, h - 10);\n  return { top, left, side: s, arrow };\n}\n\nfunction TooltipAnchor({ content, shortcut, cfg, children }: { content: string; shortcut?: string; cfg: Config; children: React.ReactNode }) {\n  const reduce = useReducedMotion();\n  const id = React.useId();\n  const [open, setOpen] = React.useState(false);\n  const [mounted, setMounted] = React.useState(false);\n  const [pos, setPos] = React.useState<ReturnType<typeof computePlacement> | null>(null);\n  const [themeVars, setThemeVars] = React.useState<Record<string, string>>({});\n  const wrapRef = React.useRef<HTMLSpanElement>(null);\n  const tipRef = React.useRef<HTMLDivElement>(null);\n  const timer = React.useRef<ReturnType<typeof setTimeout> | undefined>(undefined);\n\n  React.useEffect(() => {\n    setMounted(true);\n    return () => clearTimeout(timer.current);\n  }, []);\n\n  const show = (instant: boolean) => {\n    clearTimeout(timer.current);\n    if (cfg.disabled) return;\n    if (instant || cfg.delay <= 0 || performance.now() - lastClosedAt < cfg.skip) setOpen(true);\n    else timer.current = setTimeout(() => setOpen(true), cfg.delay);\n  };\n  const hide = (instant: boolean) => {\n    clearTimeout(timer.current);\n    if (instant) setOpen(false);\n    else timer.current = setTimeout(() => setOpen(false), 100);\n  };\n\n  const place = React.useCallback(() => {\n    const anchor = wrapRef.current;\n    const tip = tipRef.current;\n    if (!anchor || !tip) return;\n    setPos(computePlacement(anchor.getBoundingClientRect(), tip.offsetWidth, tip.offsetHeight, cfg.side, cfg.align, cfg.offset));\n  }, [cfg.side, cfg.align, cfg.offset]);\n\n  useIsoLayoutEffect(() => {\n    const target = wrapRef.current?.querySelector<HTMLElement>(FOCUSABLE) ?? wrapRef.current;\n    if (!open) {\n      target?.removeAttribute(\"aria-describedby\");\n      lastClosedAt = performance.now();\n      return;\n    }\n    setThemeVars(readThemeVars(wrapRef.current));\n    target?.setAttribute(\"aria-describedby\", id);\n    place();\n    const onKey = (e: KeyboardEvent) => {\n      if (e.key === \"Escape\") hide(true);\n    };\n    document.addEventListener(\"keydown\", onKey);\n    window.addEventListener(\"resize\", place);\n    window.addEventListener(\"scroll\", place, true);\n    return () => {\n      document.removeEventListener(\"keydown\", onKey);\n      window.removeEventListener(\"resize\", place);\n      window.removeEventListener(\"scroll\", place, true);\n    };\n  }, [open, place, id]);\n\n  const s = pos?.side ?? cfg.side;\n  const dist = reduce ? 0 : 4;\n  const from = s === \"top\" ? { y: dist } : s === \"bottom\" ? { y: -dist } : s === \"left\" ? { x: dist } : { x: -dist };\n\n  return (\n    <span\n      ref={wrapRef}\n      className={styles.anchor}\n      onPointerEnter={(e) => e.pointerType !== \"touch\" && show(false)}\n      onPointerLeave={() => hide(false)}\n      onPointerDown={() => hide(true)}\n      onFocus={(e) => {\n        let visible = true;\n        try {\n          visible = e.target.matches(\":focus-visible\");\n        } catch {\n          visible = true;\n        }\n        if (visible) show(true);\n      }}\n      onBlur={() => hide(true)}\n    >\n      {children}\n      {mounted &&\n        createPortal(\n          <AnimatePresence>\n            {open && (\n              <motion.div\n                ref={tipRef}\n                id={id}\n                role=\"tooltip\"\n                data-side={s}\n                className={`${styles.tooltip} ${cfg.variantClass}`.trim()}\n                style={{ ...themeVars, ...cfg.layerStyle, top: pos?.top ?? 0, left: pos?.left ?? 0, visibility: pos ? \"visible\" : \"hidden\", \"--mf-tt-arrow\": `${pos?.arrow ?? 0}px` } as React.CSSProperties}\n                initial={{ opacity: 0, scale: reduce ? 1 : 0.96, ...from }}\n                animate={{ opacity: 1, scale: 1, x: 0, y: 0 }}\n                exit={{ opacity: 0, scale: reduce ? 1 : 0.98, transition: { duration: 0.1 } }}\n                transition={{ duration: reduce ? 0.08 : 0.16, ease: [0.16, 1, 0.3, 1] }}\n                onPointerEnter={() => clearTimeout(timer.current)}\n                onPointerLeave={() => hide(false)}\n              >\n                <span>{content}</span>\n                {shortcut && <kbd className={styles.kbd}>{shortcut}</kbd>}\n                {cfg.arrow && <span aria-hidden=\"true\" className={styles.arrow} />}\n              </motion.div>\n            )}\n          </AnimatePresence>,\n          document.body,\n        )}\n    </span>\n  );\n}\n\nconst Icon = ({ d }: { d: string }) => (\n  <svg aria-hidden=\"true\" width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" strokeWidth=\"2\" strokeLinecap=\"round\" strokeLinejoin=\"round\">\n    <path d={d} />\n  </svg>\n);\n\nconst TOOLBAR = [\n  { label: \"Bold\", shortcut: \"Ctrl B\", d: \"M7 5h6a3.5 3.5 0 0 1 0 7H7zM7 12h7a3.5 3.5 0 0 1 0 7H7z\" },\n  { label: \"Italic\", shortcut: \"Ctrl I\", d: \"M19 4h-9M14 20H5M15 4 9 20\" },\n  { label: \"Insert link\", shortcut: \"Ctrl K\", d: \"M10 13a5 5 0 0 0 7.5.5l3-3a5 5 0 0 0-7-7l-1.7 1.7M14 11a5 5 0 0 0-7.5-.5l-3 3a5 5 0 0 0 7 7l1.7-1.7\" },\n];\n\nexport function Tooltip({\n  content = \"Add to library\",\n  triggerLabel = \"Hover me\",\n  children,\n  side = \"top\",\n  align = \"center\",\n  delayDuration = 400,\n  skipDelayDuration = 300,\n  sideOffset = 8,\n  showArrow = true,\n  variant = \"default\",\n  accentColor = \"#6366f1\",\n  showShortcuts = true,\n  disabled = false,\n  className = \"\",\n  style,\n}: TooltipProps) {\n  const cfg: Config = {\n    side,\n    align,\n    delay: Math.max(0, delayDuration),\n    skip: Math.max(0, skipDelayDuration),\n    offset: sideOffset,\n    arrow: showArrow,\n    disabled,\n    layerStyle: { \"--mf-tt-accent\": accentColor } as React.CSSProperties,\n    variantClass: styles[variant] ?? \"\",\n  };\n\n  return (\n    <div className={`${styles.root} ${className}`.trim()} style={{ \"--mf-tt-accent\": accentColor, ...style } as React.CSSProperties}>\n      {children !== undefined ? (\n        <TooltipAnchor content={content} cfg={cfg}>\n          {children}\n        </TooltipAnchor>\n      ) : (\n        <>\n          <div role=\"group\" aria-label=\"Formatting\" className={styles.toolbar}>\n            {TOOLBAR.map((t) => (\n              <TooltipAnchor key={t.label} content={t.label} shortcut={showShortcuts ? t.shortcut : undefined} cfg={cfg}>\n                <button type=\"button\" aria-label={t.label} className={styles.iconButton}>\n                  <Icon d={t.d} />\n                </button>\n              </TooltipAnchor>\n            ))}\n          </div>\n          <TooltipAnchor content={content} cfg={cfg}>\n            <button type=\"button\" className={styles.button}>\n              {triggerLabel}\n            </button>\n          </TooltipAnchor>\n        </>\n      )}\n    </div>\n  );\n}\n"
+    },
+    {
+      "path": "components/styles/tooltip.module.css",
+      "type": "registry:style",
+      "content": ".root {\n  display: inline-flex;\n  align-items: center;\n  gap: 1rem;\n  color: var(--mf-fg, #f4f4f6);\n  font-size: 0.875rem;\n}\n\n.anchor {\n  display: inline-flex;\n}\n\n.toolbar {\n  display: inline-flex;\n  gap: 0.125rem;\n  padding: 0.25rem;\n  border-radius: 0.625rem;\n  border: 1px solid var(--mf-border, #2e2e38);\n  background-color: var(--mf-surface, #141419);\n  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.12);\n}\n\n.iconButton,\n.button {\n  display: inline-flex;\n  align-items: center;\n  justify-content: center;\n  font: inherit;\n  cursor: pointer;\n  color: var(--mf-fg, #f4f4f6);\n  transition: background-color 150ms ease, border-color 150ms ease, color 150ms ease, transform 150ms ease;\n}\n\n.iconButton {\n  width: 2rem;\n  height: 2rem;\n  border: 0;\n  border-radius: 0.375rem;\n  background: transparent;\n  color: var(--mf-muted, #a1a1aa);\n}\n\n.iconButton:hover {\n  background-color: var(--mf-surface-raised, #1b1b22);\n  color: var(--mf-fg, #f4f4f6);\n}\n\n.button {\n  height: 2.375rem;\n  padding: 0 1rem;\n  border-radius: 0.5rem;\n  border: 1px solid var(--mf-border, #2e2e38);\n  background-color: var(--mf-surface, #141419);\n  font-size: 0.875rem;\n  font-weight: 500;\n}\n\n.button:hover {\n  background-color: var(--mf-surface-raised, #1b1b22);\n  border-color: var(--mf-border-strong, #52525b);\n}\n\n.iconButton:active,\n.button:active {\n  transform: scale(0.97);\n}\n\n.iconButton:focus-visible,\n.button:focus-visible {\n  outline: 2px solid var(--mf-fg, #e4e4e7);\n  outline-offset: 2px;\n}\n\n.tooltip {\n  --mf-tt-bg: var(--mf-fg, #f4f4f6);\n  --mf-tt-fg: var(--mf-bg, #09090b);\n  --mf-tt-line: transparent;\n  position: fixed;\n  z-index: 1100;\n  display: inline-flex;\n  align-items: center;\n  gap: 0.5rem;\n  max-width: 18rem;\n  padding: 0.375rem 0.625rem;\n  border-radius: 0.375rem;\n  border: 1px solid var(--mf-tt-line);\n  background-color: var(--mf-tt-bg);\n  color: var(--mf-tt-fg);\n  font-family: inherit;\n  font-size: 0.75rem;\n  font-weight: 500;\n  line-height: 1.35;\n  box-shadow: 0 8px 24px -8px rgba(0, 0, 0, 0.45);\n  pointer-events: auto;\n  white-space: normal;\n}\n\n.tooltip[data-side=\"top\"] {\n  transform-origin: var(--mf-tt-arrow) 100%;\n}\n\n.tooltip[data-side=\"bottom\"] {\n  transform-origin: var(--mf-tt-arrow) 0%;\n}\n\n.tooltip[data-side=\"left\"] {\n  transform-origin: 100% var(--mf-tt-arrow);\n}\n\n.tooltip[data-side=\"right\"] {\n  transform-origin: 0% var(--mf-tt-arrow);\n}\n\n.subtle {\n  --mf-tt-bg: var(--mf-surface-raised, #1b1b22);\n  --mf-tt-fg: var(--mf-fg, #f4f4f6);\n  --mf-tt-line: var(--mf-border, #2e2e38);\n}\n\n.accent {\n  --mf-tt-bg: var(--mf-tt-accent, #6366f1);\n  --mf-tt-fg: #ffffff;\n}\n\n.kbd {\n  padding: 0 0.3rem;\n  border-radius: 0.25rem;\n  background-color: color-mix(in srgb, var(--mf-tt-fg) 14%, transparent);\n  color: color-mix(in srgb, var(--mf-tt-fg) 75%, transparent);\n  font-family: inherit;\n  font-size: 0.6875rem;\n  font-weight: 500;\n  line-height: 1.2rem;\n}\n\n.arrow {\n  position: absolute;\n  width: 8px;\n  height: 8px;\n  background-color: var(--mf-tt-bg);\n  border: 1px solid var(--mf-tt-line);\n  transform: rotate(45deg);\n}\n\n.tooltip[data-side=\"top\"] .arrow {\n  bottom: -5px;\n  left: calc(var(--mf-tt-arrow) - 5px);\n  border-top-color: transparent;\n  border-left-color: transparent;\n}\n\n.tooltip[data-side=\"bottom\"] .arrow {\n  top: -5px;\n  left: calc(var(--mf-tt-arrow) - 5px);\n  border-bottom-color: transparent;\n  border-right-color: transparent;\n}\n\n.tooltip[data-side=\"left\"] .arrow {\n  right: -5px;\n  top: calc(var(--mf-tt-arrow) - 5px);\n  border-bottom-color: transparent;\n  border-left-color: transparent;\n}\n\n.tooltip[data-side=\"right\"] .arrow {\n  left: -5px;\n  top: calc(var(--mf-tt-arrow) - 5px);\n  border-top-color: transparent;\n  border-right-color: transparent;\n}\n\n@media (prefers-reduced-motion: reduce) {\n  .iconButton,\n  .button {\n    transition: none;\n  }\n\n  .iconButton:active,\n  .button:active {\n    transform: none;\n  }\n}\n"
+    }
+  ],
+  "tailwindExample": "\"use client\";\n\nimport { AnimatePresence, motion } from \"motion/react\";\nimport { useId, useRef, useState } from \"react\";\n\nexport function TooltipTailwind({ content = \"Add to library\", label = \"Hover me\", delay = 400 }) {\n  const id = useId();\n  const [open, setOpen] = useState(false);\n  const timer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);\n  const show = (wait: number) => { clearTimeout(timer.current); timer.current = setTimeout(() => setOpen(true), wait); };\n  const hide = () => { clearTimeout(timer.current); setOpen(false); };\n  return (\n    <span className=\"relative inline-flex\" onMouseEnter={() => show(delay)} onMouseLeave={hide}>\n      <button type=\"button\" aria-describedby={open ? id : undefined} onFocus={() => show(0)} onBlur={hide} onKeyDown={(e) => e.key === \"Escape\" && hide()} className=\"h-9 rounded-lg border border-zinc-800 bg-zinc-900 px-4 text-sm font-medium text-zinc-100\">{label}</button>\n      <AnimatePresence>\n        {open && (\n          <span className=\"pointer-events-none absolute bottom-full left-1/2 mb-2 -translate-x-1/2\">\n            <motion.span id={id} role=\"tooltip\" initial={{ opacity: 0, y: 4, scale: 0.96 }} animate={{ opacity: 1, y: 0, scale: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.16 }} className=\"relative block whitespace-nowrap rounded-md bg-zinc-100 px-2.5 py-1.5 text-xs font-medium text-zinc-900 shadow-lg\">\n              {content}\n              <span className=\"absolute left-1/2 top-full -mt-1 h-2 w-2 -translate-x-1/2 rotate-45 bg-zinc-100\" />\n            </motion.span>\n          </span>\n        )}\n      </AnimatePresence>\n    </span>\n  );\n}"
+}

@@ -1,434 +1,320 @@
 import Link from "next/link";
 import { BRAND_CONFIG } from "../lib/brand";
-import { NEW_VERSION_LABEL, getAllComponents, getCategories, getCollections, isNewComponent, type RegistryCollection } from "../lib/registry";
-import { CodeBlock } from "../components/code-block";
-import { HeroActions } from "../components/hero-actions";
-import { DesignMock } from "../components/design-mock";
-import { LazyMount } from "../components/component-preview";
+import { NEW_VERSION_LABEL, getAllComponents, getComponentBySlug, getListedCollections, getListedComponents, isNewComponent } from "../lib/registry";
 import { getDesigns } from "../lib/designs";
+import { DesignMock } from "../components/design-mock";
+import { HeroActions, RollingCta } from "../components/hero-actions";
+import { BLANK, DemoFrame, FILL, SectionHeader, ShaderTile } from "../components/landing/frames";
+import { InstallCommand } from "../components/landing/install-command";
 import {
-  AuroraRibbons,
-  BlurInText,
-  ConfettiButton,
-  ConicGradient,
-  ConstellationCard,
+  // Text
   CubeFlipWords,
-  FlipCard,
-  GrainGradient,
-  HoloTiltCard,
-  LiquidGlassCard,
-  LiquidGradient,
-  LoadingButton,
   MarkerHighlight,
-  MeshGradient,
-  Meteors,
-  NotificationStack,
-  NumberTicker,
-  OrbitLoader,
-  ReorderList,
-  RollingText,
-  RotatingWords,
-  SmoothScroll,
   SplitText,
-  SwipeCards,
-  ToggleSwitch,
+  // Shaders
+  AuroraRibbons,
+  EclipseGradient,
+  EmberGradient,
+  NebulaGradient,
+  PlasmaGradient,
+  SilkGradient,
+  SpotlightGradient,
+  WaveGradient,
+  // Scroll
+  ScrollCoverflow,
+  StickyStackCards,
   VelocityMarquee,
+  // UI
+  AvatarGroup,
+  Badge,
+  Button,
+  DataTable,
+  Dialog,
+  DropdownMenu,
+  FloatingInput,
+  OtpInput,
+  ProgressRing,
+  SegmentedControl,
+  Select,
+  Sparkline,
+  StatCard,
+  Tabs,
+  Toast,
 } from "@motionfoundry/ui";
 
-function Tile({ slug, title, className = "", children }: { slug: string; title: string; className?: string; children: React.ReactNode }) {
-  return (
-    <div className={`group relative flex min-w-0 flex-col overflow-hidden rounded-2xl border border-border bg-card/40 transition hover:border-neutral-600 ${className}`}>
-      <div className="mf-stage flex flex-1 items-center justify-center overflow-hidden p-6">{children}</div>
-      <Link href={`/components/${slug}`} className="flex items-center justify-between border-t border-border px-4 py-2.5 text-sm">
-        <span className="font-medium text-foreground/90">{title}</span>
-        <span className="font-mono text-[11px] text-muted-foreground transition group-hover:text-foreground/90">Open →</span>
-      </Link>
-    </div>
-  );
+/** CSS custom properties the text components read for their font size — lets the hero scale fluidly. */
+type SizeVars = React.CSSProperties & Record<`--${string}`, string>;
+const HEADLINE_SIZE = "clamp(2.25rem, 1rem + 6vw, 5.25rem)";
+const HEADLINE_STYLE: SizeVars = { "--mf-st-size": HEADLINE_SIZE, padding: 0 };
+const ACCENT_STYLE: SizeVars = { "--mf-cf-size": HEADLINE_SIZE };
+const CLOSING_STYLE: SizeVars = { "--mf-mh-size": "clamp(1.875rem, 1rem + 4vw, 3.5rem)" };
+
+/** Display name + one-line caption from the registry (falls back while a component is still being registered). */
+function meta(slug: string, fallback: string) {
+  const c = getComponentBySlug(slug);
+  const description = c?.description ?? "";
+  const firstSentence = description.split(/(?<=\.)\s/)[0] ?? "";
+  return { title: c?.name ?? fallback, caption: firstSentence.length > 0 && firstSentence.length <= 72 ? firstSentence.replace(/\.$/, "") : undefined };
 }
 
-/** Below-the-fold tile: fixed-height stage (no layout shift) that only mounts its demo near the viewport. */
-function LazyTile({
-  slug,
-  title,
-  stageClassName,
-  hint,
-  children,
-}: {
-  slug: string;
-  title: string;
-  stageClassName: string;
-  hint?: string;
-  children: React.ReactNode;
-}) {
-  return (
-    <div className="group relative flex min-w-0 flex-col overflow-hidden rounded-2xl border border-border bg-card/40 transition hover:border-neutral-600">
-      <div className={`mf-stage relative overflow-hidden ${stageClassName}`}>
-        <LazyMount className="absolute inset-0 flex items-center justify-center overflow-hidden">{children}</LazyMount>
-        {hint && (
-          <span className="pointer-events-none absolute bottom-3 right-3 z-10 rounded-full border border-border bg-background/80 px-2.5 py-1 font-mono text-[10px] text-muted-foreground backdrop-blur">
-            {hint}
-          </span>
-        )}
-      </div>
-      <Link href={`/components/${slug}`} className="flex items-center justify-between border-t border-border px-4 py-2.5 text-sm">
-        <span className="font-medium text-foreground/90">{title}</span>
-        <span className="font-mono text-[11px] text-muted-foreground transition group-hover:text-foreground/90">Open →</span>
-      </Link>
-    </div>
-  );
+function joinNames(names: string[]): string {
+  if (names.length <= 1) return names[0] ?? "";
+  return `${names.slice(0, -1).join(", ")} and ${names[names.length - 1]}`;
 }
 
-/** Small live gradient swatch; the whole tile links to the component page. */
-function GradientTile({ slug, title, children }: { slug: string; title: string; children: React.ReactNode }) {
-  return (
-    <Link
-      href={`/components/${slug}`}
-      className="group relative block h-40 min-w-0 overflow-hidden rounded-xl border border-border bg-card transition hover:border-neutral-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-    >
-      <LazyMount className="pointer-events-none absolute inset-0 overflow-hidden">{children}</LazyMount>
-      <span className="absolute inset-x-0 bottom-0 flex items-center justify-between bg-gradient-to-t from-black/70 to-transparent px-3 pb-2.5 pt-8 text-sm">
-        <span className="font-medium text-white">{title}</span>
-        <span className="font-mono text-[10px] text-white/70 transition group-hover:translate-x-0.5 group-hover:text-white">Open →</span>
-      </span>
-    </Link>
-  );
-}
+const SHADERS: { slug: string; fallback: string; className: string; render: React.ReactNode }[] = [
+  {
+    slug: "nebula-gradient",
+    fallback: "Nebula Gradient",
+    className: "col-span-2 row-span-2",
+    render: <NebulaGradient className={FILL}>{BLANK}</NebulaGradient>,
+  },
+  { slug: "silk-gradient", fallback: "Silk Gradient", className: "", render: <SilkGradient className={FILL}>{BLANK}</SilkGradient> },
+  { slug: "eclipse-gradient", fallback: "Eclipse Gradient", className: "", render: <EclipseGradient className={FILL}>{BLANK}</EclipseGradient> },
+  { slug: "plasma-gradient", fallback: "Plasma Gradient", className: "", render: <PlasmaGradient className={FILL}>{BLANK}</PlasmaGradient> },
+  { slug: "ember-gradient", fallback: "Ember Gradient", className: "", render: <EmberGradient className={FILL}>{BLANK}</EmberGradient> },
+  { slug: "wave-gradient", fallback: "Wave Gradient", className: "col-span-2", render: <WaveGradient className={FILL}>{BLANK}</WaveGradient> },
+  { slug: "aurora-ribbons", fallback: "Aurora Ribbons", className: "col-span-2", render: <AuroraRibbons className={FILL}>{BLANK}</AuroraRibbons> },
+];
 
-/** Empty children suppress a background's built-in demo copy so only the effect shows in a swatch. */
-const SWATCH = <span aria-hidden="true" />;
-/** Backgrounds default to a fixed pixel height; let them fill their tile / grow with the hero instead. */
-const SWATCH_STYLE: React.CSSProperties = { height: "100%", border: "none" };
-const HERO_GRADIENT_STYLE: React.CSSProperties = { height: "auto", border: "none" };
-
-function CollectionIntro({
-  id,
-  fallbackName,
-  count,
-  collections,
-  children,
-}: {
-  id: string;
-  fallbackName: string;
-  count: number;
-  collections: RegistryCollection[];
-  children: React.ReactNode;
-}) {
-  const collection = collections.find((c) => c.id === id);
-  return (
-    <div className="flex min-w-0 flex-col gap-3">
-      <div className="flex items-center gap-2">
-        <h3 className="text-xl font-semibold tracking-tight">{collection?.name ?? fallbackName}</h3>
-        {count > 0 && <span className="rounded-full border border-border px-2 py-0.5 font-mono text-[10px] text-muted-foreground">{count} components</span>}
-      </div>
-      <p className="text-sm leading-relaxed text-muted-foreground">{collection?.description ?? children}</p>
-      <Link href={`/collections/${id}`} className="mt-1 text-sm text-foreground/80 underline decoration-neutral-600 underline-offset-4 hover:text-foreground">
-        Browse collection →
-      </Link>
-    </div>
-  );
-}
-
-/** Column spans for a 6-column grid so any number of collection cards fills complete rows. */
-function collectionSpan(index: number, total: number): string {
-  if (total <= 1) return "lg:col-span-6";
-  const rem = total % 3;
-  // Rows of three, except the first row(s) take the remainder as halves (5 → 2 + 3, 4 → 2 + 2, 7 → 2 + 2 + 3).
-  const halves = rem === 0 ? 0 : rem === 2 ? 2 : 4;
-  return index < Math.min(halves, total) ? "lg:col-span-3" : "lg:col-span-2";
-}
+/** UI bento: spans sum to full rows at 2 columns (sm) and 4 columns (lg). */
+const UI_TILES: { slug: string; fallback: string; className: string; render: React.ReactNode }[] = [
+  { slug: "data-table", fallback: "Data Table", className: "sm:col-span-2 row-span-2", render: <DataTable /> },
+  { slug: "stat-card", fallback: "Stat Card", className: "", render: <StatCard /> },
+  { slug: "progress-ring", fallback: "Progress Ring", className: "", render: <ProgressRing /> },
+  { slug: "tabs", fallback: "Tabs", className: "sm:col-span-2", render: <Tabs /> },
+  { slug: "otp-input", fallback: "OTP Input", className: "", render: <OtpInput /> },
+  { slug: "floating-input", fallback: "Floating Input", className: "", render: <FloatingInput /> },
+  { slug: "segmented-control", fallback: "Segmented Control", className: "", render: <SegmentedControl /> },
+  { slug: "button", fallback: "Button", className: "", render: <Button /> },
+  { slug: "select", fallback: "Select", className: "", render: <Select /> },
+  { slug: "dropdown-menu", fallback: "Dropdown Menu", className: "", render: <DropdownMenu /> },
+  { slug: "toast", fallback: "Toast", className: "sm:col-span-2", render: <Toast /> },
+  { slug: "avatar-group", fallback: "Avatar Group", className: "", render: <AvatarGroup /> },
+  { slug: "badge", fallback: "Badge", className: "", render: <Badge /> },
+  { slug: "dialog", fallback: "Dialog", className: "", render: <Dialog /> },
+  { slug: "sparkline", fallback: "Sparkline", className: "", render: <Sparkline /> },
+];
 
 export default function HomePage() {
-  const components = getAllComponents();
-  const categories = getCategories();
-  const collections = getCollections();
+  const all = getAllComponents();
+  const listed = getListedComponents();
+  const collections = getListedCollections();
   const designs = getDesigns();
-  const countIn = (id: string) => components.filter((c) => c.collection === id).length;
-  const studioKitCount = countIn("studio-kit");
-  const newComponents = components.filter(isNewComponent);
-  const newCollections = collections.filter((col) => newComponents.some((c) => c.collection === col.id));
-  const newCollectionNames = newCollections.map((c) => c.name);
-  const newCollectionList =
-    newCollectionNames.length > 1 ? `${newCollectionNames.slice(0, -1).join(", ")} & ${newCollectionNames[newCollectionNames.length - 1]}` : newCollectionNames[0] ?? "";
+  const countIn = (id: string) => all.filter((c) => c.collection === id).length;
+  const collection = (id: string) => collections.find((c) => c.id === id);
+  const newListed = listed.filter(isNewComponent);
+
+  const scroll = collection("scroll");
+  const shaders = collection("shaders");
+  const ui = collection("ui");
 
   return (
-    <div className="space-y-28 overflow-x-clip pb-24">
-      <section className="relative overflow-hidden border-b border-border">
-        <MeshGradient borderRadius={0} style={HERO_GRADIENT_STYLE}>
-          {/* Cancels the background’s 2rem content padding so the hero aligns with the rest of the page. */}
-          <div className="-m-8 w-[calc(100%+4rem)] self-stretch bg-gradient-to-b from-background/30 via-background/50 to-background text-left">
-            <div className="mx-auto grid max-w-7xl gap-12 px-6 pb-20 pt-16 lg:grid-cols-[1.15fr_1fr] lg:items-center">
-              <div className="min-w-0 space-y-7">
-                {newComponents.length > 0 ? (
-                  <Link
-                    href="/components?new=1"
-                    className="inline-flex max-w-full items-center gap-2 rounded-full border border-emerald-400/30 bg-emerald-500/10 px-3.5 py-1 font-mono text-xs text-emerald-200 backdrop-blur hover:border-emerald-300/50"
-                  >
-                    <span className="min-w-0 truncate">
-                      {NEW_VERSION_LABEL} • New: {newCollectionList} — {newComponents.length} components →
-                    </span>
-                  </Link>
-                ) : (
-                  <Link
-                    href="/collections/studio-kit"
-                    className="inline-flex max-w-full items-center gap-2 rounded-full border border-sky-500/30 bg-sky-500/10 px-3.5 py-1 font-mono text-xs text-sky-300 backdrop-blur hover:border-sky-400/50"
-                  >
-                    <span className="min-w-0 truncate">
-                      v{BRAND_CONFIG.version} • Studio Kit — {studioKitCount} components →
-                    </span>
-                  </Link>
-                )}
-                <BlurInText
+    <div className="space-y-28 overflow-x-clip pb-24 sm:space-y-36">
+      {/* 1 — Hero: typography first, one quiet spotlight inside a framed panel. */}
+      <section className="px-4 pt-6 sm:px-6" aria-labelledby="hero-heading">
+        <div className="mx-auto max-w-7xl overflow-hidden rounded-3xl border border-border bg-background">
+          <SpotlightGradient
+            color1="#525252"
+            color2="#262626"
+            backgroundColor="#0a0a0a"
+            radius={480}
+            gridType="dots"
+            gridOpacity={0.06}
+            speed={0.45}
+            borderRadius={0}
+            className="!h-auto !border-0"
+          >
+            <div className="flex w-full min-w-0 flex-col items-center py-12 text-center sm:py-20">
+              {newListed.length > 0 ? (
+                <Link
+                  href="/components?new=1"
+                  className="inline-flex max-w-full items-center gap-2 rounded-full border border-border bg-background/70 px-3.5 py-1 text-xs text-muted-foreground backdrop-blur transition hover:border-neutral-600 hover:text-foreground"
+                >
+                  <span className="font-mono text-foreground/90">{NEW_VERSION_LABEL}</span>
+                  <span aria-hidden="true" className="h-3 w-px bg-border" />
+                  <span className="min-w-0 truncate">{newListed.length} new components →</span>
+                </Link>
+              ) : (
+                <span className="inline-flex max-w-full items-center gap-2 rounded-full border border-border bg-background/70 px-3.5 py-1 text-xs text-muted-foreground backdrop-blur">
+                  <span className="font-mono text-foreground/90">v{BRAND_CONFIG.version}</span>
+                  <span aria-hidden="true" className="h-3 w-px bg-border" />
+                  <span>Open source · {BRAND_CONFIG.license}</span>
+                </span>
+              )}
+
+              <div id="hero-heading" className="mt-8 flex max-w-5xl flex-col items-center">
+                <SplitText
                   as="h1"
-                  text="Motion primitives forged for production React"
-                  className="text-4xl font-semibold leading-[1.05] tracking-tight text-foreground sm:text-5xl md:text-6xl"
+                  text="Motion components"
+                  splitBy="chars"
+                  stagger={0.03}
+                  fromBlur={8}
+                  className="!font-semibold"
+                  style={HEADLINE_STYLE}
                 />
-                <p className="max-w-xl text-lg leading-relaxed text-foreground/75">
-                  {components.length} animated components across {collections.length} collections. Copy the source with one CLI command or import the package — every
-                  component is typed, SSR-safe, and respects reduced motion.
-                </p>
-                <HeroActions
-                  componentCount={components.length}
-                  secondary={
-                    newComponents.length > 0
-                      ? { label: `What's new in ${NEW_VERSION_LABEL}`, href: "/components?new=1" }
-                      : { label: "Browse Studio Kit", href: "/collections/studio-kit" }
-                  }
-                />
-              </div>
-              <div className="min-w-0">
-                <CodeBlock
-                  filename="terminal"
-                  language="bash"
-                  code={`# copy components (source + CSS module) into your app\nnpx ${BRAND_CONFIG.cliName} add mesh-gradient split-text smooth-scroll\n\n# or install the package\npnpm add ${BRAND_CONFIG.packageScope} motion`}
+                <CubeFlipWords
+                  as="p"
+                  prefix="built for"
+                  words={["scroll", "shaders", "interfaces"]}
+                  color="#737373"
+                  accentColor="#fafafa"
+                  className="!font-semibold"
+                  style={ACCENT_STYLE}
                 />
               </div>
+
+              <p className="mt-7 max-w-xl text-base leading-relaxed text-muted-foreground sm:text-lg">
+                {listed.length} animated React components across {joinNames(collections.map((c) => c.name))}. Copy the source with one command —
+                typed, SSR-safe, and respectful of reduced motion.
+              </p>
+
+              <HeroActions className="mt-9" primary={{ label: "Get started", href: "/docs/getting-started" }} secondary={{ label: "Explore Scroll", href: "/collections/scroll" }} />
+
+              <InstallCommand className="mt-6" command={`npx ${BRAND_CONFIG.cliName} add split-text cube-flip-words`} />
             </div>
-          </div>
-        </MeshGradient>
-      </section>
+          </SpotlightGradient>
 
-      <section className="mx-auto grid max-w-7xl grid-cols-2 gap-4 px-6 md:grid-cols-4">
-        {[
-          { value: components.length, label: "Animated components" },
-          { value: collections.length, label: "Collections" },
-          { value: categories.length, label: "Categories" },
-          { value: designs.length, label: "Design system presets" },
-        ].map((stat) => (
-          <div key={stat.label} className="min-w-0 rounded-2xl border border-border bg-card/40 p-5">
-            <NumberTicker value={stat.value} suffix="" className="text-3xl font-semibold tracking-tight text-foreground" />
-            <div className="mt-1 text-sm text-muted-foreground">{stat.label}</div>
-          </div>
-        ))}
-      </section>
-
-      <section id="new" className="mx-auto max-w-7xl scroll-mt-24 space-y-12 px-6" aria-labelledby="new-heading">
-        <div className="flex flex-wrap items-end justify-between gap-4">
-          <div className="space-y-2">
-            <div className="font-mono text-xs uppercase tracking-wider text-emerald-300">New in {NEW_VERSION_LABEL}</div>
-            <h2 id="new-heading" className="text-3xl font-semibold tracking-tight">
-              {newComponents.length > 0 ? `${newComponents.length} new components` : "New components"}: gradients, text effects, and scroll
-            </h2>
-            <p className="max-w-2xl text-muted-foreground">
-              Three new collections — living gradient backgrounds, character-level text effects, and scroll-driven storytelling. Every tile below is the real component.
-            </p>
-          </div>
-          <Link href="/components?new=1" className="text-sm text-foreground/80 underline decoration-neutral-600 underline-offset-4 hover:text-foreground">
-            See everything new →
-          </Link>
-        </div>
-
-        <div className="grid gap-6 border-t border-border pt-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,2.4fr)]">
-          <CollectionIntro id="gradients" fallbackName="Gradients" count={countIn("gradients")} collections={collections}>
-            Animated mesh, conic, liquid, and grain gradients that drop in behind any section as a background.
-          </CollectionIntro>
-          <div className="grid min-w-0 grid-cols-2 gap-3 md:grid-cols-4">
-            <GradientTile slug="aurora-ribbons" title="Aurora Ribbons">
-              <AuroraRibbons borderRadius={0} style={SWATCH_STYLE}>
-                {SWATCH}
-              </AuroraRibbons>
-            </GradientTile>
-            <GradientTile slug="liquid-gradient" title="Liquid">
-              <LiquidGradient borderRadius={0} style={SWATCH_STYLE}>
-                {SWATCH}
-              </LiquidGradient>
-            </GradientTile>
-            <GradientTile slug="conic-gradient" title="Conic">
-              <ConicGradient borderRadius={0} style={SWATCH_STYLE}>
-                {SWATCH}
-              </ConicGradient>
-            </GradientTile>
-            <GradientTile slug="grain-gradient" title="Grain">
-              <GrainGradient borderRadius={0} style={SWATCH_STYLE}>
-                {SWATCH}
-              </GrainGradient>
-            </GradientTile>
-          </div>
-        </div>
-
-        <div className="grid gap-6 border-t border-border pt-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,2.4fr)]">
-          <CollectionIntro id="text-fx" fallbackName="Text FX" count={countIn("text-fx")} collections={collections}>
-            Split, mask, roll, and highlight headlines letter by letter — accessible to screen readers by default.
-          </CollectionIntro>
-          <div className="grid min-w-0 grid-cols-1 gap-3 sm:grid-cols-2">
-            <LazyTile slug="split-text" title="Split Text" stageClassName="h-44">
-              <div className="scale-[0.75] sm:scale-[0.85]">
-                <SplitText />
-              </div>
-            </LazyTile>
-            <LazyTile slug="cube-flip-words" title="Cube Flip Words" stageClassName="h-44">
-              <div className="scale-[0.75] sm:scale-[0.85]">
-                <CubeFlipWords />
-              </div>
-            </LazyTile>
-            <LazyTile slug="rolling-text" title="Rolling Text" stageClassName="h-44">
-              <div className="scale-[0.75] sm:scale-[0.85]">
-                <RollingText />
-              </div>
-            </LazyTile>
-            <LazyTile slug="marker-highlight" title="Marker Highlight" stageClassName="h-44">
-              <div className="scale-[0.6] sm:scale-[0.62]">
-                <MarkerHighlight />
-              </div>
-            </LazyTile>
-          </div>
-        </div>
-
-        <div className="grid gap-6 border-t border-border pt-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,2.4fr)]">
-          <CollectionIntro id="scroll" fallbackName="Scroll" count={countIn("scroll")} collections={collections}>
-            Smooth scrolling, parallax, sticky stacks, and scroll-linked reveals — each renders its own scroll viewport.
-          </CollectionIntro>
-          <div className="grid min-w-0 grid-cols-1 gap-3 md:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)]">
-            <LazyTile slug="smooth-scroll" title="Smooth Scroll" stageClassName="h-[380px]" hint="Scroll inside ↓">
-              <div className="h-full w-full [&>*]:max-h-full">
-                <SmoothScroll />
-              </div>
-            </LazyTile>
-            <LazyTile slug="velocity-marquee" title="Velocity Marquee" stageClassName="h-[380px]" hint="Scroll inside ↕">
-              <div className="h-full w-full [&>*]:max-h-full">
-                <VelocityMarquee />
-              </div>
-            </LazyTile>
-          </div>
+          <nav aria-label="Collections" className="grid grid-cols-1 divide-y divide-border border-t border-border sm:grid-cols-3 sm:divide-x sm:divide-y-0">
+            {collections.map((c) => (
+              <Link key={c.id} href={`/collections/${c.id}`} className="group flex items-center justify-between gap-4 px-6 py-4 transition hover:bg-card/60">
+                <span className="text-sm font-medium text-foreground/90">{c.name}</span>
+                <span className="flex items-center gap-2 font-mono text-xs text-muted-foreground">
+                  {countIn(c.id)}
+                  <span aria-hidden="true" className="transition group-hover:translate-x-0.5 group-hover:text-foreground">
+                    →
+                  </span>
+                </span>
+              </Link>
+            ))}
+          </nav>
         </div>
       </section>
 
-      <section className="mx-auto max-w-7xl space-y-8 px-6">
-        <div className="flex flex-wrap items-end justify-between gap-4">
-          <div className="space-y-2">
-            <div className="font-mono text-xs uppercase tracking-wider text-sky-400">Studio Kit · v2.1</div>
-            <h2 className="text-3xl font-semibold tracking-tight">
-              Studio Kit: <RotatingWords prefix="" words={["feedback", "delight", "clarity", "momentum"]} />
-            </h2>
-            <p className="max-w-2xl text-muted-foreground">
-              {studioKitCount} everyday motion patterns, rebuilt on the {BRAND_CONFIG.name} conventions: CSS Modules, typed props, keyboard support, and zero Tailwind or icon dependencies.
-            </p>
-          </div>
-          <Link href="/docs/studio-kit" className="text-sm text-foreground/80 underline decoration-neutral-600 underline-offset-4 hover:text-white">
-            Read the Studio Kit guide →
-          </Link>
-        </div>
-
-        <div className="grid auto-rows-[260px] grid-cols-1 gap-4 md:grid-cols-3">
-          <Tile slug="meteors" title="Meteors" className="md:col-span-2">
-            <Meteors className="h-full w-full rounded-xl" />
-          </Tile>
-          <Tile slug="confetti-button" title="Confetti Button">
-            <ConfettiButton />
-          </Tile>
-          <Tile slug="flip-card" title="Flip Card" className="md:row-span-2">
-            <FlipCard />
-          </Tile>
-          <Tile slug="swipe-cards" title="Swipe Cards" className="md:row-span-2">
-            <SwipeCards />
-          </Tile>
-          <Tile slug="notification-stack" title="Notification Stack" className="md:row-span-2">
-            <NotificationStack />
-          </Tile>
-          <Tile slug="orbit-loader" title="Orbit Loader">
-            <OrbitLoader />
-          </Tile>
-          <Tile slug="toggle-switch" title="Toggle Switch">
-            <ToggleSwitch />
-          </Tile>
-          <Tile slug="reorder-list" title="Reorder List" className="md:row-span-2">
-            <ReorderList />
-          </Tile>
-          <Tile slug="loading-button" title="Loading Button" className="md:col-span-2">
-            <LoadingButton />
-          </Tile>
+      {/* 2 — Scroll */}
+      <section className="mx-auto max-w-7xl space-y-10 px-4 sm:px-6" aria-labelledby="scroll-heading">
+        <SectionHeader
+          id="scroll-heading"
+          eyebrow={scroll?.name ?? "Scroll"}
+          count={countIn("scroll")}
+          title="Scroll-driven storytelling"
+          description={scroll?.description ?? "Sticky stacks, velocity marquees, and coverflows — each demo runs in its own scroll viewport."}
+          href="/collections/scroll"
+          linkLabel={`Browse ${scroll?.name ?? "Scroll"}`}
+        />
+        <div className="grid min-w-0 grid-cols-1 gap-4 md:grid-cols-[minmax(0,1.35fr)_minmax(0,1fr)]">
+          <DemoFrame slug="sticky-stack-cards" title={meta("sticky-stack-cards", "Sticky Stack Cards").title} stageClassName="h-[440px]" hint="Scroll inside ↓" padded={false}>
+            <StickyStackCards height={440} borderRadius={0} className="!border-0" />
+          </DemoFrame>
+          <DemoFrame slug="velocity-marquee" title={meta("velocity-marquee", "Velocity Marquee").title} stageClassName="h-[440px]" hint="Scroll inside ↕" padded={false}>
+            <VelocityMarquee height={440} borderRadius={0} className="!border-0" />
+          </DemoFrame>
+          <DemoFrame
+            slug="scroll-coverflow"
+            title={meta("scroll-coverflow", "Scroll Coverflow").title}
+            stageClassName="h-[400px]"
+            hint="Scroll inside ↓"
+            padded={false}
+            className="md:col-span-2"
+          >
+            <ScrollCoverflow className={FILL} />
+          </DemoFrame>
         </div>
       </section>
 
-      <section className="mx-auto max-w-7xl space-y-8 px-6">
-        <div className="flex flex-wrap items-end justify-between gap-4">
-          <div className="space-y-2">
-            <div className="font-mono text-xs uppercase tracking-wider text-muted-foreground">Design systems</div>
-            <h2 className="text-3xl font-semibold tracking-tight">{designs.length} brand DESIGN.md presets</h2>
-            <p className="max-w-2xl text-muted-foreground">
-              Vercel, Cursor, Claude, Framer, Apple, Airbnb, Expo, ElevenLabs, Runway, Resend, and Spotify — browse their tokens, then re-skin any component with one click.
-            </p>
-          </div>
-          <Link href="/designs" className="text-sm text-foreground/80 underline decoration-neutral-600 underline-offset-4 hover:text-foreground">
-            Browse all designs →
-          </Link>
+      {/* 3 — Shaders */}
+      <section className="mx-auto max-w-7xl space-y-10 px-4 sm:px-6" aria-labelledby="shaders-heading">
+        <SectionHeader
+          id="shaders-heading"
+          eyebrow={shaders?.name ?? "Shaders"}
+          count={countIn("shaders")}
+          title="Living backgrounds, tuned for dark UI"
+          description={shaders?.description ?? "Animated shader backgrounds that sit quietly behind any section."}
+          href="/collections/shaders"
+          linkLabel={`Browse ${shaders?.name ?? "Shaders"}`}
+        />
+        <div className="grid auto-rows-[160px] grid-cols-2 gap-3 sm:auto-rows-[200px] md:grid-cols-4">
+          {SHADERS.map((s) => {
+            const m = meta(s.slug, s.fallback);
+            return (
+              <ShaderTile key={s.slug} slug={s.slug} title={m.title} caption={m.caption} className={s.className}>
+                {s.render}
+              </ShaderTile>
+            );
+          })}
         </div>
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          {designs.slice(0, 8).map((d) => (
-            <Link key={d.id} href={`/designs/${d.id}`} className="group min-w-0 overflow-hidden rounded-xl border border-border transition hover:border-neutral-600">
-              <div className="h-52">
+      </section>
+
+      {/* 4 — UI */}
+      <section className="mx-auto max-w-7xl space-y-10 px-4 sm:px-6" aria-labelledby="ui-heading">
+        <SectionHeader
+          id="ui-heading"
+          eyebrow={ui?.name ?? "UI"}
+          count={countIn("ui")}
+          title="Everyday primitives, with motion built in"
+          description={ui?.description ?? "Inputs, menus, overlays, and data display — accessible, keyboard-friendly, and animated with restraint."}
+          href="/collections/ui"
+          linkLabel={`Browse ${ui?.name ?? "UI"}`}
+        />
+        <div className="grid auto-rows-[240px] grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
+          {UI_TILES.map((t) => (
+            <DemoFrame key={t.slug} slug={t.slug} title={meta(t.slug, t.fallback).title} stageClassName="" className={t.className}>
+              {t.render}
+            </DemoFrame>
+          ))}
+        </div>
+      </section>
+
+      {/* 5 — Design systems */}
+      <section className="mx-auto max-w-7xl space-y-10 px-4 sm:px-6" aria-labelledby="designs-heading">
+        <SectionHeader
+          id="designs-heading"
+          eyebrow="Design systems"
+          title="Re-skin everything with a DESIGN.md"
+          description={`${designs.length} brand presets — browse their tokens, then preview any component in that brand with one click.`}
+          href="/designs"
+          linkLabel="Browse designs"
+        />
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
+          {designs.slice(0, 4).map((d) => (
+            <Link key={d.id} href={`/designs/${d.id}`} className="group min-w-0 overflow-hidden rounded-2xl border border-border transition hover:border-neutral-600">
+              <div className="h-48 overflow-hidden">
                 <DesignMock brand={d.brand} theme={d.theme} />
+              </div>
+              <div className="flex items-center justify-between border-t border-border bg-card/40 px-4 py-2.5 text-sm">
+                <span className="truncate font-medium text-foreground/90">{d.brand}</span>
+                <span className="shrink-0 font-mono text-[11px] text-muted-foreground transition group-hover:text-foreground/90">{d.mode}</span>
               </div>
             </Link>
           ))}
         </div>
       </section>
 
-      <section className="mx-auto max-w-7xl space-y-8 px-6">
-        <div className="space-y-2">
-          <div className="font-mono text-xs uppercase tracking-wider text-muted-foreground">Core collection</div>
-          <h2 className="text-3xl font-semibold tracking-tight">Spatial surfaces and canvas engines</h2>
-        </div>
-        <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
-          <ConstellationCard />
-          <LiquidGlassCard />
-          <HoloTiltCard />
-        </div>
-      </section>
-
-      <section className="mx-auto max-w-7xl space-y-8 px-6" aria-labelledby="collections-heading">
-        <div className="space-y-2">
-          <div className="font-mono text-xs uppercase tracking-wider text-muted-foreground">Collections</div>
-          <h2 id="collections-heading" className="text-3xl font-semibold tracking-tight">
-            {collections.length} collections, one set of conventions
-          </h2>
-        </div>
-        <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-6">
-          {collections.map((c, i) => {
-            const count = countIn(c.id);
-            const isNew = newCollections.some((n) => n.id === c.id);
-            return (
-              <Link
-                key={c.id}
-                href={`/collections/${c.id}`}
-                className={`group flex min-w-0 flex-col rounded-2xl border border-border bg-card/40 p-6 transition hover:border-neutral-600 ${collectionSpan(i, collections.length)} ${
-                  collections.length % 2 === 1 && i === collections.length - 1 ? "sm:col-span-2" : ""
-                }`}
-              >
-                <div className="flex items-start justify-between gap-3">
-                  <h3 className="text-xl font-semibold">{c.name}</h3>
-                  <div className="flex shrink-0 items-center gap-1.5">
-                    {isNew && (
-                      <span className="rounded-full border border-emerald-500/30 bg-emerald-500/10 px-2 py-0.5 font-mono text-[10px] text-emerald-300">New</span>
-                    )}
-                    <span className="font-mono text-xs text-muted-foreground">{count} components</span>
-                  </div>
-                </div>
-                <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{c.description}</p>
-                <span className="mt-auto inline-block pt-5 text-sm text-foreground/80 transition group-hover:translate-x-1">Browse collection →</span>
-              </Link>
-            );
-          })}
+      {/* 6 — Closing CTA */}
+      <section className="px-4 sm:px-6" aria-labelledby="cta-heading">
+        <div className="mf-stage mx-auto flex max-w-7xl flex-col items-center rounded-3xl border border-border px-6 py-16 text-center sm:py-24">
+          <div id="cta-heading">
+            <MarkerHighlight
+              as="h2"
+              text="Ship interfaces that feel considered."
+              highlight={["considered"]}
+              color="rgba(163, 163, 163, 0.3)"
+              textColor="#fafafa"
+              trigger="inView"
+              className="!font-semibold"
+              style={CLOSING_STYLE}
+            />
+          </div>
+          <p className="mt-5 max-w-lg text-base leading-relaxed text-muted-foreground">
+            Start with one component or all {listed.length}. Every file lands in your repo, so you own the motion.
+          </p>
+          <div className="mt-9 flex flex-wrap items-center justify-center gap-4">
+            <RollingCta label="Get started" href="/docs/getting-started" />
+            <Link href="/components" className="text-sm text-foreground/80 underline decoration-neutral-600 underline-offset-4 transition hover:text-foreground">
+              Browse all components
+            </Link>
+          </div>
+          <InstallCommand className="mt-8" command={`npx ${BRAND_CONFIG.cliName} add sticky-stack-cards`} />
         </div>
       </section>
     </div>

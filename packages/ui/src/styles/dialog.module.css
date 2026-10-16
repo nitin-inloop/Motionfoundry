@@ -1,0 +1,224 @@
+.root {
+  display: inline-flex;
+  color: var(--mf-fg, #f4f4f6);
+}
+
+.trigger,
+.secondary,
+.primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 2.375rem;
+  padding: 0 1rem;
+  border-radius: 0.5rem;
+  font: inherit;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 150ms ease, border-color 150ms ease, opacity 150ms ease, transform 150ms ease;
+}
+
+.trigger,
+.secondary {
+  border: 1px solid var(--mf-border, #2e2e38);
+  background-color: var(--mf-surface, #141419);
+  color: var(--mf-fg, #f4f4f6);
+}
+
+.trigger:hover,
+.secondary:hover {
+  background-color: var(--mf-surface-raised, #1b1b22);
+  border-color: var(--mf-border-strong, #52525b);
+}
+
+.trigger:active,
+.secondary:active,
+.primary:active {
+  transform: scale(0.98);
+}
+
+.primary {
+  border: 1px solid var(--mf-dlg-accent, #6366f1);
+  background-color: var(--mf-dlg-accent, #6366f1);
+  color: #ffffff;
+}
+
+.primary:hover {
+  opacity: 0.9;
+}
+
+.trigger:focus-visible,
+.secondary:focus-visible,
+.primary:focus-visible,
+.close:focus-visible {
+  outline: 2px solid var(--mf-fg, #e4e4e7);
+  outline-offset: 2px;
+}
+
+.layer {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  color: var(--mf-fg, #f4f4f6);
+}
+
+.backdrop {
+  position: absolute;
+  inset: 0;
+  background-color: rgba(9, 9, 11, 0.55);
+  backdrop-filter: blur(var(--mf-dlg-blur, 6px));
+  -webkit-backdrop-filter: blur(var(--mf-dlg-blur, 6px));
+}
+
+.center {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: 1rem;
+  overflow-y: auto;
+}
+
+.panel {
+  position: relative;
+  width: 100%;
+  max-width: 28rem;
+  padding: 1.5rem;
+  border-radius: 0.75rem;
+  border: 1px solid var(--mf-border, #2e2e38);
+  background-color: var(--mf-surface, #141419);
+  color: var(--mf-fg, #f4f4f6);
+  box-shadow: 0 24px 64px -16px rgba(0, 0, 0, 0.55);
+  outline: none;
+}
+
+.sm {
+  max-width: 22rem;
+}
+
+.md {
+  max-width: 28rem;
+}
+
+.lg {
+  max-width: 36rem;
+}
+
+.header {
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+  padding-right: 1.5rem;
+}
+
+.title {
+  margin: 0;
+  font-size: 1.125rem;
+  font-weight: 600;
+  line-height: 1.3;
+  letter-spacing: -0.01em;
+}
+
+.description {
+  margin: 0;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  color: var(--mf-muted, #a1a1aa);
+}
+
+.body {
+  margin-top: 1.25rem;
+  font-size: 0.875rem;
+}
+
+.form {
+  display: grid;
+  gap: 0.875rem;
+}
+
+.field {
+  display: grid;
+  grid-template-columns: 6rem 1fr;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.label {
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: var(--mf-muted, #a1a1aa);
+  text-align: right;
+}
+
+.input {
+  height: 2.25rem;
+  padding: 0 0.75rem;
+  border-radius: 0.5rem;
+  border: 1px solid var(--mf-border, #2e2e38);
+  background-color: var(--mf-bg, #09090b);
+  color: var(--mf-fg, #f4f4f6);
+  font: inherit;
+  font-size: 0.875rem;
+  transition: border-color 150ms ease, box-shadow 150ms ease;
+}
+
+.input:focus {
+  outline: none;
+  border-color: var(--mf-dlg-accent, #6366f1);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--mf-dlg-accent, #6366f1) 30%, transparent);
+}
+
+.footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  margin-top: 1.5rem;
+}
+
+.close {
+  position: absolute;
+  top: 0.875rem;
+  right: 0.875rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.75rem;
+  height: 1.75rem;
+  border: 0;
+  border-radius: 0.375rem;
+  background: transparent;
+  color: var(--mf-subtle, #71717a);
+  cursor: pointer;
+  transition: color 150ms ease, background-color 150ms ease;
+}
+
+.close:hover {
+  color: var(--mf-fg, #f4f4f6);
+  background-color: var(--mf-surface-raised, #1b1b22);
+}
+
+@media (max-width: 480px) {
+  .field {
+    grid-template-columns: 1fr;
+    gap: 0.375rem;
+  }
+
+  .label {
+    text-align: left;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .trigger,
+  .secondary,
+  .primary,
+  .input,
+  .close {
+    transition: none;
+  }
+
+  .panel {
+    transform: none !important;
+  }
+}

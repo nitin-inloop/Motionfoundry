@@ -1,0 +1,231 @@
+{
+  "slug": "pagination",
+  "name": "Pagination",
+  "category": "Navigation",
+  "collection": "ui",
+  "featured": false,
+  "addedAt": "2026-10-16",
+  "version": "2.3.0",
+  "requiresMotion": true,
+  "dependencies": [
+    "motion",
+    "react"
+  ],
+  "description": "Page navigation with smart ellipsis truncation (boundary and sibling counts), Previous/Next buttons and an active-page indicator that springs from page to page. Works controlled or uncontrolled.",
+  "tags": [
+    "pagination",
+    "pager",
+    "navigation",
+    "pages",
+    "indicator",
+    "ui"
+  ],
+  "a11yNotes": "Rendered as <nav aria-label> with a list of native buttons, so it is fully operable with Tab, Enter and Space. Each page button is labelled 'Page N' and the current page carries aria-current=\"page\"; Previous/Next have explicit labels and are disabled at the ends. Ellipses are aria-hidden. A visually hidden polite live region announces 'Page X of Y' after each change. Under prefers-reduced-motion the indicator moves instantly.",
+  "defaultProps": {
+    "defaultPage": 4,
+    "totalPages": 12,
+    "siblingCount": 1,
+    "boundaryCount": 1,
+    "variant": "solid",
+    "shape": "rounded",
+    "size": "md",
+    "accentColor": "#6366f1",
+    "showPrevNext": true,
+    "showLabels": true,
+    "disabled": false
+  },
+  "controls": [
+    {
+      "prop": "defaultPage",
+      "label": "Start page",
+      "type": "range",
+      "min": 1,
+      "max": 30,
+      "step": 1
+    },
+    {
+      "prop": "totalPages",
+      "label": "Total pages",
+      "type": "range",
+      "min": 1,
+      "max": 30,
+      "step": 1
+    },
+    {
+      "prop": "siblingCount",
+      "label": "Siblings",
+      "type": "range",
+      "min": 0,
+      "max": 3,
+      "step": 1
+    },
+    {
+      "prop": "boundaryCount",
+      "label": "Boundary pages",
+      "type": "range",
+      "min": 1,
+      "max": 3,
+      "step": 1
+    },
+    {
+      "prop": "variant",
+      "label": "Variant",
+      "type": "select",
+      "options": [
+        "solid",
+        "outline",
+        "soft"
+      ]
+    },
+    {
+      "prop": "shape",
+      "label": "Shape",
+      "type": "select",
+      "options": [
+        "rounded",
+        "circle"
+      ]
+    },
+    {
+      "prop": "size",
+      "label": "Size",
+      "type": "select",
+      "options": [
+        "sm",
+        "md",
+        "lg"
+      ]
+    },
+    {
+      "prop": "accentColor",
+      "label": "Accent color",
+      "type": "color"
+    },
+    {
+      "prop": "showPrevNext",
+      "label": "Prev / Next",
+      "type": "boolean"
+    },
+    {
+      "prop": "showLabels",
+      "label": "Prev / Next labels",
+      "type": "boolean"
+    },
+    {
+      "prop": "disabled",
+      "label": "Disabled",
+      "type": "boolean"
+    }
+  ],
+  "propsApi": [
+    {
+      "name": "page",
+      "type": "number",
+      "default": "undefined",
+      "description": "Controlled current page (1-based)."
+    },
+    {
+      "name": "defaultPage",
+      "type": "number",
+      "default": "4",
+      "description": "Initial page when uncontrolled."
+    },
+    {
+      "name": "onPageChange",
+      "type": "(page: number) => void",
+      "default": "undefined",
+      "description": "Called with the next page."
+    },
+    {
+      "name": "totalPages",
+      "type": "number",
+      "default": "12",
+      "description": "Total number of pages."
+    },
+    {
+      "name": "siblingCount",
+      "type": "number",
+      "default": "1",
+      "description": "Pages shown on each side of the current page."
+    },
+    {
+      "name": "boundaryCount",
+      "type": "number",
+      "default": "1",
+      "description": "Pages always shown at the start and end."
+    },
+    {
+      "name": "variant",
+      "type": "'solid' | 'outline' | 'soft'",
+      "default": "'solid'",
+      "description": "Style of the sliding active indicator."
+    },
+    {
+      "name": "shape",
+      "type": "'rounded' | 'circle'",
+      "default": "'rounded'",
+      "description": "Button corner shape."
+    },
+    {
+      "name": "size",
+      "type": "'sm' | 'md' | 'lg'",
+      "default": "'md'",
+      "description": "Button size preset."
+    },
+    {
+      "name": "accentColor",
+      "type": "string",
+      "default": "'#6366f1'",
+      "description": "Color of the active indicator."
+    },
+    {
+      "name": "showPrevNext",
+      "type": "boolean",
+      "default": "true",
+      "description": "Show Previous and Next buttons."
+    },
+    {
+      "name": "showLabels",
+      "type": "boolean",
+      "default": "true",
+      "description": "Show text next to the Previous/Next chevrons."
+    },
+    {
+      "name": "disabled",
+      "type": "boolean",
+      "default": "false",
+      "description": "Disable the whole control."
+    },
+    {
+      "name": "ariaLabel",
+      "type": "string",
+      "default": "'Pagination'",
+      "description": "Accessible label of the nav landmark."
+    },
+    {
+      "name": "className",
+      "type": "string",
+      "default": "''",
+      "description": "Class merged onto the root element."
+    },
+    {
+      "name": "style",
+      "type": "React.CSSProperties",
+      "default": "undefined",
+      "description": "Inline styles merged onto the root element."
+    }
+  ],
+  "files": [
+    {
+      "path": "components/ui/pagination.tsx",
+      "type": "registry:component",
+      "content": "\"use client\";\n\nimport * as React from \"react\";\nimport { motion, useReducedMotion } from \"motion/react\";\nimport styles from \"../styles/pagination.module.css\";\n\nexport interface PaginationProps {\n  /** Controlled current page (1-based) */\n  page?: number;\n  /** Initial page when uncontrolled */\n  defaultPage?: number;\n  /** Called with the next page */\n  onPageChange?: (page: number) => void;\n  /** Total number of pages */\n  totalPages?: number;\n  /** Pages shown on each side of the current page */\n  siblingCount?: number;\n  /** Pages always shown at the start and end */\n  boundaryCount?: number;\n  /** Visual style of the active indicator */\n  variant?: \"solid\" | \"outline\" | \"soft\";\n  /** Button shape */\n  shape?: \"rounded\" | \"circle\";\n  /** Size preset */\n  size?: \"sm\" | \"md\" | \"lg\";\n  /** Accent color of the active indicator */\n  accentColor?: string;\n  /** Show Previous / Next buttons */\n  showPrevNext?: boolean;\n  /** Show text labels on the Previous / Next buttons */\n  showLabels?: boolean;\n  /** Disable the whole control */\n  disabled?: boolean;\n  /** Accessible label of the nav landmark */\n  ariaLabel?: string;\n  /** Optional className merged onto the root */\n  className?: string;\n  /** Optional inline styles merged onto the root */\n  style?: React.CSSProperties;\n}\n\ntype Slot = number | \"start-ellipsis\" | \"end-ellipsis\";\nconst useIsoLayoutEffect = typeof window !== \"undefined\" ? React.useLayoutEffect : React.useEffect;\n\nfunction range(a: number, b: number): number[] {\n  const out: number[] = [];\n  for (let i = a; i <= b; i++) out.push(i);\n  return out;\n}\n\n/** Builds the visible page slots with ellipses, keeping the slot count stable while paging. */\nfunction buildSlots(page: number, total: number, sib: number, bnd: number): Slot[] {\n  const start = range(1, Math.min(bnd, total));\n  const end = range(Math.max(total - bnd + 1, bnd + 1), total);\n  const sibStart = Math.max(Math.min(page - sib, total - bnd - sib * 2 - 1), bnd + 2);\n  const sibEnd = Math.min(Math.max(page + sib, bnd + sib * 2 + 2), end.length > 0 ? end[0] - 2 : total - 1);\n  const out: Slot[] = [...start];\n  if (sibStart > bnd + 2) out.push(\"start-ellipsis\");\n  else if (bnd + 1 < total - bnd) out.push(bnd + 1);\n  out.push(...range(sibStart, sibEnd));\n  if (sibEnd < total - bnd - 1) out.push(\"end-ellipsis\");\n  else if (total - bnd > bnd) out.push(total - bnd);\n  out.push(...end);\n  return out.filter((s, i, arr) => arr.indexOf(s) === i && (typeof s !== \"number\" || (s >= 1 && s <= total)));\n}\n\nfunction Chevron({ dir }: { dir: \"left\" | \"right\" }) {\n  return (\n    <svg aria-hidden=\"true\" width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" strokeWidth=\"2\" strokeLinecap=\"round\" strokeLinejoin=\"round\">\n      <path d={dir === \"left\" ? \"m15 6-6 6 6 6\" : \"m9 6 6 6-6 6\"} />\n    </svg>\n  );\n}\n\nexport function Pagination({\n  page: pageProp,\n  defaultPage = 4,\n  onPageChange,\n  totalPages = 12,\n  siblingCount = 1,\n  boundaryCount = 1,\n  variant = \"solid\",\n  shape = \"rounded\",\n  size = \"md\",\n  accentColor = \"#6366f1\",\n  showPrevNext = true,\n  showLabels = true,\n  disabled = false,\n  ariaLabel = \"Pagination\",\n  className = \"\",\n  style,\n}: PaginationProps) {\n  const reduce = useReducedMotion();\n  const total = Math.max(1, Math.round(totalPages));\n  const [inner, setInner] = React.useState(defaultPage);\n  const controlled = pageProp !== undefined;\n  const page = Math.min(total, Math.max(1, Math.round(controlled ? pageProp : inner)));\n  const listRef = React.useRef<HTMLUListElement>(null);\n  const btnRefs = React.useRef(new Map<number, HTMLButtonElement>());\n  const [rect, setRect] = React.useState<{ x: number; y: number; w: number; h: number } | null>(null);\n  const slots = buildSlots(page, total, Math.max(0, Math.round(siblingCount)), Math.max(1, Math.round(boundaryCount)));\n\n  const go = (p: number) => {\n    const next = Math.min(total, Math.max(1, p));\n    if (next === page || disabled) return;\n    if (!controlled) setInner(next);\n    onPageChange?.(next);\n  };\n\n  const measure = React.useCallback(() => {\n    const el = btnRefs.current.get(page);\n    if (el) setRect({ x: el.offsetLeft, y: el.offsetTop, w: el.offsetWidth, h: el.offsetHeight });\n  }, [page]);\n\n  useIsoLayoutEffect(() => {\n    measure();\n  }, [measure, total, siblingCount, boundaryCount, size, shape, showPrevNext, showLabels]);\n\n  React.useEffect(() => {\n    const list = listRef.current;\n    if (!list || typeof ResizeObserver === \"undefined\") return;\n    const ro = new ResizeObserver(() => measure());\n    ro.observe(list);\n    return () => ro.disconnect();\n  }, [measure]);\n\n  return (\n    <nav\n      aria-label={ariaLabel}\n      className={`${styles.root} ${className}`.trim()}\n      data-variant={variant}\n      data-shape={shape}\n      data-size={size}\n      data-disabled={disabled ? \"\" : undefined}\n      style={{ \"--mf-pg-accent\": accentColor, ...style } as React.CSSProperties}\n    >\n      <ul ref={listRef} className={styles.list}>\n        {rect && (\n          <motion.li\n            aria-hidden=\"true\"\n            className={styles.indicator}\n            initial={false}\n            animate={{ x: rect.x, y: rect.y, width: rect.w, height: rect.h }}\n            transition={reduce ? { duration: 0 } : { type: \"spring\", stiffness: 480, damping: 38 }}\n          />\n        )}\n        {showPrevNext && (\n          <li>\n            <button type=\"button\" className={`${styles.btn} ${styles.nav}`} aria-label=\"Go to previous page\" disabled={disabled || page <= 1} onClick={() => go(page - 1)}>\n              <Chevron dir=\"left\" />\n              {showLabels && <span>Previous</span>}\n            </button>\n          </li>\n        )}\n        {slots.map((s) =>\n          typeof s === \"number\" ? (\n            <li key={s}>\n              <button\n                ref={(el) => {\n                  if (el) btnRefs.current.set(s, el);\n                  else btnRefs.current.delete(s);\n                }}\n                type=\"button\"\n                className={`${styles.btn} ${styles.num}`}\n                aria-label={`Page ${s}`}\n                aria-current={s === page ? \"page\" : undefined}\n                data-active={s === page ? \"\" : undefined}\n                disabled={disabled}\n                onClick={() => go(s)}\n              >\n                {s}\n              </button>\n            </li>\n          ) : (\n            <li key={s} aria-hidden=\"true\" className={styles.ellipsis}>\n              <svg width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"currentColor\">\n                <circle cx=\"5\" cy=\"12\" r=\"1.6\" />\n                <circle cx=\"12\" cy=\"12\" r=\"1.6\" />\n                <circle cx=\"19\" cy=\"12\" r=\"1.6\" />\n              </svg>\n            </li>\n          ),\n        )}\n        {showPrevNext && (\n          <li>\n            <button type=\"button\" className={`${styles.btn} ${styles.nav}`} aria-label=\"Go to next page\" disabled={disabled || page >= total} onClick={() => go(page + 1)}>\n              {showLabels && <span>Next</span>}\n              <Chevron dir=\"right\" />\n            </button>\n          </li>\n        )}\n      </ul>\n      <span className={styles.srOnly} aria-live=\"polite\">{`Page ${page} of ${total}`}</span>\n    </nav>\n  );\n}\n"
+    },
+    {
+      "path": "components/styles/pagination.module.css",
+      "type": "registry:style",
+      "content": ".root {\n  --mf-pg-h: 2.25rem;\n  --mf-pg-fs: 0.875rem;\n  --mf-pg-r: 0.5rem;\n  color: var(--mf-fg, #f4f4f6);\n  font-size: var(--mf-pg-fs);\n}\n\n.root[data-size=\"sm\"] {\n  --mf-pg-h: 2rem;\n  --mf-pg-fs: 0.8125rem;\n}\n\n.root[data-size=\"lg\"] {\n  --mf-pg-h: 2.75rem;\n  --mf-pg-fs: 0.9375rem;\n  --mf-pg-r: 0.625rem;\n}\n\n.root[data-shape=\"circle\"] {\n  --mf-pg-r: 999px;\n}\n\n.list {\n  position: relative;\n  display: flex;\n  flex-wrap: wrap;\n  align-items: center;\n  gap: 0.25rem;\n  margin: 0;\n  padding: 0;\n  list-style: none;\n}\n\n.list > li {\n  display: inline-flex;\n}\n\n.indicator {\n  position: absolute;\n  top: 0;\n  left: 0;\n  border-radius: var(--mf-pg-r);\n  pointer-events: none;\n}\n\n.root[data-variant=\"solid\"] .indicator {\n  background-color: var(--mf-pg-accent, #6366f1);\n  box-shadow: 0 6px 16px -6px color-mix(in srgb, var(--mf-pg-accent, #6366f1) 70%, transparent);\n}\n\n.root[data-variant=\"outline\"] .indicator {\n  border: 1.5px solid var(--mf-pg-accent, #6366f1);\n  background-color: color-mix(in srgb, var(--mf-pg-accent, #6366f1) 8%, transparent);\n}\n\n.root[data-variant=\"soft\"] .indicator {\n  background-color: color-mix(in srgb, var(--mf-pg-accent, #6366f1) 22%, transparent);\n}\n\n.btn {\n  position: relative;\n  z-index: 1;\n  display: inline-flex;\n  align-items: center;\n  justify-content: center;\n  gap: 0.25rem;\n  height: var(--mf-pg-h);\n  border: 0;\n  border-radius: var(--mf-pg-r);\n  background: transparent;\n  color: var(--mf-muted, #a1a1aa);\n  font: inherit;\n  font-weight: 500;\n  font-variant-numeric: tabular-nums;\n  cursor: pointer;\n  transition: color 160ms ease, background-color 160ms ease;\n}\n\n.num {\n  min-width: var(--mf-pg-h);\n  padding: 0 0.375rem;\n}\n\n.nav {\n  padding: 0 0.75rem;\n}\n\n.root[data-shape=\"circle\"] .nav {\n  padding: 0 0.875rem;\n}\n\n.btn:hover:not(:disabled):not([data-active]) {\n  color: var(--mf-fg, #f4f4f6);\n  background-color: var(--mf-surface-raised, #1b1b22);\n}\n\n.btn[data-active] {\n  color: var(--mf-fg, #f4f4f6);\n}\n\n.root[data-variant=\"solid\"] .btn[data-active] {\n  color: #ffffff;\n}\n\n.btn:disabled {\n  cursor: not-allowed;\n  opacity: 0.4;\n}\n\n.btn[data-active]:disabled {\n  opacity: 1;\n}\n\n.root[data-disabled] {\n  opacity: 0.55;\n}\n\n.btn:focus-visible {\n  outline: 2px solid var(--mf-fg, #e4e4e7);\n  outline-offset: 2px;\n}\n\n.ellipsis {\n  align-items: center;\n  justify-content: center;\n  min-width: var(--mf-pg-h);\n  height: var(--mf-pg-h);\n  color: var(--mf-subtle, #71717a);\n}\n\n.srOnly {\n  position: absolute;\n  width: 1px;\n  height: 1px;\n  margin: -1px;\n  padding: 0;\n  overflow: hidden;\n  clip: rect(0 0 0 0);\n  white-space: nowrap;\n  border: 0;\n}\n\n@media (prefers-reduced-motion: reduce) {\n  .btn {\n    transition: none;\n  }\n}\n"
+    }
+  ],
+  "tailwindExample": "\"use client\";\n\nimport { useState } from \"react\";\nimport { motion } from \"motion/react\";\n\nfunction slots(page: number, total: number): (number | \"...\")[] {\n  if (total <= 7) return Array.from({ length: total }, (_, i) => i + 1);\n  if (page <= 4) return [1, 2, 3, 4, 5, \"...\", total];\n  if (page >= total - 3) return [1, \"...\", total - 4, total - 3, total - 2, total - 1, total];\n  return [1, \"...\", page - 1, page, page + 1, \"...\", total];\n}\n\nexport function PaginationTailwind({ total = 12 }) {\n  const [page, setPage] = useState(4);\n  return (\n    <nav aria-label=\"Pagination\" className=\"flex items-center gap-1 text-sm font-medium\">\n      <button disabled={page === 1} onClick={() => setPage(page - 1)} className=\"h-9 rounded-lg px-3 text-zinc-400 hover:bg-zinc-800 disabled:opacity-40\">Previous</button>\n      {slots(page, total).map((s, i) =>\n        s === \"...\" ? (\n          <span key={i} aria-hidden className=\"w-9 text-center text-zinc-600\">...</span>\n        ) : (\n          <button key={s} aria-current={s === page ? \"page\" : undefined} onClick={() => setPage(s)} className=\"relative h-9 min-w-9 rounded-lg px-1.5 text-zinc-400 aria-[current=page]:text-white\">\n            {s === page && <motion.span layoutId=\"page-dot\" className=\"absolute inset-0 rounded-lg bg-indigo-500\" />}\n            <span className=\"relative\">{s}</span>\n          </button>\n        ),\n      )}\n      <button disabled={page === total} onClick={() => setPage(page + 1)} className=\"h-9 rounded-lg px-3 text-zinc-400 hover:bg-zinc-800 disabled:opacity-40\">Next</button>\n    </nav>\n  );\n}\n"
+}

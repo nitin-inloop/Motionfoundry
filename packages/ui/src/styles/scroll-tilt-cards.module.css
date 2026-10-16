@@ -1,0 +1,178 @@
+.root {
+  position: relative;
+  width: 100%;
+  height: var(--mf-stc-h, 380px);
+  border-radius: var(--mf-stc-r, 20px);
+  overflow: hidden;
+  border: 1px solid var(--mf-border, #2e2e38);
+  background: var(--mf-surface, #141419);
+  color: var(--mf-fg, #f4f4f6);
+  container-type: inline-size;
+  isolation: isolate;
+}
+
+.root *,
+.root *::before,
+.root *::after {
+  box-sizing: border-box;
+}
+
+.viewport {
+  position: relative;
+  height: 100%;
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior: auto;
+  scroll-behavior: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--mf-border, #2e2e38) transparent;
+}
+
+.viewport:focus-visible {
+  outline: 2px solid var(--mf-fg, #e4e4e7);
+  outline-offset: -2px;
+}
+
+.content {
+  position: relative;
+  padding: 0 clamp(1rem, 8cqi, 5rem);
+}
+
+.intro {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  min-height: calc(var(--mf-stc-h, 380px) * 0.7);
+  text-align: center;
+}
+
+.kicker {
+  padding: 0.3rem 0.75rem;
+  border: 1px solid var(--mf-border, #2e2e38);
+  border-radius: 999px;
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--mf-stc-accent, #38bdf8);
+}
+
+.title {
+  margin: 0;
+  font-size: clamp(1.8rem, 6cqi, 3rem);
+  font-weight: 700;
+  line-height: 1.05;
+  letter-spacing: -0.035em;
+}
+
+.subtitle {
+  margin: 0;
+  color: var(--mf-muted, #a1a1aa);
+  font-size: 0.92rem;
+}
+
+.list {
+  margin: 0 auto;
+  padding: 0;
+  max-width: 34rem;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--mf-stc-h, 380px) * 0.12);
+}
+
+.card {
+  --mf-stc-p: 0;
+  --mf-stc-a: 0;
+  height: var(--mf-stc-card-h, 190px);
+  perspective: var(--mf-stc-persp, 900px);
+}
+
+.face {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  gap: 0.35rem;
+  height: 100%;
+  padding: 1.2rem 1.35rem;
+  border: 1px solid var(--mf-border-strong, #3f3f4a);
+  border-radius: 18px;
+  background: var(--mf-surface-raised, #1b1b22);
+  overflow: hidden;
+  transform: rotateX(calc(var(--mf-stc-p) * var(--mf-stc-tilt, 38) * 1deg))
+    scale(calc(1 - var(--mf-stc-a) * 0.12));
+  transform-origin: 50% 50%;
+  opacity: calc(1 - var(--mf-stc-a) * 0.55);
+  box-shadow: 0 calc(20px - var(--mf-stc-a) * 14px) 50px -24px rgba(0, 0, 0, 0.65);
+  will-change: transform, opacity;
+}
+
+.root[data-axis="y"] .face {
+  transform: rotateY(calc(var(--mf-stc-p) * var(--mf-stc-tilt, 38) * -1deg))
+    scale(calc(1 - var(--mf-stc-a) * 0.12));
+}
+
+.glow {
+  position: absolute;
+  top: -55%;
+  left: calc(-20% + var(--mf-stc-i, 0) * 13%);
+  width: 75%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: radial-gradient(circle, color-mix(in srgb, var(--mf-stc-accent, #38bdf8) 50%, transparent), transparent 65%);
+  opacity: calc(0.35 + (1 - var(--mf-stc-a)) * 0.65);
+  pointer-events: none;
+}
+
+.grid {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(color-mix(in srgb, var(--mf-fg, #f4f4f6) 6%, transparent) 1px, transparent 1px),
+    linear-gradient(90deg, color-mix(in srgb, var(--mf-fg, #f4f4f6) 6%, transparent) 1px, transparent 1px);
+  background-size: 28px 28px;
+  mask-image: linear-gradient(180deg, #000, transparent 75%);
+  pointer-events: none;
+}
+
+.index {
+  position: absolute;
+  top: 1.1rem;
+  left: 1.35rem;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.78rem;
+  color: var(--mf-stc-accent, #38bdf8);
+}
+
+.cardTitle {
+  position: relative;
+  font-size: clamp(1.35rem, 4.4cqi, 1.9rem);
+  font-weight: 650;
+  letter-spacing: -0.03em;
+}
+
+.blurb {
+  position: relative;
+  color: var(--mf-muted, #a1a1aa);
+  font-size: 0.9rem;
+  line-height: 1.45;
+}
+
+.outro {
+  margin: 0;
+  padding: calc(var(--mf-stc-h, 380px) * 0.3) 0 calc(var(--mf-stc-h, 380px) * 0.3);
+  text-align: center;
+  color: var(--mf-muted, #a1a1aa);
+  font-size: 0.9rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .face,
+  .root[data-axis="y"] .face {
+    transform: none;
+    opacity: 1;
+    will-change: auto;
+  }
+}

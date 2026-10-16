@@ -1,0 +1,206 @@
+{
+  "slug": "tree-view",
+  "name": "TreeView",
+  "category": "Data Display",
+  "collection": "ui",
+  "featured": false,
+  "addedAt": "2026-10-16",
+  "version": "2.3.0",
+  "requiresMotion": true,
+  "dependencies": [
+    "motion",
+    "react"
+  ],
+  "description": "A nested, file-explorer style tree whose folders expand and collapse with an animated height reveal and a rotating chevron. Supports single selection, indent guides and controlled or uncontrolled selection and expansion.",
+  "tags": [
+    "tree",
+    "tree-view",
+    "file-explorer",
+    "navigation",
+    "hierarchy",
+    "ui"
+  ],
+  "a11yNotes": "Implements the WAI-ARIA tree pattern: role=\"tree\" (named by its header or aria-label) containing role=\"treeitem\" elements with aria-level, aria-setsize, aria-posinset, aria-selected and aria-expanded on folders; nested items live in role=\"group\" lists. Roving tabindex gives one Tab stop. Up/Down move between visible items, Right expands a folder or moves to its first child, Left collapses or moves to the parent, Home/End jump to the first/last visible item, Enter/Space select (and toggle folders). Focus is shown with a 2px outline. Under prefers-reduced-motion folders open instantly.",
+  "defaultProps": {
+    "label": "Project files",
+    "showHeader": true,
+    "defaultValue": "src/components/tree-view.tsx",
+    "expandAll": false,
+    "accentColor": "#6366f1",
+    "size": "md",
+    "showIcons": true,
+    "showGuides": true,
+    "indent": 16
+  },
+  "controls": [
+    {
+      "prop": "label",
+      "label": "Label",
+      "type": "text"
+    },
+    {
+      "prop": "showHeader",
+      "label": "Show header",
+      "type": "boolean"
+    },
+    {
+      "prop": "defaultValue",
+      "label": "Selected id",
+      "type": "text"
+    },
+    {
+      "prop": "expandAll",
+      "label": "Expand all",
+      "type": "boolean"
+    },
+    {
+      "prop": "accentColor",
+      "label": "Accent color",
+      "type": "color"
+    },
+    {
+      "prop": "size",
+      "label": "Size",
+      "type": "select",
+      "options": [
+        "sm",
+        "md"
+      ]
+    },
+    {
+      "prop": "showIcons",
+      "label": "Icons",
+      "type": "boolean"
+    },
+    {
+      "prop": "showGuides",
+      "label": "Indent guides",
+      "type": "boolean"
+    },
+    {
+      "prop": "indent",
+      "label": "Indent",
+      "type": "range",
+      "min": 8,
+      "max": 32,
+      "step": 2
+    }
+  ],
+  "propsApi": [
+    {
+      "name": "items",
+      "type": "TreeNode[]  // { id?: string; label: string; children?: TreeNode[] }",
+      "default": "project file tree",
+      "description": "Tree data. A node with a children array is a folder; ids default to the slash-joined label path (e.g. 'src/app/page.tsx')."
+    },
+    {
+      "name": "label",
+      "type": "string",
+      "default": "'Project files'",
+      "description": "Accessible name of the tree, shown as a header when showHeader is true."
+    },
+    {
+      "name": "showHeader",
+      "type": "boolean",
+      "default": "true",
+      "description": "Show the label as an uppercase header above the tree."
+    },
+    {
+      "name": "value",
+      "type": "string",
+      "default": "undefined",
+      "description": "Controlled selected node id."
+    },
+    {
+      "name": "defaultValue",
+      "type": "string",
+      "default": "'src/components/tree-view.tsx'",
+      "description": "Initially selected node id when uncontrolled."
+    },
+    {
+      "name": "onValueChange",
+      "type": "(id: string) => void",
+      "default": "undefined",
+      "description": "Called with the id of the newly selected node."
+    },
+    {
+      "name": "expanded",
+      "type": "string[]",
+      "default": "undefined",
+      "description": "Controlled list of expanded folder ids."
+    },
+    {
+      "name": "defaultExpanded",
+      "type": "string[]",
+      "default": "['src', 'src/components']",
+      "description": "Initially expanded folder ids when uncontrolled."
+    },
+    {
+      "name": "onExpandedChange",
+      "type": "(ids: string[]) => void",
+      "default": "undefined",
+      "description": "Called with the next list of expanded folder ids."
+    },
+    {
+      "name": "expandAll",
+      "type": "boolean",
+      "default": "false",
+      "description": "Start with every folder expanded (uncontrolled only; overrides defaultExpanded)."
+    },
+    {
+      "name": "accentColor",
+      "type": "string",
+      "default": "'#6366f1'",
+      "description": "Selection highlight, selection bar and folder icon color."
+    },
+    {
+      "name": "size",
+      "type": "'sm' | 'md'",
+      "default": "'md'",
+      "description": "Row height and type size."
+    },
+    {
+      "name": "showIcons",
+      "type": "boolean",
+      "default": "true",
+      "description": "Show folder and file icons (files get an extension-colored dot)."
+    },
+    {
+      "name": "showGuides",
+      "type": "boolean",
+      "default": "true",
+      "description": "Draw vertical indent guides for nested levels."
+    },
+    {
+      "name": "indent",
+      "type": "number",
+      "default": "16",
+      "description": "Indentation per level in px."
+    },
+    {
+      "name": "className",
+      "type": "string",
+      "default": "''",
+      "description": "Additional class merged onto the root element."
+    },
+    {
+      "name": "style",
+      "type": "React.CSSProperties",
+      "default": "undefined",
+      "description": "Inline styles merged onto the root element."
+    }
+  ],
+  "files": [
+    {
+      "path": "components/ui/tree-view.tsx",
+      "type": "registry:component",
+      "content": "\"use client\";\n\nimport * as React from \"react\";\nimport { AnimatePresence, motion, useReducedMotion } from \"motion/react\";\nimport styles from \"../styles/tree-view.module.css\";\n\nexport interface TreeNode {\n  /** Unique id (defaults to the slash-joined label path) */\n  id?: string;\n  /** Visible label */\n  label: string;\n  /** Child nodes; a node with a children array is a folder */\n  children?: TreeNode[];\n}\n\nexport interface TreeViewProps {\n  /** Tree data (defaults to a small project file explorer) */\n  items?: TreeNode[];\n  /** Accessible name of the tree (also the visible header when showHeader is true) */\n  label?: string;\n  /** Show the label as a header above the tree */\n  showHeader?: boolean;\n  /** Controlled selected node id */\n  value?: string;\n  /** Initially selected node id when uncontrolled */\n  defaultValue?: string;\n  /** Called with the id of the newly selected node */\n  onValueChange?: (id: string) => void;\n  /** Controlled list of expanded folder ids */\n  expanded?: string[];\n  /** Initially expanded folder ids when uncontrolled */\n  defaultExpanded?: string[];\n  /** Called with the next list of expanded folder ids */\n  onExpandedChange?: (ids: string[]) => void;\n  /** Start with every folder expanded (uncontrolled only) */\n  expandAll?: boolean;\n  /** Color of the selection highlight and focus tint */\n  accentColor?: string;\n  /** Row density */\n  size?: \"sm\" | \"md\";\n  /** Show folder/file icons */\n  showIcons?: boolean;\n  /** Draw vertical indent guides */\n  showGuides?: boolean;\n  /** Indentation per level in px */\n  indent?: number;\n  /** Optional className merged onto the root */\n  className?: string;\n  /** Optional inline styles merged onto the root */\n  style?: React.CSSProperties;\n}\n\nconst f = (label: string): TreeNode => ({ label });\nconst DEFAULT_ITEMS: TreeNode[] = [\n  {\n    label: \"src\",\n    children: [\n      { label: \"app\", children: [f(\"layout.tsx\"), f(\"page.tsx\"), f(\"globals.css\")] },\n      { label: \"components\", children: [f(\"button.tsx\"), f(\"dialog.tsx\"), f(\"tree-view.tsx\")] },\n      { label: \"hooks\", children: [f(\"use-media-query.ts\"), f(\"use-theme.ts\")] },\n      { label: \"lib\", children: [f(\"utils.ts\")] },\n    ],\n  },\n  { label: \"public\", children: [f(\"favicon.ico\"), f(\"og-image.png\")] },\n  f(\"package.json\"),\n  f(\"README.md\"),\n  f(\"tsconfig.json\"),\n];\n\ninterface Flat {\n  id: string;\n  label: string;\n  parent: string | null;\n  folder: boolean;\n}\n\nconst idOf = (n: TreeNode, prefix: string) => n.id ?? (prefix ? `${prefix}/${n.label}` : n.label);\n\nfunction flatten(nodes: TreeNode[], open: Set<string> | null, prefix = \"\", parent: string | null = null, out: Flat[] = []) {\n  for (const n of nodes) {\n    const id = idOf(n, prefix);\n    out.push({ id, label: n.label, parent, folder: Array.isArray(n.children) });\n    if (n.children && (!open || open.has(id))) flatten(n.children, open, id, id, out);\n  }\n  return out;\n}\n\nconst EXT_COLORS: Record<string, string> = { tsx: \"#3b82f6\", ts: \"#3b82f6\", css: \"#ec4899\", json: \"#eab308\", md: \"#a1a1aa\", png: \"#22c55e\", ico: \"#f97316\" };\n\nfunction Icon({ folder, open, label }: { folder: boolean; open: boolean; label: string }) {\n  if (folder)\n    return (\n      <svg aria-hidden=\"true\" className={styles.icon} data-folder=\"\" width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" strokeWidth=\"1.8\" strokeLinejoin=\"round\">\n        {open ? <path d=\"M3 7a2 2 0 0 1 2-2h4l2 2h7a2 2 0 0 1 2 2v1H8.5a2 2 0 0 0-1.9 1.4L4 19H5a2 2 0 0 1-2-2zM6.6 11.4A2 2 0 0 1 8.5 10H21l-2.6 7.6a2 2 0 0 1-1.9 1.4H4z\" /> : <path d=\"M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z\" />}\n      </svg>\n    );\n  const ext = label.split(\".\").pop() ?? \"\";\n  return (\n    <svg aria-hidden=\"true\" className={styles.icon} width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" strokeWidth=\"1.8\" strokeLinejoin=\"round\">\n      <path d=\"M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z\" />\n      <path d=\"M14 3v5h5\" />\n      <circle cx=\"12\" cy=\"15\" r=\"2.2\" fill={EXT_COLORS[ext] ?? \"currentColor\"} stroke=\"none\" />\n    </svg>\n  );\n}\n\nexport function TreeView({\n  items = DEFAULT_ITEMS,\n  label = \"Project files\",\n  showHeader = true,\n  value: valueProp,\n  defaultValue = \"src/components/tree-view.tsx\",\n  onValueChange,\n  expanded: expandedProp,\n  defaultExpanded = [\"src\", \"src/components\"],\n  onExpandedChange,\n  expandAll = false,\n  accentColor = \"#6366f1\",\n  size = \"md\",\n  showIcons = true,\n  showGuides = true,\n  indent = 16,\n  className = \"\",\n  style,\n}: TreeViewProps) {\n  const reduce = useReducedMotion();\n  const all = React.useMemo(() => flatten(items, null), [items]);\n  const [innerOpen, setInnerOpen] = React.useState<string[]>(() => (expandAll ? all.filter((n) => n.folder).map((n) => n.id) : defaultExpanded));\n  const [innerSel, setInnerSel] = React.useState<string | undefined>(defaultValue);\n  const openList = expandedProp ?? innerOpen;\n  const selected = valueProp !== undefined ? valueProp : innerSel;\n  const open = React.useMemo(() => new Set(openList), [openList]);\n  const visible = React.useMemo(() => flatten(items, open), [items, open]);\n  const byId = React.useMemo(() => new Map(all.map((n) => [n.id, n])), [all]);\n  const [focusId, setFocusId] = React.useState<string | null>(null);\n  const refs = React.useRef(new Map<string, HTMLLIElement>());\n  const headId = React.useId();\n\n  const tabId = visible.some((n) => n.id === focusId) ? focusId : visible.some((n) => n.id === selected) ? selected : visible[0]?.id;\n\n  const setOpen = (id: string, next: boolean) => {\n    if (open.has(id) === next) return;\n    const list = next ? [...openList, id] : openList.filter((x) => x !== id);\n    if (expandedProp === undefined) setInnerOpen(list);\n    onExpandedChange?.(list);\n  };\n  const select = (id: string) => {\n    if (valueProp === undefined) setInnerSel(id);\n    if (id !== selected) onValueChange?.(id);\n  };\n  const focus = (id: string | undefined) => {\n    if (!id) return;\n    setFocusId(id);\n    refs.current.get(id)?.focus();\n  };\n  const activate = (n: Flat) => {\n    select(n.id);\n    if (n.folder) setOpen(n.id, !open.has(n.id));\n  };\n\n  const onKeyDown = (e: React.KeyboardEvent<HTMLUListElement>) => {\n    const i = visible.findIndex((n) => n.id === tabId);\n    const cur = visible[i];\n    if (!cur) return;\n    const k = e.key;\n    if (k === \"ArrowDown\") focus(visible[i + 1]?.id);\n    else if (k === \"ArrowUp\") focus(visible[i - 1]?.id);\n    else if (k === \"Home\") focus(visible[0]?.id);\n    else if (k === \"End\") focus(visible[visible.length - 1]?.id);\n    else if (k === \"ArrowRight\") {\n      if (cur.folder && !open.has(cur.id)) setOpen(cur.id, true);\n      else if (cur.folder && visible[i + 1]?.parent === cur.id) focus(visible[i + 1].id);\n    } else if (k === \"ArrowLeft\") {\n      if (cur.folder && open.has(cur.id)) setOpen(cur.id, false);\n      else if (cur.parent) focus(cur.parent);\n    } else if (k === \"Enter\" || k === \" \") activate(cur);\n    else return;\n    e.preventDefault();\n  };\n\n  const transition = reduce ? { duration: 0 } : { duration: 0.22, ease: [0.16, 1, 0.3, 1] as const };\n\n  const renderLevel = (nodes: TreeNode[], level: number, prefix: string): React.ReactNode =>\n    nodes.map((node, idx) => {\n      const id = idOf(node, prefix);\n      const folder = Array.isArray(node.children);\n      const isOpen = folder && open.has(id);\n      const isSel = id === selected;\n      const flat = byId.get(id) ?? { id, label: node.label, parent: prefix || null, folder };\n      return (\n        <li\n          key={id}\n          ref={(el) => {\n            if (el) refs.current.set(id, el);\n            else refs.current.delete(id);\n          }}\n          role=\"treeitem\"\n          aria-level={level}\n          aria-setsize={nodes.length}\n          aria-posinset={idx + 1}\n          aria-expanded={folder ? isOpen : undefined}\n          aria-selected={isSel}\n          tabIndex={id === tabId ? 0 : -1}\n          className={styles.item}\n          onFocus={(e) => {\n            e.stopPropagation();\n            setFocusId(id);\n          }}\n        >\n          <div\n            className={styles.row}\n            data-selected={isSel ? \"\" : undefined}\n            style={{ paddingLeft: `calc(${(level - 1) * indent}px + 0.375rem)` }}\n            onClick={() => {\n              activate(flat);\n              focus(id);\n            }}\n          >\n            {showGuides &&\n              Array.from({ length: level - 1 }, (_, g) => (\n                <span key={g} aria-hidden=\"true\" className={styles.guide} style={{ left: `calc(${g * indent + indent / 2}px + 0.375rem)` }} />\n              ))}\n            <span aria-hidden=\"true\" className={styles.chevron} data-open={isOpen ? \"\" : undefined} data-hidden={folder ? undefined : \"\"}>\n              <svg width=\"12\" height=\"12\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" strokeWidth=\"2.5\" strokeLinecap=\"round\" strokeLinejoin=\"round\">\n                <path d=\"m9 6 6 6-6 6\" />\n              </svg>\n            </span>\n            {showIcons && <Icon folder={folder} open={isOpen} label={node.label} />}\n            <span className={styles.text}>{node.label}</span>\n          </div>\n          {folder && (\n            <AnimatePresence initial={false}>\n              {isOpen && (\n                <motion.ul\n                  role=\"group\"\n                  className={styles.group}\n                  initial={{ height: 0, opacity: 0 }}\n                  animate={{ height: \"auto\", opacity: 1 }}\n                  exit={{ height: 0, opacity: 0 }}\n                  transition={transition}\n                >\n                  {renderLevel(node.children ?? [], level + 1, id)}\n                </motion.ul>\n              )}\n            </AnimatePresence>\n          )}\n        </li>\n      );\n    });\n\n  return (\n    <div\n      className={`${styles.root} ${className}`.trim()}\n      data-size={size}\n      style={{ \"--mf-tv-accent\": accentColor, ...style } as React.CSSProperties}\n    >\n      {showHeader && label && (\n        <div id={headId} className={styles.header}>\n          {label}\n        </div>\n      )}\n      <ul\n        role=\"tree\"\n        aria-labelledby={showHeader && label ? headId : undefined}\n        aria-label={showHeader && label ? undefined : label || \"Tree\"}\n        className={styles.tree}\n        onKeyDown={onKeyDown}\n      >\n        {renderLevel(items, 1, \"\")}\n      </ul>\n    </div>\n  );\n}\n"
+    },
+    {
+      "path": "components/styles/tree-view.module.css",
+      "type": "registry:style",
+      "content": ".root {\n  --mf-tv-accent: #6366f1;\n  --mf-tv-row: 2rem;\n  --mf-tv-fs: 0.875rem;\n  display: flex;\n  flex-direction: column;\n  width: 100%;\n  max-width: 18rem;\n  padding: 0.5rem;\n  border: 1px solid var(--mf-border, #2e2e38);\n  border-radius: 0.75rem;\n  background-color: var(--mf-surface, #141419);\n  color: var(--mf-fg, #f4f4f6);\n  font-size: var(--mf-tv-fs);\n  box-sizing: border-box;\n}\n\n.root[data-size=\"sm\"] {\n  --mf-tv-row: 1.625rem;\n  --mf-tv-fs: 0.8125rem;\n}\n\n.header {\n  padding: 0.375rem 0.5rem 0.5rem;\n  font-size: 0.6875rem;\n  font-weight: 600;\n  letter-spacing: 0.06em;\n  text-transform: uppercase;\n  color: var(--mf-subtle, #71717a);\n}\n\n.tree,\n.group {\n  list-style: none;\n  margin: 0;\n  padding: 0;\n}\n\n.group {\n  overflow: hidden;\n}\n\n.item {\n  outline: none;\n}\n\n.row {\n  position: relative;\n  display: flex;\n  align-items: center;\n  gap: 0.375rem;\n  height: var(--mf-tv-row);\n  padding-right: 0.5rem;\n  border-radius: 0.375rem;\n  color: var(--mf-muted, #a1a1aa);\n  cursor: pointer;\n  user-select: none;\n  transition: background-color 140ms ease, color 140ms ease;\n}\n\n.row:hover {\n  color: var(--mf-fg, #f4f4f6);\n  background-color: var(--mf-surface-raised, #1b1b22);\n}\n\n.row[data-selected] {\n  color: var(--mf-fg, #f4f4f6);\n  background-color: color-mix(in srgb, var(--mf-tv-accent) 16%, transparent);\n}\n\n.row[data-selected]::before {\n  content: \"\";\n  position: absolute;\n  left: 0;\n  top: 22%;\n  bottom: 22%;\n  width: 2px;\n  border-radius: 2px;\n  background-color: var(--mf-tv-accent);\n}\n\n.item:focus-visible > .row {\n  outline: 2px solid var(--mf-fg, #e4e4e7);\n  outline-offset: -2px;\n}\n\n.guide {\n  position: absolute;\n  top: 0;\n  bottom: 0;\n  width: 1px;\n  background-color: var(--mf-border, #2e2e38);\n  pointer-events: none;\n}\n\n.chevron {\n  display: inline-flex;\n  align-items: center;\n  justify-content: center;\n  flex-shrink: 0;\n  width: 1rem;\n  height: 1rem;\n  color: var(--mf-subtle, #71717a);\n  transition: transform 200ms cubic-bezier(0.16, 1, 0.3, 1);\n}\n\n.chevron[data-open] {\n  transform: rotate(90deg);\n}\n\n.chevron[data-hidden] {\n  visibility: hidden;\n}\n\n.icon {\n  flex-shrink: 0;\n  color: var(--mf-subtle, #71717a);\n}\n\n.icon[data-folder] {\n  color: var(--mf-tv-accent);\n}\n\n.text {\n  overflow: hidden;\n  white-space: nowrap;\n  text-overflow: ellipsis;\n}\n\n@media (prefers-reduced-motion: reduce) {\n  .row,\n  .chevron {\n    transition: none;\n  }\n}\n"
+    }
+  ],
+  "tailwindExample": "\"use client\";\n\nimport { AnimatePresence, motion } from \"motion/react\";\nimport { useState } from \"react\";\n\ntype Node = { label: string; children?: Node[] };\nconst tree: Node[] = [\n  { label: \"src\", children: [{ label: \"components\", children: [{ label: \"button.tsx\" }, { label: \"tree-view.tsx\" }] }, { label: \"page.tsx\" }] },\n  { label: \"package.json\" },\n];\n\nexport function TreeViewTailwind() {\n  const [open, setOpen] = useState<string[]>([\"src\"]);\n  const [sel, setSel] = useState(\"src/page.tsx\");\n  const render = (nodes: Node[], level: number, prefix: string) =>\n    nodes.map((n) => {\n      const id = prefix ? `${prefix}/${n.label}` : n.label;\n      const isOpen = open.includes(id);\n      return (\n        <li key={id} role=\"treeitem\" aria-level={level} aria-selected={sel === id} aria-expanded={n.children ? isOpen : undefined} tabIndex={sel === id ? 0 : -1} className=\"outline-none [&:focus-visible>div]:ring-2 [&:focus-visible>div]:ring-zinc-200\">\n          <div onClick={() => { setSel(id); if (n.children) setOpen(isOpen ? open.filter((x) => x !== id) : [...open, id]); }} style={{ paddingLeft: (level - 1) * 16 + 6 }} className={`flex h-8 cursor-pointer items-center gap-1.5 rounded-md pr-2 text-sm ${sel === id ? \"bg-indigo-500/15 text-zinc-100\" : \"text-zinc-400 hover:bg-zinc-800 hover:text-zinc-100\"}`}>\n            <span className={`w-3 text-[10px] transition-transform ${n.children ? \"\" : \"invisible\"} ${isOpen ? \"rotate-90\" : \"\"}`}>&#9654;</span>\n            {n.label}\n          </div>\n          <AnimatePresence initial={false}>\n            {n.children && isOpen && (\n              <motion.ul role=\"group\" className=\"overflow-hidden\" initial={{ height: 0 }} animate={{ height: \"auto\" }} exit={{ height: 0 }} transition={{ duration: 0.22 }}>\n                {render(n.children, level + 1, id)}\n              </motion.ul>\n            )}\n          </AnimatePresence>\n        </li>\n      );\n    });\n  return <ul role=\"tree\" aria-label=\"Project files\" className=\"w-64 rounded-xl border border-zinc-800 bg-zinc-950 p-2\">{render(tree, 1, \"\")}</ul>;\n}"
+}

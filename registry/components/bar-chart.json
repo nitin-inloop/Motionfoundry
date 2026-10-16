@@ -1,0 +1,256 @@
+{
+  "slug": "bar-chart",
+  "name": "BarChart",
+  "category": "Data Display",
+  "collection": "ui",
+  "featured": false,
+  "addedAt": "2026-10-16",
+  "version": "2.3.0",
+  "requiresMotion": false,
+  "dependencies": [
+    "react"
+  ],
+  "description": "A dependency-free SVG bar chart card whose bars grow in with a staggered spring-like ease, with nice-rounded gridlines, an axis, value labels and a hover/keyboard tooltip. Vertical or horizontal, sized to its container via ResizeObserver.",
+  "tags": [
+    "chart",
+    "bar-chart",
+    "svg",
+    "data-visualization",
+    "dashboard",
+    "ui"
+  ],
+  "a11yNotes": "The SVG is aria-hidden; a visually hidden <table> with a caption, column headers and row headers exposes every label/value pair to assistive tech. The plot is a single focusable role=\"group\" with an accessible name: Arrow keys (and Home/End) step through bars, showing the tooltip and announcing \"Label: value\" in a polite live region; Escape clears. Focus is shown with a 2px outline. Under prefers-reduced-motion the bars render at full size without the grow-in.",
+  "defaultProps": {
+    "labels": [
+      "Jan",
+      "Feb",
+      "Mar",
+      "Apr",
+      "May",
+      "Jun",
+      "Jul",
+      "Aug"
+    ],
+    "values": [
+      186,
+      305,
+      237,
+      273,
+      209,
+      314,
+      342,
+      298
+    ],
+    "orientation": "vertical",
+    "title": "Monthly revenue",
+    "description": "January – August 2026",
+    "accentColor": "#6366f1",
+    "valuePrefix": "$",
+    "valueSuffix": "k",
+    "showGrid": true,
+    "showValues": true,
+    "barRadius": 6,
+    "barGap": 0.32,
+    "stagger": 60,
+    "height": 260
+  },
+  "controls": [
+    {
+      "prop": "labels",
+      "label": "Labels (comma separated)",
+      "type": "list"
+    },
+    {
+      "prop": "values",
+      "label": "Values (comma separated)",
+      "type": "list"
+    },
+    {
+      "prop": "orientation",
+      "label": "Orientation",
+      "type": "select",
+      "options": [
+        "vertical",
+        "horizontal"
+      ]
+    },
+    {
+      "prop": "title",
+      "label": "Title",
+      "type": "text"
+    },
+    {
+      "prop": "description",
+      "label": "Description",
+      "type": "text"
+    },
+    {
+      "prop": "accentColor",
+      "label": "Bar color",
+      "type": "color"
+    },
+    {
+      "prop": "valuePrefix",
+      "label": "Value prefix",
+      "type": "text"
+    },
+    {
+      "prop": "valueSuffix",
+      "label": "Value suffix",
+      "type": "text"
+    },
+    {
+      "prop": "showGrid",
+      "label": "Gridlines",
+      "type": "boolean"
+    },
+    {
+      "prop": "showValues",
+      "label": "Value labels",
+      "type": "boolean"
+    },
+    {
+      "prop": "barRadius",
+      "label": "Bar radius",
+      "type": "range",
+      "min": 0,
+      "max": 20,
+      "step": 1
+    },
+    {
+      "prop": "barGap",
+      "label": "Bar gap",
+      "type": "range",
+      "min": 0.05,
+      "max": 0.8,
+      "step": 0.01
+    },
+    {
+      "prop": "stagger",
+      "label": "Stagger (ms)",
+      "type": "range",
+      "min": 0,
+      "max": 200,
+      "step": 5
+    },
+    {
+      "prop": "height",
+      "label": "Height",
+      "type": "range",
+      "min": 160,
+      "max": 360,
+      "step": 10
+    }
+  ],
+  "propsApi": [
+    {
+      "name": "labels",
+      "type": "string[]",
+      "default": "['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug']",
+      "description": "Category labels, one per bar."
+    },
+    {
+      "name": "values",
+      "type": "Array<number | string> | string",
+      "default": "[186, 305, 237, 273, 209, 314, 342, 298]",
+      "description": "Bar values aligned with labels; numeric strings and comma separated strings are parsed. Negative or invalid values render as 0."
+    },
+    {
+      "name": "orientation",
+      "type": "'vertical' | 'horizontal'",
+      "default": "'vertical'",
+      "description": "Column chart or horizontal bar chart."
+    },
+    {
+      "name": "title",
+      "type": "string",
+      "default": "'Monthly revenue'",
+      "description": "Card title; also names the chart and the fallback table."
+    },
+    {
+      "name": "description",
+      "type": "string",
+      "default": "'January – August 2026'",
+      "description": "Secondary line under the title."
+    },
+    {
+      "name": "accentColor",
+      "type": "string",
+      "default": "'#6366f1'",
+      "description": "Bar and tooltip swatch color."
+    },
+    {
+      "name": "valuePrefix",
+      "type": "string",
+      "default": "'$'",
+      "description": "Text placed before formatted values."
+    },
+    {
+      "name": "valueSuffix",
+      "type": "string",
+      "default": "'k'",
+      "description": "Text placed after formatted values."
+    },
+    {
+      "name": "showGrid",
+      "type": "boolean",
+      "default": "true",
+      "description": "Show dashed gridlines and value-axis ticks."
+    },
+    {
+      "name": "showValues",
+      "type": "boolean",
+      "default": "true",
+      "description": "Show a value label at the end of each bar."
+    },
+    {
+      "name": "barRadius",
+      "type": "number",
+      "default": "6",
+      "description": "Corner radius of the bar ends in px."
+    },
+    {
+      "name": "barGap",
+      "type": "number",
+      "default": "0.32",
+      "description": "Fraction of each band left empty between bars (0–0.8)."
+    },
+    {
+      "name": "stagger",
+      "type": "number",
+      "default": "60",
+      "description": "Delay between consecutive bars growing in, in ms."
+    },
+    {
+      "name": "height",
+      "type": "number",
+      "default": "260",
+      "description": "Plot height in px (width follows the container)."
+    },
+    {
+      "name": "className",
+      "type": "string",
+      "default": "''",
+      "description": "Additional class merged onto the root element."
+    },
+    {
+      "name": "style",
+      "type": "React.CSSProperties",
+      "default": "undefined",
+      "description": "Inline styles merged onto the root element."
+    }
+  ],
+  "files": [
+    {
+      "path": "components/ui/bar-chart.tsx",
+      "type": "registry:component",
+      "content": "\"use client\";\n\nimport * as React from \"react\";\nimport styles from \"../styles/bar-chart.module.css\";\n\nexport interface BarChartProps {\n  /** Category labels, one per bar */\n  labels?: string[];\n  /** Bar values (numbers, numeric strings, or a comma separated string), aligned with `labels` */\n  values?: Array<number | string> | string;\n  /** Bar direction */\n  orientation?: \"vertical\" | \"horizontal\";\n  /** Card title (also the chart's accessible name) */\n  title?: string;\n  /** Secondary line under the title */\n  description?: string;\n  /** Bar color */\n  accentColor?: string;\n  /** Text placed before every formatted value */\n  valuePrefix?: string;\n  /** Text placed after every formatted value */\n  valueSuffix?: string;\n  /** Show horizontal/vertical gridlines and the value axis */\n  showGrid?: boolean;\n  /** Show the value label at the end of each bar */\n  showValues?: boolean;\n  /** Corner radius of the bar ends in px */\n  barRadius?: number;\n  /** Fraction of each band left empty between bars (0–0.8) */\n  barGap?: number;\n  /** Delay between consecutive bars growing in, in ms */\n  stagger?: number;\n  /** Plot height in px */\n  height?: number;\n  /** Optional className merged onto the root */\n  className?: string;\n  /** Optional inline styles merged onto the root */\n  style?: React.CSSProperties;\n}\n\nconst DEFAULT_LABELS = [\"Jan\", \"Feb\", \"Mar\", \"Apr\", \"May\", \"Jun\", \"Jul\", \"Aug\"];\nconst DEFAULT_VALUES = [186, 305, 237, 273, 209, 314, 342, 298];\n\nfunction toNumbers(v: Array<number | string> | string): number[] {\n  const arr = typeof v === \"string\" ? v.split(\",\") : v;\n  return arr.map((x) => {\n    const n = typeof x === \"number\" ? x : parseFloat(String(x).trim());\n    return Number.isFinite(n) ? Math.max(0, n) : 0;\n  });\n}\n\nfunction niceScale(max: number, count = 4) {\n  if (max <= 0) return { top: 1, ticks: [0, 1] };\n  const raw = max / count;\n  const mag = Math.pow(10, Math.floor(Math.log10(raw)));\n  const step = [1, 2, 2.5, 5, 10].map((s) => s * mag).find((s) => s >= raw) ?? raw;\n  const top = Math.ceil(max / step) * step;\n  const ticks: number[] = [];\n  for (let t = 0; t <= top + step / 2; t += step) ticks.push(Math.round(t * 1000) / 1000);\n  return { top, ticks };\n}\n\nfunction barPath(h: boolean, x: number, y: number, w: number, len: number, radius: number) {\n  const r = Math.max(0, Math.min(radius, w / 2, len));\n  if (h) return `M${x},${y}H${x + len - r}Q${x + len},${y} ${x + len},${y + r}V${y + w - r}Q${x + len},${y + w} ${x + len - r},${y + w}H${x}Z`;\n  return `M${x},${y + len}V${y + r}Q${x},${y} ${x + r},${y}H${x + w - r}Q${x + w},${y} ${x + w},${y + r}V${y + len}Z`;\n}\n\nexport function BarChart({\n  labels = DEFAULT_LABELS,\n  values = DEFAULT_VALUES,\n  orientation = \"vertical\",\n  title = \"Monthly revenue\",\n  description = \"January – August 2026\",\n  accentColor = \"#6366f1\",\n  valuePrefix = \"$\",\n  valueSuffix = \"k\",\n  showGrid = true,\n  showValues = true,\n  barRadius = 6,\n  barGap = 0.32,\n  stagger = 60,\n  height = 260,\n  className = \"\",\n  style,\n}: BarChartProps) {\n  const id = React.useId();\n  const wrapRef = React.useRef<HTMLDivElement>(null);\n  const [width, setWidth] = React.useState(600);\n  const [active, setActive] = React.useState<number | null>(null);\n  const [kbd, setKbd] = React.useState(false);\n\n  React.useEffect(() => {\n    const el = wrapRef.current;\n    if (!el || typeof ResizeObserver === \"undefined\") return;\n    const ro = new ResizeObserver(([entry]) => setWidth(Math.max(200, Math.round(entry.contentRect.width))));\n    ro.observe(el);\n    return () => ro.disconnect();\n  }, []);\n\n  const nums = toNumbers(values);\n  const n = Math.min(labels.length, nums.length);\n  const data = Array.from({ length: n }, (_, i) => ({ label: labels[i], value: nums[i] }));\n  const fmt = (v: number) => `${valuePrefix}${v.toLocaleString(\"en-US\")}${valueSuffix}`;\n  const horizontal = orientation === \"horizontal\";\n  const longest = data.reduce((m, d) => Math.max(m, d.label.length), 0);\n  const m = horizontal\n    ? { t: 8, r: showValues ? 52 : 16, b: showGrid ? 26 : 8, l: Math.min(140, 14 + longest * 7) }\n    : { t: showValues ? 22 : 10, r: 8, b: 28, l: showGrid ? 44 : 8 };\n  const iw = Math.max(10, width - m.l - m.r);\n  const ih = Math.max(10, height - m.t - m.b);\n  const { top, ticks } = niceScale(data.reduce((mx, d) => Math.max(mx, d.value), 0));\n  const band = (horizontal ? ih : iw) / Math.max(1, n);\n  const gap = Math.min(0.8, Math.max(0, barGap));\n  const thick = band * (1 - gap);\n  const span = horizontal ? iw : ih;\n\n  const geo = data.map((d, i) => {\n    const len = (d.value / top) * span;\n    const off = i * band + (band - thick) / 2;\n    return horizontal\n      ? { x: m.l, y: m.t + off, len, cx: m.l + len, cy: m.t + off + thick / 2 }\n      : { x: m.l + off, y: m.t + ih - len, len, cx: m.l + off + thick / 2, cy: m.t + ih - len };\n  });\n\n  const onKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {\n    if (!n) return;\n    const cur = active ?? -1;\n    let next = -1;\n    if (e.key === \"ArrowRight\" || e.key === \"ArrowDown\") next = Math.min(n - 1, cur + 1);\n    else if (e.key === \"ArrowLeft\" || e.key === \"ArrowUp\") next = Math.max(0, cur - 1);\n    else if (e.key === \"Home\") next = 0;\n    else if (e.key === \"End\") next = n - 1;\n    else if (e.key === \"Escape\") return setActive(null);\n    if (next < 0) return;\n    e.preventDefault();\n    setKbd(true);\n    setActive(next);\n  };\n\n  const tip = active !== null ? geo[active] : null;\n  const tipData = active !== null ? data[active] : null;\n\n  return (\n    <figure\n      className={`${styles.root} ${className}`.trim()}\n      data-orientation={orientation}\n      style={{ \"--mf-bc-accent\": accentColor, \"--mf-bc-stagger\": `${Math.max(0, stagger)}ms`, ...style } as React.CSSProperties}\n    >\n      {(title || description) && (\n        <figcaption className={styles.head}>\n          {title && <span id={`${id}-t`} className={styles.title}>{title}</span>}\n          {description && <span className={styles.desc}>{description}</span>}\n        </figcaption>\n      )}\n      <div\n        ref={wrapRef}\n        className={styles.plot}\n        tabIndex={0}\n        role=\"group\"\n        aria-label={`${title || \"Bar chart\"}. Use arrow keys to inspect bars.`}\n        onKeyDown={onKeyDown}\n        onBlur={() => kbd && setActive(null)}\n        onPointerLeave={() => setActive(null)}\n      >\n        <svg width={width} height={height} className={styles.svg} aria-hidden=\"true\">\n          {showGrid &&\n            ticks.map((t) => {\n              const p = (t / top) * span;\n              return horizontal ? (\n                <g key={t}>\n                  <line className={styles.grid} x1={m.l + p} x2={m.l + p} y1={m.t} y2={m.t + ih} />\n                  <text className={styles.tick} x={m.l + p} y={height - 8} textAnchor=\"middle\">{t.toLocaleString(\"en-US\")}</text>\n                </g>\n              ) : (\n                <g key={t}>\n                  <line className={styles.grid} x1={m.l} x2={m.l + iw} y1={m.t + ih - p} y2={m.t + ih - p} />\n                  <text className={styles.tick} x={m.l - 8} y={m.t + ih - p} textAnchor=\"end\" dominantBaseline=\"middle\">{t.toLocaleString(\"en-US\")}</text>\n                </g>\n              );\n            })}\n          {horizontal ? (\n            <line className={styles.axis} x1={m.l} x2={m.l} y1={m.t} y2={m.t + ih} />\n          ) : (\n            <line className={styles.axis} x1={m.l} x2={m.l + iw} y1={m.t + ih} y2={m.t + ih} />\n          )}\n          {data.map((d, i) => {\n            const g = geo[i];\n            return (\n              <g key={`${d.label}-${i}`} style={{ \"--i\": i } as React.CSSProperties}>\n                <rect\n                  className={styles.hit}\n                  x={horizontal ? m.l : m.l + i * band}\n                  y={horizontal ? m.t + i * band : m.t}\n                  width={horizontal ? iw : band}\n                  height={horizontal ? band : ih}\n                  onPointerEnter={() => {\n                    setKbd(false);\n                    setActive(i);\n                  }}\n                />\n                <path\n                  className={styles.bar}\n                  data-dim={active !== null && active !== i ? \"\" : undefined}\n                  d={barPath(horizontal, g.x, g.y, thick, g.len, barRadius)}\n                />\n                {showValues && (\n                  <text\n                    className={styles.value}\n                    x={horizontal ? g.cx + 6 : g.cx}\n                    y={horizontal ? g.cy : g.cy - 7}\n                    textAnchor={horizontal ? \"start\" : \"middle\"}\n                    dominantBaseline={horizontal ? \"middle\" : \"auto\"}\n                  >\n                    {fmt(d.value)}\n                  </text>\n                )}\n                <text\n                  className={styles.label}\n                  x={horizontal ? m.l - 8 : g.cx}\n                  y={horizontal ? g.cy : m.t + ih + 18}\n                  textAnchor={horizontal ? \"end\" : \"middle\"}\n                  dominantBaseline={horizontal ? \"middle\" : \"auto\"}\n                >\n                  {d.label}\n                </text>\n              </g>\n            );\n          })}\n        </svg>\n        {tip && tipData && (\n          <div\n            className={styles.tooltip}\n            data-side={horizontal ? \"right\" : \"top\"}\n            style={{ left: tip.cx, top: tip.cy } as React.CSSProperties}\n            aria-hidden=\"true\"\n          >\n            <span className={styles.tipLabel}>{tipData.label}</span>\n            <span className={styles.tipValue}>\n              <i className={styles.swatch} />\n              {fmt(tipData.value)}\n            </span>\n          </div>\n        )}\n        <span className={styles.srOnly} aria-live=\"polite\">\n          {kbd && tipData ? `${tipData.label}: ${fmt(tipData.value)}` : \"\"}\n        </span>\n      </div>\n      <table className={styles.srOnly}>\n        <caption>{title || \"Bar chart data\"}</caption>\n        <thead>\n          <tr>\n            <th scope=\"col\">Category</th>\n            <th scope=\"col\">Value</th>\n          </tr>\n        </thead>\n        <tbody>\n          {data.map((d, i) => (\n            <tr key={`${d.label}-${i}`}>\n              <th scope=\"row\">{d.label}</th>\n              <td>{fmt(d.value)}</td>\n            </tr>\n          ))}\n        </tbody>\n      </table>\n    </figure>\n  );\n}\n"
+    },
+    {
+      "path": "components/styles/bar-chart.module.css",
+      "type": "registry:style",
+      "content": ".root {\n  --mf-bc-accent: #6366f1;\n  --mf-bc-stagger: 60ms;\n  display: flex;\n  flex-direction: column;\n  gap: 1rem;\n  width: 100%;\n  max-width: 42rem;\n  margin: 0;\n  padding: 1.25rem 1.25rem 1rem;\n  border: 1px solid var(--mf-border, #2e2e38);\n  border-radius: 0.75rem;\n  background-color: var(--mf-surface, #141419);\n  color: var(--mf-fg, #f4f4f6);\n  box-sizing: border-box;\n}\n\n.head {\n  display: flex;\n  flex-direction: column;\n  gap: 0.25rem;\n}\n\n.title {\n  font-size: 0.9375rem;\n  font-weight: 600;\n  line-height: 1.3;\n  color: var(--mf-fg, #f4f4f6);\n}\n\n.desc {\n  font-size: 0.8125rem;\n  color: var(--mf-muted, #a1a1aa);\n}\n\n.plot {\n  position: relative;\n  width: 100%;\n  border-radius: 0.5rem;\n  outline: none;\n}\n\n.plot:focus-visible {\n  outline: 2px solid var(--mf-fg, #e4e4e7);\n  outline-offset: 4px;\n}\n\n.svg {\n  display: block;\n  overflow: visible;\n  font-family: inherit;\n}\n\n.grid {\n  stroke: var(--mf-border, #2e2e38);\n  stroke-dasharray: 3 4;\n  stroke-width: 1;\n}\n\n.axis {\n  stroke: var(--mf-border-strong, #52525b);\n  stroke-width: 1;\n}\n\n.tick,\n.label {\n  fill: var(--mf-muted, #a1a1aa);\n  font-size: 11px;\n}\n\n.label {\n  fill: var(--mf-subtle, #71717a);\n  font-size: 11.5px;\n}\n\n.hit {\n  fill: transparent;\n}\n\n.bar {\n  fill: var(--mf-bc-accent);\n  transform-box: fill-box;\n  transform-origin: 50% 100%;\n  pointer-events: none;\n  transition: opacity 180ms ease, filter 180ms ease;\n  animation: mf-bc-grow-y 720ms cubic-bezier(0.16, 1, 0.3, 1) both;\n  animation-delay: calc(var(--i, 0) * var(--mf-bc-stagger));\n}\n\n.root[data-orientation=\"horizontal\"] .bar {\n  transform-origin: 0% 50%;\n  animation-name: mf-bc-grow-x;\n}\n\n.bar[data-dim] {\n  opacity: 0.4;\n}\n\n.value {\n  fill: var(--mf-fg, #f4f4f6);\n  font-size: 11px;\n  font-weight: 600;\n  font-variant-numeric: tabular-nums;\n  pointer-events: none;\n  animation: mf-bc-fade 400ms ease both;\n  animation-delay: calc(var(--i, 0) * var(--mf-bc-stagger) + 420ms);\n}\n\n.tooltip {\n  position: absolute;\n  z-index: 2;\n  display: flex;\n  flex-direction: column;\n  gap: 0.125rem;\n  min-width: 5.5rem;\n  padding: 0.4375rem 0.625rem;\n  border: 1px solid var(--mf-border, #2e2e38);\n  border-radius: 0.5rem;\n  background-color: var(--mf-surface-raised, #1b1b22);\n  box-shadow: 0 8px 24px rgb(0 0 0 / 0.28);\n  font-size: 0.75rem;\n  pointer-events: none;\n  white-space: nowrap;\n  animation: mf-bc-pop 160ms cubic-bezier(0.16, 1, 0.3, 1) both;\n}\n\n.tooltip[data-side=\"top\"] {\n  transform: translate(-50%, calc(-100% - 1.75rem));\n}\n\n.tooltip[data-side=\"right\"] {\n  transform: translate(3.5rem, -50%);\n}\n\n.tipLabel {\n  color: var(--mf-muted, #a1a1aa);\n}\n\n.tipValue {\n  display: inline-flex;\n  align-items: center;\n  gap: 0.375rem;\n  font-weight: 600;\n  font-variant-numeric: tabular-nums;\n  color: var(--mf-fg, #f4f4f6);\n}\n\n.swatch {\n  width: 0.5rem;\n  height: 0.5rem;\n  border-radius: 2px;\n  background-color: var(--mf-bc-accent);\n}\n\n.srOnly {\n  position: absolute;\n  width: 1px;\n  height: 1px;\n  padding: 0;\n  margin: -1px;\n  overflow: hidden;\n  clip: rect(0 0 0 0);\n  white-space: nowrap;\n  border: 0;\n}\n\n@keyframes mf-bc-grow-y {\n  from {\n    transform: scaleY(0);\n  }\n  to {\n    transform: scaleY(1);\n  }\n}\n\n@keyframes mf-bc-grow-x {\n  from {\n    transform: scaleX(0);\n  }\n  to {\n    transform: scaleX(1);\n  }\n}\n\n@keyframes mf-bc-fade {\n  from {\n    opacity: 0;\n  }\n  to {\n    opacity: 1;\n  }\n}\n\n@keyframes mf-bc-pop {\n  from {\n    opacity: 0;\n  }\n  to {\n    opacity: 1;\n  }\n}\n\n@media (prefers-reduced-motion: reduce) {\n  .bar,\n  .value,\n  .tooltip {\n    animation: none;\n    transition: none;\n  }\n}\n"
+    }
+  ],
+  "tailwindExample": "\"use client\";\n\nconst data = [\n  { label: \"Jan\", value: 186 }, { label: \"Feb\", value: 305 }, { label: \"Mar\", value: 237 }, { label: \"Apr\", value: 273 },\n  { label: \"May\", value: 209 }, { label: \"Jun\", value: 314 }, { label: \"Jul\", value: 342 }, { label: \"Aug\", value: 298 },\n];\nconst max = 400;\n\nexport function BarChartTailwind() {\n  return (\n    <figure className=\"w-full max-w-xl rounded-xl border border-zinc-800 bg-zinc-950 p-5 text-zinc-100\">\n      <figcaption className=\"mb-4 text-sm font-semibold\">Monthly revenue</figcaption>\n      <div className=\"flex h-56 items-end gap-3 border-b border-zinc-700\" aria-hidden=\"true\">\n        {data.map((d, i) => (\n          <div key={d.label} className=\"group relative flex h-full flex-1 flex-col items-center justify-end\">\n            <span className=\"mb-1 text-[11px] font-semibold tabular-nums\">${d.value}k</span>\n            <div className=\"w-full origin-bottom animate-[grow_700ms_cubic-bezier(.16,1,.3,1)_both] rounded-t-md bg-indigo-500 transition-opacity group-hover:opacity-80 motion-reduce:animate-none\" style={{ height: `${(d.value / max) * 100}%`, animationDelay: `${i * 60}ms` }} />\n            <span className=\"absolute -bottom-6 text-[11px] text-zinc-500\">{d.label}</span>\n          </div>\n        ))}\n      </div>\n      <table className=\"sr-only\"><caption>Monthly revenue</caption><tbody>{data.map((d) => <tr key={d.label}><th scope=\"row\">{d.label}</th><td>${d.value}k</td></tr>)}</tbody></table>\n      <style>{`@keyframes grow{from{transform:scaleY(0)}to{transform:scaleY(1)}}`}</style>\n    </figure>\n  );\n}"
+}

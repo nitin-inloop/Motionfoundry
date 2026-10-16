@@ -1,0 +1,223 @@
+{
+  "slug": "star-rating",
+  "name": "StarRating",
+  "category": "Forms and Inputs",
+  "collection": "ui",
+  "featured": false,
+  "addedAt": "2026-10-16",
+  "version": "2.3.0",
+  "requiresMotion": true,
+  "dependencies": [
+    "motion",
+    "react"
+  ],
+  "description": "A star rating input that previews the score as you hover (down to half stars), springs the hovered star up, and pops the stars in sequence when a rating is committed. Works with arrow keys and has a read-only display mode.",
+  "tags": [
+    "rating",
+    "stars",
+    "review",
+    "slider",
+    "form",
+    "ui"
+  ],
+  "a11yNotes": "Interactive mode is a single focusable role=\"slider\" (aria-valuemin 0, aria-valuemax = count, aria-valuenow, aria-valuetext like \"3.5 out of 5 stars, Good\") labelled by the visible caption. ArrowRight/ArrowUp and ArrowLeft/ArrowDown change by one step (0.5 with allowHalf), PageUp/PageDown by a whole star, Home/End jump to 0/max and number keys set whole ratings. Read-only mode renders role=\"img\" with an aria-label stating the rating. Individual stars are aria-hidden. Under prefers-reduced-motion the hover lift and pop are disabled.",
+  "defaultProps": {
+    "defaultValue": 3.5,
+    "count": 5,
+    "allowHalf": true,
+    "readOnly": false,
+    "allowClear": true,
+    "size": 32,
+    "gap": 6,
+    "activeColor": "#f59e0b",
+    "label": "Rate this template",
+    "showLabel": true,
+    "showValue": true,
+    "disabled": false
+  },
+  "controls": [
+    {
+      "prop": "defaultValue",
+      "label": "Initial value",
+      "type": "range",
+      "min": 0,
+      "max": 10,
+      "step": 0.5
+    },
+    {
+      "prop": "count",
+      "label": "Star count",
+      "type": "range",
+      "min": 3,
+      "max": 10,
+      "step": 1
+    },
+    {
+      "prop": "allowHalf",
+      "label": "Half stars",
+      "type": "boolean"
+    },
+    {
+      "prop": "readOnly",
+      "label": "Read only",
+      "type": "boolean"
+    },
+    {
+      "prop": "allowClear",
+      "label": "Click again to clear",
+      "type": "boolean"
+    },
+    {
+      "prop": "size",
+      "label": "Star size (px)",
+      "type": "range",
+      "min": 16,
+      "max": 56,
+      "step": 2
+    },
+    {
+      "prop": "gap",
+      "label": "Gap (px)",
+      "type": "range",
+      "min": 0,
+      "max": 20,
+      "step": 1
+    },
+    {
+      "prop": "activeColor",
+      "label": "Star color",
+      "type": "color"
+    },
+    {
+      "prop": "label",
+      "label": "Label",
+      "type": "text"
+    },
+    {
+      "prop": "showLabel",
+      "label": "Show label",
+      "type": "boolean"
+    },
+    {
+      "prop": "showValue",
+      "label": "Show value",
+      "type": "boolean"
+    },
+    {
+      "prop": "disabled",
+      "label": "Disabled",
+      "type": "boolean"
+    }
+  ],
+  "propsApi": [
+    {
+      "name": "value",
+      "type": "number",
+      "default": "undefined",
+      "description": "Controlled rating."
+    },
+    {
+      "name": "defaultValue",
+      "type": "number",
+      "default": "3.5",
+      "description": "Initial rating when uncontrolled (snapped to the step and clamped to count)."
+    },
+    {
+      "name": "onValueChange",
+      "type": "(value: number) => void",
+      "default": "undefined",
+      "description": "Called with the newly committed rating."
+    },
+    {
+      "name": "count",
+      "type": "number",
+      "default": "5",
+      "description": "Number of stars."
+    },
+    {
+      "name": "allowHalf",
+      "type": "boolean",
+      "default": "true",
+      "description": "Allow half-star ratings (left half of a star = .5)."
+    },
+    {
+      "name": "readOnly",
+      "type": "boolean",
+      "default": "false",
+      "description": "Display-only mode exposed as an image with a descriptive label."
+    },
+    {
+      "name": "allowClear",
+      "type": "boolean",
+      "default": "true",
+      "description": "Clicking the current rating again resets it to 0."
+    },
+    {
+      "name": "size",
+      "type": "number",
+      "default": "32",
+      "description": "Star size in pixels."
+    },
+    {
+      "name": "gap",
+      "type": "number",
+      "default": "6",
+      "description": "Gap between stars in pixels."
+    },
+    {
+      "name": "activeColor",
+      "type": "string",
+      "default": "'#f59e0b'",
+      "description": "Fill and glow color of active stars."
+    },
+    {
+      "name": "label",
+      "type": "string",
+      "default": "'Rate this template'",
+      "description": "Accessible name, shown as a caption when showLabel is true."
+    },
+    {
+      "name": "showLabel",
+      "type": "boolean",
+      "default": "true",
+      "description": "Show the label above the stars."
+    },
+    {
+      "name": "showValue",
+      "type": "boolean",
+      "default": "true",
+      "description": "Show the numeric value (and a word like 'Good' for 5-star scales)."
+    },
+    {
+      "name": "disabled",
+      "type": "boolean",
+      "default": "false",
+      "description": "Disable interaction."
+    },
+    {
+      "name": "className",
+      "type": "string",
+      "default": "''",
+      "description": "Additional class merged onto the root element."
+    },
+    {
+      "name": "style",
+      "type": "React.CSSProperties",
+      "default": "undefined",
+      "description": "Inline styles merged onto the root element."
+    }
+  ],
+  "files": [
+    {
+      "path": "components/ui/star-rating.tsx",
+      "type": "registry:component",
+      "content": "\"use client\";\n\nimport * as React from \"react\";\nimport { motion, useReducedMotion } from \"motion/react\";\nimport styles from \"../styles/star-rating.module.css\";\n\nexport interface StarRatingProps {\n  /** Controlled rating */\n  value?: number;\n  /** Initial rating when uncontrolled */\n  defaultValue?: number;\n  /** Called with the newly committed rating */\n  onValueChange?: (value: number) => void;\n  /** Number of stars */\n  count?: number;\n  /** Allow half-star ratings */\n  allowHalf?: boolean;\n  /** Display only (no interaction) */\n  readOnly?: boolean;\n  /** Clicking the current rating again resets it to 0 */\n  allowClear?: boolean;\n  /** Star size in pixels */\n  size?: number;\n  /** Gap between stars in pixels */\n  gap?: number;\n  /** Fill color of active stars */\n  activeColor?: string;\n  /** Accessible name (also shown as a caption when showLabel is true) */\n  label?: string;\n  /** Show the label above the stars */\n  showLabel?: boolean;\n  /** Show the numeric value next to the stars */\n  showValue?: boolean;\n  /** Disable interaction */\n  disabled?: boolean;\n  /** Optional className merged onto the root */\n  className?: string;\n  /** Optional inline styles merged onto the root */\n  style?: React.CSSProperties;\n}\n\nconst STAR = \"M12 2.75l2.83 5.73 6.32.92-4.57 4.46 1.08 6.3L12 17.18l-5.66 2.98 1.08-6.3L2.85 9.4l6.32-.92L12 2.75z\";\nconst WORDS = [\"No rating\", \"Terrible\", \"Poor\", \"Okay\", \"Good\", \"Excellent\"];\n\nexport function StarRating({\n  value: valueProp,\n  defaultValue = 3.5,\n  onValueChange,\n  count = 5,\n  allowHalf = true,\n  readOnly = false,\n  allowClear = true,\n  size = 32,\n  gap = 6,\n  activeColor = \"#f59e0b\",\n  label = \"Rate this template\",\n  showLabel = true,\n  showValue = true,\n  disabled = false,\n  className = \"\",\n  style,\n}: StarRatingProps) {\n  const reduce = useReducedMotion();\n  const id = React.useId();\n  const total = Math.max(1, Math.round(count));\n  const stepSize = allowHalf ? 0.5 : 1;\n  const snap = (v: number) => Math.min(total, Math.max(0, Math.round(v / stepSize) * stepSize));\n  const [inner, setInner] = React.useState(() => snap(defaultValue));\n  const value = valueProp !== undefined ? snap(valueProp) : inner;\n  const [hover, setHover] = React.useState<number | null>(null);\n  const [pulse, setPulse] = React.useState(0);\n  const interactive = !readOnly && !disabled;\n  const shown = interactive && hover !== null ? hover : value;\n\n  const commit = (v: number) => {\n    const next = snap(allowClear && v === value ? 0 : v);\n    if (valueProp === undefined) setInner(next);\n    if (next !== value) onValueChange?.(next);\n    setPulse((p) => p + 1);\n  };\n\n  const pointValue = (e: React.PointerEvent<HTMLElement> | React.MouseEvent<HTMLElement>, i: number) => {\n    if (!allowHalf) return i + 1;\n    const r = e.currentTarget.getBoundingClientRect();\n    return e.clientX - r.left < r.width / 2 ? i + 0.5 : i + 1;\n  };\n\n  const onKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {\n    if (!interactive) return;\n    const map: Record<string, number> = { ArrowRight: stepSize, ArrowUp: stepSize, ArrowLeft: -stepSize, ArrowDown: -stepSize, PageUp: 1, PageDown: -1 };\n    let next: number | null = null;\n    if (e.key in map) next = snap(value + map[e.key]);\n    else if (e.key === \"Home\") next = 0;\n    else if (e.key === \"End\") next = total;\n    else if (/^[0-9]$/.test(e.key) && Number(e.key) <= total) next = Number(e.key);\n    if (next === null) return;\n    e.preventDefault();\n    if (valueProp === undefined) setInner(next);\n    if (next !== value) onValueChange?.(next);\n    setPulse((p) => p + 1);\n  };\n\n  const word = total === 5 ? WORDS[Math.ceil(shown)] : \"\";\n  const valueWord = total === 5 && value > 0 ? `, ${WORDS[Math.ceil(value)]}` : \"\";\n  const labelId = `${id}-label`;\n\n  return (\n    <div\n      className={`${styles.root} ${className}`.trim()}\n      data-readonly={readOnly ? \"\" : undefined}\n      data-disabled={disabled ? \"\" : undefined}\n      style={{ \"--mf-sr-active\": activeColor, \"--mf-sr-size\": `${size}px`, \"--mf-sr-gap\": `${gap}px`, ...style } as React.CSSProperties}\n    >\n      {showLabel && label && (\n        <span id={labelId} className={styles.label}>\n          {label}\n        </span>\n      )}\n      <div className={styles.row}>\n        <div\n          className={styles.stars}\n          role={readOnly ? \"img\" : \"slider\"}\n          aria-label={readOnly ? `${label ? `${label}: ` : \"\"}Rated ${value} out of ${total} stars` : showLabel && label ? undefined : label || \"Rating\"}\n          aria-labelledby={!readOnly && showLabel && label ? labelId : undefined}\n          aria-valuemin={readOnly ? undefined : 0}\n          aria-valuemax={readOnly ? undefined : total}\n          aria-valuenow={readOnly ? undefined : value}\n          aria-valuetext={readOnly ? undefined : `${value} out of ${total} stars${valueWord}`}\n          aria-disabled={disabled || undefined}\n          tabIndex={interactive ? 0 : undefined}\n          onKeyDown={onKeyDown}\n          onPointerLeave={() => setHover(null)}\n        >\n          {Array.from({ length: total }, (_, i) => {\n            const fill = Math.max(0, Math.min(1, shown - i));\n            const hovered = hover !== null && interactive && Math.ceil(hover) === i + 1;\n            return (\n              <motion.span\n                key={`${i}-${pulse}`}\n                aria-hidden=\"true\"\n                className={styles.star}\n                initial={reduce || pulse === 0 || fill === 0 ? false : { scale: 0.6 }}\n                animate={{ scale: hovered && !reduce ? 1.15 : 1 }}\n                transition={reduce ? { duration: 0 } : { type: \"spring\", stiffness: 520, damping: 14, delay: pulse > 0 && !hovered ? i * 0.035 : 0 }}\n                onPointerMove={(e) => interactive && setHover(pointValue(e, i))}\n                onClick={(e) => interactive && commit(pointValue(e, i))}\n              >\n                <svg className={styles.base} viewBox=\"0 0 24 24\" width={size} height={size}>\n                  <path d={STAR} />\n                </svg>\n                <span className={styles.fillClip} style={{ width: `${fill * 100}%` }}>\n                  <svg className={styles.fill} viewBox=\"0 0 24 24\" width={size} height={size}>\n                    <path d={STAR} />\n                  </svg>\n                </span>\n              </motion.span>\n            );\n          })}\n        </div>\n        {showValue && (\n          <span className={styles.value} aria-hidden=\"true\">\n            <span className={styles.number}>{shown.toFixed(allowHalf ? 1 : 0)}</span>\n            {word && <span className={styles.word}>{word}</span>}\n          </span>\n        )}\n      </div>\n    </div>\n  );\n}\n"
+    },
+    {
+      "path": "components/styles/star-rating.module.css",
+      "type": "registry:style",
+      "content": ".root {\n  display: inline-flex;\n  flex-direction: column;\n  gap: 0.625rem;\n  color: var(--mf-fg, #f4f4f6);\n  font-size: 0.875rem;\n}\n\n.label {\n  font-weight: 600;\n  color: var(--mf-fg, #f4f4f6);\n}\n\n.row {\n  display: inline-flex;\n  align-items: center;\n  gap: 0.875rem;\n}\n\n.stars {\n  display: inline-flex;\n  gap: var(--mf-sr-gap, 6px);\n  padding: 0.25rem;\n  margin: -0.25rem;\n  border-radius: 0.5rem;\n  outline: none;\n  touch-action: manipulation;\n}\n\n.stars:focus-visible {\n  outline: 2px solid var(--mf-fg, #e4e4e7);\n  outline-offset: 2px;\n}\n\n.star {\n  position: relative;\n  display: inline-block;\n  width: var(--mf-sr-size, 32px);\n  height: var(--mf-sr-size, 32px);\n  cursor: pointer;\n  -webkit-tap-highlight-color: transparent;\n}\n\n.root[data-readonly] .star,\n.root[data-disabled] .star {\n  cursor: default;\n}\n\n.root[data-disabled] .stars {\n  opacity: 0.5;\n}\n\n.base,\n.fill {\n  display: block;\n  stroke-linejoin: round;\n  stroke-width: 1.5;\n}\n\n.base {\n  fill: var(--mf-surface-raised, #1b1b22);\n  stroke: var(--mf-border-strong, #52525b);\n}\n\n.fillClip {\n  position: absolute;\n  inset: 0 auto 0 0;\n  overflow: hidden;\n  pointer-events: none;\n  transition: width 140ms ease;\n}\n\n.fill {\n  fill: var(--mf-sr-active, #f59e0b);\n  stroke: var(--mf-sr-active, #f59e0b);\n  filter: drop-shadow(0 0 6px color-mix(in srgb, var(--mf-sr-active, #f59e0b) 45%, transparent));\n}\n\n.value {\n  display: inline-flex;\n  align-items: baseline;\n  gap: 0.5rem;\n  min-width: 6.5rem;\n}\n\n.number {\n  font-size: 1.125rem;\n  font-weight: 700;\n  font-variant-numeric: tabular-nums;\n}\n\n.word {\n  color: var(--mf-muted, #a1a1aa);\n}\n\n@media (prefers-reduced-motion: reduce) {\n  .fillClip {\n    transition: none;\n  }\n\n  .star {\n    transform: none !important;\n  }\n}\n"
+    }
+  ],
+  "tailwindExample": "\"use client\";\n\nimport { motion } from \"motion/react\";\nimport { useState } from \"react\";\n\nconst STAR = \"M12 2.75l2.83 5.73 6.32.92-4.57 4.46 1.08 6.3L12 17.18l-5.66 2.98 1.08-6.3L2.85 9.4l6.32-.92L12 2.75z\";\n\nexport function StarRatingTailwind() {\n  const [value, setValue] = useState(3.5);\n  const [hover, setHover] = useState<number | null>(null);\n  const shown = hover ?? value;\n  const at = (e: React.PointerEvent | React.MouseEvent, i: number) => {\n    const r = (e.currentTarget as HTMLElement).getBoundingClientRect();\n    return e.clientX - r.left < r.width / 2 ? i + 0.5 : i + 1;\n  };\n  const onKey = (e: React.KeyboardEvent) => {\n    const d = e.key === \"ArrowRight\" || e.key === \"ArrowUp\" ? 0.5 : e.key === \"ArrowLeft\" || e.key === \"ArrowDown\" ? -0.5 : 0;\n    if (!d) return;\n    e.preventDefault();\n    setValue((v) => Math.min(5, Math.max(0, v + d)));\n  };\n  return (\n    <div role=\"slider\" tabIndex={0} aria-label=\"Rating\" aria-valuemin={0} aria-valuemax={5} aria-valuenow={value} aria-valuetext={`${value} out of 5 stars`} onKeyDown={onKey} onPointerLeave={() => setHover(null)} className=\"inline-flex gap-1.5 rounded-lg outline-none focus-visible:ring-2 focus-visible:ring-zinc-200\">\n      {[0, 1, 2, 3, 4].map((i) => (\n        <motion.span key={i} aria-hidden animate={{ scale: hover !== null && Math.ceil(hover) === i + 1 ? 1.15 : 1 }} onPointerMove={(e) => setHover(at(e, i))} onClick={(e) => setValue(at(e, i))} className=\"relative size-8 cursor-pointer\">\n          <svg viewBox=\"0 0 24 24\" className=\"size-8 fill-zinc-800 stroke-zinc-600\"><path d={STAR} /></svg>\n          <span className=\"absolute inset-y-0 left-0 overflow-hidden\" style={{ width: `${Math.max(0, Math.min(1, shown - i)) * 100}%` }}>\n            <svg viewBox=\"0 0 24 24\" className=\"size-8 max-w-none fill-amber-500 stroke-amber-500\"><path d={STAR} /></svg>\n          </span>\n        </motion.span>\n      ))}\n    </div>\n  );\n}"
+}

@@ -1,0 +1,104 @@
+.root {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  display: flex;
+  width: 100%;
+  border: 1px solid var(--mf-border, #2e2e38);
+  background: var(--mf-ec-bg, #020205);
+  color: #f5f5f7;
+}
+
+.canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  pointer-events: none;
+}
+
+.fallback {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.corona {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  height: calc(var(--mf-ec-size, 52%) * 2.6);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  translate: calc(-50% + var(--mf-ec-tx, 0px) * 0.4) calc(-50% + var(--mf-ec-ty, 0px) * 0.4);
+  background: var(--mf-ec-corona);
+  mask-image: radial-gradient(closest-side, transparent 36%, #000 39%, rgba(0, 0, 0, 0.35) 60%, transparent 100%);
+  -webkit-mask-image: radial-gradient(closest-side, transparent 36%, #000 39%, rgba(0, 0, 0, 0.35) 60%, transparent 100%);
+  filter: blur(10px);
+  opacity: var(--mf-ec-op, 0.85);
+  animation: mf-ec-spin var(--mf-ec-dur, 40s) linear infinite;
+}
+
+.disk {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  height: var(--mf-ec-size, 52%);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  translate: calc(-50% + var(--mf-ec-tx, 0px)) calc(-50% + var(--mf-ec-ty, 0px));
+  background: radial-gradient(circle, #000 60%, #05060a 100%);
+  box-shadow: 0 0 0 1px var(--mf-ec-c3, #7dd3fc), -1px 0 3px rgba(255, 80, 80, 0.8), 1px 0 3px rgba(80, 140, 255, 0.8),
+    0 0 18px 4px var(--mf-ec-c1, #ffd9a8), 0 0 70px 18px var(--mf-ec-c2, #ff6a3d);
+  transition: translate 0.4s ease-out;
+}
+
+.paused .corona {
+  animation-play-state: paused;
+}
+
+@keyframes mf-ec-spin {
+  to {
+    rotate: 360deg;
+  }
+}
+
+.content {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex: 1;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+}
+
+.copy {
+  text-align: center;
+  text-shadow: 0 2px 24px rgba(0, 0, 0, 0.85);
+}
+
+.title {
+  margin: 0;
+  font-size: 2rem;
+  font-weight: 700;
+  letter-spacing: -0.035em;
+  color: #f8f8fb;
+}
+
+.subtitle {
+  margin: 0.5rem 0 0;
+  font-size: 0.9375rem;
+  color: rgba(240, 240, 248, 0.8);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .corona {
+    animation: none;
+  }
+  .disk {
+    transition: none;
+  }
+}

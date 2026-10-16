@@ -1,0 +1,221 @@
+{
+  "slug": "number-stepper",
+  "name": "NumberStepper",
+  "category": "Forms and Inputs",
+  "collection": "ui",
+  "featured": false,
+  "addedAt": "2026-10-16",
+  "version": "2.3.0",
+  "requiresMotion": true,
+  "dependencies": [
+    "motion",
+    "react"
+  ],
+  "description": "A minus/plus number stepper whose digits roll up or down like an odometer on every change, clamps to min/max/step, accelerates while a button is held, and supports arrow, Page and Home/End keys.",
+  "tags": [
+    "stepper",
+    "number input",
+    "counter",
+    "spinbutton",
+    "quantity",
+    "form",
+    "ui"
+  ],
+  "a11yNotes": "Implements the WAI-ARIA spinbutton pattern: the value display is a focusable role=\"spinbutton\" labelled by the visible label, with aria-valuenow/min/max and aria-valuetext including the suffix. Up/Right and Down/Left step, PageUp/PageDown take larger steps and Home/End jump to min/max. The minus/plus buttons are labelled ('Decrease Guests' / 'Increase Guests'), kept out of the tab order as in the APG example, and disable at the bounds. The rolling digits are aria-hidden. Under prefers-reduced-motion values change instantly.",
+  "defaultProps": {
+    "defaultValue": 2,
+    "min": 0,
+    "max": 12,
+    "step": 1,
+    "label": "Guests",
+    "suffix": "",
+    "variant": "outline",
+    "size": "md",
+    "accentColor": "#6366f1",
+    "holdToRepeat": true,
+    "disabled": false
+  },
+  "controls": [
+    {
+      "prop": "defaultValue",
+      "label": "Initial value",
+      "type": "range",
+      "min": 0,
+      "max": 100,
+      "step": 1
+    },
+    {
+      "prop": "min",
+      "label": "Min",
+      "type": "range",
+      "min": -50,
+      "max": 50,
+      "step": 1
+    },
+    {
+      "prop": "max",
+      "label": "Max",
+      "type": "range",
+      "min": 1,
+      "max": 200,
+      "step": 1
+    },
+    {
+      "prop": "step",
+      "label": "Step",
+      "type": "range",
+      "min": 0.1,
+      "max": 10,
+      "step": 0.1
+    },
+    {
+      "prop": "label",
+      "label": "Label",
+      "type": "text"
+    },
+    {
+      "prop": "suffix",
+      "label": "Suffix",
+      "type": "text"
+    },
+    {
+      "prop": "variant",
+      "label": "Variant",
+      "type": "select",
+      "options": [
+        "outline",
+        "soft"
+      ]
+    },
+    {
+      "prop": "size",
+      "label": "Size",
+      "type": "select",
+      "options": [
+        "sm",
+        "md",
+        "lg"
+      ]
+    },
+    {
+      "prop": "accentColor",
+      "label": "Accent color",
+      "type": "color"
+    },
+    {
+      "prop": "holdToRepeat",
+      "label": "Hold to repeat",
+      "type": "boolean"
+    },
+    {
+      "prop": "disabled",
+      "label": "Disabled",
+      "type": "boolean"
+    }
+  ],
+  "propsApi": [
+    {
+      "name": "value",
+      "type": "number",
+      "default": "undefined",
+      "description": "Controlled value."
+    },
+    {
+      "name": "defaultValue",
+      "type": "number",
+      "default": "2",
+      "description": "Initial value when uncontrolled (clamped to min/max)."
+    },
+    {
+      "name": "onValueChange",
+      "type": "(value: number) => void",
+      "default": "undefined",
+      "description": "Called with the next clamped value."
+    },
+    {
+      "name": "min",
+      "type": "number",
+      "default": "0",
+      "description": "Minimum value."
+    },
+    {
+      "name": "max",
+      "type": "number",
+      "default": "12",
+      "description": "Maximum value."
+    },
+    {
+      "name": "step",
+      "type": "number",
+      "default": "1",
+      "description": "Increment per step; its decimal places set the display precision."
+    },
+    {
+      "name": "label",
+      "type": "string",
+      "default": "'Guests'",
+      "description": "Visible label and accessible name."
+    },
+    {
+      "name": "suffix",
+      "type": "string",
+      "default": "''",
+      "description": "Text shown after the number and included in aria-valuetext, e.g. ' kg'."
+    },
+    {
+      "name": "variant",
+      "type": "'outline' | 'soft'",
+      "default": "'outline'",
+      "description": "Visual style."
+    },
+    {
+      "name": "size",
+      "type": "'sm' | 'md' | 'lg'",
+      "default": "'md'",
+      "description": "Size preset."
+    },
+    {
+      "name": "accentColor",
+      "type": "string",
+      "default": "'#6366f1'",
+      "description": "Button hover/soft tint and focus ring color."
+    },
+    {
+      "name": "holdToRepeat",
+      "type": "boolean",
+      "default": "true",
+      "description": "Keep stepping (and accelerating) while a button is held."
+    },
+    {
+      "name": "disabled",
+      "type": "boolean",
+      "default": "false",
+      "description": "Disable the control."
+    },
+    {
+      "name": "className",
+      "type": "string",
+      "default": "''",
+      "description": "Additional class merged onto the root element."
+    },
+    {
+      "name": "style",
+      "type": "React.CSSProperties",
+      "default": "undefined",
+      "description": "Inline styles merged onto the root element."
+    }
+  ],
+  "files": [
+    {
+      "path": "components/ui/number-stepper.tsx",
+      "type": "registry:component",
+      "content": "\"use client\";\n\nimport * as React from \"react\";\nimport { AnimatePresence, motion, useReducedMotion } from \"motion/react\";\nimport styles from \"../styles/number-stepper.module.css\";\n\nexport interface NumberStepperProps {\n  /** Controlled value */\n  value?: number;\n  /** Initial value when uncontrolled */\n  defaultValue?: number;\n  /** Called with the next (clamped) value */\n  onValueChange?: (value: number) => void;\n  /** Minimum value */\n  min?: number;\n  /** Maximum value */\n  max?: number;\n  /** Increment per step (decimals set the display precision) */\n  step?: number;\n  /** Visible label (also the accessible name) */\n  label?: string;\n  /** Text appended after the number, e.g. \" kg\" */\n  suffix?: string;\n  /** Visual style */\n  variant?: \"outline\" | \"soft\";\n  /** Size preset */\n  size?: \"sm\" | \"md\" | \"lg\";\n  /** Accent color of the buttons and focus ring */\n  accentColor?: string;\n  /** Keep stepping while a button is held down */\n  holdToRepeat?: boolean;\n  /** Disable the control */\n  disabled?: boolean;\n  /** Optional className merged onto the root */\n  className?: string;\n  /** Optional inline styles merged onto the root */\n  style?: React.CSSProperties;\n}\n\nfunction decimalsOf(n: number): number {\n  const s = String(n);\n  const i = s.indexOf(\".\");\n  return i === -1 ? 0 : Math.min(6, s.length - i - 1);\n}\n\nexport function NumberStepper({\n  value: valueProp,\n  defaultValue = 2,\n  onValueChange,\n  min = 0,\n  max = 12,\n  step = 1,\n  label = \"Guests\",\n  suffix = \"\",\n  variant = \"outline\",\n  size = \"md\",\n  accentColor = \"#6366f1\",\n  holdToRepeat = true,\n  disabled = false,\n  className = \"\",\n  style,\n}: NumberStepperProps) {\n  const reduce = useReducedMotion();\n  const lo = Math.min(min, max);\n  const hi = Math.max(min, max);\n  const inc = step > 0 ? step : 1;\n  const precision = decimalsOf(inc);\n  const clamp = React.useCallback((n: number) => Math.min(hi, Math.max(lo, Number(n.toFixed(precision)))), [hi, lo, precision]);\n  const [inner, setInner] = React.useState(() => clamp(defaultValue));\n  const value = valueProp !== undefined ? clamp(valueProp) : inner;\n  const [dir, setDir] = React.useState(1);\n  const valueRef = React.useRef(value);\n  valueRef.current = value;\n  const timer = React.useRef<number | undefined>(undefined);\n  const labelId = React.useId();\n\n  const set = React.useCallback(\n    (next: number) => {\n      const v = clamp(next);\n      if (v === valueRef.current) return false;\n      setDir(v > valueRef.current ? 1 : -1);\n      valueRef.current = v;\n      if (valueProp === undefined) setInner(v);\n      onValueChange?.(v);\n      return true;\n    },\n    [clamp, onValueChange, valueProp],\n  );\n\n  const stopRepeat = React.useCallback(() => {\n    window.clearTimeout(timer.current);\n    timer.current = undefined;\n  }, []);\n\n  React.useEffect(() => stopRepeat, [stopRepeat]);\n\n  const startRepeat = (sign: 1 | -1) => {\n    if (disabled) return;\n    set(valueRef.current + sign * inc);\n    if (!holdToRepeat) return;\n    let delay = 420;\n    const tick = () => {\n      if (!set(valueRef.current + sign * inc)) return stopRepeat();\n      delay = Math.max(40, delay * 0.82);\n      timer.current = window.setTimeout(tick, delay);\n    };\n    timer.current = window.setTimeout(tick, delay);\n  };\n\n  const onKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {\n    if (disabled) return;\n    const big = inc * Math.max(1, Math.round((hi - lo) / inc / 10));\n    const map: Record<string, number | undefined> = {\n      ArrowUp: value + inc,\n      ArrowRight: value + inc,\n      ArrowDown: value - inc,\n      ArrowLeft: value - inc,\n      PageUp: value + big,\n      PageDown: value - big,\n      Home: lo,\n      End: hi,\n    };\n    const next = map[e.key];\n    if (next === undefined) return;\n    e.preventDefault();\n    set(next);\n  };\n\n  const text = value.toFixed(precision);\n  const chars = text.split(\"\");\n  const bindHold = (sign: 1 | -1) => ({\n    onPointerDown: (e: React.PointerEvent<HTMLButtonElement>) => {\n      if (e.button !== 0) return;\n      e.preventDefault();\n      startRepeat(sign);\n    },\n    onPointerUp: stopRepeat,\n    onPointerLeave: stopRepeat,\n    onPointerCancel: stopRepeat,\n    onClick: (e: React.MouseEvent<HTMLButtonElement>) => {\n      // Keyboard / assistive-tech activation (detail 0) — pointer presses are handled on pointerdown.\n      if (e.detail === 0) set(valueRef.current + sign * inc);\n    },\n  });\n\n  const roll = reduce ? { duration: 0 } : { type: \"spring\" as const, stiffness: 420, damping: 34 };\n\n  return (\n    <div\n      className={`${styles.root} ${className}`.trim()}\n      data-variant={variant}\n      data-size={size}\n      data-disabled={disabled ? \"\" : undefined}\n      style={{ \"--mf-ns-accent\": accentColor, ...style } as React.CSSProperties}\n    >\n      <span id={labelId} className={styles.label}>\n        {label}\n      </span>\n      <div className={styles.control}>\n        <button type=\"button\" tabIndex={-1} aria-label={`Decrease ${label}`} className={styles.btn} disabled={disabled || value <= lo} {...bindHold(-1)}>\n          <svg aria-hidden=\"true\" width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" strokeWidth=\"2.25\" strokeLinecap=\"round\">\n            <path d=\"M5 12h14\" />\n          </svg>\n        </button>\n        <div\n          role=\"spinbutton\"\n          tabIndex={disabled ? -1 : 0}\n          aria-labelledby={labelId}\n          aria-valuenow={value}\n          aria-valuemin={lo}\n          aria-valuemax={hi}\n          aria-valuetext={`${text}${suffix}`}\n          aria-disabled={disabled || undefined}\n          className={styles.display}\n          onKeyDown={onKeyDown}\n        >\n          <span className={styles.digits} aria-hidden=\"true\">\n            {chars.map((ch, i) => {\n              const place = chars.length - i;\n              return (\n                <span key={place} className={styles.cell}>\n                  <AnimatePresence initial={false} custom={dir} mode=\"popLayout\">\n                    <motion.span\n                      key={ch}\n                      custom={dir}\n                      className={styles.digit}\n                      variants={{\n                        enter: (d: number) => ({ y: reduce ? 0 : `${d * 70}%`, opacity: 0 }),\n                        center: { y: \"0%\", opacity: 1 },\n                        exit: (d: number) => ({ y: reduce ? 0 : `${d * -70}%`, opacity: 0 }),\n                      }}\n                      initial=\"enter\"\n                      animate=\"center\"\n                      exit=\"exit\"\n                      transition={roll}\n                    >\n                      {ch}\n                    </motion.span>\n                  </AnimatePresence>\n                </span>\n              );\n            })}\n            {suffix && <span className={styles.suffix}>{suffix}</span>}\n          </span>\n        </div>\n        <button type=\"button\" tabIndex={-1} aria-label={`Increase ${label}`} className={styles.btn} disabled={disabled || value >= hi} {...bindHold(1)}>\n          <svg aria-hidden=\"true\" width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" strokeWidth=\"2.25\" strokeLinecap=\"round\">\n            <path d=\"M12 5v14M5 12h14\" />\n          </svg>\n        </button>\n      </div>\n    </div>\n  );\n}\n"
+    },
+    {
+      "path": "components/styles/number-stepper.module.css",
+      "type": "registry:style",
+      "content": ".root {\n  --mf-ns-h: 2.75rem;\n  --mf-ns-fs: 1.25rem;\n  --mf-ns-btn: 2.25rem;\n  display: inline-flex;\n  flex-direction: column;\n  gap: 0.5rem;\n  color: var(--mf-fg, #f4f4f6);\n}\n\n.root[data-size=\"sm\"] {\n  --mf-ns-h: 2.25rem;\n  --mf-ns-fs: 1rem;\n  --mf-ns-btn: 1.75rem;\n}\n\n.root[data-size=\"lg\"] {\n  --mf-ns-h: 3.5rem;\n  --mf-ns-fs: 1.625rem;\n  --mf-ns-btn: 2.75rem;\n}\n\n.label {\n  font-size: 0.875rem;\n  font-weight: 500;\n}\n\n.control {\n  display: inline-flex;\n  align-items: center;\n  gap: 0.25rem;\n  height: var(--mf-ns-h);\n  padding: 0 calc((var(--mf-ns-h) - var(--mf-ns-btn)) / 2);\n  border-radius: 0.75rem;\n  border: 1px solid var(--mf-border, #2e2e38);\n  background-color: var(--mf-surface, #141419);\n  transition: border-color 160ms ease, box-shadow 200ms cubic-bezier(0.16, 1, 0.3, 1);\n}\n\n.root[data-variant=\"soft\"] .control {\n  border-color: transparent;\n  background-color: var(--mf-surface-raised, #1b1b22);\n}\n\n.control:focus-within {\n  border-color: var(--mf-ns-accent, #6366f1);\n  box-shadow: 0 0 0 3px color-mix(in srgb, var(--mf-ns-accent, #6366f1) 28%, transparent);\n}\n\n.btn {\n  display: inline-flex;\n  align-items: center;\n  justify-content: center;\n  flex-shrink: 0;\n  width: var(--mf-ns-btn);\n  height: var(--mf-ns-btn);\n  padding: 0;\n  border: 1px solid var(--mf-border, #2e2e38);\n  border-radius: 0.5rem;\n  background-color: var(--mf-bg, #09090b);\n  color: var(--mf-fg, #f4f4f6);\n  cursor: pointer;\n  touch-action: manipulation;\n  user-select: none;\n  transition: background-color 150ms ease, border-color 150ms ease, color 150ms ease, transform 120ms ease, opacity 150ms ease;\n}\n\n.root[data-variant=\"soft\"] .btn {\n  border-color: transparent;\n  background-color: color-mix(in srgb, var(--mf-ns-accent, #6366f1) 18%, transparent);\n  color: var(--mf-ns-accent, #6366f1);\n}\n\n.btn:hover:not(:disabled) {\n  border-color: var(--mf-ns-accent, #6366f1);\n  color: var(--mf-ns-accent, #6366f1);\n}\n\n.btn:active:not(:disabled) {\n  transform: scale(0.9);\n}\n\n.btn:disabled {\n  opacity: 0.35;\n  cursor: not-allowed;\n}\n\n.display {\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  min-width: 4.5rem;\n  height: 100%;\n  padding: 0 0.5rem;\n  border-radius: 0.375rem;\n  outline: none;\n  cursor: default;\n}\n\n.display:focus-visible {\n  outline: 2px solid var(--mf-fg, #e4e4e7);\n  outline-offset: -2px;\n}\n\n.digits {\n  display: inline-flex;\n  align-items: baseline;\n  font-size: var(--mf-ns-fs);\n  font-weight: 600;\n  font-variant-numeric: tabular-nums;\n  line-height: 1;\n}\n\n.cell {\n  position: relative;\n  display: inline-block;\n  height: 1.2em;\n  overflow: hidden;\n  -webkit-mask-image: linear-gradient(to bottom, transparent, #000 14%, #000 86%, transparent);\n  mask-image: linear-gradient(to bottom, transparent, #000 14%, #000 86%, transparent);\n}\n\n.digit {\n  display: block;\n  line-height: 1.2em;\n}\n\n.suffix {\n  margin-left: 0.25rem;\n  font-size: 0.6em;\n  font-weight: 500;\n  color: var(--mf-muted, #a1a1aa);\n}\n\n.root[data-disabled] {\n  opacity: 0.55;\n}\n\n@media (prefers-reduced-motion: reduce) {\n  .control,\n  .btn {\n    transition: none;\n  }\n\n  .btn:active:not(:disabled) {\n    transform: none;\n  }\n}\n"
+    }
+  ],
+  "tailwindExample": "\"use client\";\n\nimport { AnimatePresence, motion } from \"motion/react\";\nimport { useId, useState } from \"react\";\n\nexport function NumberStepperTailwind({ min = 0, max = 12 }) {\n  const id = useId();\n  const [value, setValue] = useState(2);\n  const [dir, setDir] = useState(1);\n  const set = (n: number) => { const v = Math.min(max, Math.max(min, n)); setDir(v > value ? 1 : -1); setValue(v); };\n  return (\n    <div className=\"inline-flex flex-col gap-2 text-zinc-100\">\n      <span id={id} className=\"text-sm font-medium\">Guests</span>\n      <div className=\"inline-flex h-11 items-center gap-1 rounded-xl border border-zinc-800 bg-zinc-900 px-1 focus-within:ring-4 focus-within:ring-indigo-500/25\">\n        <button type=\"button\" tabIndex={-1} aria-label=\"Decrease Guests\" disabled={value <= min} onClick={() => set(value - 1)} className=\"size-9 rounded-lg border border-zinc-800 bg-zinc-950 disabled:opacity-35\">−</button>\n        <div role=\"spinbutton\" tabIndex={0} aria-labelledby={id} aria-valuenow={value} aria-valuemin={min} aria-valuemax={max} onKeyDown={(e) => { if (e.key === \"ArrowUp\") set(value + 1); if (e.key === \"ArrowDown\") set(value - 1); }} className=\"relative grid h-full min-w-16 place-items-center overflow-hidden text-xl font-semibold tabular-nums outline-none\">\n          <AnimatePresence initial={false} mode=\"popLayout\" custom={dir}>\n            <motion.span key={value} custom={dir} initial={{ y: `${dir * 70}%`, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: `${dir * -70}%`, opacity: 0 }}>{value}</motion.span>\n          </AnimatePresence>\n        </div>\n        <button type=\"button\" tabIndex={-1} aria-label=\"Increase Guests\" disabled={value >= max} onClick={() => set(value + 1)} className=\"size-9 rounded-lg border border-zinc-800 bg-zinc-950 disabled:opacity-35\">+</button>\n      </div>\n    </div>\n  );\n}"
+}

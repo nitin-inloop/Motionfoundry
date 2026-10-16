@@ -41,6 +41,10 @@ export interface RegistryCollection {
   name: string;
   description: string;
   count: number;
+  /** Display order (1 = first). */
+  order: number;
+  /** Unlisted collections still ship in the package and keep their pages (reachable by URL), but stay out of nav, catalog, and search. */
+  listed: boolean;
 }
 
 interface Registry {
@@ -65,8 +69,25 @@ export function getCategories(): string[] {
   return registryData.categories;
 }
 
+/** Every collection (listed or not), sorted by display order. */
 export function getCollections(): RegistryCollection[] {
-  return registryData.collections;
+  return [...registryData.collections].sort((a, b) => a.order - b.order);
+}
+
+/** Collections shown in navigation, the catalog, and search — sorted by display order. */
+export function getListedCollections(): RegistryCollection[] {
+  return getCollections().filter((c) => c.listed);
+}
+
+/** Components in listed collections, in collection order and then registry order. */
+export function getListedComponents(): RegistryComponent[] {
+  return getListedCollections().flatMap((col) => getComponentsByCollection(col.id));
+}
+
+/** Categories used by at least one listed component, in registry order. */
+export function getListedCategories(): string[] {
+  const used = new Set(getListedComponents().map((c) => c.category));
+  return registryData.categories.filter((c) => used.has(c));
 }
 
 export function getCollection(id: string): RegistryCollection | undefined {

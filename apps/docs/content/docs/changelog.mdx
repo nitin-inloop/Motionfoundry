@@ -6,6 +6,15 @@ summary: "Release history and migration notes for @motionfoundry/ui v2.0.0 and m
 
 # Changelog
 
+### v2.3.0 (2026-10-16) — Scroll, Shaders & UI
+
+- **Added**: 5 dark WebGL shader backgrounds, hand-written GLSL with CSS fallbacks: `NebulaGradient`, `PlasmaGradient`, `SilkGradient`, `EmberGradient`, `EclipseGradient`.
+- **Added**: 10 more Lenis-style scroll components: `ScrollCoverflow`, `SplitScreenScroll`, `PinnedSteps`, `ParallaxColumns`, `ScrollWordSwap`, `ScrollTiltCards`, `ScrollPathDraw`, `ScrollFocusList`, `SnapSections`, `ScrollColorShift`.
+- **Added**: UI collection — 50 animated primitives built from scratch (no Radix/shadcn), following WAI-ARIA patterns: `Button`, `IconButton`, `ButtonGroup`, `CopyButton`, `ToggleGroup`, `LikeButton`, `SplitButton`, `HoldToConfirm`, `FloatingInput`, `OtpInput`, `PasswordInput`, `TagInput`, `NumberStepper`, `RangeSlider`, `RadioCards`, `SegmentedControl`, `Select`, `Combobox`, `FileDropzone`, `StarRating`, `Tabs`, `Breadcrumb`, `Dialog`, `Drawer`, `AvatarGroup`, `Badge`, `Pagination`, `Stepper`, `Accordion`, `BottomSheet`, `Popover`, `HoverCard`, `Tooltip`, `ProgressRing`, `StatCard`, `BarChart`, `Sparkline`, `TreeView`, `DropdownMenu`, `DataTable`, `ActivityFeed`, `ContributionHeatmap`, `ImageCompare`, `NavigationMenu`, `ContextMenu`, `AlertDialog`, `Carousel`, `SidebarNav`, `Menubar`, `Toast`.
+- **Changed**: the Gradients collection is now **Shaders** (`--collection gradients` still works in the CLI). Site navigation lists Scroll, Shaders, then UI; Core, Studio Kit, and Text FX stay in the package and remain reachable by URL.
+- **Added**: Dark / Light toggle on every component preview and design-system preview, with dark and light variants derived for any brand preset.
+- **Changed**: docs sidebar groups all setup and guide pages under Docs; redesigned typography-led landing page.
+
 ### v2.2.0 (2026-10-16) — Gradients, Text FX & Scroll
 
 - **Added**: Gradients collection (8, all props customizable): `MeshGradient`, `AuroraRibbons`, `ConicGradient`, `LiquidGradient`, `WaveGradient`, `GradientOrbs`, `GrainGradient`, `SpotlightGradient`.
@@ -36,5 +45,5 @@ summary: "Release history and migration notes for @motionfoundry/ui v2.0.0 and m
 ```tsx
 # Check installed CLI and registry version
 node packages/cli/dist/index.mjs --version
-# Output: motionfoundry/2.2.0
+# Output: motionfoundry/2.3.0
 ```

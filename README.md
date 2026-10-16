@@ -1,13 +1,13 @@
 <p align="center"><img src="apps/docs/public/logo.png" width="96" height="96" alt="MotionFoundry logo" /></p>
 
-# MotionFoundry (`@motionfoundry/ui` v2.2.0)
+# MotionFoundry (`@motionfoundry/ui` v2.3.0)
 
 > **Get started:** see [SETUP.md](./SETUP.md) for prerequisites, running the docs site, builds, tests, and deployment.
 > Repository: https://github.com/nitin-inloop/Motionfoundry
 
 Precision-engineered, open-source animated React component library, CLI source installer, and interactive documentation platform built with **Next.js App Router**, **TypeScript**, **Motion (`motion/react`)**, **SVG**, **HTML5 Canvas**, and **scoped CSS Modules**.
 
-## 72 Animated Components in Five Collections
+## 137 Animated Components
 
 ### Core (24)
 
@@ -29,7 +29,11 @@ Hand-picked from the Swirl Studio Kit prototypes and rebuilt on MotionFoundry co
 5. **Loaders and Feedback**: `OrbitLoader`, `PulseLoader`, `NotificationStack`
 6. **Developer-Interface Animations**: `ReorderList`, `ExpandableSearch`
 
-### Gradients (8) — new in v2.2
+### Scroll (18), Shaders (13) & UI (50) — the headline collections
+
+The docs site leads with these three. **UI** (new in v2.3) is 50 animated primitives built from scratch — buttons, inputs, selects, dialogs, drawers, menus, tabs, toasts, tables, charts, and more — following WAI-ARIA patterns with no Radix or shadcn dependency. **Shaders** (formerly Gradients) adds 5 dark WebGL backgrounds in v2.3, and **Scroll** adds 10 more smooth-scroll effects. See `apps/docs/content/docs/gradients-text-scroll.mdx`.
+
+### Gradients → Shaders (8 from v2.2)
 
 `MeshGradient`, `AuroraRibbons`, `ConicGradient`, `LiquidGradient`, `WaveGradient`, `GradientOrbs`, `GrainGradient`, `SpotlightGradient` — animated backgrounds with every color, speed, and texture exposed as props.
 

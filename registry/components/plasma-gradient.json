@@ -1,0 +1,170 @@
+{
+  "slug": "plasma-gradient",
+  "name": "PlasmaGradient",
+  "category": "Gradient Backgrounds",
+  "collection": "shaders",
+  "featured": false,
+  "addedAt": "2026-10-16",
+  "version": "2.3.0",
+  "requiresMotion": false,
+  "dependencies": [
+    "react"
+  ],
+  "description": "A raw WebGL plasma shader: three domain-warped fbm iso-contours glow as hyperbolic electric filaments with white-hot cores over a near-black field, finished with an adjustable vignette. Falls back to rotating masked CSS arcs when WebGL is unavailable.",
+  "tags": [
+    "plasma",
+    "shader",
+    "webgl",
+    "electric",
+    "glow",
+    "dark",
+    "background",
+    "hero"
+  ],
+  "a11yNotes": "The canvas (or CSS fallback) is an aria-hidden decorative layer; children render above with light, shadowed text. Animation stops off-screen, at speed 0, and under prefers-reduced-motion (one static frame). GL resources are deleted on unmount and a lost context switches to the CSS fallback.",
+  "defaultProps": {
+    "color1": "#a855f7",
+    "color2": "#38bdf8",
+    "color3": "#f472b6",
+    "speed": 1,
+    "scale": 1,
+    "glow": 1,
+    "vignette": 0.6
+  },
+  "controls": [
+    {
+      "prop": "color1",
+      "label": "Filament 1",
+      "type": "color"
+    },
+    {
+      "prop": "color2",
+      "label": "Filament 2",
+      "type": "color"
+    },
+    {
+      "prop": "color3",
+      "label": "Filament 3",
+      "type": "color"
+    },
+    {
+      "prop": "speed",
+      "label": "Speed",
+      "type": "range",
+      "min": 0,
+      "max": 3,
+      "step": 0.1
+    },
+    {
+      "prop": "scale",
+      "label": "Scale",
+      "type": "range",
+      "min": 0.3,
+      "max": 3,
+      "step": 0.1
+    },
+    {
+      "prop": "glow",
+      "label": "Glow",
+      "type": "range",
+      "min": 0.2,
+      "max": 3,
+      "step": 0.05
+    },
+    {
+      "prop": "vignette",
+      "label": "Vignette",
+      "type": "range",
+      "min": 0,
+      "max": 1,
+      "step": 0.05
+    }
+  ],
+  "propsApi": [
+    {
+      "name": "color1",
+      "type": "string",
+      "default": "'#a855f7'",
+      "description": "First filament color (hex)."
+    },
+    {
+      "name": "color2",
+      "type": "string",
+      "default": "'#38bdf8'",
+      "description": "Second filament color (hex)."
+    },
+    {
+      "name": "color3",
+      "type": "string",
+      "default": "'#f472b6'",
+      "description": "Third filament color (hex)."
+    },
+    {
+      "name": "speed",
+      "type": "number",
+      "default": "1",
+      "description": "Flow speed multiplier (0 pauses)."
+    },
+    {
+      "name": "scale",
+      "type": "number",
+      "default": "1",
+      "description": "Size of the plasma structures; higher = larger, calmer arcs (0.3–3)."
+    },
+    {
+      "name": "glow",
+      "type": "number",
+      "default": "1",
+      "description": "Filament glow strength (0.2–3)."
+    },
+    {
+      "name": "vignette",
+      "type": "number",
+      "default": "0.6",
+      "description": "Edge darkening amount, 0 (none) to 1 (strong)."
+    },
+    {
+      "name": "height",
+      "type": "number",
+      "default": "380",
+      "description": "Height of the background in px."
+    },
+    {
+      "name": "borderRadius",
+      "type": "number",
+      "default": "20",
+      "description": "Corner radius in px."
+    },
+    {
+      "name": "children",
+      "type": "React.ReactNode",
+      "default": "undefined",
+      "description": "Content rendered centered on top; defaults to a heading and subline."
+    },
+    {
+      "name": "className",
+      "type": "string",
+      "default": "''",
+      "description": "Additional class merged onto the root element."
+    },
+    {
+      "name": "style",
+      "type": "React.CSSProperties",
+      "default": "undefined",
+      "description": "Inline styles merged onto the root element."
+    }
+  ],
+  "files": [
+    {
+      "path": "components/ui/plasma-gradient.tsx",
+      "type": "registry:component",
+      "content": "\"use client\";\n\nimport * as React from \"react\";\nimport styles from \"../styles/plasma-gradient.module.css\";\n\nexport interface PlasmaGradientProps {\n  /** First filament color */\n  color1?: string;\n  /** Second filament color */\n  color2?: string;\n  /** Third filament color */\n  color3?: string;\n  /** Flow speed multiplier (1 = default, 0 = paused) */\n  speed?: number;\n  /** Size of the plasma structures (higher = larger, calmer arcs) */\n  scale?: number;\n  /** Filament glow strength (0.2–3) */\n  glow?: number;\n  /** Edge darkening amount (0 = none, 1 = strong) */\n  vignette?: number;\n  /** Height of the background in px */\n  height?: number;\n  /** Corner radius in px */\n  borderRadius?: number;\n  /** Foreground content rendered centered on top */\n  children?: React.ReactNode;\n  /** Optional className merged onto the root */\n  className?: string;\n  /** Inline styles merged onto the root */\n  style?: React.CSSProperties;\n}\n\ntype RGB = [number, number, number];\ntype UniformMap = Record<string, number | readonly number[]>;\n\nconst FRAG = `\n#ifdef GL_FRAGMENT_PRECISION_HIGH\nprecision highp float;\n#else\nprecision mediump float;\n#endif\nuniform vec2 u_res; uniform float u_time;\nuniform vec3 u_c1; uniform vec3 u_c2; uniform vec3 u_c3;\nuniform float u_scale; uniform float u_glow; uniform float u_vig;\nfloat hash(vec2 p){ p = fract(p * vec2(123.34, 456.21)); p += dot(p, p + 45.32); return fract(p.x * p.y); }\nfloat noise(vec2 p){ vec2 i = floor(p), f = fract(p); vec2 u = f * f * (3.0 - 2.0 * f);\n  return mix(mix(hash(i), hash(i + vec2(1.0, 0.0)), u.x), mix(hash(i + vec2(0.0, 1.0)), hash(i + vec2(1.0, 1.0)), u.x), u.y); }\nfloat fbm(vec2 p){ float v = 0.0, a = 0.5; mat2 m = mat2(1.6, 1.2, -1.2, 1.6);\n  for (int i = 0; i < 4; i++){ v += a * noise(p); p = m * p; a *= 0.5; } return v; }\nvoid main(){\n  vec2 uv = (gl_FragCoord.xy - 0.5 * u_res) / u_res.y;\n  float t = u_time * 0.3;\n  vec2 p = uv * (2.6 / u_scale);\n  vec2 w = vec2(fbm(p + vec2(t * 0.3, 0.0)), fbm(p + vec2(4.1, 1.7) - t * 0.25));\n  vec3 col = vec3(0.0);\n  for (int i = 0; i < 3; i++) {\n    float fi = float(i);\n    vec2 o = p + vec2(fi * 1.7, fi * 2.3);\n    float n = fbm(o + 1.9 * w + vec2(t * 0.35 * (1.0 + fi * 0.3), -t * 0.28));\n    float d = abs(n - 0.5);\n    float g = u_glow * 0.0055 / (d + 0.0035);\n    vec3 c = i == 0 ? u_c1 : (i == 1 ? u_c2 : u_c3);\n    col += c * g + vec3(1.0) * pow(g, 3.0) * 0.06;\n  }\n  float amb = fbm(p * 0.6 - w + t * 0.1);\n  col += mix(u_c1, u_c2, amb) * amb * amb * 0.18;\n  col = 1.0 - exp(-col * 0.9);\n  float r = length(uv * vec2(0.85, 1.0));\n  col *= mix(1.0, smoothstep(1.05, 0.15, r), u_vig);\n  col += (hash(gl_FragCoord.xy + fract(t)) - 0.5) * 0.012;\n  gl_FragColor = vec4(max(col, 0.0), 1.0);\n}`;\n\nconst VERT = \"attribute vec2 a_pos;void main(){gl_Position=vec4(a_pos,0.0,1.0);}\";\n\nfunction hexRgb(hex: string, fb: RGB): RGB {\n  const m = hex.trim().replace(/^#/, \"\");\n  const full = m.length === 3 ? m.split(\"\").map((ch) => ch + ch).join(\"\") : m;\n  if (!/^[0-9a-fA-F]{6}$/.test(full)) return fb;\n  const n = parseInt(full, 16);\n  return [((n >> 16) & 255) / 255, ((n >> 8) & 255) / 255, (n & 255) / 255];\n}\n\nconst rgba = (c: RGB, a: number) => `rgba(${Math.round(c[0] * 255)},${Math.round(c[1] * 255)},${Math.round(c[2] * 255)},${a})`;\n\nfunction useReducedMotionPref() {\n  const [reduced, setReduced] = React.useState(false);\n  React.useEffect(() => {\n    if (typeof window === \"undefined\" || !window.matchMedia) return;\n    const mq = window.matchMedia(\"(prefers-reduced-motion: reduce)\");\n    const update = () => setReduced(mq.matches);\n    update();\n    mq.addEventListener(\"change\", update);\n    return () => mq.removeEventListener(\"change\", update);\n  }, []);\n  return reduced;\n}\n\nfunction useInView(ref: React.RefObject<HTMLElement | null>) {\n  const [inView, setInView] = React.useState(true);\n  React.useEffect(() => {\n    const el = ref.current;\n    if (!el || typeof IntersectionObserver === \"undefined\") return;\n    const io = new IntersectionObserver((entries) => {\n      const entry = entries[entries.length - 1];\n      if (entry) setInView(entry.isIntersecting);\n    }, { rootMargin: \"80px\" });\n    io.observe(el);\n    return () => io.disconnect();\n  }, [ref]);\n  return inView;\n}\n\nfunction compile(gl: WebGLRenderingContext, type: number, src: string) {\n  const sh = gl.createShader(type);\n  if (!sh) return null;\n  gl.shaderSource(sh, src);\n  gl.compileShader(sh);\n  if (gl.getShaderParameter(sh, gl.COMPILE_STATUS)) return sh;\n  gl.deleteShader(sh);\n  return null;\n}\n\n/** Full-screen-triangle WebGL renderer; returns true when the CSS fallback should be shown instead */\nfunction useShader(\n  rootRef: React.RefObject<HTMLDivElement | null>,\n  canvasRef: React.RefObject<HTMLCanvasElement | null>,\n  frag: string,\n  uniforms: () => UniformMap,\n  running: boolean,\n  speed: number,\n  paramsKey: string,\n  maxDpr = 2,\n) {\n  const [fallback, setFallback] = React.useState(false);\n  const timeRef = React.useRef(12);\n  const drawRef = React.useRef<(() => void) | null>(null);\n  const uniRef = React.useRef(uniforms);\n  uniRef.current = uniforms;\n  const speedRef = React.useRef(speed);\n  speedRef.current = speed;\n\n  React.useEffect(() => {\n    const root = rootRef.current;\n    const canvas = canvasRef.current;\n    if (!root || !canvas || fallback) return;\n    const gl = canvas.getContext(\"webgl\", { alpha: false, antialias: false, depth: false, stencil: false, powerPreference: \"low-power\" });\n    if (!gl) { setFallback(true); return; }\n    const vs = compile(gl, gl.VERTEX_SHADER, VERT);\n    const fs = compile(gl, gl.FRAGMENT_SHADER, frag);\n    const prog = gl.createProgram();\n    const buf = gl.createBuffer();\n    const dispose = () => {\n      gl.deleteBuffer(buf);\n      gl.deleteProgram(prog);\n      gl.deleteShader(vs);\n      gl.deleteShader(fs);\n    };\n    if (!vs || !fs || !prog || !buf) { dispose(); setFallback(true); return; }\n    gl.attachShader(prog, vs);\n    gl.attachShader(prog, fs);\n    gl.linkProgram(prog);\n    if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) { dispose(); setFallback(true); return; }\n    gl.useProgram(prog);\n    gl.bindBuffer(gl.ARRAY_BUFFER, buf);\n    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);\n    const aPos = gl.getAttribLocation(prog, \"a_pos\");\n    gl.enableVertexAttribArray(aPos);\n    gl.vertexAttribPointer(aPos, 2, gl.FLOAT, false, 0, 0);\n    const locs = new Map<string, WebGLUniformLocation | null>();\n    const loc = (n: string) => {\n      if (!locs.has(n)) locs.set(n, gl.getUniformLocation(prog, n));\n      return locs.get(n) ?? null;\n    };\n    const resize = () => {\n      const rect = root.getBoundingClientRect();\n      const dpr = Math.min(maxDpr, window.devicePixelRatio || 1);\n      canvas.width = Math.max(1, Math.round(rect.width * dpr));\n      canvas.height = Math.max(1, Math.round(rect.height * dpr));\n      gl.viewport(0, 0, canvas.width, canvas.height);\n    };\n    const draw = () => {\n      if (gl.isContextLost()) return;\n      gl.uniform2f(loc(\"u_res\"), canvas.width, canvas.height);\n      gl.uniform1f(loc(\"u_time\"), timeRef.current);\n      const u = uniRef.current();\n      for (const k in u) {\n        const v = u[k];\n        if (typeof v === \"number\") gl.uniform1f(loc(k), v);\n        else if (v.length === 2) gl.uniform2f(loc(k), v[0], v[1]);\n        else gl.uniform3f(loc(k), v[0], v[1], v[2]);\n      }\n      gl.drawArrays(gl.TRIANGLES, 0, 3);\n    };\n    resize();\n    draw();\n    drawRef.current = draw;\n    const ro = new ResizeObserver(() => { resize(); draw(); });\n    ro.observe(root);\n    const onLost = (e: Event) => { e.preventDefault(); drawRef.current = null; setFallback(true); };\n    canvas.addEventListener(\"webglcontextlost\", onLost);\n    return () => {\n      ro.disconnect();\n      canvas.removeEventListener(\"webglcontextlost\", onLost);\n      drawRef.current = null;\n      if (!gl.isContextLost()) dispose();\n    };\n  }, [frag, fallback, maxDpr, rootRef, canvasRef]);\n\n  React.useEffect(() => {\n    if (!running || fallback) return;\n    let raf = 0;\n    let last = performance.now();\n    const tick = (now: number) => {\n      const dt = Math.min(0.05, (now - last) / 1000);\n      last = now;\n      timeRef.current += dt * speedRef.current;\n      drawRef.current?.();\n      raf = requestAnimationFrame(tick);\n    };\n    raf = requestAnimationFrame(tick);\n    return () => cancelAnimationFrame(raf);\n  }, [running, fallback]);\n\n  React.useEffect(() => { drawRef.current?.(); }, [paramsKey]);\n\n  return fallback;\n}\n\nexport function PlasmaGradient({\n  color1 = \"#a855f7\",\n  color2 = \"#38bdf8\",\n  color3 = \"#f472b6\",\n  speed = 1,\n  scale = 1,\n  glow = 1,\n  vignette = 0.6,\n  height = 380,\n  borderRadius = 20,\n  children,\n  className = \"\",\n  style,\n}: PlasmaGradientProps) {\n  const rootRef = React.useRef<HTMLDivElement>(null);\n  const canvasRef = React.useRef<HTMLCanvasElement>(null);\n  const reduced = useReducedMotionPref();\n  const inView = useInView(rootRef);\n  const safeSpeed = Math.max(0, speed);\n  const safeScale = Math.max(0.3, Math.min(3, scale));\n  const safeGlow = Math.max(0.2, Math.min(3, glow));\n  const safeVig = Math.max(0, Math.min(1, vignette));\n  const c1 = hexRgb(color1, [0.66, 0.33, 0.97]);\n  const c2 = hexRgb(color2, [0.22, 0.74, 0.97]);\n  const c3 = hexRgb(color3, [0.96, 0.45, 0.71]);\n\n  const fallback = useShader(\n    rootRef,\n    canvasRef,\n    FRAG,\n    () => ({ u_c1: c1, u_c2: c2, u_c3: c3, u_scale: safeScale, u_glow: safeGlow, u_vig: safeVig }),\n    !reduced && inView && safeSpeed > 0,\n    safeSpeed,\n    [color1, color2, color3, safeScale, safeGlow, safeVig].join(\"|\"),\n    1.5,\n  );\n\n  const a = Math.min(1, 0.55 * safeGlow);\n  const styleVars = {\n    \"--mf-pl-arcs\": `conic-gradient(from 0deg at 50% 50%, transparent 0deg, ${rgba(c1, a)} 40deg, transparent 80deg, ${rgba(c2, a)} 150deg, transparent 200deg, ${rgba(c3, a)} 270deg, transparent 320deg)`,\n    \"--mf-pl-vig\": `radial-gradient(85% 100% at 50% 50%, transparent ${(70 - safeVig * 40).toFixed(0)}%, rgba(0,0,0,${(0.2 + safeVig * 0.75).toFixed(2)}) 100%)`,\n    \"--mf-pl-dur\": `${(14 / Math.max(0.1, safeSpeed)).toFixed(1)}s`,\n    height: `${height}px`,\n    borderRadius: `${borderRadius}px`,\n    ...style,\n  } as React.CSSProperties;\n\n  return (\n    <div ref={rootRef} style={styleVars} className={`${styles.root} ${className}`.trim()}>\n      {fallback ? (\n        <div aria-hidden=\"true\" className={`${styles.fallback} ${safeSpeed === 0 ? styles.paused : \"\"}`.trim()}>\n          <div className={styles.arcs} />\n          <div className={`${styles.arcs} ${styles.arcsAlt}`} />\n          <div className={styles.vignette} />\n        </div>\n      ) : (\n        <canvas ref={canvasRef} aria-hidden=\"true\" className={styles.canvas} />\n      )}\n      <div className={styles.content}>\n        {children ?? (\n          <div className={styles.copy}>\n            <h3 className={styles.title}>Plasma Gradient</h3>\n            <p className={styles.subtitle}>Electric filaments arcing through a dark charged field.</p>\n          </div>\n        )}\n      </div>\n    </div>\n  );\n}\n"
+    },
+    {
+      "path": "components/styles/plasma-gradient.module.css",
+      "type": "registry:style",
+      "content": ".root {\n  position: relative;\n  isolation: isolate;\n  overflow: hidden;\n  display: flex;\n  width: 100%;\n  border: 1px solid var(--mf-border, #2e2e38);\n  background: #030208;\n  color: #f5f5f7;\n}\n\n.canvas {\n  position: absolute;\n  inset: 0;\n  width: 100%;\n  height: 100%;\n  display: block;\n  pointer-events: none;\n}\n\n.fallback {\n  position: absolute;\n  inset: 0;\n  pointer-events: none;\n  overflow: hidden;\n}\n\n.arcs {\n  position: absolute;\n  left: 50%;\n  top: 50%;\n  width: 160%;\n  aspect-ratio: 1;\n  translate: -50% -50%;\n  background: var(--mf-pl-arcs);\n  mask-image: repeating-radial-gradient(circle at 50% 50%, #000 0 2px, transparent 3px 26px);\n  -webkit-mask-image: repeating-radial-gradient(circle at 50% 50%, #000 0 2px, transparent 3px 26px);\n  filter: blur(1.5px) drop-shadow(0 0 6px rgba(255, 255, 255, 0.35));\n  animation: mf-pl-spin var(--mf-pl-dur, 14s) linear infinite;\n}\n\n.arcsAlt {\n  width: 120%;\n  opacity: 0.7;\n  animation-direction: reverse;\n  animation-duration: calc(var(--mf-pl-dur, 14s) * 1.6);\n}\n\n.vignette {\n  position: absolute;\n  inset: 0;\n  background: var(--mf-pl-vig);\n}\n\n.paused .arcs {\n  animation-play-state: paused;\n}\n\n@keyframes mf-pl-spin {\n  to {\n    rotate: 360deg;\n  }\n}\n\n.content {\n  position: relative;\n  z-index: 1;\n  display: flex;\n  flex: 1;\n  align-items: center;\n  justify-content: center;\n  padding: 2rem;\n}\n\n.copy {\n  text-align: center;\n  text-shadow: 0 2px 28px rgba(0, 0, 0, 0.6);\n}\n\n.title {\n  margin: 0;\n  font-size: 2rem;\n  font-weight: 700;\n  letter-spacing: -0.035em;\n  color: #f8f8fb;\n}\n\n.subtitle {\n  margin: 0.5rem 0 0;\n  font-size: 0.9375rem;\n  color: rgba(240, 240, 248, 0.78);\n}\n\n@media (prefers-reduced-motion: reduce) {\n  .arcs {\n    animation: none;\n  }\n}\n"
+    }
+  ],
+  "tailwindExample": "\"use client\";\n\nexport function PlasmaGradientTailwind({ children }: { children?: React.ReactNode }) {\n  return (\n    <div className=\"relative isolate flex h-[380px] w-full items-center justify-center overflow-hidden rounded-[20px] border border-zinc-800 bg-[#030208]\">\n      <div aria-hidden className=\"absolute left-1/2 top-1/2 aspect-square w-[160%] -translate-x-1/2 -translate-y-1/2 animate-[spin_14s_linear_infinite] bg-[conic-gradient(from_0deg,transparent,#a855f7_40deg,transparent_80deg,#38bdf8_150deg,transparent_200deg,#f472b6_270deg,transparent_320deg)] opacity-60 blur-[2px] [mask-image:repeating-radial-gradient(circle,#000_0_2px,transparent_3px_26px)]\" />\n      <div aria-hidden className=\"absolute inset-0 bg-[radial-gradient(85%_100%_at_50%_50%,transparent_45%,rgba(0,0,0,.65))]\" />\n      <div className=\"relative text-center [text-shadow:0_2px_28px_rgba(0,0,0,.6)]\">\n        {children ?? (\n          <>\n            <h3 className=\"text-3xl font-bold tracking-tight text-white\">Plasma Gradient</h3>\n            <p className=\"mt-2 text-sm text-white/80\">Electric filaments arcing through a dark charged field.</p>\n          </>\n        )}\n      </div>\n    </div>\n  );\n}\n"
+}

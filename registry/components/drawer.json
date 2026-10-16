@@ -1,0 +1,230 @@
+{
+  "slug": "drawer",
+  "name": "Drawer",
+  "category": "Overlays and Menus",
+  "collection": "ui",
+  "featured": false,
+  "addedAt": "2026-10-16",
+  "version": "2.3.0",
+  "requiresMotion": true,
+  "dependencies": [
+    "motion",
+    "react"
+  ],
+  "description": "A modal side sheet that springs in from any edge of the viewport over a blurred backdrop, with a title, description, scrollable body and footer actions. Focus is trapped while open and restored to the trigger on close.",
+  "tags": [
+    "drawer",
+    "sheet",
+    "side-panel",
+    "modal",
+    "overlay",
+    "focus-trap",
+    "ui"
+  ],
+  "a11yNotes": "Implements the WAI-ARIA modal dialog pattern: role=\"dialog\" with aria-modal, aria-labelledby (title) and aria-describedby (description). The trigger exposes aria-haspopup=\"dialog\" and aria-expanded. Focus moves to the first control on open, Tab/Shift+Tab cycle inside the panel, Escape and backdrop click close it, and focus returns to the trigger. Body scroll is locked while open. The default settings use native checkboxes with role=\"switch\" and associated labels. Under prefers-reduced-motion the panel only fades.",
+  "defaultProps": {
+    "side": "right",
+    "size": 380,
+    "triggerLabel": "Open settings",
+    "title": "Notifications",
+    "description": "Choose what you want to hear about. Changes apply to all your devices.",
+    "confirmLabel": "Save preferences",
+    "cancelLabel": "Cancel",
+    "accentColor": "#6366f1",
+    "backdropBlur": 4,
+    "closeOnOutsideClick": true,
+    "showCloseButton": true
+  },
+  "controls": [
+    {
+      "prop": "side",
+      "label": "Side",
+      "type": "select",
+      "options": [
+        "right",
+        "left",
+        "top",
+        "bottom"
+      ]
+    },
+    {
+      "prop": "size",
+      "label": "Size (px)",
+      "type": "range",
+      "min": 240,
+      "max": 640,
+      "step": 10
+    },
+    {
+      "prop": "triggerLabel",
+      "label": "Trigger label",
+      "type": "text"
+    },
+    {
+      "prop": "title",
+      "label": "Title",
+      "type": "text"
+    },
+    {
+      "prop": "description",
+      "label": "Description",
+      "type": "text"
+    },
+    {
+      "prop": "confirmLabel",
+      "label": "Confirm label",
+      "type": "text"
+    },
+    {
+      "prop": "cancelLabel",
+      "label": "Cancel label",
+      "type": "text"
+    },
+    {
+      "prop": "accentColor",
+      "label": "Accent color",
+      "type": "color"
+    },
+    {
+      "prop": "backdropBlur",
+      "label": "Backdrop blur (px)",
+      "type": "range",
+      "min": 0,
+      "max": 20,
+      "step": 1
+    },
+    {
+      "prop": "closeOnOutsideClick",
+      "label": "Close on outside click",
+      "type": "boolean"
+    },
+    {
+      "prop": "showCloseButton",
+      "label": "Show close button",
+      "type": "boolean"
+    }
+  ],
+  "propsApi": [
+    {
+      "name": "open",
+      "type": "boolean",
+      "default": "undefined",
+      "description": "Controlled open state."
+    },
+    {
+      "name": "defaultOpen",
+      "type": "boolean",
+      "default": "false",
+      "description": "Initial open state when uncontrolled."
+    },
+    {
+      "name": "onOpenChange",
+      "type": "(open: boolean) => void",
+      "default": "undefined",
+      "description": "Called whenever the drawer requests to open or close."
+    },
+    {
+      "name": "side",
+      "type": "'left' | 'right' | 'top' | 'bottom'",
+      "default": "'right'",
+      "description": "Viewport edge the drawer slides in from."
+    },
+    {
+      "name": "size",
+      "type": "number",
+      "default": "380",
+      "description": "Panel width (left/right) or height (top/bottom) in pixels, capped to the viewport."
+    },
+    {
+      "name": "triggerLabel",
+      "type": "string",
+      "default": "'Open settings'",
+      "description": "Label of the trigger button."
+    },
+    {
+      "name": "title",
+      "type": "string",
+      "default": "'Notifications'",
+      "description": "Drawer title, used as the accessible name."
+    },
+    {
+      "name": "description",
+      "type": "string",
+      "default": "'Choose what you want to hear about. Changes apply to all your devices.'",
+      "description": "Supporting text under the title, used as the accessible description."
+    },
+    {
+      "name": "children",
+      "type": "React.ReactNode",
+      "default": "notification settings",
+      "description": "Body content; defaults to a list of notification switches."
+    },
+    {
+      "name": "confirmLabel",
+      "type": "string",
+      "default": "'Save preferences'",
+      "description": "Label of the primary action."
+    },
+    {
+      "name": "cancelLabel",
+      "type": "string",
+      "default": "'Cancel'",
+      "description": "Label of the secondary action."
+    },
+    {
+      "name": "onConfirm",
+      "type": "() => void",
+      "default": "undefined",
+      "description": "Called when the primary action is pressed; the drawer then closes."
+    },
+    {
+      "name": "accentColor",
+      "type": "string",
+      "default": "'#6366f1'",
+      "description": "Color of the primary action and switches."
+    },
+    {
+      "name": "backdropBlur",
+      "type": "number",
+      "default": "4",
+      "description": "Backdrop blur radius in pixels."
+    },
+    {
+      "name": "closeOnOutsideClick",
+      "type": "boolean",
+      "default": "true",
+      "description": "Close the drawer when the backdrop is clicked."
+    },
+    {
+      "name": "showCloseButton",
+      "type": "boolean",
+      "default": "true",
+      "description": "Show the X close button in the top-right corner."
+    },
+    {
+      "name": "className",
+      "type": "string",
+      "default": "''",
+      "description": "Additional class merged onto the root element."
+    },
+    {
+      "name": "style",
+      "type": "React.CSSProperties",
+      "default": "undefined",
+      "description": "Inline styles merged onto the root element."
+    }
+  ],
+  "files": [
+    {
+      "path": "components/ui/drawer.tsx",
+      "type": "registry:component",
+      "content": "\"use client\";\n\nimport * as React from \"react\";\nimport { createPortal } from \"react-dom\";\nimport { AnimatePresence, motion, useReducedMotion } from \"motion/react\";\nimport styles from \"../styles/drawer.module.css\";\n\nexport interface DrawerProps {\n  /** Controlled open state */\n  open?: boolean;\n  /** Initial open state when uncontrolled */\n  defaultOpen?: boolean;\n  /** Called whenever the drawer requests to open or close */\n  onOpenChange?: (open: boolean) => void;\n  /** Edge of the viewport the drawer slides in from */\n  side?: \"left\" | \"right\" | \"top\" | \"bottom\";\n  /** Panel width (left/right) or height (top/bottom) in pixels */\n  size?: number;\n  /** Label of the trigger button */\n  triggerLabel?: string;\n  /** Drawer title (accessible name) */\n  title?: string;\n  /** Supporting description under the title (accessible description) */\n  description?: string;\n  /** Body content; defaults to a notification settings list */\n  children?: React.ReactNode;\n  /** Label of the primary action */\n  confirmLabel?: string;\n  /** Label of the secondary (cancel) action */\n  cancelLabel?: string;\n  /** Called when the primary action is pressed (the drawer then closes) */\n  onConfirm?: () => void;\n  /** Accent color for the primary action, switches and focus highlights */\n  accentColor?: string;\n  /** Backdrop blur in pixels */\n  backdropBlur?: number;\n  /** Close when clicking the backdrop */\n  closeOnOutsideClick?: boolean;\n  /** Show the X close button in the corner */\n  showCloseButton?: boolean;\n  /** Optional className merged onto the root */\n  className?: string;\n  /** Optional inline styles merged onto the root */\n  style?: React.CSSProperties;\n}\n\nconst THEME_TOKENS = [\"--mf-bg\", \"--mf-fg\", \"--mf-surface\", \"--mf-surface-raised\", \"--mf-muted\", \"--mf-subtle\", \"--mf-border\", \"--mf-border-strong\", \"--mf-accent\"];\nconst FOCUSABLE = 'a[href],button:not([disabled]),input:not([disabled]),select:not([disabled]),textarea:not([disabled]),[tabindex]:not([tabindex=\"-1\"])';\nconst useIsoLayoutEffect = typeof window !== \"undefined\" ? React.useLayoutEffect : React.useEffect;\n\nfunction readThemeVars(el: Element | null): Record<string, string> {\n  const out: Record<string, string> = {};\n  if (!el) return out;\n  const cs = getComputedStyle(el);\n  for (const t of THEME_TOKENS) {\n    const v = cs.getPropertyValue(t).trim();\n    if (v) out[t] = v;\n  }\n  return out;\n}\n\nconst SETTINGS = [\n  { label: \"Product updates\", hint: \"New features and improvements\", on: true },\n  { label: \"Security alerts\", hint: \"Sign-ins from new devices\", on: true },\n  { label: \"Weekly digest\", hint: \"A summary of your team's activity\", on: false },\n  { label: \"Mentions\", hint: \"When someone @mentions you\", on: true },\n];\n\nfunction DefaultBody({ id }: { id: string }) {\n  return (\n    <ul className={styles.list}>\n      {SETTINGS.map((s, i) => (\n        <li key={s.label} className={styles.row}>\n          <label className={styles.rowLabel} htmlFor={`${id}-s${i}`}>\n            <span className={styles.rowTitle}>{s.label}</span>\n            <span className={styles.rowHint}>{s.hint}</span>\n          </label>\n          <input id={`${id}-s${i}`} type=\"checkbox\" role=\"switch\" className={styles.switch} defaultChecked={s.on} />\n        </li>\n      ))}\n    </ul>\n  );\n}\n\nexport function Drawer({\n  open: openProp,\n  defaultOpen = false,\n  onOpenChange,\n  side = \"right\",\n  size = 380,\n  triggerLabel = \"Open settings\",\n  title = \"Notifications\",\n  description = \"Choose what you want to hear about. Changes apply to all your devices.\",\n  children,\n  confirmLabel = \"Save preferences\",\n  cancelLabel = \"Cancel\",\n  onConfirm,\n  accentColor = \"#6366f1\",\n  backdropBlur = 4,\n  closeOnOutsideClick = true,\n  showCloseButton = true,\n  className = \"\",\n  style,\n}: DrawerProps) {\n  const reduce = useReducedMotion();\n  const [inner, setInner] = React.useState(defaultOpen);\n  const open = openProp !== undefined ? openProp : inner;\n  const setOpen = React.useCallback(\n    (v: boolean) => {\n      if (openProp === undefined) setInner(v);\n      onOpenChange?.(v);\n    },\n    [openProp, onOpenChange],\n  );\n  const setOpenRef = React.useRef(setOpen);\n  setOpenRef.current = setOpen;\n  const [mounted, setMounted] = React.useState(false);\n  const [themeVars, setThemeVars] = React.useState<Record<string, string>>({});\n  const rootRef = React.useRef<HTMLDivElement>(null);\n  const triggerRef = React.useRef<HTMLButtonElement>(null);\n  const panelRef = React.useRef<HTMLDivElement>(null);\n  const wasOpen = React.useRef(false);\n  const id = React.useId();\n\n  React.useEffect(() => setMounted(true), []);\n  useIsoLayoutEffect(() => {\n    if (open) setThemeVars(readThemeVars(rootRef.current));\n  }, [open]);\n\n  React.useEffect(() => {\n    if (!open) {\n      if (wasOpen.current) triggerRef.current?.focus();\n      wasOpen.current = false;\n      return;\n    }\n    wasOpen.current = true;\n    const body = document.body;\n    const prev = [body.style.overflow, body.style.paddingRight];\n    const gap = window.innerWidth - document.documentElement.clientWidth;\n    body.style.overflow = \"hidden\";\n    if (gap > 0) body.style.paddingRight = `${gap}px`;\n    const onKey = (e: KeyboardEvent) => {\n      if (e.key === \"Escape\") {\n        e.preventDefault();\n        setOpenRef.current(false);\n      }\n    };\n    document.addEventListener(\"keydown\", onKey);\n    const raf = requestAnimationFrame(() => {\n      const panel = panelRef.current;\n      if (panel) (panel.querySelector<HTMLElement>(FOCUSABLE) ?? panel).focus();\n    });\n    return () => {\n      cancelAnimationFrame(raf);\n      document.removeEventListener(\"keydown\", onKey);\n      body.style.overflow = prev[0];\n      body.style.paddingRight = prev[1];\n    };\n  }, [open]);\n\n  const trapFocus = (e: React.KeyboardEvent<HTMLDivElement>) => {\n    if (e.key !== \"Tab\" || !panelRef.current) return;\n    const nodes = Array.from(panelRef.current.querySelectorAll<HTMLElement>(FOCUSABLE));\n    if (nodes.length === 0) return e.preventDefault();\n    const first = nodes[0];\n    const last = nodes[nodes.length - 1];\n    if (e.shiftKey && (document.activeElement === first || document.activeElement === panelRef.current)) {\n      e.preventDefault();\n      last.focus();\n    } else if (!e.shiftKey && document.activeElement === last) {\n      e.preventDefault();\n      first.focus();\n    }\n  };\n\n  const horizontal = side === \"left\" || side === \"right\";\n  const hidden = horizontal ? { x: side === \"left\" ? \"-100%\" : \"100%\" } : { y: side === \"top\" ? \"-100%\" : \"100%\" };\n  const shown = horizontal ? { x: \"0%\" } : { y: \"0%\" };\n\n  return (\n    <div ref={rootRef} className={`${styles.root} ${className}`.trim()} style={{ \"--mf-drw-accent\": accentColor, ...style } as React.CSSProperties}>\n      <button ref={triggerRef} type=\"button\" aria-haspopup=\"dialog\" aria-expanded={open} className={styles.trigger} onClick={() => setOpen(true)}>\n        {triggerLabel}\n      </button>\n      {mounted &&\n        createPortal(\n          <AnimatePresence>\n            {open && (\n              <div className={styles.layer} style={{ ...themeVars, \"--mf-drw-accent\": accentColor, \"--mf-drw-blur\": `${Math.max(0, backdropBlur)}px`, \"--mf-drw-size\": `${size}px` } as React.CSSProperties}>\n                <motion.div\n                  aria-hidden=\"true\"\n                  className={styles.backdrop}\n                  initial={{ opacity: 0 }}\n                  animate={{ opacity: 1 }}\n                  exit={{ opacity: 0 }}\n                  transition={{ duration: reduce ? 0.1 : 0.25 }}\n                  onPointerDown={() => closeOnOutsideClick && setOpen(false)}\n                />\n                <motion.div\n                  ref={panelRef}\n                  role=\"dialog\"\n                  aria-modal=\"true\"\n                  aria-labelledby={`${id}-title`}\n                  aria-describedby={description ? `${id}-desc` : undefined}\n                  tabIndex={-1}\n                  data-side={side}\n                  className={styles.panel}\n                  onKeyDown={trapFocus}\n                  initial={reduce ? { opacity: 0 } : hidden}\n                  animate={reduce ? { opacity: 1 } : shown}\n                  exit={reduce ? { opacity: 0 } : hidden}\n                  transition={reduce ? { duration: 0.1 } : { type: \"spring\", stiffness: 380, damping: 38, mass: 0.9 }}\n                >\n                  <div className={styles.header}>\n                    <h2 id={`${id}-title`} className={styles.title}>\n                      {title}\n                    </h2>\n                    {description && (\n                      <p id={`${id}-desc`} className={styles.description}>\n                        {description}\n                      </p>\n                    )}\n                  </div>\n                  <div className={styles.body}>{children ?? <DefaultBody id={id} />}</div>\n                  <div className={styles.footer}>\n                    <button type=\"button\" className={styles.secondary} onClick={() => setOpen(false)}>\n                      {cancelLabel}\n                    </button>\n                    <button\n                      type=\"button\"\n                      className={styles.primary}\n                      onClick={() => {\n                        onConfirm?.();\n                        setOpen(false);\n                      }}\n                    >\n                      {confirmLabel}\n                    </button>\n                  </div>\n                  {showCloseButton && (\n                    <button type=\"button\" aria-label=\"Close\" className={styles.close} onClick={() => setOpen(false)}>\n                      <svg aria-hidden=\"true\" width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" strokeWidth=\"2\" strokeLinecap=\"round\">\n                        <path d=\"M18 6 6 18M6 6l12 12\" />\n                      </svg>\n                    </button>\n                  )}\n                </motion.div>\n              </div>\n            )}\n          </AnimatePresence>,\n          document.body,\n        )}\n    </div>\n  );\n}\n"
+    },
+    {
+      "path": "components/styles/drawer.module.css",
+      "type": "registry:style",
+      "content": ".root {\n  display: inline-flex;\n  color: var(--mf-fg, #f4f4f6);\n}\n\n.trigger,\n.secondary,\n.primary {\n  display: inline-flex;\n  align-items: center;\n  justify-content: center;\n  height: 2.375rem;\n  padding: 0 1rem;\n  border-radius: 0.5rem;\n  font: inherit;\n  font-size: 0.875rem;\n  font-weight: 500;\n  cursor: pointer;\n  transition: background-color 150ms ease, border-color 150ms ease, opacity 150ms ease, transform 150ms ease;\n}\n\n.trigger,\n.secondary {\n  border: 1px solid var(--mf-border, #2e2e38);\n  background-color: var(--mf-surface, #141419);\n  color: var(--mf-fg, #f4f4f6);\n}\n\n.trigger:hover,\n.secondary:hover {\n  background-color: var(--mf-surface-raised, #1b1b22);\n  border-color: var(--mf-border-strong, #52525b);\n}\n\n.trigger:active,\n.secondary:active,\n.primary:active {\n  transform: scale(0.98);\n}\n\n.primary {\n  border: 1px solid var(--mf-drw-accent, #6366f1);\n  background-color: var(--mf-drw-accent, #6366f1);\n  color: #ffffff;\n}\n\n.primary:hover {\n  opacity: 0.9;\n}\n\n.trigger:focus-visible,\n.secondary:focus-visible,\n.primary:focus-visible,\n.close:focus-visible,\n.switch:focus-visible {\n  outline: 2px solid var(--mf-fg, #e4e4e7);\n  outline-offset: 2px;\n}\n\n.layer {\n  position: fixed;\n  inset: 0;\n  z-index: 1000;\n  overflow: hidden;\n  color: var(--mf-fg, #f4f4f6);\n}\n\n.backdrop {\n  position: absolute;\n  inset: 0;\n  background-color: rgba(9, 9, 11, 0.5);\n  backdrop-filter: blur(var(--mf-drw-blur, 4px));\n  -webkit-backdrop-filter: blur(var(--mf-drw-blur, 4px));\n}\n\n.panel {\n  position: absolute;\n  display: flex;\n  flex-direction: column;\n  gap: 1.25rem;\n  padding: 1.5rem;\n  background-color: var(--mf-surface, #141419);\n  color: var(--mf-fg, #f4f4f6);\n  border: 0 solid var(--mf-border, #2e2e38);\n  box-shadow: 0 0 64px -12px rgba(0, 0, 0, 0.55);\n  outline: none;\n}\n\n.panel[data-side=\"right\"],\n.panel[data-side=\"left\"] {\n  top: 0;\n  bottom: 0;\n  width: min(var(--mf-drw-size, 380px), calc(100vw - 2.5rem));\n}\n\n.panel[data-side=\"right\"] {\n  right: 0;\n  border-left-width: 1px;\n}\n\n.panel[data-side=\"left\"] {\n  left: 0;\n  border-right-width: 1px;\n}\n\n.panel[data-side=\"top\"],\n.panel[data-side=\"bottom\"] {\n  left: 0;\n  right: 0;\n  height: min(var(--mf-drw-size, 380px), calc(100dvh - 2.5rem));\n}\n\n.panel[data-side=\"top\"] {\n  top: 0;\n  border-bottom-width: 1px;\n  border-radius: 0 0 0.75rem 0.75rem;\n}\n\n.panel[data-side=\"bottom\"] {\n  bottom: 0;\n  border-top-width: 1px;\n  border-radius: 0.75rem 0.75rem 0 0;\n}\n\n.header {\n  display: flex;\n  flex-direction: column;\n  gap: 0.375rem;\n  padding-right: 2rem;\n}\n\n.title {\n  margin: 0;\n  font-size: 1.125rem;\n  font-weight: 600;\n  line-height: 1.3;\n  letter-spacing: -0.01em;\n}\n\n.description {\n  margin: 0;\n  font-size: 0.875rem;\n  line-height: 1.5;\n  color: var(--mf-muted, #a1a1aa);\n}\n\n.body {\n  flex: 1;\n  min-height: 0;\n  overflow-y: auto;\n  font-size: 0.875rem;\n}\n\n.list {\n  display: grid;\n  gap: 0.25rem;\n  margin: 0;\n  padding: 0;\n  list-style: none;\n}\n\n.row {\n  display: flex;\n  align-items: center;\n  justify-content: space-between;\n  gap: 1rem;\n  padding: 0.75rem;\n  border-radius: 0.5rem;\n  border: 1px solid var(--mf-border, #2e2e38);\n  background-color: var(--mf-bg, #09090b);\n}\n\n.rowLabel {\n  display: grid;\n  gap: 0.125rem;\n  cursor: pointer;\n}\n\n.rowTitle {\n  font-weight: 500;\n}\n\n.rowHint {\n  font-size: 0.8125rem;\n  color: var(--mf-muted, #a1a1aa);\n}\n\n.switch {\n  position: relative;\n  flex-shrink: 0;\n  width: 2.25rem;\n  height: 1.25rem;\n  margin: 0;\n  border-radius: 999px;\n  background-color: var(--mf-border-strong, #52525b);\n  appearance: none;\n  -webkit-appearance: none;\n  cursor: pointer;\n  transition: background-color 180ms ease;\n}\n\n.switch::after {\n  content: \"\";\n  position: absolute;\n  top: 2px;\n  left: 2px;\n  width: 1rem;\n  height: 1rem;\n  border-radius: 50%;\n  background-color: #ffffff;\n  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);\n  transition: transform 220ms cubic-bezier(0.16, 1, 0.3, 1);\n}\n\n.switch:checked {\n  background-color: var(--mf-drw-accent, #6366f1);\n}\n\n.switch:checked::after {\n  transform: translateX(1rem);\n}\n\n.footer {\n  display: flex;\n  justify-content: flex-end;\n  gap: 0.5rem;\n}\n\n.close {\n  position: absolute;\n  top: 1rem;\n  right: 1rem;\n  display: inline-flex;\n  align-items: center;\n  justify-content: center;\n  width: 1.75rem;\n  height: 1.75rem;\n  border: 0;\n  border-radius: 0.375rem;\n  background: transparent;\n  color: var(--mf-subtle, #71717a);\n  cursor: pointer;\n  transition: color 150ms ease, background-color 150ms ease;\n}\n\n.close:hover {\n  color: var(--mf-fg, #f4f4f6);\n  background-color: var(--mf-surface-raised, #1b1b22);\n}\n\n@media (prefers-reduced-motion: reduce) {\n  .trigger,\n  .secondary,\n  .primary,\n  .close,\n  .switch,\n  .switch::after {\n    transition: none;\n  }\n\n  .panel {\n    transform: none !important;\n  }\n}\n"
+    }
+  ],
+  "tailwindExample": "\"use client\";\n\nimport { AnimatePresence, motion } from \"motion/react\";\nimport { useEffect, useRef, useState } from \"react\";\n\nexport function DrawerTailwind({ title = \"Notifications\" }) {\n  const [open, setOpen] = useState(false);\n  const trigger = useRef<HTMLButtonElement>(null);\n  const panel = useRef<HTMLDivElement>(null);\n  useEffect(() => {\n    if (!open) return;\n    document.body.style.overflow = \"hidden\";\n    panel.current?.querySelector<HTMLElement>(\"button,input\")?.focus();\n    const onKey = (e: KeyboardEvent) => e.key === \"Escape\" && setOpen(false);\n    document.addEventListener(\"keydown\", onKey);\n    return () => {\n      document.body.style.overflow = \"\";\n      document.removeEventListener(\"keydown\", onKey);\n      trigger.current?.focus();\n    };\n  }, [open]);\n  return (\n    <>\n      <button ref={trigger} onClick={() => setOpen(true)} aria-haspopup=\"dialog\" aria-expanded={open} className=\"h-9 rounded-lg border border-zinc-800 bg-zinc-900 px-4 text-sm font-medium text-zinc-100 hover:bg-zinc-800\">Open settings</button>\n      <AnimatePresence>\n        {open && (\n          <div className=\"fixed inset-0 z-50\">\n            <motion.div className=\"absolute inset-0 bg-black/50 backdrop-blur-sm\" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onPointerDown={() => setOpen(false)} />\n            <motion.div ref={panel} role=\"dialog\" aria-modal=\"true\" aria-label={title} className=\"absolute inset-y-0 right-0 flex w-[380px] max-w-[calc(100vw-2.5rem)] flex-col gap-4 border-l border-zinc-800 bg-zinc-950 p-6 text-zinc-100\" initial={{ x: \"100%\" }} animate={{ x: 0 }} exit={{ x: \"100%\" }} transition={{ type: \"spring\", stiffness: 380, damping: 38 }}>\n              <h2 className=\"text-lg font-semibold\">{title}</h2>\n              <p className=\"text-sm text-zinc-400\">Choose what you want to hear about.</p>\n              <div className=\"flex-1\" />\n              <div className=\"flex justify-end gap-2\">\n                <button onClick={() => setOpen(false)} className=\"h-9 rounded-lg border border-zinc-800 px-4 text-sm\">Cancel</button>\n                <button onClick={() => setOpen(false)} className=\"h-9 rounded-lg bg-indigo-500 px-4 text-sm font-medium text-white\">Save preferences</button>\n              </div>\n            </motion.div>\n          </div>\n        )}\n      </AnimatePresence>\n    </>\n  );\n}\n"
+}

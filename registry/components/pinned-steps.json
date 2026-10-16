@@ -1,0 +1,194 @@
+{
+  "slug": "pinned-steps",
+  "name": "PinnedSteps",
+  "category": "Scroll Animations",
+  "collection": "scroll",
+  "featured": true,
+  "addedAt": "2026-10-16",
+  "version": "2.3.0",
+  "requiresMotion": false,
+  "dependencies": [
+    "react"
+  ],
+  "description": "A pinned two-column walkthrough inside its own smooth-scroll viewport: scrolling advances through the steps, highlighting and expanding the active step with a live progress line while the visual on the right crossfades to that step's illustration.",
+  "tags": [
+    "scroll",
+    "pinned",
+    "steps",
+    "walkthrough",
+    "feature",
+    "crossfade",
+    "smooth-scroll"
+  ],
+  "a11yNotes": "The viewport is a focusable role=\"region\" labelled by the title, so keyboard users can Tab to it and scroll with arrow/Page keys/Space (native, unsmoothed) with a 2px :focus-visible outline. Steps are an ordered list of buttons; the active one has aria-current=\"step\" and activating any step scrolls the viewport to it. The \"Step n of N\" kicker is real text. Wheel input is smoothed only while the viewport can still move; at the edges wheel events are released to the page, and touch and scrollbar dragging stay native. The right-hand illustration, progress bars and dots are decorative and aria-hidden. Under prefers-reduced-motion the wheel is not intercepted, step clicks jump instantly and visuals switch without sliding, zooming or fading.",
+  "defaultProps": {
+    "steps": [
+      "Connect your sources",
+      "Map the signals",
+      "Watch it trend",
+      "Ship the insight"
+    ],
+    "title": "How it works",
+    "accentColor": "#34d399",
+    "transition": "slide",
+    "transitionDuration": 450,
+    "showProgress": true,
+    "lerp": 0.1,
+    "wheelMultiplier": 1,
+    "smooth": true
+  },
+  "controls": [
+    {
+      "prop": "steps",
+      "label": "Steps (comma separated)",
+      "type": "list"
+    },
+    {
+      "prop": "title",
+      "label": "Title",
+      "type": "text"
+    },
+    {
+      "prop": "accentColor",
+      "label": "Accent",
+      "type": "color"
+    },
+    {
+      "prop": "transition",
+      "label": "Visual transition",
+      "type": "select",
+      "options": [
+        "fade",
+        "slide",
+        "zoom"
+      ]
+    },
+    {
+      "prop": "transitionDuration",
+      "label": "Transition (ms)",
+      "type": "range",
+      "min": 0,
+      "max": 1200,
+      "step": 50
+    },
+    {
+      "prop": "showProgress",
+      "label": "Progress indicators",
+      "type": "boolean"
+    },
+    {
+      "prop": "lerp",
+      "label": "Lerp (smoothness)",
+      "type": "range",
+      "min": 0.05,
+      "max": 0.3,
+      "step": 0.01
+    },
+    {
+      "prop": "wheelMultiplier",
+      "label": "Wheel multiplier",
+      "type": "range",
+      "min": 0.5,
+      "max": 2,
+      "step": 0.1
+    },
+    {
+      "prop": "smooth",
+      "label": "Smooth scrolling",
+      "type": "boolean"
+    }
+  ],
+  "propsApi": [
+    {
+      "name": "steps",
+      "type": "string[]",
+      "default": "['Connect your sources', 'Map the signals', 'Watch it trend', 'Ship the insight']",
+      "description": "Step titles; each gets an equal share of the scroll distance and its own illustration."
+    },
+    {
+      "name": "title",
+      "type": "string",
+      "default": "'How it works'",
+      "description": "Heading above the step list; also used as the scroll region's aria-label."
+    },
+    {
+      "name": "accentColor",
+      "type": "string",
+      "default": "'#34d399'",
+      "description": "Accent color for the active step badge, progress lines and illustrations."
+    },
+    {
+      "name": "transition",
+      "type": "'fade' | 'slide' | 'zoom'",
+      "default": "'slide'",
+      "description": "How the right-hand visual changes between steps."
+    },
+    {
+      "name": "transitionDuration",
+      "type": "number",
+      "default": "450",
+      "description": "Duration in ms of the visual crossfade."
+    },
+    {
+      "name": "showProgress",
+      "type": "boolean",
+      "default": "true",
+      "description": "Show the progress line inside the active step and the overall progress bar on the visual."
+    },
+    {
+      "name": "height",
+      "type": "number",
+      "default": "380",
+      "description": "Height of the component's own scroll viewport in px (width is always 100%)."
+    },
+    {
+      "name": "borderRadius",
+      "type": "number",
+      "default": "20",
+      "description": "Corner radius of the viewport in px."
+    },
+    {
+      "name": "lerp",
+      "type": "number",
+      "default": "0.1",
+      "description": "Interpolation factor per 60fps frame for wheel smoothing (0.05 floaty, 0.3 snappy)."
+    },
+    {
+      "name": "wheelMultiplier",
+      "type": "number",
+      "default": "1",
+      "description": "Multiplier applied to wheel and trackpad deltas."
+    },
+    {
+      "name": "smooth",
+      "type": "boolean",
+      "default": "true",
+      "description": "Enable smooth wheel scrolling; false (or prefers-reduced-motion) uses native scrolling."
+    },
+    {
+      "name": "className",
+      "type": "string",
+      "default": "''",
+      "description": "Additional class merged onto the root element."
+    },
+    {
+      "name": "style",
+      "type": "React.CSSProperties",
+      "default": "undefined",
+      "description": "Inline styles merged onto the root element."
+    }
+  ],
+  "files": [
+    {
+      "path": "components/ui/pinned-steps.tsx",
+      "type": "registry:component",
+      "content": "\"use client\";\n\nimport * as React from \"react\";\nimport styles from \"../styles/pinned-steps.module.css\";\n\ninterface SmoothScrollState {\n  /** Current scrollTop of the viewport in px */\n  scroll: number;\n  /** Maximum scrollTop in px */\n  limit: number;\n  /** scroll / limit, 0..1 */\n  progress: number;\n}\n\ninterface SmoothScrollOptions {\n  lerp: number;\n  wheelMultiplier: number;\n  smooth: boolean;\n  onScroll?: (state: SmoothScrollState) => void;\n}\n\nconst clamp = (v: number, min: number, max: number) => Math.min(max, Math.max(min, v));\n\nfunction usePrefersReducedMotion(): boolean {\n  const [reduced, setReduced] = React.useState(false);\n  React.useEffect(() => {\n    const mq = window.matchMedia(\"(prefers-reduced-motion: reduce)\");\n    const update = () => setReduced(mq.matches);\n    update();\n    mq.addEventListener(\"change\", update);\n    return () => mq.removeEventListener(\"change\", update);\n  }, []);\n  return reduced;\n}\n\n/** True when a nested scrollable element under the pointer can still scroll in the wheel direction. */\nfunction nestedCanScroll(node: EventTarget | null, root: HTMLElement, dy: number): boolean {\n  let el: Element | null = node instanceof Element ? node : null;\n  while (el && el !== root) {\n    if (el instanceof HTMLElement) {\n      if (el.dataset.mfScrollPrevent !== undefined) return true;\n      const oy = window.getComputedStyle(el).overflowY;\n      if ((oy === \"auto\" || oy === \"scroll\") && el.scrollHeight > el.clientHeight + 1) {\n        if (dy < 0 ? el.scrollTop > 0 : el.scrollTop + el.clientHeight < el.scrollHeight - 1) return true;\n      }\n    }\n    el = el.parentElement;\n  }\n  return false;\n}\n\n/**\n * Self-contained smooth scroller for an overflow container: wheel input sets a target, a rAF\n * loop eases scrollTop toward it (frame-rate independent) and stops when settled. Touch,\n * keyboard and scrollbar stay native; at the edges wheel events are released to the page.\n */\nfunction useSmoothScroll(\n  containerRef: React.RefObject<HTMLElement | null>,\n  { lerp, wheelMultiplier, smooth, onScroll }: SmoothScrollOptions,\n) {\n  const callbackRef = React.useRef(onScroll);\n  React.useEffect(() => {\n    callbackRef.current = onScroll;\n  }, [onScroll]);\n\n  React.useEffect(() => {\n    const el = containerRef.current;\n    if (!el) return;\n    const ease = clamp(Number.isFinite(lerp) ? lerp : 0.1, 0.01, 1);\n    const multiplier = Number.isFinite(wheelMultiplier) ? wheelMultiplier : 1;\n    let target = el.scrollTop;\n    let current = target;\n    let raf = 0;\n    let lastTime = 0;\n    const getLimit = () => Math.max(0, el.scrollHeight - el.clientHeight);\n    const emit = () => {\n      const limit = getLimit();\n      const scroll = clamp(el.scrollTop, 0, limit);\n      callbackRef.current?.({ scroll, limit, progress: limit > 0 ? scroll / limit : 0 });\n    };\n    const stop = () => {\n      raf = 0;\n      lastTime = 0;\n    };\n    const tick = (time: number) => {\n      const frames = (lastTime ? clamp(time - lastTime, 1, 64) : 16.667) / 16.667;\n      lastTime = time;\n      target = clamp(target, 0, getLimit());\n      if (Math.abs(el.scrollTop - current) > 2) {\n        // Scrollbar drag, keyboard or touch moved the viewport: hand control back.\n        current = target = el.scrollTop;\n        stop();\n        emit();\n        return;\n      }\n      current += (target - current) * (1 - Math.pow(1 - ease, frames));\n      if (Math.abs(target - current) < 0.35) current = target;\n      el.scrollTop = current;\n      emit();\n      if (current === target) stop();\n      else raf = requestAnimationFrame(tick);\n    };\n    const onWheel = (event: WheelEvent) => {\n      if (event.ctrlKey || event.defaultPrevented || Math.abs(event.deltaX) > Math.abs(event.deltaY)) return;\n      let dy = event.deltaY;\n      if (event.deltaMode === 1) dy *= 16;\n      else if (event.deltaMode === 2) dy *= el.clientHeight;\n      dy *= multiplier;\n      if (dy === 0 || nestedCanScroll(event.target, el, dy)) return;\n      const limit = getLimit();\n      if (!raf) current = target = el.scrollTop;\n      // Release to native scrolling at the edges so the page is never trapped.\n      if ((dy < 0 && target <= 0) || (dy > 0 && target >= limit - 0.5)) return;\n      event.preventDefault();\n      target = clamp(target + dy, 0, limit);\n      if (!raf) raf = requestAnimationFrame(tick);\n    };\n    const onNativeScroll = () => {\n      if (raf) return;\n      current = target = el.scrollTop;\n      emit();\n    };\n    if (smooth) el.addEventListener(\"wheel\", onWheel, { passive: false });\n    el.addEventListener(\"scroll\", onNativeScroll, { passive: true });\n    const ro = new ResizeObserver(emit);\n    ro.observe(el);\n    if (el.firstElementChild) ro.observe(el.firstElementChild);\n    emit();\n    return () => {\n      if (smooth) el.removeEventListener(\"wheel\", onWheel);\n      el.removeEventListener(\"scroll\", onNativeScroll);\n      ro.disconnect();\n      if (raf) cancelAnimationFrame(raf);\n    };\n  }, [containerRef, lerp, wheelMultiplier, smooth]);\n}\n\nexport interface PinnedStepsProps {\n  /** Step titles, one pinned step per item */\n  steps?: string[];\n  /** Heading shown above the step list (also the region label) */\n  title?: string;\n  /** Accent color for the active step, progress and visuals */\n  accentColor?: string;\n  /** How the right-hand visual changes between steps */\n  transition?: \"fade\" | \"slide\" | \"zoom\";\n  /** Duration in ms of the visual crossfade */\n  transitionDuration?: number;\n  /** Show the progress line inside the active step and the overall bar */\n  showProgress?: boolean;\n  /** Viewport height in px */\n  height?: number;\n  /** Viewport corner radius in px */\n  borderRadius?: number;\n  /** Interpolation factor per 60fps frame (0.05 = floaty, 0.3 = snappy) */\n  lerp?: number;\n  /** Multiplier applied to wheel / trackpad deltas */\n  wheelMultiplier?: number;\n  /** Enable smooth wheel scrolling (native scrolling when false or under reduced motion) */\n  smooth?: boolean;\n  /** Optional className merged onto the root */\n  className?: string;\n  /** Inline styles merged onto the root */\n  style?: React.CSSProperties;\n}\n\nconst DEFAULT_STEPS = [\"Connect your sources\", \"Map the signals\", \"Watch it trend\", \"Ship the insight\"];\nconst DESCRIPTIONS = [\n  \"Plug in databases, events and spreadsheets in a couple of clicks. Schemas sync automatically.\",\n  \"Group raw events into the metrics your team actually talks about, with zero SQL.\",\n  \"Live charts update as data lands, so changes surface the minute they happen.\",\n  \"Share a link, schedule a digest or push alerts straight to the channel that cares.\",\n];\nconst NODES: [number, number][] = [\n  [40, 60],\n  [100, 30],\n  [160, 60],\n  [100, 90],\n];\n\nfunction StepArt({ kind }: { kind: number }) {\n  if (kind === 0) {\n    return (\n      <svg viewBox=\"0 0 200 120\" className={styles.art}>\n        <path d=\"M40 60 L100 30 L160 60 L100 90 Z M40 60 L160 60 M100 30 L100 90\" className={styles.stroke} />\n        {NODES.map(([x, y]) => (\n          <circle key={`${x}-${y}`} cx={x} cy={y} r=\"11\" className={styles.node} />\n        ))}\n        <circle cx=\"100\" cy=\"60\" r=\"16\" className={styles.hub} />\n      </svg>\n    );\n  }\n  if (kind === 1) {\n    return (\n      <svg viewBox=\"0 0 200 120\" className={styles.art}>\n        {[48, 80, 36, 96, 64, 88, 56].map((h, b) => (\n          <rect key={b} x={22 + b * 23} y={104 - h} width=\"15\" height={h} rx=\"4\" className={b === 3 ? styles.hub : styles.node} />\n        ))}\n      </svg>\n    );\n  }\n  if (kind === 2) {\n    return (\n      <svg viewBox=\"0 0 200 120\" className={styles.art}>\n        <path d=\"M14 96 C 44 90, 54 60, 84 66 S 130 30, 186 20 L186 108 L14 108 Z\" className={styles.area} />\n        <path d=\"M14 96 C 44 90, 54 60, 84 66 S 130 30, 186 20\" className={styles.stroke} />\n        <circle cx=\"186\" cy=\"20\" r=\"6\" className={styles.hub} />\n      </svg>\n    );\n  }\n  return (\n    <svg viewBox=\"0 0 200 120\" className={styles.art}>\n      <circle cx=\"100\" cy=\"60\" r=\"40\" className={styles.area} />\n      <circle cx=\"100\" cy=\"60\" r=\"40\" className={styles.stroke} />\n      <path d=\"M82 61 L95 74 L120 47\" className={styles.check} />\n    </svg>\n  );\n}\n\nexport function PinnedSteps({\n  steps = DEFAULT_STEPS,\n  title = \"How it works\",\n  accentColor = \"#34d399\",\n  transition = \"slide\",\n  transitionDuration = 450,\n  showProgress = true,\n  height = 380,\n  borderRadius = 20,\n  lerp = 0.1,\n  wheelMultiplier = 1,\n  smooth = true,\n  className = \"\",\n  style,\n}: PinnedStepsProps) {\n  const reduced = usePrefersReducedMotion();\n  const viewportRef = React.useRef<HTMLDivElement>(null);\n  const stageRef = React.useRef<HTMLDivElement>(null);\n  const [active, setActive] = React.useState(0);\n  const total = Math.max(1, steps.length);\n  const perStep = Math.round(height * 0.8);\n\n  const handleScroll = React.useCallback(\n    ({ progress }: SmoothScrollState) => {\n      const t = progress * total;\n      const index = clamp(Math.floor(t), 0, total - 1);\n      const stage = stageRef.current;\n      if (stage) {\n        stage.style.setProperty(\"--mf-pst-p\", progress.toFixed(4));\n        stage.style.setProperty(\"--mf-pst-l\", clamp(t - index, 0, 1).toFixed(4));\n      }\n      setActive(index);\n    },\n    [total],\n  );\n\n  useSmoothScroll(viewportRef, { lerp, wheelMultiplier, smooth: smooth && !reduced, onScroll: handleScroll });\n\n  const goTo = (i: number) => {\n    const el = viewportRef.current;\n    if (!el) return;\n    const limit = el.scrollHeight - el.clientHeight;\n    el.scrollTo({ top: ((i + 0.04) / total) * limit, behavior: reduced ? \"auto\" : \"smooth\" });\n  };\n\n  const vars = {\n    \"--mf-pst-h\": `${height}px`,\n    \"--mf-pst-r\": `${borderRadius}px`,\n    \"--mf-pst-accent\": accentColor,\n    \"--mf-pst-dur\": `${Math.max(0, transitionDuration)}ms`,\n    ...style,\n  } as React.CSSProperties;\n\n  return (\n    <div style={vars} className={`${styles.root} ${className}`.trim()} data-transition={transition}>\n      <div ref={viewportRef} className={styles.viewport} tabIndex={0} role=\"region\" aria-label={title}>\n        <div style={{ height: height + total * perStep }}>\n          <div ref={stageRef} className={styles.stage}>\n            <div className={styles.left}>\n              <span className={styles.kicker}>{`Step ${active + 1} of ${total}`}</span>\n              <h3 className={styles.title}>{title}</h3>\n              <ol className={styles.steps}>\n                {steps.map((step, i) => (\n                  <li key={`${step}-${i}`} className={styles.step} data-state={i === active ? \"active\" : i < active ? \"done\" : \"todo\"}>\n                    <button\n                      type=\"button\"\n                      className={styles.stepButton}\n                      aria-current={i === active ? \"step\" : undefined}\n                      onClick={() => goTo(i)}\n                    >\n                      <span className={styles.badge} aria-hidden=\"true\">\n                        {i < active ? \"✓\" : i + 1}\n                      </span>\n                      <span className={styles.stepTitle}>{step}</span>\n                    </button>\n                    <div className={styles.detail}>\n                      <div className={styles.detailInner}>\n                        {showProgress && (\n                          <span className={styles.line} aria-hidden=\"true\">\n                            <span className={styles.lineFill} />\n                          </span>\n                        )}\n                        <p className={styles.desc}>{DESCRIPTIONS[i % DESCRIPTIONS.length]}</p>\n                      </div>\n                    </div>\n                  </li>\n                ))}\n              </ol>\n            </div>\n            <div className={styles.right} aria-hidden=\"true\">\n              <div className={styles.frame}>\n                <div className={styles.chrome}>\n                  <span className={styles.light} />\n                  <span className={styles.light} />\n                  <span className={styles.light} />\n                  {showProgress && (\n                    <span className={styles.bar}>\n                      <span className={styles.barFill} />\n                    </span>\n                  )}\n                </div>\n                {steps.map((step, i) => (\n                  <div\n                    key={`${step}-v-${i}`}\n                    className={styles.visual}\n                    data-state={i === active ? \"active\" : i < active ? \"before\" : \"after\"}\n                    style={{ \"--mf-pst-hue\": `${i * 38}deg` } as React.CSSProperties}\n                  >\n                    <StepArt kind={i % 4} />\n                    <span className={styles.visualLabel}>{step}</span>\n                  </div>\n                ))}\n              </div>\n              <div className={styles.dots}>\n                {steps.map((step, i) => (\n                  <span key={`${step}-d-${i}`} className={styles.dot} data-active={i === active ? \"\" : undefined} />\n                ))}\n              </div>\n            </div>\n          </div>\n        </div>\n      </div>\n    </div>\n  );\n}\n"
+    },
+    {
+      "path": "components/styles/pinned-steps.module.css",
+      "type": "registry:style",
+      "content": ".root {\n  position: relative;\n  width: 100%;\n  height: var(--mf-pst-h, 380px);\n  border-radius: var(--mf-pst-r, 20px);\n  overflow: hidden;\n  border: 1px solid var(--mf-border, #2e2e38);\n  background: var(--mf-surface, #141419);\n  color: var(--mf-fg, #f4f4f6);\n  container-type: inline-size;\n  isolation: isolate;\n}\n\n.root *,\n.root *::before,\n.root *::after {\n  box-sizing: border-box;\n}\n\n.viewport {\n  position: relative;\n  height: 100%;\n  overflow-x: hidden;\n  overflow-y: auto;\n  overscroll-behavior: auto;\n  scroll-behavior: auto;\n  scrollbar-width: thin;\n  scrollbar-color: var(--mf-border, #2e2e38) transparent;\n}\n\n.viewport:focus-visible {\n  outline: 2px solid var(--mf-fg, #e4e4e7);\n  outline-offset: -2px;\n}\n\n.stage {\n  --mf-pst-p: 0;\n  --mf-pst-l: 0;\n  position: sticky;\n  top: 0;\n  display: grid;\n  grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr);\n  gap: clamp(1rem, 4cqi, 2.5rem);\n  align-items: center;\n  height: var(--mf-pst-h, 380px);\n  padding: 1.25rem clamp(1rem, 5cqi, 2.75rem);\n  overflow: hidden;\n}\n\n.left {\n  display: flex;\n  flex-direction: column;\n  gap: 0.45rem;\n  min-width: 0;\n}\n\n.kicker {\n  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;\n  font-size: 0.7rem;\n  letter-spacing: 0.08em;\n  text-transform: uppercase;\n  color: var(--mf-pst-accent, #34d399);\n}\n\n.title {\n  margin: 0 0 0.35rem;\n  font-size: clamp(1.3rem, 3.6cqi, 1.85rem);\n  font-weight: 700;\n  line-height: 1.05;\n  letter-spacing: -0.035em;\n}\n\n.steps {\n  display: flex;\n  flex-direction: column;\n  gap: 0.15rem;\n  margin: 0;\n  padding: 0;\n  list-style: none;\n}\n\n.step {\n  border-radius: 12px;\n  transition: background-color 250ms ease;\n}\n\n.step[data-state=\"active\"] {\n  background: var(--mf-surface-raised, #1b1b22);\n}\n\n.stepButton {\n  display: flex;\n  align-items: center;\n  gap: 0.65rem;\n  width: 100%;\n  padding: 0.45rem 0.55rem;\n  border: 0;\n  border-radius: 12px;\n  background: none;\n  color: var(--mf-muted, #a1a1aa);\n  font: inherit;\n  text-align: left;\n  cursor: pointer;\n  transition: color 250ms ease;\n}\n\n.stepButton:focus-visible {\n  outline: 2px solid var(--mf-fg, #e4e4e7);\n  outline-offset: 0;\n}\n\n.step[data-state=\"active\"] .stepButton {\n  color: var(--mf-fg, #f4f4f6);\n}\n\n.badge {\n  display: grid;\n  flex: none;\n  place-items: center;\n  width: 1.5rem;\n  height: 1.5rem;\n  border: 1px solid var(--mf-border-strong, #3f3f4a);\n  border-radius: 999px;\n  font-size: 0.7rem;\n  font-weight: 600;\n  transition: background-color 250ms ease, border-color 250ms ease, color 250ms ease;\n}\n\n.step[data-state=\"active\"] .badge,\n.step[data-state=\"done\"] .badge {\n  border-color: var(--mf-pst-accent, #34d399);\n  background: var(--mf-pst-accent, #34d399);\n  color: #0b0b0f;\n}\n\n.step[data-state=\"done\"] .badge {\n  background: color-mix(in srgb, var(--mf-pst-accent, #34d399) 20%, transparent);\n  color: var(--mf-pst-accent, #34d399);\n}\n\n.stepTitle {\n  font-size: 0.92rem;\n  font-weight: 600;\n  letter-spacing: -0.01em;\n}\n\n.detail {\n  display: grid;\n  grid-template-rows: 0fr;\n  transition: grid-template-rows 350ms cubic-bezier(0.22, 1, 0.36, 1);\n}\n\n.step[data-state=\"active\"] .detail {\n  grid-template-rows: 1fr;\n}\n\n.detailInner {\n  position: relative;\n  min-height: 0;\n  overflow: hidden;\n}\n\n.line {\n  position: absolute;\n  top: 0.2rem;\n  bottom: 0.7rem;\n  left: calc(0.55rem + 0.75rem - 1px);\n  width: 2px;\n  border-radius: 2px;\n  background: var(--mf-border, #2e2e38);\n  overflow: hidden;\n}\n\n.lineFill {\n  position: absolute;\n  inset: 0;\n  background: var(--mf-pst-accent, #34d399);\n  transform: scaleY(var(--mf-pst-l));\n  transform-origin: 50% 0%;\n}\n\n.desc {\n  margin: 0;\n  padding: 0 0.75rem 0.65rem 2.7rem;\n  color: var(--mf-muted, #a1a1aa);\n  font-size: 0.8rem;\n  line-height: 1.5;\n}\n\n.right {\n  display: flex;\n  flex-direction: column;\n  align-items: center;\n  gap: 0.75rem;\n  min-width: 0;\n}\n\n.frame {\n  position: relative;\n  width: 100%;\n  aspect-ratio: 4 / 3;\n  max-height: calc(var(--mf-pst-h, 380px) - 4.5rem);\n  border: 1px solid var(--mf-border, #2e2e38);\n  border-radius: 16px;\n  overflow: hidden;\n  background: var(--mf-surface-raised, #1b1b22);\n  box-shadow: 0 24px 48px -28px rgba(0, 0, 0, 0.6);\n}\n\n.chrome {\n  position: absolute;\n  inset: 0 0 auto;\n  z-index: 2;\n  display: flex;\n  align-items: center;\n  gap: 5px;\n  height: 30px;\n  padding: 0 0.7rem;\n  border-bottom: 1px solid var(--mf-border, #2e2e38);\n  background: var(--mf-surface-raised, #1b1b22);\n}\n\n.light {\n  width: 8px;\n  height: 8px;\n  border-radius: 999px;\n  background: var(--mf-border-strong, #3f3f4a);\n}\n\n.bar {\n  position: relative;\n  flex: 1;\n  height: 4px;\n  margin-left: 0.6rem;\n  border-radius: 4px;\n  background: var(--mf-border, #2e2e38);\n  overflow: hidden;\n}\n\n.barFill {\n  position: absolute;\n  inset: 0;\n  background: var(--mf-pst-accent, #34d399);\n  transform: scaleX(var(--mf-pst-p));\n  transform-origin: 0% 50%;\n}\n\n.visual {\n  position: absolute;\n  inset: 30px 0 0;\n  display: flex;\n  flex-direction: column;\n  align-items: center;\n  justify-content: center;\n  gap: 0.4rem;\n  padding: 0.9rem;\n  isolation: isolate;\n  opacity: 0;\n  transition:\n    opacity var(--mf-pst-dur, 450ms) ease,\n    transform var(--mf-pst-dur, 450ms) cubic-bezier(0.22, 1, 0.36, 1);\n}\n\n.visual::before {\n  content: \"\";\n  position: absolute;\n  inset: 0;\n  z-index: -1;\n  background:\n    radial-gradient(80% 90% at 20% 10%, color-mix(in srgb, var(--mf-pst-accent, #34d399) 38%, transparent), transparent 70%),\n    radial-gradient(70% 80% at 90% 100%, color-mix(in srgb, #818cf8 34%, transparent), transparent 70%);\n  filter: hue-rotate(var(--mf-pst-hue, 0deg));\n}\n\n.visual[data-state=\"active\"] {\n  opacity: 1;\n}\n\n.root[data-transition=\"slide\"] .visual[data-state=\"before\"] {\n  transform: translateY(-18%);\n}\n\n.root[data-transition=\"slide\"] .visual[data-state=\"after\"] {\n  transform: translateY(18%);\n}\n\n.root[data-transition=\"zoom\"] .visual[data-state=\"before\"] {\n  transform: scale(1.12);\n}\n\n.root[data-transition=\"zoom\"] .visual[data-state=\"after\"] {\n  transform: scale(0.88);\n}\n\n.art {\n  width: 72%;\n  max-height: 72%;\n  overflow: visible;\n}\n\n.stroke {\n  fill: none;\n  stroke: var(--mf-pst-accent, #34d399);\n  stroke-width: 3;\n  stroke-linecap: round;\n  stroke-linejoin: round;\n}\n\n.node {\n  fill: color-mix(in srgb, var(--mf-pst-accent, #34d399) 30%, var(--mf-surface-raised, #1b1b22));\n  stroke: var(--mf-pst-accent, #34d399);\n  stroke-width: 2;\n}\n\n.hub {\n  fill: var(--mf-pst-accent, #34d399);\n}\n\n.area {\n  fill: color-mix(in srgb, var(--mf-pst-accent, #34d399) 22%, transparent);\n}\n\n.check {\n  fill: none;\n  stroke: var(--mf-fg, #f4f4f6);\n  stroke-width: 7;\n  stroke-linecap: round;\n  stroke-linejoin: round;\n}\n\n.visualLabel {\n  font-size: 0.78rem;\n  font-weight: 600;\n  color: var(--mf-fg, #f4f4f6);\n}\n\n.dots {\n  display: flex;\n  gap: 6px;\n}\n\n.dot {\n  width: 7px;\n  height: 7px;\n  border-radius: 999px;\n  background: var(--mf-border-strong, #3f3f4a);\n  transition: width 250ms ease, background-color 250ms ease;\n}\n\n.dot[data-active] {\n  width: 22px;\n  background: var(--mf-pst-accent, #34d399);\n}\n\n@media (prefers-reduced-motion: reduce) {\n  .visual,\n  .detail,\n  .step,\n  .stepButton,\n  .badge,\n  .dot {\n    transition: none;\n  }\n\n  .root .visual[data-state] {\n    transform: none;\n  }\n}\n"
+    }
+  ],
+  "tailwindExample": "\"use client\";\n\nimport { useEffect, useRef, useState } from \"react\";\n\nconst steps = [\"Connect your sources\", \"Map the signals\", \"Watch it trend\", \"Ship the insight\"];\nconst tints = [\"from-emerald-400/40\", \"from-sky-400/40\", \"from-violet-400/40\", \"from-amber-400/40\"];\n\nexport function PinnedStepsTailwind() {\n  const ref = useRef(null);\n  const [active, setActive] = useState(0);\n  useEffect(() => {\n    const el = ref.current;\n    const update = () => {\n      const max = el.scrollHeight - el.clientHeight;\n      const p = max > 0 ? el.scrollTop / max : 0;\n      setActive(Math.min(steps.length - 1, Math.floor(p * steps.length)));\n    };\n    el.addEventListener(\"scroll\", update, { passive: true });\n    return () => el.removeEventListener(\"scroll\", update);\n  }, []);\n  return (\n    <div ref={ref} tabIndex={0} className=\"h-[380px] w-full overflow-y-auto rounded-[20px] border border-zinc-800 bg-zinc-900 text-zinc-100\">\n      <div style={{ height: 380 + steps.length * 300 }}>\n        <div className=\"sticky top-0 grid h-[380px] grid-cols-2 items-center gap-8 px-10\">\n          <div>\n            <p className=\"text-xs uppercase tracking-widest text-emerald-400\">Step {active + 1} of {steps.length}</p>\n            <h3 className=\"mb-3 text-2xl font-bold\">How it works</h3>\n            <ol className=\"space-y-1\">\n              {steps.map((s, i) => (\n                <li key={s} className={`rounded-xl px-3 py-2 text-sm font-semibold transition ${i === active ? \"bg-zinc-800 text-white\" : \"text-zinc-500\"}`}>{i + 1}. {s}</li>\n              ))}\n            </ol>\n          </div>\n          <div className=\"relative aspect-[4/3] overflow-hidden rounded-2xl border border-zinc-800 bg-zinc-800\">\n            {steps.map((s, i) => (\n              <div key={s} className={`absolute inset-0 grid place-items-center bg-gradient-to-br to-transparent text-sm font-semibold transition-all duration-500 ${tints[i]} ${i === active ? \"opacity-100\" : \"translate-y-6 opacity-0\"}`}>{s}</div>\n            ))}\n          </div>\n        </div>\n      </div>\n    </div>\n  );\n}"
+}

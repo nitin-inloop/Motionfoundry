@@ -1,0 +1,181 @@
+{
+  "slug": "tabs",
+  "name": "Tabs",
+  "category": "Navigation",
+  "collection": "ui",
+  "featured": true,
+  "addedAt": "2026-10-16",
+  "version": "2.3.0",
+  "requiresMotion": true,
+  "dependencies": [
+    "motion",
+    "react"
+  ],
+  "description": "A tab list whose active indicator springs between tabs as a sliding underline or pill, with panels that slide or fade in the direction of travel. Supports arrow-key, Home and End navigation and both controlled and uncontrolled use.",
+  "tags": [
+    "tabs",
+    "tablist",
+    "navigation",
+    "indicator",
+    "segmented",
+    "ui"
+  ],
+  "a11yNotes": "Implements the WAI-ARIA Tabs pattern: role=tablist with aria-label, role=tab buttons with aria-selected and aria-controls, and role=tabpanel regions labelled by their tab. Roving tabindex keeps a single Tab stop; Left/Right arrows move between tabs (wrapping), Home/End jump to the ends, disabled tabs are skipped. activationMode 'automatic' selects on focus, 'manual' selects with Enter/Space. The panel is focusable so Tab moves straight into its content. Under prefers-reduced-motion the indicator jumps and panels only cross-fade.",
+  "defaultProps": {
+    "variant": "underline",
+    "size": "md",
+    "accentColor": "#6366f1",
+    "activationMode": "automatic",
+    "transition": "slide",
+    "fullWidth": false,
+    "ariaLabel": "Account settings"
+  },
+  "controls": [
+    {
+      "prop": "variant",
+      "label": "Variant",
+      "type": "select",
+      "options": [
+        "underline",
+        "pill"
+      ]
+    },
+    {
+      "prop": "size",
+      "label": "Size",
+      "type": "select",
+      "options": [
+        "sm",
+        "md",
+        "lg"
+      ]
+    },
+    {
+      "prop": "accentColor",
+      "label": "Accent color",
+      "type": "color"
+    },
+    {
+      "prop": "activationMode",
+      "label": "Activation",
+      "type": "select",
+      "options": [
+        "automatic",
+        "manual"
+      ]
+    },
+    {
+      "prop": "transition",
+      "label": "Panel transition",
+      "type": "select",
+      "options": [
+        "slide",
+        "fade",
+        "none"
+      ]
+    },
+    {
+      "prop": "fullWidth",
+      "label": "Full width",
+      "type": "boolean"
+    },
+    {
+      "prop": "ariaLabel",
+      "label": "List label",
+      "type": "text"
+    }
+  ],
+  "propsApi": [
+    {
+      "name": "items",
+      "type": "{ value: string; label: string; content?: React.ReactNode; disabled?: boolean }[]",
+      "default": "account settings demo",
+      "description": "Tabs to render with their panel content."
+    },
+    {
+      "name": "value",
+      "type": "string",
+      "default": "undefined",
+      "description": "Controlled selected tab value."
+    },
+    {
+      "name": "defaultValue",
+      "type": "string",
+      "default": "first enabled tab",
+      "description": "Initial selected tab when uncontrolled."
+    },
+    {
+      "name": "onValueChange",
+      "type": "(value: string) => void",
+      "default": "undefined",
+      "description": "Called when the selected tab changes."
+    },
+    {
+      "name": "variant",
+      "type": "'underline' | 'pill'",
+      "default": "'underline'",
+      "description": "Indicator style: a sliding underline or a sliding filled pill."
+    },
+    {
+      "name": "size",
+      "type": "'sm' | 'md' | 'lg'",
+      "default": "'md'",
+      "description": "Tab height and text size preset."
+    },
+    {
+      "name": "accentColor",
+      "type": "string",
+      "default": "'#6366f1'",
+      "description": "Color of the indicator."
+    },
+    {
+      "name": "activationMode",
+      "type": "'automatic' | 'manual'",
+      "default": "'automatic'",
+      "description": "Whether arrow-key focus selects the tab immediately or Enter/Space is required."
+    },
+    {
+      "name": "transition",
+      "type": "'slide' | 'fade' | 'none'",
+      "default": "'slide'",
+      "description": "How panels animate when the selection changes."
+    },
+    {
+      "name": "fullWidth",
+      "type": "boolean",
+      "default": "false",
+      "description": "Stretch tabs to share the full width."
+    },
+    {
+      "name": "ariaLabel",
+      "type": "string",
+      "default": "'Account settings'",
+      "description": "Accessible label of the tab list."
+    },
+    {
+      "name": "className",
+      "type": "string",
+      "default": "''",
+      "description": "Class merged onto the root element."
+    },
+    {
+      "name": "style",
+      "type": "React.CSSProperties",
+      "default": "undefined",
+      "description": "Inline styles merged onto the root element."
+    }
+  ],
+  "files": [
+    {
+      "path": "components/ui/tabs.tsx",
+      "type": "registry:component",
+      "content": "\"use client\";\n\nimport * as React from \"react\";\nimport { AnimatePresence, motion, useReducedMotion } from \"motion/react\";\nimport styles from \"../styles/tabs.module.css\";\n\nexport interface TabItem {\n  /** Unique value of the tab */\n  value: string;\n  /** Visible label */\n  label: string;\n  /** Panel content */\n  content?: React.ReactNode;\n  /** Disable this tab */\n  disabled?: boolean;\n}\n\nexport interface TabsProps {\n  /** Tabs to render; defaults to an account settings demo */\n  items?: TabItem[];\n  /** Controlled selected value */\n  value?: string;\n  /** Initial selected value when uncontrolled (defaults to the first tab) */\n  defaultValue?: string;\n  /** Called when the selected tab changes */\n  onValueChange?: (value: string) => void;\n  /** Indicator style: a sliding underline or a sliding pill */\n  variant?: \"underline\" | \"pill\";\n  /** Size preset */\n  size?: \"sm\" | \"md\" | \"lg\";\n  /** Accent color of the indicator and focus highlights */\n  accentColor?: string;\n  /** \"automatic\" selects on arrow focus, \"manual\" requires Enter/Space */\n  activationMode?: \"automatic\" | \"manual\";\n  /** Panel transition */\n  transition?: \"slide\" | \"fade\" | \"none\";\n  /** Stretch tabs to fill the full width */\n  fullWidth?: boolean;\n  /** Accessible label for the tab list */\n  ariaLabel?: string;\n  /** Optional className merged onto the root */\n  className?: string;\n  /** Optional inline styles merged onto the root */\n  style?: React.CSSProperties;\n}\n\nconst useIsoLayoutEffect = typeof window !== \"undefined\" ? React.useLayoutEffect : React.useEffect;\n\nfunction Row({ k, v }: { k: string; v: string }) {\n  return (\n    <div className={styles.row}>\n      <span className={styles.rowKey}>{k}</span>\n      <span className={styles.rowVal}>{v}</span>\n    </div>\n  );\n}\n\nconst DEFAULT_ITEMS: TabItem[] = [\n  {\n    value: \"account\",\n    label: \"Account\",\n    content: (\n      <>\n        <h3 className={styles.panelTitle}>Account</h3>\n        <p className={styles.panelText}>Manage your public profile and how others see you.</p>\n        <Row k=\"Display name\" v=\"Ada Lovelace\" />\n        <Row k=\"Username\" v=\"@ada\" />\n      </>\n    ),\n  },\n  {\n    value: \"security\",\n    label: \"Security\",\n    content: (\n      <>\n        <h3 className={styles.panelTitle}>Security</h3>\n        <p className={styles.panelText}>Keep your account safe with a strong password and two-factor auth.</p>\n        <Row k=\"Password\" v=\"Updated 3 weeks ago\" />\n        <Row k=\"Two-factor\" v=\"Enabled\" />\n      </>\n    ),\n  },\n  {\n    value: \"notifications\",\n    label: \"Notifications\",\n    content: (\n      <>\n        <h3 className={styles.panelTitle}>Notifications</h3>\n        <p className={styles.panelText}>Choose what we email you about and how often.</p>\n        <Row k=\"Product updates\" v=\"Weekly digest\" />\n        <Row k=\"Mentions\" v=\"Instantly\" />\n      </>\n    ),\n  },\n  {\n    value: \"billing\",\n    label: \"Billing\",\n    content: (\n      <>\n        <h3 className={styles.panelTitle}>Billing</h3>\n        <p className={styles.panelText}>You are on the Pro plan, renewing on Nov 1.</p>\n        <Row k=\"Plan\" v=\"Pro, $12 / month\" />\n        <Row k=\"Payment\" v=\"Visa ending 4242\" />\n      </>\n    ),\n  },\n];\n\nexport function Tabs({\n  items = DEFAULT_ITEMS,\n  value: valueProp,\n  defaultValue,\n  onValueChange,\n  variant = \"underline\",\n  size = \"md\",\n  accentColor = \"#6366f1\",\n  activationMode = \"automatic\",\n  transition = \"slide\",\n  fullWidth = false,\n  ariaLabel = \"Account settings\",\n  className = \"\",\n  style,\n}: TabsProps) {\n  const reduce = useReducedMotion();\n  const firstEnabled = items.find((t) => !t.disabled)?.value ?? \"\";\n  const [inner, setInner] = React.useState(defaultValue ?? firstEnabled);\n  const controlled = valueProp !== undefined;\n  const value = controlled ? valueProp : inner;\n  const baseId = React.useId();\n  const listRef = React.useRef<HTMLDivElement>(null);\n  const tabRefs = React.useRef<Array<HTMLButtonElement | null>>([]);\n  const [rect, setRect] = React.useState<{ x: number; w: number } | null>(null);\n  const activeIndex = Math.max(0, items.findIndex((t) => t.value === value));\n  const prevIndex = React.useRef(activeIndex);\n  const dir = activeIndex >= prevIndex.current ? 1 : -1;\n\n  React.useEffect(() => {\n    prevIndex.current = activeIndex;\n  }, [activeIndex]);\n\n  const select = (v: string) => {\n    if (v === value) return;\n    if (!controlled) setInner(v);\n    onValueChange?.(v);\n  };\n\n  const measure = React.useCallback(() => {\n    const el = tabRefs.current[activeIndex];\n    if (el) setRect({ x: el.offsetLeft, w: el.offsetWidth });\n  }, [activeIndex]);\n\n  useIsoLayoutEffect(() => {\n    measure();\n  }, [measure, variant, size, fullWidth]);\n\n  React.useEffect(() => {\n    const list = listRef.current;\n    if (!list || typeof ResizeObserver === \"undefined\") return;\n    const ro = new ResizeObserver(() => measure());\n    ro.observe(list);\n    return () => ro.disconnect();\n  }, [measure]);\n\n  const onKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {\n    const enabled = items.map((t, i) => (t.disabled ? -1 : i)).filter((i) => i >= 0);\n    const current = tabRefs.current.findIndex((el) => el === document.activeElement);\n    if (current < 0 || enabled.length === 0) return;\n    const pos = enabled.indexOf(current);\n    let next = -1;\n    if (e.key === \"ArrowRight\") next = enabled[(pos + 1) % enabled.length];\n    else if (e.key === \"ArrowLeft\") next = enabled[(pos - 1 + enabled.length) % enabled.length];\n    else if (e.key === \"Home\") next = enabled[0];\n    else if (e.key === \"End\") next = enabled[enabled.length - 1];\n    if (next < 0) return;\n    e.preventDefault();\n    tabRefs.current[next]?.focus();\n    if (activationMode === \"automatic\") select(items[next].value);\n  };\n\n  const active = items[activeIndex];\n  const offset = reduce || transition !== \"slide\" ? 0 : 20;\n  const dur = transition === \"none\" ? 0 : reduce ? 0.1 : 0.22;\n\n  return (\n    <div\n      className={`${styles.root} ${className}`.trim()}\n      data-variant={variant}\n      data-size={size}\n      data-full={fullWidth ? \"\" : undefined}\n      style={{ \"--mf-tabs-accent\": accentColor, ...style } as React.CSSProperties}\n    >\n      <div ref={listRef} role=\"tablist\" aria-label={ariaLabel} aria-orientation=\"horizontal\" className={styles.list} onKeyDown={onKeyDown}>\n        {rect && (\n          <motion.span\n            aria-hidden=\"true\"\n            className={styles.indicator}\n            initial={false}\n            animate={{ x: rect.x, width: rect.w }}\n            transition={reduce ? { duration: 0 } : { type: \"spring\", stiffness: 420, damping: 36 }}\n          />\n        )}\n        {items.map((t, i) => {\n          const selected = i === activeIndex;\n          return (\n            <button\n              key={t.value}\n              ref={(el) => {\n                tabRefs.current[i] = el;\n              }}\n              type=\"button\"\n              role=\"tab\"\n              id={`${baseId}-tab-${i}`}\n              aria-selected={selected}\n              aria-controls={`${baseId}-panel-${i}`}\n              tabIndex={selected ? 0 : -1}\n              disabled={t.disabled}\n              data-selected={selected ? \"\" : undefined}\n              className={styles.tab}\n              onClick={() => select(t.value)}\n            >\n              {t.label}\n            </button>\n          );\n        })}\n      </div>\n      <div className={styles.panels}>\n        <AnimatePresence mode=\"wait\" initial={false} custom={dir}>\n          {active && (\n            <motion.div\n              key={active.value}\n              role=\"tabpanel\"\n              id={`${baseId}-panel-${activeIndex}`}\n              aria-labelledby={`${baseId}-tab-${activeIndex}`}\n              tabIndex={0}\n              className={styles.panel}\n              initial={{ opacity: 0, x: dir * offset }}\n              animate={{ opacity: 1, x: 0 }}\n              exit={{ opacity: 0, x: -dir * offset }}\n              transition={{ duration: dur, ease: [0.16, 1, 0.3, 1] }}\n            >\n              {active.content}\n            </motion.div>\n          )}\n        </AnimatePresence>\n      </div>\n    </div>\n  );\n}\n"
+    },
+    {
+      "path": "components/styles/tabs.module.css",
+      "type": "registry:style",
+      "content": ".root {\n  --mf-tabs-h: 2.25rem;\n  --mf-tabs-fs: 0.875rem;\n  --mf-tabs-px: 0.875rem;\n  display: flex;\n  flex-direction: column;\n  gap: 1rem;\n  width: 100%;\n  max-width: 34rem;\n  color: var(--mf-fg, #f4f4f6);\n  font-size: var(--mf-tabs-fs);\n}\n\n.root[data-size=\"sm\"] {\n  --mf-tabs-h: 2rem;\n  --mf-tabs-fs: 0.8125rem;\n  --mf-tabs-px: 0.75rem;\n}\n\n.root[data-size=\"lg\"] {\n  --mf-tabs-h: 2.75rem;\n  --mf-tabs-fs: 0.9375rem;\n  --mf-tabs-px: 1.125rem;\n}\n\n.list {\n  position: relative;\n  display: flex;\n  align-items: stretch;\n  gap: 0.25rem;\n}\n\n.root[data-variant=\"underline\"] .list {\n  border-bottom: 1px solid var(--mf-border, #2e2e38);\n}\n\n.root[data-variant=\"pill\"] .list {\n  align-self: flex-start;\n  padding: 0.25rem;\n  border-radius: 0.625rem;\n  border: 1px solid var(--mf-border, #2e2e38);\n  background-color: var(--mf-surface, #141419);\n}\n\n.root[data-full] .list {\n  align-self: stretch;\n}\n\n.tab {\n  position: relative;\n  z-index: 1;\n  display: inline-flex;\n  align-items: center;\n  justify-content: center;\n  height: var(--mf-tabs-h);\n  padding: 0 var(--mf-tabs-px);\n  border: 0;\n  border-radius: 0.5rem;\n  background: transparent;\n  color: var(--mf-muted, #a1a1aa);\n  font: inherit;\n  font-weight: 500;\n  white-space: nowrap;\n  cursor: pointer;\n  transition: color 160ms ease;\n}\n\n.root[data-full] .tab {\n  flex: 1;\n}\n\n.tab:hover:not(:disabled) {\n  color: var(--mf-fg, #f4f4f6);\n}\n\n.tab[data-selected] {\n  color: var(--mf-fg, #f4f4f6);\n}\n\n.root[data-variant=\"pill\"] .tab[data-selected] {\n  color: #ffffff;\n}\n\n.tab:disabled {\n  opacity: 0.45;\n  cursor: not-allowed;\n}\n\n.tab:focus-visible {\n  outline: 2px solid var(--mf-fg, #e4e4e7);\n  outline-offset: -2px;\n}\n\n.indicator {\n  position: absolute;\n  left: 0;\n  pointer-events: none;\n}\n\n.root[data-variant=\"underline\"] .indicator {\n  bottom: -1px;\n  height: 2px;\n  border-radius: 2px;\n  background-color: var(--mf-tabs-accent, #6366f1);\n}\n\n.root[data-variant=\"pill\"] .indicator {\n  top: 0.25rem;\n  bottom: 0.25rem;\n  border-radius: 0.5rem;\n  background-color: var(--mf-tabs-accent, #6366f1);\n  box-shadow: 0 4px 14px -4px color-mix(in srgb, var(--mf-tabs-accent, #6366f1) 60%, transparent);\n}\n\n.panels {\n  position: relative;\n  min-height: 9.5rem;\n}\n\n.panel {\n  padding: 1.125rem 1.25rem;\n  border-radius: 0.75rem;\n  border: 1px solid var(--mf-border, #2e2e38);\n  background-color: var(--mf-surface, #141419);\n}\n\n.panel:focus-visible {\n  outline: 2px solid var(--mf-fg, #e4e4e7);\n  outline-offset: 2px;\n}\n\n.panelTitle {\n  margin: 0 0 0.25rem;\n  font-size: 1rem;\n  font-weight: 600;\n}\n\n.panelText {\n  margin: 0 0 0.875rem;\n  color: var(--mf-muted, #a1a1aa);\n  line-height: 1.5;\n}\n\n.row {\n  display: flex;\n  justify-content: space-between;\n  gap: 1rem;\n  padding: 0.5rem 0;\n  border-top: 1px solid var(--mf-border, #2e2e38);\n}\n\n.rowKey {\n  color: var(--mf-muted, #a1a1aa);\n}\n\n.rowVal {\n  font-weight: 500;\n}\n\n@media (prefers-reduced-motion: reduce) {\n  .tab {\n    transition: none;\n  }\n}\n"
+    }
+  ],
+  "tailwindExample": "\"use client\";\n\nimport { useState } from \"react\";\nimport { motion } from \"motion/react\";\n\nconst TABS = [\n  { value: \"account\", label: \"Account\", body: \"Manage your public profile.\" },\n  { value: \"security\", label: \"Security\", body: \"Passwords and two-factor auth.\" },\n  { value: \"billing\", label: \"Billing\", body: \"You are on the Pro plan.\" },\n];\n\nexport function TabsTailwind() {\n  const [value, setValue] = useState(TABS[0].value);\n  const active = TABS.find((t) => t.value === value)!;\n  return (\n    <div className=\"w-full max-w-md space-y-4\">\n      <div role=\"tablist\" aria-label=\"Settings\" className=\"flex gap-1 border-b border-zinc-800\">\n        {TABS.map((t) => (\n          <button key={t.value} role=\"tab\" aria-selected={t.value === value} tabIndex={t.value === value ? 0 : -1} onClick={() => setValue(t.value)} className=\"relative h-9 px-3.5 text-sm font-medium text-zinc-400 aria-selected:text-zinc-100\">\n            {t.label}\n            {t.value === value && <motion.span layoutId=\"tab-underline\" className=\"absolute inset-x-0 -bottom-px h-0.5 rounded bg-indigo-500\" />}\n          </button>\n        ))}\n      </div>\n      <motion.div key={value} role=\"tabpanel\" initial={{ opacity: 0, x: 16 }} animate={{ opacity: 1, x: 0 }} className=\"rounded-xl border border-zinc-800 bg-zinc-900 p-5 text-sm text-zinc-400\">\n        {active.body}\n      </motion.div>\n    </div>\n  );\n}\n"
+}

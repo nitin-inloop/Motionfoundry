@@ -1,0 +1,205 @@
+{
+  "slug": "stat-card",
+  "name": "StatCard",
+  "category": "Data Display",
+  "collection": "ui",
+  "featured": true,
+  "addedAt": "2026-10-16",
+  "version": "2.3.0",
+  "requiresMotion": false,
+  "dependencies": [
+    "react"
+  ],
+  "description": "A dashboard KPI card whose headline number counts up with an ease-out curve while a gradient-filled sparkline draws itself in and an end-point dot pops on. A colored delta badge shows the change versus the previous period, with an option to treat decreases as good.",
+  "tags": [
+    "stat",
+    "kpi",
+    "metric",
+    "dashboard",
+    "sparkline",
+    "count-up",
+    "ui"
+  ],
+  "a11yNotes": "The card is a <section> labelled by its title. The counting number is aria-hidden and the final formatted value is provided as visually hidden text, so screen readers never hear intermediate values. The delta badge includes visually hidden 'Up'/'Down' text (color is not the only cue; the arrow icon also changes). The sparkline is role=\"img\" with an aria-label summarising the range. Under prefers-reduced-motion the value appears immediately and the sparkline is drawn statically.",
+  "defaultProps": {
+    "title": "Monthly revenue",
+    "value": 48294,
+    "prefix": "$",
+    "suffix": "",
+    "decimals": 0,
+    "delta": 12.4,
+    "deltaLabel": "vs last month",
+    "invertDelta": false,
+    "showSparkline": true,
+    "accentColor": "#6366f1",
+    "duration": 1400
+  },
+  "controls": [
+    {
+      "prop": "title",
+      "label": "Title",
+      "type": "text"
+    },
+    {
+      "prop": "value",
+      "label": "Value",
+      "type": "range",
+      "min": 0,
+      "max": 100000,
+      "step": 1
+    },
+    {
+      "prop": "prefix",
+      "label": "Prefix",
+      "type": "text"
+    },
+    {
+      "prop": "suffix",
+      "label": "Suffix",
+      "type": "text"
+    },
+    {
+      "prop": "decimals",
+      "label": "Decimals",
+      "type": "range",
+      "min": 0,
+      "max": 3,
+      "step": 1
+    },
+    {
+      "prop": "delta",
+      "label": "Delta (%)",
+      "type": "range",
+      "min": -50,
+      "max": 50,
+      "step": 0.1
+    },
+    {
+      "prop": "deltaLabel",
+      "label": "Delta label",
+      "type": "text"
+    },
+    {
+      "prop": "invertDelta",
+      "label": "Decrease is good",
+      "type": "boolean"
+    },
+    {
+      "prop": "showSparkline",
+      "label": "Sparkline",
+      "type": "boolean"
+    },
+    {
+      "prop": "accentColor",
+      "label": "Accent color",
+      "type": "color"
+    },
+    {
+      "prop": "duration",
+      "label": "Duration (ms)",
+      "type": "range",
+      "min": 0,
+      "max": 4000,
+      "step": 100
+    }
+  ],
+  "propsApi": [
+    {
+      "name": "title",
+      "type": "string",
+      "default": "'Monthly revenue'",
+      "description": "Metric name; also the card's accessible name."
+    },
+    {
+      "name": "value",
+      "type": "number",
+      "default": "48294",
+      "description": "Final value the number counts up to."
+    },
+    {
+      "name": "prefix",
+      "type": "string",
+      "default": "'$'",
+      "description": "Text before the number."
+    },
+    {
+      "name": "suffix",
+      "type": "string",
+      "default": "''",
+      "description": "Text after the number (e.g. '%', 'ms')."
+    },
+    {
+      "name": "decimals",
+      "type": "number",
+      "default": "0",
+      "description": "Decimal places shown (0-4)."
+    },
+    {
+      "name": "delta",
+      "type": "number",
+      "default": "12.4",
+      "description": "Percent change versus the previous period; negative values point down."
+    },
+    {
+      "name": "deltaLabel",
+      "type": "string",
+      "default": "'vs last month'",
+      "description": "Comparison text under the value (empty hides the line)."
+    },
+    {
+      "name": "invertDelta",
+      "type": "boolean",
+      "default": "false",
+      "description": "Treat a decrease as good (green) — for churn, latency, costs."
+    },
+    {
+      "name": "data",
+      "type": "number[]",
+      "default": "[32, 38, 35, 44, 41, 49, 47, 55, 52, 61, 58, 68]",
+      "description": "Sparkline points, oldest first."
+    },
+    {
+      "name": "showSparkline",
+      "type": "boolean",
+      "default": "true",
+      "description": "Show the animated sparkline."
+    },
+    {
+      "name": "accentColor",
+      "type": "string",
+      "default": "'#6366f1'",
+      "description": "Sparkline stroke, fill and card glow color."
+    },
+    {
+      "name": "duration",
+      "type": "number",
+      "default": "1400",
+      "description": "Count-up and draw-in duration in milliseconds (0 = instant)."
+    },
+    {
+      "name": "className",
+      "type": "string",
+      "default": "''",
+      "description": "Additional class merged onto the root element."
+    },
+    {
+      "name": "style",
+      "type": "React.CSSProperties",
+      "default": "undefined",
+      "description": "Inline styles merged onto the root element."
+    }
+  ],
+  "files": [
+    {
+      "path": "components/ui/stat-card.tsx",
+      "type": "registry:component",
+      "content": "\"use client\";\n\nimport * as React from \"react\";\nimport styles from \"../styles/stat-card.module.css\";\n\nexport interface StatCardProps {\n  /** Metric name shown at the top of the card */\n  title?: string;\n  /** Final value the number counts up to */\n  value?: number;\n  /** Text before the number (e.g. \"$\") */\n  prefix?: string;\n  /** Text after the number (e.g. \"%\", \"ms\") */\n  suffix?: string;\n  /** Decimal places shown */\n  decimals?: number;\n  /** Change versus the previous period, in percent (negative = down) */\n  delta?: number;\n  /** Text after the delta badge */\n  deltaLabel?: string;\n  /** Treat a decrease as good (e.g. churn, latency) — flips the delta colors */\n  invertDelta?: boolean;\n  /** Sparkline data points (oldest first) */\n  data?: number[];\n  /** Show the sparkline */\n  showSparkline?: boolean;\n  /** Sparkline / accent color */\n  accentColor?: string;\n  /** Count-up and draw-in duration in milliseconds (0 = instant) */\n  duration?: number;\n  /** Optional className merged onto the root */\n  className?: string;\n  /** Optional inline styles merged onto the root */\n  style?: React.CSSProperties;\n}\n\nconst DEFAULT_DATA = [32, 38, 35, 44, 41, 49, 47, 55, 52, 61, 58, 68];\nconst W = 280;\nconst H = 64;\n\nfunction format(n: number, decimals: number) {\n  return n.toLocaleString(\"en-US\", { minimumFractionDigits: decimals, maximumFractionDigits: decimals });\n}\n\nexport function StatCard({\n  title = \"Monthly revenue\",\n  value = 48294,\n  prefix = \"$\",\n  suffix = \"\",\n  decimals = 0,\n  delta = 12.4,\n  deltaLabel = \"vs last month\",\n  invertDelta = false,\n  data = DEFAULT_DATA,\n  showSparkline = true,\n  accentColor = \"#6366f1\",\n  duration = 1400,\n  className = \"\",\n  style,\n}: StatCardProps) {\n  const id = React.useId().replace(/:/g, \"\");\n  const dec = Math.max(0, Math.min(4, Math.floor(decimals)));\n  const [shown, setShown] = React.useState(0);\n  const [reduce, setReduce] = React.useState(false);\n\n  React.useEffect(() => {\n    const r = window.matchMedia(\"(prefers-reduced-motion: reduce)\").matches;\n    setReduce(r);\n    if (r || duration <= 0) {\n      setShown(value);\n      return;\n    }\n    let raf = 0;\n    let start = 0;\n    const tick = (now: number) => {\n      if (!start) start = now;\n      const t = Math.min(1, (now - start) / duration);\n      setShown(value * (1 - Math.pow(1 - t, 4)));\n      if (t < 1) raf = requestAnimationFrame(tick);\n    };\n    raf = requestAnimationFrame(tick);\n    return () => cancelAnimationFrame(raf);\n  }, [value, duration]);\n\n  const up = delta >= 0;\n  const good = invertDelta ? !up : up;\n  const pts = data.length > 1 ? data : [0, 0];\n  const min = Math.min(...pts);\n  const max = Math.max(...pts);\n  const span = max - min || 1;\n  const coords = pts.map((v, i) => [8 + (i / (pts.length - 1)) * (W - 16), H - 6 - ((v - min) / span) * (H - 12)] as const);\n  const line = coords.map(([x, y], i) => `${i ? \"L\" : \"M\"}${x.toFixed(1)} ${y.toFixed(1)}`).join(\" \");\n  const area = `${line} L${W - 8} ${H} L8 ${H} Z`;\n  const last = coords[coords.length - 1] ?? [W, H / 2];\n  const final = `${prefix}${format(value, dec)}${suffix}`;\n\n  return (\n    <section\n      aria-label={title}\n      className={`${styles.root} ${className}`.trim()}\n      data-animate={!reduce && duration > 0 ? \"\" : undefined}\n      style={{ \"--mf-stc-accent\": accentColor, \"--mf-stc-dur\": `${Math.max(0, duration)}ms`, ...style } as React.CSSProperties}\n    >\n      <div className={styles.head}>\n        <span className={styles.title}>{title}</span>\n        <span className={styles.badge} data-good={good ? \"\" : undefined}>\n          <svg aria-hidden=\"true\" width=\"12\" height=\"12\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" strokeWidth=\"2.75\" strokeLinecap=\"round\" strokeLinejoin=\"round\">\n            {up ? <path d=\"M7 17 17 7M9 7h8v8\" /> : <path d=\"M7 7l10 10M17 9v8H9\" />}\n          </svg>\n          <span className={styles.srOnly}>{up ? \"Up\" : \"Down\"}</span>\n          {Math.abs(delta).toFixed(1)}%\n        </span>\n      </div>\n      <p className={styles.value}>\n        <span className={styles.srOnly}>{final}</span>\n        <span aria-hidden=\"true\">\n          {prefix}\n          {format(shown, dec)}\n          {suffix}\n        </span>\n      </p>\n      {deltaLabel && <p className={styles.sub}>{`${up ? \"+\" : \"−\"}${Math.abs(delta).toFixed(1)}% ${deltaLabel}`}</p>}\n      {showSparkline && (\n        <div className={styles.sparkWrap}>\n          <svg\n            role=\"img\"\n            aria-label={`Trend over ${pts.length} periods, from ${format(pts[0] ?? 0, 0)} to ${format(pts[pts.length - 1] ?? 0, 0)}`}\n            className={styles.spark}\n            viewBox={`0 0 ${W} ${H}`}\n          >\n            <defs>\n              <linearGradient id={`${id}-fill`} x1=\"0\" y1=\"0\" x2=\"0\" y2=\"1\">\n                <stop offset=\"0%\" stopColor={accentColor} stopOpacity=\"0.32\" />\n                <stop offset=\"100%\" stopColor={accentColor} stopOpacity=\"0\" />\n              </linearGradient>\n            </defs>\n            <path className={styles.area} d={area} fill={`url(#${id}-fill)`} />\n            <path className={styles.line} d={line} pathLength={1} fill=\"none\" stroke={accentColor} strokeWidth=\"2\" strokeLinecap=\"round\" strokeLinejoin=\"round\" />\n          </svg>\n          <span\n            aria-hidden=\"true\"\n            className={styles.endDot}\n            style={{ left: `${(last[0] / W) * 100}%`, top: `${(last[1] / H) * 100}%` } as React.CSSProperties}\n          />\n        </div>\n      )}\n    </section>\n  );\n}\n"
+    },
+    {
+      "path": "components/styles/stat-card.module.css",
+      "type": "registry:style",
+      "content": ".root {\n  position: relative;\n  display: flex;\n  flex-direction: column;\n  width: 100%;\n  max-width: 21rem;\n  padding: 1.25rem 1.25rem 0;\n  overflow: hidden;\n  border-radius: 0.75rem;\n  border: 1px solid var(--mf-border, #2e2e38);\n  background-color: var(--mf-surface, #141419);\n  color: var(--mf-fg, #f4f4f6);\n  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.12), 0 12px 32px -16px color-mix(in srgb, var(--mf-stc-accent, #6366f1) 35%, transparent);\n  transition: border-color 180ms ease, transform 220ms cubic-bezier(0.16, 1, 0.3, 1);\n}\n\n.root:hover {\n  border-color: var(--mf-border-strong, #52525b);\n  transform: translateY(-2px);\n}\n\n.head {\n  display: flex;\n  align-items: center;\n  justify-content: space-between;\n  gap: 0.75rem;\n}\n\n.title {\n  font-size: 0.875rem;\n  font-weight: 500;\n  color: var(--mf-muted, #a1a1aa);\n}\n\n.badge {\n  display: inline-flex;\n  align-items: center;\n  gap: 0.25rem;\n  height: 1.375rem;\n  padding: 0 0.5rem;\n  border-radius: 999px;\n  background-color: color-mix(in srgb, #ef4444 15%, transparent);\n  color: #ef4444;\n  font-size: 0.75rem;\n  font-weight: 600;\n  font-variant-numeric: tabular-nums;\n}\n\n.badge[data-good] {\n  background-color: color-mix(in srgb, #22c55e 15%, transparent);\n  color: #22c55e;\n}\n\n.value {\n  margin: 0.5rem 0 0;\n  font-size: 2.125rem;\n  font-weight: 700;\n  line-height: 1.1;\n  letter-spacing: -0.03em;\n  font-variant-numeric: tabular-nums;\n}\n\n.sub {\n  margin: 0.25rem 0 0;\n  font-size: 0.8125rem;\n  color: var(--mf-subtle, #71717a);\n}\n\n.sparkWrap {\n  position: relative;\n  margin: 0.75rem -1.25rem 0;\n}\n\n.spark {\n  display: block;\n  width: 100%;\n  height: auto;\n  overflow: visible;\n}\n\n.line {\n  stroke-dasharray: 1;\n  stroke-dashoffset: 0;\n}\n\n.root[data-animate] .line {\n  animation: mf-stc-draw var(--mf-stc-dur, 1400ms) cubic-bezier(0.65, 0, 0.35, 1) both;\n}\n\n.root[data-animate] .area {\n  animation: mf-stc-fade var(--mf-stc-dur, 1400ms) ease-out both;\n}\n\n.endDot {\n  position: absolute;\n  width: 0.5rem;\n  height: 0.5rem;\n  margin: -0.25rem 0 0 -0.25rem;\n  border-radius: 999px;\n  background-color: var(--mf-stc-accent, #6366f1);\n  box-shadow: 0 0 0 3px color-mix(in srgb, var(--mf-stc-accent, #6366f1) 30%, transparent);\n}\n\n.root[data-animate] .endDot {\n  animation: mf-stc-pop 360ms cubic-bezier(0.34, 1.56, 0.64, 1) both;\n  animation-delay: var(--mf-stc-dur, 1400ms);\n}\n\n.srOnly {\n  position: absolute;\n  width: 1px;\n  height: 1px;\n  margin: -1px;\n  padding: 0;\n  overflow: hidden;\n  clip: rect(0 0 0 0);\n  white-space: nowrap;\n  border: 0;\n}\n\n@keyframes mf-stc-draw {\n  from {\n    stroke-dashoffset: 1;\n  }\n  to {\n    stroke-dashoffset: 0;\n  }\n}\n\n@keyframes mf-stc-fade {\n  0%,\n  35% {\n    opacity: 0;\n  }\n  100% {\n    opacity: 1;\n  }\n}\n\n@keyframes mf-stc-pop {\n  from {\n    opacity: 0;\n    transform: scale(0);\n  }\n  to {\n    opacity: 1;\n    transform: scale(1);\n  }\n}\n\n@media (prefers-reduced-motion: reduce) {\n  .root {\n    transition: none;\n  }\n  .root:hover {\n    transform: none;\n  }\n  .root[data-animate] .line,\n  .root[data-animate] .area,\n  .root[data-animate] .endDot {\n    animation: none;\n  }\n}\n"
+    }
+  ],
+  "tailwindExample": "\"use client\";\n\nimport { useEffect, useState } from \"react\";\n\nconst data = [32, 38, 35, 44, 41, 49, 47, 55, 52, 61, 58, 68];\n\nexport function StatCardTailwind({ title = \"Monthly revenue\", value = 48294, delta = 12.4 }) {\n  const [n, setN] = useState(0);\n  useEffect(() => {\n    let raf = 0, t0 = 0;\n    const tick = (t: number) => { t0 ||= t; const p = Math.min(1, (t - t0) / 1400); setN(value * (1 - (1 - p) ** 4)); if (p < 1) raf = requestAnimationFrame(tick); };\n    raf = requestAnimationFrame(tick);\n    return () => cancelAnimationFrame(raf);\n  }, [value]);\n  const min = Math.min(...data), max = Math.max(...data);\n  const d = data.map((v, i) => `${i ? \"L\" : \"M\"}${8 + (i / (data.length - 1)) * 264} ${58 - ((v - min) / (max - min)) * 52}`).join(\" \");\n  const up = delta >= 0;\n  return (\n    <section aria-label={title} className=\"w-full max-w-xs overflow-hidden rounded-xl border border-zinc-800 bg-zinc-900 px-5 pt-5 text-zinc-100\">\n      <div className=\"flex items-center justify-between\">\n        <span className=\"text-sm text-zinc-400\">{title}</span>\n        <span className={`rounded-full px-2 py-0.5 text-xs font-semibold ${up ? \"bg-emerald-500/15 text-emerald-500\" : \"bg-red-500/15 text-red-500\"}`}>{up ? \"↑\" : \"↓\"} {Math.abs(delta)}%</span>\n      </div>\n      <p className=\"mt-2 text-3xl font-bold tabular-nums tracking-tight\" aria-label={`$${value.toLocaleString(\"en-US\")}`}>${Math.round(n).toLocaleString(\"en-US\")}</p>\n      <svg viewBox=\"0 0 280 64\" className=\"-mx-5 mt-3 block w-[calc(100%+2.5rem)]\" role=\"img\" aria-label=\"Trend\">\n        <path d={d} pathLength={1} fill=\"none\" stroke=\"#6366f1\" strokeWidth={2} strokeLinecap=\"round\" className=\"[stroke-dasharray:1] animate-[draw_1.4s_ease-in-out_both]\" />\n      </svg>\n    </section>\n  );\n}"
+}

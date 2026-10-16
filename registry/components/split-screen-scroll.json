@@ -1,0 +1,180 @@
+{
+  "slug": "split-screen-scroll",
+  "name": "SplitScreenScroll",
+  "category": "Scroll Animations",
+  "collection": "scroll",
+  "featured": false,
+  "addedAt": "2026-10-16",
+  "version": "2.3.0",
+  "requiresMotion": false,
+  "dependencies": [
+    "react"
+  ],
+  "description": "A pinned two-column story inside its own smooth-scroll viewport: as you scroll, the text column travels up while the gradient visual column travels down, so each heading meets its paired visual mid-screen, with a progress divider and counter between them.",
+  "tags": [
+    "scroll",
+    "split-screen",
+    "opposite",
+    "columns",
+    "pinned",
+    "smooth-scroll"
+  ],
+  "a11yNotes": "The viewport is a focusable role=\"region\" with an aria-label, so keyboard users can Tab to it and scroll with arrow/Page keys/Space (native, unsmoothed) with a 2px :focus-visible outline. Wheel input is smoothed only while the viewport can still move; at the edges wheel events are released to the page, and touch and scrollbar dragging stay native. Text panels are an ordered list of real headings and paragraphs, with aria-current=\"step\" on the active panel; the visual column, divider and counter are decorative and aria-hidden. Under prefers-reduced-motion the wheel is not intercepted (columns follow native scrolling only).",
+  "defaultProps": {
+    "items": [
+      "Capture the idea",
+      "Shape the system",
+      "Prototype in motion",
+      "Ship with confidence",
+      "Learn and iterate"
+    ],
+    "palette": [
+      "#f472b6",
+      "#a78bfa",
+      "#38bdf8",
+      "#34d399",
+      "#fbbf24"
+    ],
+    "accentColor": "#f472b6",
+    "reverse": false,
+    "showCounter": true,
+    "lerp": 0.1,
+    "wheelMultiplier": 1,
+    "smooth": true
+  },
+  "controls": [
+    {
+      "prop": "items",
+      "label": "Panels (comma separated)",
+      "type": "list"
+    },
+    {
+      "prop": "palette",
+      "label": "Palette (comma separated hex)",
+      "type": "list"
+    },
+    {
+      "prop": "accentColor",
+      "label": "Accent",
+      "type": "color"
+    },
+    {
+      "prop": "reverse",
+      "label": "Reverse directions",
+      "type": "boolean"
+    },
+    {
+      "prop": "showCounter",
+      "label": "Divider and counter",
+      "type": "boolean"
+    },
+    {
+      "prop": "lerp",
+      "label": "Lerp (smoothness)",
+      "type": "range",
+      "min": 0.05,
+      "max": 0.3,
+      "step": 0.01
+    },
+    {
+      "prop": "wheelMultiplier",
+      "label": "Wheel multiplier",
+      "type": "range",
+      "min": 0.5,
+      "max": 2,
+      "step": 0.1
+    },
+    {
+      "prop": "smooth",
+      "label": "Smooth scrolling",
+      "type": "boolean"
+    }
+  ],
+  "propsApi": [
+    {
+      "name": "items",
+      "type": "string[]",
+      "default": "['Capture the idea', 'Shape the system', 'Prototype in motion', 'Ship with confidence', 'Learn and iterate']",
+      "description": "Panel titles; each item pairs a text panel with a gradient visual panel."
+    },
+    {
+      "name": "palette",
+      "type": "string[]",
+      "default": "['#f472b6', '#a78bfa', '#38bdf8', '#34d399', '#fbbf24']",
+      "description": "Colors cycled through the visual panels; each panel blends its color into the next."
+    },
+    {
+      "name": "accentColor",
+      "type": "string",
+      "default": "'#f472b6'",
+      "description": "Accent color for panel numbers and the divider progress fill."
+    },
+    {
+      "name": "reverse",
+      "type": "boolean",
+      "default": "false",
+      "description": "Swap directions so the text column moves down and the visual column moves up."
+    },
+    {
+      "name": "showCounter",
+      "type": "boolean",
+      "default": "true",
+      "description": "Show the center progress divider and the 01 / 05 counter."
+    },
+    {
+      "name": "height",
+      "type": "number",
+      "default": "380",
+      "description": "Height of the component's own scroll viewport in px (width is always 100%)."
+    },
+    {
+      "name": "borderRadius",
+      "type": "number",
+      "default": "20",
+      "description": "Corner radius of the viewport in px."
+    },
+    {
+      "name": "lerp",
+      "type": "number",
+      "default": "0.1",
+      "description": "Interpolation factor per 60fps frame for wheel smoothing (0.05 floaty, 0.3 snappy)."
+    },
+    {
+      "name": "wheelMultiplier",
+      "type": "number",
+      "default": "1",
+      "description": "Multiplier applied to wheel and trackpad deltas."
+    },
+    {
+      "name": "smooth",
+      "type": "boolean",
+      "default": "true",
+      "description": "Enable smooth wheel scrolling; false (or prefers-reduced-motion) uses native scrolling."
+    },
+    {
+      "name": "className",
+      "type": "string",
+      "default": "''",
+      "description": "Additional class merged onto the root element."
+    },
+    {
+      "name": "style",
+      "type": "React.CSSProperties",
+      "default": "undefined",
+      "description": "Inline styles merged onto the root element."
+    }
+  ],
+  "files": [
+    {
+      "path": "components/ui/split-screen-scroll.tsx",
+      "type": "registry:component",
+      "content": "\"use client\";\n\nimport * as React from \"react\";\nimport styles from \"../styles/split-screen-scroll.module.css\";\n\ninterface SmoothScrollState {\n  /** Current scrollTop of the viewport in px */\n  scroll: number;\n  /** Maximum scrollTop in px */\n  limit: number;\n  /** scroll / limit, 0..1 */\n  progress: number;\n}\n\ninterface SmoothScrollOptions {\n  lerp: number;\n  wheelMultiplier: number;\n  smooth: boolean;\n  onScroll?: (state: SmoothScrollState) => void;\n}\n\nconst clamp = (v: number, min: number, max: number) => Math.min(max, Math.max(min, v));\n\nfunction usePrefersReducedMotion(): boolean {\n  const [reduced, setReduced] = React.useState(false);\n  React.useEffect(() => {\n    const mq = window.matchMedia(\"(prefers-reduced-motion: reduce)\");\n    const update = () => setReduced(mq.matches);\n    update();\n    mq.addEventListener(\"change\", update);\n    return () => mq.removeEventListener(\"change\", update);\n  }, []);\n  return reduced;\n}\n\n/** True when a nested scrollable element under the pointer can still scroll in the wheel direction. */\nfunction nestedCanScroll(node: EventTarget | null, root: HTMLElement, dy: number): boolean {\n  let el: Element | null = node instanceof Element ? node : null;\n  while (el && el !== root) {\n    if (el instanceof HTMLElement) {\n      if (el.dataset.mfScrollPrevent !== undefined) return true;\n      const oy = window.getComputedStyle(el).overflowY;\n      if ((oy === \"auto\" || oy === \"scroll\") && el.scrollHeight > el.clientHeight + 1) {\n        if (dy < 0 ? el.scrollTop > 0 : el.scrollTop + el.clientHeight < el.scrollHeight - 1) return true;\n      }\n    }\n    el = el.parentElement;\n  }\n  return false;\n}\n\n/**\n * Self-contained smooth scroller for an overflow container: wheel input sets a target, a rAF\n * loop eases scrollTop toward it (frame-rate independent) and stops when settled. Touch,\n * keyboard and scrollbar stay native; at the edges wheel events are released to the page.\n */\nfunction useSmoothScroll(\n  containerRef: React.RefObject<HTMLElement | null>,\n  { lerp, wheelMultiplier, smooth, onScroll }: SmoothScrollOptions,\n) {\n  const callbackRef = React.useRef(onScroll);\n  React.useEffect(() => {\n    callbackRef.current = onScroll;\n  }, [onScroll]);\n\n  React.useEffect(() => {\n    const el = containerRef.current;\n    if (!el) return;\n    const ease = clamp(Number.isFinite(lerp) ? lerp : 0.1, 0.01, 1);\n    const multiplier = Number.isFinite(wheelMultiplier) ? wheelMultiplier : 1;\n    let target = el.scrollTop;\n    let current = target;\n    let raf = 0;\n    let lastTime = 0;\n    const getLimit = () => Math.max(0, el.scrollHeight - el.clientHeight);\n    const emit = () => {\n      const limit = getLimit();\n      const scroll = clamp(el.scrollTop, 0, limit);\n      callbackRef.current?.({ scroll, limit, progress: limit > 0 ? scroll / limit : 0 });\n    };\n    const stop = () => {\n      raf = 0;\n      lastTime = 0;\n    };\n    const tick = (time: number) => {\n      const frames = (lastTime ? clamp(time - lastTime, 1, 64) : 16.667) / 16.667;\n      lastTime = time;\n      target = clamp(target, 0, getLimit());\n      if (Math.abs(el.scrollTop - current) > 2) {\n        // Scrollbar drag, keyboard or touch moved the viewport: hand control back.\n        current = target = el.scrollTop;\n        stop();\n        emit();\n        return;\n      }\n      current += (target - current) * (1 - Math.pow(1 - ease, frames));\n      if (Math.abs(target - current) < 0.35) current = target;\n      el.scrollTop = current;\n      emit();\n      if (current === target) stop();\n      else raf = requestAnimationFrame(tick);\n    };\n    const onWheel = (event: WheelEvent) => {\n      if (event.ctrlKey || event.defaultPrevented || Math.abs(event.deltaX) > Math.abs(event.deltaY)) return;\n      let dy = event.deltaY;\n      if (event.deltaMode === 1) dy *= 16;\n      else if (event.deltaMode === 2) dy *= el.clientHeight;\n      dy *= multiplier;\n      if (dy === 0 || nestedCanScroll(event.target, el, dy)) return;\n      const limit = getLimit();\n      if (!raf) current = target = el.scrollTop;\n      // Release to native scrolling at the edges so the page is never trapped.\n      if ((dy < 0 && target <= 0) || (dy > 0 && target >= limit - 0.5)) return;\n      event.preventDefault();\n      target = clamp(target + dy, 0, limit);\n      if (!raf) raf = requestAnimationFrame(tick);\n    };\n    const onNativeScroll = () => {\n      if (raf) return;\n      current = target = el.scrollTop;\n      emit();\n    };\n    if (smooth) el.addEventListener(\"wheel\", onWheel, { passive: false });\n    el.addEventListener(\"scroll\", onNativeScroll, { passive: true });\n    const ro = new ResizeObserver(emit);\n    ro.observe(el);\n    if (el.firstElementChild) ro.observe(el.firstElementChild);\n    emit();\n    return () => {\n      if (smooth) el.removeEventListener(\"wheel\", onWheel);\n      el.removeEventListener(\"scroll\", onNativeScroll);\n      ro.disconnect();\n      if (raf) cancelAnimationFrame(raf);\n    };\n  }, [containerRef, lerp, wheelMultiplier, smooth]);\n}\n\nexport interface SplitScreenScrollProps {\n  /** Panel titles, one text panel paired with one visual panel per item */\n  items?: string[];\n  /** Gradient colors cycled through the visual panels */\n  palette?: string[];\n  /** Accent color for numbers, divider progress and counter */\n  accentColor?: string;\n  /** Swap directions: text column moves down and visual column moves up */\n  reverse?: boolean;\n  /** Show the progress divider and \"01 / 05\" counter in the middle */\n  showCounter?: boolean;\n  /** Viewport height in px */\n  height?: number;\n  /** Viewport corner radius in px */\n  borderRadius?: number;\n  /** Interpolation factor per 60fps frame (0.05 = floaty, 0.3 = snappy) */\n  lerp?: number;\n  /** Multiplier applied to wheel / trackpad deltas */\n  wheelMultiplier?: number;\n  /** Enable smooth wheel scrolling (native scrolling when false or under reduced motion) */\n  smooth?: boolean;\n  /** Optional className merged onto the root */\n  className?: string;\n  /** Inline styles merged onto the root */\n  style?: React.CSSProperties;\n}\n\nconst DEFAULT_ITEMS = [\"Capture the idea\", \"Shape the system\", \"Prototype in motion\", \"Ship with confidence\", \"Learn and iterate\"];\nconst DEFAULT_PALETTE = [\"#f472b6\", \"#a78bfa\", \"#38bdf8\", \"#34d399\", \"#fbbf24\"];\nconst COPY = [\n  \"Sketch fast, keep everything. Rough notes become the first frame of the story.\",\n  \"Tokens, grids and type scales turn scattered screens into one coherent language.\",\n  \"Real interactions, real timing. Feel the flow long before a line of production code.\",\n  \"Accessible, tested and measured. Releases become routine instead of events.\",\n  \"Watch how people use it, then fold every insight back into the next cycle.\",\n];\nconst TAGS = [\"Discovery\", \"Design\", \"Motion\", \"Engineering\", \"Insights\"];\n\nexport function SplitScreenScroll({\n  items = DEFAULT_ITEMS,\n  palette = DEFAULT_PALETTE,\n  accentColor = \"#f472b6\",\n  reverse = false,\n  showCounter = true,\n  height = 380,\n  borderRadius = 20,\n  lerp = 0.1,\n  wheelMultiplier = 1,\n  smooth = true,\n  className = \"\",\n  style,\n}: SplitScreenScrollProps) {\n  const reduced = usePrefersReducedMotion();\n  const viewportRef = React.useRef<HTMLDivElement>(null);\n  const stageRef = React.useRef<HTMLDivElement>(null);\n  const [active, setActive] = React.useState(0);\n  const total = Math.max(1, items.length);\n  const colors = palette.length > 0 ? palette : DEFAULT_PALETTE;\n\n  const handleScroll = React.useCallback(\n    ({ progress }: SmoothScrollState) => {\n      stageRef.current?.style.setProperty(\"--mf-sss-p\", progress.toFixed(5));\n      setActive(clamp(Math.round(progress * (total - 1)), 0, total - 1));\n    },\n    [total],\n  );\n\n  useSmoothScroll(viewportRef, { lerp, wheelMultiplier, smooth: smooth && !reduced, onScroll: handleScroll });\n\n  const order = items.map((_, i) => i);\n  const textOrder = reverse ? [...order].reverse() : order;\n  const visualOrder = reverse ? order : [...order].reverse();\n\n  const vars = {\n    \"--mf-sss-h\": `${height}px`,\n    \"--mf-sss-r\": `${borderRadius}px`,\n    \"--mf-sss-accent\": accentColor,\n    \"--mf-sss-n\": total,\n    ...style,\n  } as React.CSSProperties;\n\n  return (\n    <div style={vars} className={`${styles.root} ${className}`.trim()}>\n      <div ref={viewportRef} className={styles.viewport} tabIndex={0} role=\"region\" aria-label=\"Split screen story\">\n        <div className={styles.track} style={{ height: height * total }}>\n          <div ref={stageRef} className={styles.stage}>\n            <div className={styles.column}>\n              <ol className={`${styles.strip} ${reverse ? styles.down : styles.up}`}>\n                {textOrder.map((i) => (\n                  <li key={`t-${i}`} className={styles.textPanel} aria-current={i === active ? \"step\" : undefined}>\n                    <span className={styles.tag}>\n                      <span className={styles.num}>{String(i + 1).padStart(2, \"0\")}</span>\n                      {TAGS[i % TAGS.length]}\n                    </span>\n                    <h3 className={styles.title}>{items[i]}</h3>\n                    <p className={styles.copy}>{COPY[i % COPY.length]}</p>\n                  </li>\n                ))}\n              </ol>\n            </div>\n            <div className={styles.column} aria-hidden=\"true\">\n              <div className={`${styles.strip} ${reverse ? styles.up : styles.down}`}>\n                {visualOrder.map((i) => {\n                  const c1 = colors[i % colors.length];\n                  const c2 = colors[(i + 1) % colors.length];\n                  return (\n                    <div\n                      key={`v-${i}`}\n                      className={styles.visualPanel}\n                      style={{ \"--mf-sss-c1\": c1, \"--mf-sss-c2\": c2 } as React.CSSProperties}\n                    >\n                      <div className={styles.visual}>\n                        <svg className={styles.art} viewBox=\"0 0 200 200\" preserveAspectRatio=\"xMidYMid slice\">\n                          <circle cx={60 + (i % 3) * 40} cy={70 + (i % 2) * 30} r={46 + (i % 4) * 8} fill=\"rgba(255,255,255,0.2)\" />\n                          <rect x={100 - (i % 3) * 20} y={110} width=\"80\" height=\"80\" rx=\"18\" fill=\"rgba(0,0,0,0.16)\" transform={`rotate(${12 + i * 9} 140 150)`} />\n                          <path d={`M0 ${150 - i * 6} C 60 ${120 + i * 4}, 120 ${180 - i * 5}, 200 ${140 + i * 3} L200 200 L0 200 Z`} fill=\"rgba(255,255,255,0.14)\" />\n                        </svg>\n                        <span className={styles.bigNum}>{String(i + 1).padStart(2, \"0\")}</span>\n                      </div>\n                    </div>\n                  );\n                })}\n              </div>\n            </div>\n            {showCounter && (\n              <div className={styles.divider} aria-hidden=\"true\">\n                <span className={styles.rail}>\n                  <span className={styles.fill} />\n                </span>\n                <span className={styles.counter}>{`${String(active + 1).padStart(2, \"0\")} / ${String(total).padStart(2, \"0\")}`}</span>\n              </div>\n            )}\n          </div>\n        </div>\n      </div>\n    </div>\n  );\n}\n"
+    },
+    {
+      "path": "components/styles/split-screen-scroll.module.css",
+      "type": "registry:style",
+      "content": ".root {\n  position: relative;\n  width: 100%;\n  height: var(--mf-sss-h, 380px);\n  border-radius: var(--mf-sss-r, 20px);\n  overflow: hidden;\n  border: 1px solid var(--mf-border, #2e2e38);\n  background: var(--mf-surface, #141419);\n  color: var(--mf-fg, #f4f4f6);\n  container-type: inline-size;\n  isolation: isolate;\n}\n\n.root *,\n.root *::before,\n.root *::after {\n  box-sizing: border-box;\n}\n\n.viewport {\n  position: relative;\n  height: 100%;\n  overflow-x: hidden;\n  overflow-y: auto;\n  overscroll-behavior: auto;\n  scroll-behavior: auto;\n  scrollbar-width: thin;\n  scrollbar-color: var(--mf-border, #2e2e38) transparent;\n}\n\n.viewport:focus-visible {\n  outline: 2px solid var(--mf-fg, #e4e4e7);\n  outline-offset: -2px;\n}\n\n.track {\n  position: relative;\n}\n\n.stage {\n  --mf-sss-p: 0;\n  position: sticky;\n  top: 0;\n  display: grid;\n  grid-template-columns: 1fr 1fr;\n  height: var(--mf-sss-h, 380px);\n  overflow: hidden;\n}\n\n.column {\n  position: relative;\n  height: 100%;\n  overflow: hidden;\n}\n\n.strip {\n  margin: 0;\n  padding: 0;\n  list-style: none;\n  will-change: transform;\n}\n\n.up {\n  transform: translate3d(0, calc(var(--mf-sss-p) * (var(--mf-sss-n, 5) - 1) * -100% / var(--mf-sss-n, 5)), 0);\n}\n\n.down {\n  transform: translate3d(0, calc((1 - var(--mf-sss-p)) * (var(--mf-sss-n, 5) - 1) * -100% / var(--mf-sss-n, 5)), 0);\n}\n\n.textPanel {\n  display: flex;\n  flex-direction: column;\n  justify-content: center;\n  gap: 0.7rem;\n  height: var(--mf-sss-h, 380px);\n  padding: 1.5rem clamp(1.25rem, 6cqi, 3.25rem);\n}\n\n.tag {\n  display: inline-flex;\n  align-items: center;\n  gap: 0.5rem;\n  align-self: flex-start;\n  padding: 0.25rem 0.7rem 0.25rem 0.3rem;\n  border: 1px solid var(--mf-border, #2e2e38);\n  border-radius: 999px;\n  font-size: 0.72rem;\n  color: var(--mf-muted, #a1a1aa);\n}\n\n.num {\n  padding: 0.12rem 0.45rem;\n  border-radius: 999px;\n  background: color-mix(in srgb, var(--mf-sss-accent, #f472b6) 18%, transparent);\n  color: var(--mf-sss-accent, #f472b6);\n  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;\n  font-size: 0.68rem;\n}\n\n.title {\n  margin: 0;\n  font-size: clamp(1.4rem, 4.4cqi, 2.2rem);\n  font-weight: 700;\n  line-height: 1.05;\n  letter-spacing: -0.035em;\n}\n\n.copy {\n  margin: 0;\n  max-width: 26rem;\n  color: var(--mf-muted, #a1a1aa);\n  font-size: 0.9rem;\n  line-height: 1.55;\n}\n\n.visualPanel {\n  height: var(--mf-sss-h, 380px);\n  padding: 14px;\n}\n\n.visual {\n  position: relative;\n  height: 100%;\n  border-radius: 16px;\n  overflow: hidden;\n  background: linear-gradient(140deg, var(--mf-sss-c1, #f472b6), var(--mf-sss-c2, #a78bfa));\n}\n\n.art {\n  position: absolute;\n  inset: 0;\n  width: 100%;\n  height: 100%;\n}\n\n.bigNum {\n  position: absolute;\n  right: 1rem;\n  bottom: 0.4rem;\n  font-size: clamp(3.5rem, 12cqi, 6rem);\n  font-weight: 800;\n  line-height: 1;\n  letter-spacing: -0.05em;\n  color: transparent;\n  -webkit-text-stroke: 1.5px rgba(255, 255, 255, 0.75);\n}\n\n.divider {\n  position: absolute;\n  top: 0;\n  bottom: 0;\n  left: calc(50% + 7px);\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  width: 0;\n  pointer-events: none;\n}\n\n.rail {\n  position: absolute;\n  top: 12%;\n  bottom: 12%;\n  left: -1px;\n  width: 2px;\n  border-radius: 2px;\n  background: var(--mf-border, #2e2e38);\n  overflow: hidden;\n}\n\n.fill {\n  position: absolute;\n  inset: 0;\n  background: var(--mf-sss-accent, #f472b6);\n  transform: scaleY(var(--mf-sss-p));\n  transform-origin: 50% 0%;\n}\n\n.counter {\n  position: relative;\n  padding: 0.3rem 0.6rem;\n  border: 1px solid var(--mf-border-strong, #3f3f4a);\n  border-radius: 999px;\n  background: var(--mf-surface-raised, #1b1b22);\n  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;\n  font-size: 0.68rem;\n  white-space: nowrap;\n}\n\n@media (prefers-reduced-motion: reduce) {\n  .strip {\n    will-change: auto;\n  }\n}\n"
+    }
+  ],
+  "tailwindExample": "\"use client\";\n\nimport { useEffect, useRef } from \"react\";\n\nconst items = [\"Capture the idea\", \"Shape the system\", \"Prototype in motion\", \"Ship with confidence\"];\nconst grads = [\"from-pink-400 to-violet-400\", \"from-violet-400 to-sky-400\", \"from-sky-400 to-emerald-400\", \"from-emerald-400 to-amber-400\"];\n\nexport function SplitScreenScrollTailwind() {\n  const ref = useRef(null);\n  const left = useRef(null);\n  const right = useRef(null);\n  useEffect(() => {\n    const el = ref.current;\n    const n = items.length;\n    const update = () => {\n      const max = el.scrollHeight - el.clientHeight;\n      const p = max > 0 ? el.scrollTop / max : 0;\n      left.current.style.transform = `translateY(${(-p * (n - 1) * 100) / n}%)`;\n      right.current.style.transform = `translateY(${(-(1 - p) * (n - 1) * 100) / n}%)`;\n    };\n    update();\n    el.addEventListener(\"scroll\", update, { passive: true });\n    return () => el.removeEventListener(\"scroll\", update);\n  }, []);\n  return (\n    <div ref={ref} tabIndex={0} className=\"h-[380px] w-full overflow-y-auto rounded-[20px] border border-zinc-800 bg-zinc-900 text-zinc-100\">\n      <div style={{ height: 380 * items.length }}>\n        <div className=\"sticky top-0 grid h-[380px] grid-cols-2 overflow-hidden\">\n          <div ref={left}>\n            {items.map((t, i) => (\n              <div key={t} className=\"flex h-[380px] flex-col justify-center gap-2 px-10\">\n                <span className=\"text-xs text-pink-400\">0{i + 1}</span>\n                <h3 className=\"text-3xl font-bold\">{t}</h3>\n              </div>\n            ))}\n          </div>\n          <div ref={right}>\n            {[...items].reverse().map((t, i) => (\n              <div key={t} className=\"h-[380px] p-3\">\n                <div className={`h-full rounded-2xl bg-gradient-to-br ${grads[items.length - 1 - i]}`} />\n              </div>\n            ))}\n          </div>\n        </div>\n      </div>\n    </div>\n  );\n}"
+}

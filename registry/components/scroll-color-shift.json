@@ -1,0 +1,196 @@
+{
+  "slug": "scroll-color-shift",
+  "name": "ScrollColorShift",
+  "category": "Scroll Animations",
+  "collection": "scroll",
+  "featured": false,
+  "addedAt": "2026-10-16",
+  "version": "2.3.0",
+  "requiresMotion": false,
+  "dependencies": [
+    "react"
+  ],
+  "description": "Chapter sections inside a smooth-scroll viewport where the whole background and text color interpolate between up to four colors as each section reaches the center, with automatic light/dark text for contrast and a tunable blend window.",
+  "tags": [
+    "scroll",
+    "color",
+    "background",
+    "interpolate",
+    "chapters",
+    "smooth-scroll"
+  ],
+  "a11yNotes": "The viewport is a focusable role=\"region\" (\"Color sections\") so keyboard users can Tab to it and scroll with arrows/Page keys/Space (native) with a 2px :focus-visible outline in the current text color. Each chapter is a <section> with a real heading. textMode=\"auto\" picks near-black or near-white text from the background's luminance so contrast holds at every section; the chapter counter and ring decorations are aria-hidden. Wheel input is smoothed only while the viewport can still move and is released at the edges; touch and scrollbar dragging stay native. Under prefers-reduced-motion the wheel is not intercepted and colors switch at the midpoint between sections instead of fading continuously.",
+  "defaultProps": {
+    "sections": [
+      "Midnight",
+      "Ember",
+      "Daylight",
+      "Ultraviolet"
+    ],
+    "color1": "#0f172a",
+    "color2": "#ea580c",
+    "color3": "#fde68a",
+    "color4": "#6d28d9",
+    "textMode": "auto",
+    "blend": 0.6,
+    "lerp": 0.1,
+    "smooth": true
+  },
+  "controls": [
+    {
+      "prop": "sections",
+      "label": "Sections (comma separated)",
+      "type": "list"
+    },
+    {
+      "prop": "color1",
+      "label": "Color 1",
+      "type": "color"
+    },
+    {
+      "prop": "color2",
+      "label": "Color 2",
+      "type": "color"
+    },
+    {
+      "prop": "color3",
+      "label": "Color 3",
+      "type": "color"
+    },
+    {
+      "prop": "color4",
+      "label": "Color 4",
+      "type": "color"
+    },
+    {
+      "prop": "textMode",
+      "label": "Text color",
+      "type": "select",
+      "options": [
+        "auto",
+        "light",
+        "dark"
+      ]
+    },
+    {
+      "prop": "blend",
+      "label": "Blend window",
+      "type": "range",
+      "min": 0.1,
+      "max": 1,
+      "step": 0.05
+    },
+    {
+      "prop": "lerp",
+      "label": "Lerp (smoothness)",
+      "type": "range",
+      "min": 0.05,
+      "max": 0.3,
+      "step": 0.01
+    },
+    {
+      "prop": "smooth",
+      "label": "Smooth scrolling",
+      "type": "boolean"
+    }
+  ],
+  "propsApi": [
+    {
+      "name": "sections",
+      "type": "string[]",
+      "default": "['Midnight', 'Ember', 'Daylight', 'Ultraviolet']",
+      "description": "Section titles; the background shifts color between consecutive sections."
+    },
+    {
+      "name": "color1",
+      "type": "string",
+      "default": "'#0f172a'",
+      "description": "Background of section 1 (colors repeat every 4 sections)."
+    },
+    {
+      "name": "color2",
+      "type": "string",
+      "default": "'#ea580c'",
+      "description": "Background of section 2."
+    },
+    {
+      "name": "color3",
+      "type": "string",
+      "default": "'#fde68a'",
+      "description": "Background of section 3."
+    },
+    {
+      "name": "color4",
+      "type": "string",
+      "default": "'#6d28d9'",
+      "description": "Background of section 4."
+    },
+    {
+      "name": "textMode",
+      "type": "'auto' | 'light' | 'dark'",
+      "default": "'auto'",
+      "description": "Text color; auto picks light or dark per background for contrast."
+    },
+    {
+      "name": "blend",
+      "type": "number",
+      "default": "0.6",
+      "description": "Portion of the scroll between two section centers spent blending (0.1 quick swap, 1 continuous)."
+    },
+    {
+      "name": "height",
+      "type": "number",
+      "default": "380",
+      "description": "Height of the component's own scroll viewport in px (width is always 100%)."
+    },
+    {
+      "name": "borderRadius",
+      "type": "number",
+      "default": "20",
+      "description": "Corner radius of the viewport in px."
+    },
+    {
+      "name": "lerp",
+      "type": "number",
+      "default": "0.1",
+      "description": "Interpolation factor per 60fps frame for wheel smoothing (0.05 floaty, 0.3 snappy)."
+    },
+    {
+      "name": "wheelMultiplier",
+      "type": "number",
+      "default": "1",
+      "description": "Multiplier applied to wheel and trackpad deltas."
+    },
+    {
+      "name": "smooth",
+      "type": "boolean",
+      "default": "true",
+      "description": "Enable smooth wheel scrolling; false (or prefers-reduced-motion) uses native scrolling."
+    },
+    {
+      "name": "className",
+      "type": "string",
+      "default": "''",
+      "description": "Additional class merged onto the root element."
+    },
+    {
+      "name": "style",
+      "type": "React.CSSProperties",
+      "default": "undefined",
+      "description": "Inline styles merged onto the root element."
+    }
+  ],
+  "files": [
+    {
+      "path": "components/ui/scroll-color-shift.tsx",
+      "type": "registry:component",
+      "content": "\"use client\";\n\nimport * as React from \"react\";\nimport styles from \"../styles/scroll-color-shift.module.css\";\n\ninterface SmoothScrollState {\n  /** Current scrollTop of the viewport in px */\n  scroll: number;\n  /** Maximum scrollTop in px */\n  limit: number;\n  /** scroll / limit, 0..1 */\n  progress: number;\n}\n\ninterface SmoothScrollOptions {\n  lerp: number;\n  wheelMultiplier: number;\n  smooth: boolean;\n  onScroll?: (state: SmoothScrollState) => void;\n}\n\nconst clamp = (v: number, min: number, max: number) => Math.min(max, Math.max(min, v));\n\nfunction usePrefersReducedMotion(): boolean {\n  const [reduced, setReduced] = React.useState(false);\n  React.useEffect(() => {\n    const mq = window.matchMedia(\"(prefers-reduced-motion: reduce)\");\n    const update = () => setReduced(mq.matches);\n    update();\n    mq.addEventListener(\"change\", update);\n    return () => mq.removeEventListener(\"change\", update);\n  }, []);\n  return reduced;\n}\n\n/** True when a nested scrollable element under the pointer can still scroll in the wheel direction. */\nfunction nestedCanScroll(node: EventTarget | null, root: HTMLElement, dy: number): boolean {\n  let el: Element | null = node instanceof Element ? node : null;\n  while (el && el !== root) {\n    if (el instanceof HTMLElement) {\n      const overflowY = window.getComputedStyle(el).overflowY;\n      if ((overflowY === \"auto\" || overflowY === \"scroll\") && el.scrollHeight > el.clientHeight + 1) {\n        if (dy < 0 ? el.scrollTop > 0 : el.scrollTop + el.clientHeight < el.scrollHeight - 1) return true;\n      }\n    }\n    el = el.parentElement;\n  }\n  return false;\n}\n\n/**\n * Self-contained smooth scroller for an overflow container: wheel input sets a target and a rAF\n * loop eases scrollTop toward it. Touch, keyboard and scrollbar stay native; wheel is released at\n * the edges so the page keeps scrolling.\n */\nfunction useSmoothScroll(\n  containerRef: React.RefObject<HTMLElement | null>,\n  { lerp, wheelMultiplier, smooth, onScroll }: SmoothScrollOptions,\n) {\n  const callbackRef = React.useRef(onScroll);\n  React.useEffect(() => {\n    callbackRef.current = onScroll;\n  }, [onScroll]);\n\n  React.useEffect(() => {\n    const el = containerRef.current;\n    if (!el) return;\n    const ease = clamp(Number.isFinite(lerp) ? lerp : 0.1, 0.01, 1);\n    const multiplier = Number.isFinite(wheelMultiplier) ? wheelMultiplier : 1;\n    let target = el.scrollTop;\n    let current = target;\n    let raf = 0;\n    let lastTime = 0;\n    const getLimit = () => Math.max(0, el.scrollHeight - el.clientHeight);\n    const emit = () => {\n      const limit = getLimit();\n      const scroll = clamp(el.scrollTop, 0, limit);\n      callbackRef.current?.({ scroll, limit, progress: limit > 0 ? scroll / limit : 0 });\n    };\n    const tick = (time: number) => {\n      const dt = lastTime ? Math.min(64, Math.max(1, time - lastTime)) : 16.667;\n      lastTime = time;\n      target = clamp(target, 0, getLimit());\n      if (Math.abs(el.scrollTop - current) > 2) {\n        current = target = el.scrollTop;\n        raf = 0;\n        lastTime = 0;\n        emit();\n        return;\n      }\n      current += (target - current) * (1 - Math.pow(1 - ease, dt / 16.667));\n      if (Math.abs(target - current) < 0.35) current = target;\n      el.scrollTop = current;\n      emit();\n      if (current === target) {\n        raf = 0;\n        lastTime = 0;\n        return;\n      }\n      raf = requestAnimationFrame(tick);\n    };\n    const onWheel = (event: WheelEvent) => {\n      if (event.ctrlKey || event.defaultPrevented || Math.abs(event.deltaX) > Math.abs(event.deltaY)) return;\n      let dy = event.deltaY;\n      if (event.deltaMode === 1) dy *= 16;\n      else if (event.deltaMode === 2) dy *= el.clientHeight;\n      dy *= multiplier;\n      if (dy === 0 || nestedCanScroll(event.target, el, dy)) return;\n      const limit = getLimit();\n      if (!raf) current = target = el.scrollTop;\n      if ((dy < 0 && target <= 0) || (dy > 0 && target >= limit - 0.5)) return;\n      event.preventDefault();\n      target = clamp(target + dy, 0, limit);\n      if (!raf) {\n        lastTime = 0;\n        raf = requestAnimationFrame(tick);\n      }\n    };\n    const onNativeScroll = () => {\n      if (raf) return;\n      current = target = el.scrollTop;\n      emit();\n    };\n    if (smooth) el.addEventListener(\"wheel\", onWheel, { passive: false });\n    el.addEventListener(\"scroll\", onNativeScroll, { passive: true });\n    const ro = new ResizeObserver(emit);\n    ro.observe(el);\n    if (el.firstElementChild) ro.observe(el.firstElementChild);\n    emit();\n    return () => {\n      if (smooth) el.removeEventListener(\"wheel\", onWheel);\n      el.removeEventListener(\"scroll\", onNativeScroll);\n      ro.disconnect();\n      if (raf) cancelAnimationFrame(raf);\n    };\n  }, [containerRef, lerp, wheelMultiplier, smooth]);\n}\n\ntype RGB = [number, number, number];\n\nfunction parseHex(hex: string, fallback: RGB): RGB {\n  const m = /^#?([0-9a-f]{3}|[0-9a-f]{6})$/i.exec(hex.trim());\n  if (!m) return fallback;\n  const h = m[1].length === 3 ? m[1].replace(/./g, (c) => c + c) : m[1];\n  return [parseInt(h.slice(0, 2), 16), parseInt(h.slice(2, 4), 16), parseInt(h.slice(4, 6), 16)];\n}\n\nconst DARK_TEXT: RGB = [12, 12, 18];\nconst LIGHT_TEXT: RGB = [248, 248, 250];\n\nfunction textFor(bg: RGB, mode: \"auto\" | \"light\" | \"dark\"): RGB {\n  if (mode === \"light\") return LIGHT_TEXT;\n  if (mode === \"dark\") return DARK_TEXT;\n  const lum = (0.2126 * bg[0] + 0.7152 * bg[1] + 0.0722 * bg[2]) / 255;\n  return lum > 0.55 ? DARK_TEXT : LIGHT_TEXT;\n}\n\nconst mix = (a: RGB, b: RGB, t: number) =>\n  `rgb(${a.map((v, i) => Math.round(v + (b[i] - v) * t)).join(\" \")})`;\n\nexport interface ScrollColorShiftProps {\n  /** Section titles; the background shifts color between consecutive sections */\n  sections?: string[];\n  /** Background of section 1 (repeats every 4 sections) */\n  color1?: string;\n  /** Background of section 2 */\n  color2?: string;\n  /** Background of section 3 */\n  color3?: string;\n  /** Background of section 4 */\n  color4?: string;\n  /** Text color: \"auto\" picks light or dark per background for contrast */\n  textMode?: \"auto\" | \"light\" | \"dark\";\n  /** Portion of the scroll between sections spent blending (0.1 = quick swap, 1 = continuous) */\n  blend?: number;\n  /** Viewport height in px */\n  height?: number;\n  /** Viewport corner radius in px */\n  borderRadius?: number;\n  /** Interpolation factor per 60fps frame (0.05 = floaty, 0.3 = snappy) */\n  lerp?: number;\n  /** Multiplier applied to wheel / trackpad deltas */\n  wheelMultiplier?: number;\n  /** Enable smooth wheel scrolling (native scrolling when false or under reduced motion) */\n  smooth?: boolean;\n  /** Optional className merged onto the root */\n  className?: string;\n  /** Inline styles merged onto the root */\n  style?: React.CSSProperties;\n}\n\nconst DEFAULT_SECTIONS = [\"Midnight\", \"Ember\", \"Daylight\", \"Ultraviolet\"];\nconst BLURBS = [\n  \"Start somewhere quiet, deep and focused.\",\n  \"Then turn up the heat as momentum builds.\",\n  \"Bright, open and impossible to miss.\",\n  \"And finish with something a little electric.\",\n];\n\nexport function ScrollColorShift({\n  sections = DEFAULT_SECTIONS,\n  color1 = \"#0f172a\",\n  color2 = \"#ea580c\",\n  color3 = \"#fde68a\",\n  color4 = \"#6d28d9\",\n  textMode = \"auto\",\n  blend = 0.6,\n  height = 380,\n  borderRadius = 20,\n  lerp = 0.1,\n  wheelMultiplier = 1,\n  smooth = true,\n  className = \"\",\n  style,\n}: ScrollColorShiftProps) {\n  const reduced = usePrefersReducedMotion();\n  const rootRef = React.useRef<HTMLDivElement>(null);\n  const viewportRef = React.useRef<HTMLDivElement>(null);\n  const counterRef = React.useRef<HTMLSpanElement>(null);\n  const sectionRefs = React.useRef<(HTMLElement | null)[]>([]);\n  const scrollRef = React.useRef(0);\n  const count = sections.length;\n\n  const palette = React.useMemo(() => {\n    const bgs = [color1, color2, color3, color4].map((c, i) => parseHex(c, i % 2 ? LIGHT_TEXT : DARK_TEXT));\n    return bgs.map((bg) => ({ bg, fg: textFor(bg, textMode) }));\n  }, [color1, color2, color3, color4, textMode]);\n\n  const apply = React.useCallback(() => {\n    const vp = viewportRef.current;\n    const root = rootRef.current;\n    if (!vp || !root || count === 0) return;\n    const center = scrollRef.current + vp.clientHeight / 2;\n    const mids = sectionRefs.current.slice(0, count).map((s) => (s ? s.offsetTop + s.offsetHeight / 2 : 0));\n    let i = 0;\n    while (i < count - 2 && center > mids[i + 1]) i++;\n    const span = Math.max(1, (mids[i + 1] ?? mids[i]) - mids[i]);\n    const raw = count > 1 ? clamp((center - mids[i]) / span, 0, 1) : 0;\n    const b = clamp(blend, 0.05, 1);\n    let t = clamp((raw - (1 - b) / 2) / b, 0, 1);\n    t = reduced ? Math.round(t) : t * t * (3 - 2 * t);\n    const a = palette[i % 4];\n    const z = palette[Math.min(i + 1, count - 1) % 4];\n    root.style.setProperty(\"--mf-scs-bg\", mix(a.bg, z.bg, t));\n    root.style.setProperty(\"--mf-scs-fg\", mix(a.fg, z.fg, t));\n    const current = raw > 0.5 ? Math.min(i + 1, count - 1) : i;\n    if (counterRef.current) {\n      counterRef.current.textContent = `${String(current + 1).padStart(2, \"0\")} / ${String(count).padStart(2, \"0\")}`;\n    }\n  }, [blend, count, palette, reduced]);\n\n  const handleScroll = React.useCallback(\n    (state: SmoothScrollState) => {\n      scrollRef.current = state.scroll;\n      apply();\n    },\n    [apply],\n  );\n\n  useSmoothScroll(viewportRef, { lerp, wheelMultiplier, smooth: smooth && !reduced, onScroll: handleScroll });\n\n  React.useEffect(() => {\n    apply();\n  }, [apply]);\n\n  const vars = {\n    \"--mf-scs-h\": `${height}px`,\n    \"--mf-scs-r\": `${borderRadius}px`,\n    \"--mf-scs-bg\": mix(palette[0].bg, palette[0].bg, 0),\n    \"--mf-scs-fg\": mix(palette[0].fg, palette[0].fg, 0),\n    ...style,\n  } as React.CSSProperties;\n\n  return (\n    <div ref={rootRef} style={vars} className={`${styles.root} ${className}`.trim()}>\n      <span ref={counterRef} className={styles.counter} aria-hidden=\"true\">\n        {`01 / ${String(count).padStart(2, \"0\")}`}\n      </span>\n      <div ref={viewportRef} className={styles.viewport} tabIndex={0} role=\"region\" aria-label=\"Color sections\">\n        <div className={styles.content}>\n          {sections.map((title, i) => (\n            <section\n              key={`${title}-${i}`}\n              ref={(node) => {\n                sectionRefs.current[i] = node;\n              }}\n              className={styles.section}\n              style={{ \"--mf-scs-i\": i } as React.CSSProperties}\n            >\n              <svg aria-hidden=\"true\" className={styles.rings} viewBox=\"0 0 200 200\">\n                {[90, 68, 46, 24].map((r, k) => (\n                  <circle key={r} cx=\"100\" cy=\"100\" r={r} strokeDasharray={k % 2 ? \"3 7\" : undefined} />\n                ))}\n              </svg>\n              <span className={styles.kicker}>{`Chapter ${String(i + 1).padStart(2, \"0\")}`}</span>\n              <h3 className={styles.title}>{title}</h3>\n              <p className={styles.text}>{BLURBS[i % BLURBS.length]}</p>\n            </section>\n          ))}\n        </div>\n      </div>\n    </div>\n  );\n}\n"
+    },
+    {
+      "path": "components/styles/scroll-color-shift.module.css",
+      "type": "registry:style",
+      "content": ".root {\n  position: relative;\n  width: 100%;\n  height: var(--mf-scs-h, 380px);\n  border-radius: var(--mf-scs-r, 20px);\n  overflow: hidden;\n  border: 1px solid var(--mf-border, #2e2e38);\n  background: var(--mf-scs-bg, var(--mf-surface, #141419));\n  color: var(--mf-scs-fg, var(--mf-fg, #f4f4f6));\n  container-type: inline-size;\n  isolation: isolate;\n}\n\n.root *,\n.root *::before,\n.root *::after {\n  box-sizing: border-box;\n}\n\n.counter {\n  position: absolute;\n  z-index: 2;\n  top: 1rem;\n  right: 1.25rem;\n  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;\n  font-size: 0.78rem;\n  font-variant-numeric: tabular-nums;\n  opacity: 0.7;\n  pointer-events: none;\n}\n\n.viewport {\n  position: relative;\n  height: 100%;\n  overflow-x: hidden;\n  overflow-y: auto;\n  overscroll-behavior: auto;\n  scroll-behavior: auto;\n  scrollbar-width: thin;\n  scrollbar-color: color-mix(in srgb, currentColor 30%, transparent) transparent;\n}\n\n.viewport:focus-visible {\n  outline: 2px solid var(--mf-scs-fg, var(--mf-fg, #e4e4e7));\n  outline-offset: -2px;\n}\n\n.content {\n  position: relative;\n}\n\n.section {\n  position: relative;\n  display: flex;\n  flex-direction: column;\n  justify-content: center;\n  gap: 0.6rem;\n  min-height: calc(var(--mf-scs-h, 380px) * 0.92);\n  padding: 2rem clamp(1.5rem, 10cqi, 6rem);\n  overflow: hidden;\n}\n\n.rings {\n  position: absolute;\n  top: 50%;\n  right: calc(-8% + var(--mf-scs-i, 0) * 3%);\n  width: min(62cqi, 420px);\n  aspect-ratio: 1;\n  transform: translateY(-50%) rotate(calc(var(--mf-scs-i, 0) * 37deg));\n  fill: none;\n  stroke: currentColor;\n  stroke-width: 1;\n  opacity: 0.22;\n  pointer-events: none;\n}\n\n.kicker {\n  position: relative;\n  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;\n  font-size: 0.78rem;\n  letter-spacing: 0.08em;\n  text-transform: uppercase;\n  opacity: 0.7;\n}\n\n.title {\n  position: relative;\n  margin: 0;\n  font-size: clamp(2.4rem, 11cqi, 5rem);\n  font-weight: 800;\n  line-height: 0.95;\n  letter-spacing: -0.05em;\n}\n\n.text {\n  position: relative;\n  margin: 0;\n  max-width: 24rem;\n  font-size: 1rem;\n  line-height: 1.5;\n  opacity: 0.78;\n}\n\n@media (prefers-reduced-motion: reduce) {\n  .rings {\n    transform: translateY(-50%);\n  }\n}\n"
+    }
+  ],
+  "tailwindExample": "\"use client\";\n\nimport { useEffect, useRef } from \"react\";\n\nconst hex = (h) => [1, 3, 5].map((i) => parseInt(h.slice(i, i + 2), 16));\n\nexport function ScrollColorShiftTailwind() {\n  const ref = useRef(null);\n  const sections = [\"Midnight\", \"Ember\", \"Daylight\", \"Ultraviolet\"];\n  const colors = [\"#0f172a\", \"#ea580c\", \"#fde68a\", \"#6d28d9\"].map(hex);\n  useEffect(() => {\n    const el = ref.current;\n    const update = () => {\n      const f = Math.max(0, Math.min(sections.length - 1, el.scrollTop / (el.clientHeight * 0.92)));\n      const i = Math.min(Math.floor(f), sections.length - 2);\n      const t = f - i;\n      const c = colors[i].map((v, k) => Math.round(v + (colors[i + 1][k] - v) * t));\n      el.style.backgroundColor = `rgb(${c.join(\" \")})`;\n      el.style.color = c[0] * 0.2126 + c[1] * 0.7152 + c[2] * 0.0722 > 140 ? \"#0c0c12\" : \"#f8f8fa\";\n    };\n    update();\n    el.addEventListener(\"scroll\", update, { passive: true });\n    return () => el.removeEventListener(\"scroll\", update);\n  }, []);\n  return (\n    <div ref={ref} tabIndex={0} className=\"h-[380px] w-full overflow-y-auto rounded-[20px] border border-zinc-800\">\n      {sections.map((t, i) => (\n        <section key={t} className=\"flex h-[350px] flex-col justify-center px-16\">\n          <span className=\"font-mono text-xs uppercase opacity-70\">Chapter 0{i + 1}</span>\n          <h3 className=\"text-6xl font-extrabold tracking-tighter\">{t}</h3>\n        </section>\n      ))}\n    </div>\n  );\n}"
+}

@@ -1,0 +1,194 @@
+{
+  "slug": "copy-button",
+  "name": "CopyButton",
+  "category": "Interactive Buttons and Controls",
+  "collection": "ui",
+  "featured": false,
+  "addedAt": "2026-10-16",
+  "version": "2.3.0",
+  "requiresMotion": true,
+  "dependencies": [
+    "motion",
+    "react"
+  ],
+  "description": "Copies text to the clipboard while the copy icon spins into a self-drawing check mark and the label rolls to \"Copied\", then resets after a configurable delay. Optionally shows the copied value in an inline code field.",
+  "tags": [
+    "copy",
+    "clipboard",
+    "button",
+    "code",
+    "feedback",
+    "ui"
+  ],
+  "a11yNotes": "Native <button>; when the value field is shown or the button is icon-only it gets an explicit aria-label (\"Copy command\" / \"Copied\"). A polite role=\"status\" live region announces \"Copied to clipboard\". Icons are aria-hidden. Falls back to a hidden textarea + execCommand when the async Clipboard API is unavailable. Under prefers-reduced-motion the icon and label cross-fade without rotation, blur or path drawing.",
+  "defaultProps": {
+    "text": "npx motionfoundry add copy-button",
+    "label": "Copy",
+    "copiedLabel": "Copied",
+    "resetDelay": 2000,
+    "variant": "outline",
+    "size": "md",
+    "showValue": true,
+    "iconOnly": false,
+    "accentColor": "#22c55e",
+    "disabled": false
+  },
+  "controls": [
+    {
+      "prop": "text",
+      "label": "Text to copy",
+      "type": "text"
+    },
+    {
+      "prop": "label",
+      "label": "Label",
+      "type": "text"
+    },
+    {
+      "prop": "copiedLabel",
+      "label": "Copied label",
+      "type": "text"
+    },
+    {
+      "prop": "resetDelay",
+      "label": "Reset delay (ms)",
+      "type": "range",
+      "min": 500,
+      "max": 5000,
+      "step": 100
+    },
+    {
+      "prop": "variant",
+      "label": "Variant",
+      "type": "select",
+      "options": [
+        "default",
+        "outline",
+        "ghost"
+      ]
+    },
+    {
+      "prop": "size",
+      "label": "Size",
+      "type": "select",
+      "options": [
+        "sm",
+        "md",
+        "lg"
+      ]
+    },
+    {
+      "prop": "showValue",
+      "label": "Show value",
+      "type": "boolean"
+    },
+    {
+      "prop": "iconOnly",
+      "label": "Icon only",
+      "type": "boolean"
+    },
+    {
+      "prop": "accentColor",
+      "label": "Success color",
+      "type": "color"
+    },
+    {
+      "prop": "disabled",
+      "label": "Disabled",
+      "type": "boolean"
+    }
+  ],
+  "propsApi": [
+    {
+      "name": "text",
+      "type": "string",
+      "default": "'npx motionfoundry add copy-button'",
+      "description": "Text written to the clipboard."
+    },
+    {
+      "name": "label",
+      "type": "string",
+      "default": "'Copy'",
+      "description": "Label before copying."
+    },
+    {
+      "name": "copiedLabel",
+      "type": "string",
+      "default": "'Copied'",
+      "description": "Label after a successful copy."
+    },
+    {
+      "name": "resetDelay",
+      "type": "number",
+      "default": "2000",
+      "description": "Milliseconds before the button returns to idle (minimum 300)."
+    },
+    {
+      "name": "variant",
+      "type": "'default' | 'outline' | 'ghost'",
+      "default": "'outline'",
+      "description": "Visual style."
+    },
+    {
+      "name": "size",
+      "type": "'sm' | 'md' | 'lg'",
+      "default": "'md'",
+      "description": "Size preset."
+    },
+    {
+      "name": "showValue",
+      "type": "boolean",
+      "default": "true",
+      "description": "Render the text in a monospace field beside the button."
+    },
+    {
+      "name": "iconOnly",
+      "type": "boolean",
+      "default": "false",
+      "description": "Hide the label and show only the morphing icon."
+    },
+    {
+      "name": "accentColor",
+      "type": "string",
+      "default": "'#22c55e'",
+      "description": "Color of the check mark and copied state."
+    },
+    {
+      "name": "disabled",
+      "type": "boolean",
+      "default": "false",
+      "description": "Disable the button."
+    },
+    {
+      "name": "onCopy",
+      "type": "(text: string) => void",
+      "default": "undefined",
+      "description": "Called after the text was copied successfully."
+    },
+    {
+      "name": "className",
+      "type": "string",
+      "default": "''",
+      "description": "Additional class merged onto the root element."
+    },
+    {
+      "name": "style",
+      "type": "React.CSSProperties",
+      "default": "undefined",
+      "description": "Inline styles merged onto the root element."
+    }
+  ],
+  "files": [
+    {
+      "path": "components/ui/copy-button.tsx",
+      "type": "registry:component",
+      "content": "\"use client\";\n\nimport * as React from \"react\";\nimport { AnimatePresence, motion, useReducedMotion } from \"motion/react\";\nimport styles from \"../styles/copy-button.module.css\";\n\nexport interface CopyButtonProps {\n  /** Text written to the clipboard */\n  text?: string;\n  /** Button label before copying */\n  label?: string;\n  /** Button label after a successful copy */\n  copiedLabel?: string;\n  /** Milliseconds before the button resets to its idle state */\n  resetDelay?: number;\n  /** Visual style */\n  variant?: \"default\" | \"outline\" | \"ghost\";\n  /** Size preset */\n  size?: \"sm\" | \"md\" | \"lg\";\n  /** Render the text in a code field beside the button */\n  showValue?: boolean;\n  /** Hide the visible label and show only the morphing icon */\n  iconOnly?: boolean;\n  /** Color of the check mark and copied state */\n  accentColor?: string;\n  /** Disable the button */\n  disabled?: boolean;\n  /** Called after the text has been copied */\n  onCopy?: (text: string) => void;\n  /** Optional className merged onto the root */\n  className?: string;\n  /** Optional inline styles merged onto the root */\n  style?: React.CSSProperties;\n}\n\nasync function writeClipboard(text: string): Promise<boolean> {\n  try {\n    if (navigator.clipboard?.writeText) {\n      await navigator.clipboard.writeText(text);\n      return true;\n    }\n  } catch {\n    // fall through to the legacy path\n  }\n  try {\n    const ta = document.createElement(\"textarea\");\n    ta.value = text;\n    ta.setAttribute(\"readonly\", \"\");\n    ta.style.position = \"fixed\";\n    ta.style.opacity = \"0\";\n    document.body.appendChild(ta);\n    ta.select();\n    const ok = document.execCommand(\"copy\");\n    document.body.removeChild(ta);\n    return ok;\n  } catch {\n    return false;\n  }\n}\n\nexport function CopyButton({\n  text = \"npx motionfoundry add copy-button\",\n  label = \"Copy\",\n  copiedLabel = \"Copied\",\n  resetDelay = 2000,\n  variant = \"outline\",\n  size = \"md\",\n  showValue = true,\n  iconOnly = false,\n  accentColor = \"#22c55e\",\n  disabled = false,\n  onCopy,\n  className = \"\",\n  style,\n}: CopyButtonProps) {\n  const reduce = useReducedMotion();\n  const [copied, setCopied] = React.useState(false);\n  const timer = React.useRef<ReturnType<typeof setTimeout> | null>(null);\n\n  React.useEffect(() => () => {\n    if (timer.current) clearTimeout(timer.current);\n  }, []);\n\n  const copy = async () => {\n    if (disabled) return;\n    const ok = await writeClipboard(text);\n    if (!ok) return;\n    setCopied(true);\n    onCopy?.(text);\n    if (timer.current) clearTimeout(timer.current);\n    timer.current = setTimeout(() => setCopied(false), Math.max(300, resetDelay));\n  };\n\n  const spring = reduce ? { duration: 0.1 } : { type: \"spring\" as const, stiffness: 520, damping: 28 };\n  const iconMotion = reduce\n    ? { initial: { opacity: 0 }, animate: { opacity: 1 }, exit: { opacity: 0 } }\n    : { initial: { opacity: 0, scale: 0.4, rotate: -45 }, animate: { opacity: 1, scale: 1, rotate: 0 }, exit: { opacity: 0, scale: 0.4, rotate: 45 } };\n\n  return (\n    <div\n      className={[styles.root, styles[size], showValue ? styles.withValue : \"\", className].filter(Boolean).join(\" \")}\n      style={{ \"--mf-cb-accent\": accentColor, ...style } as React.CSSProperties}\n      data-copied={copied || undefined}\n    >\n      {showValue ? (\n        <code className={styles.value} title={text}>\n          <span className={styles.prompt} aria-hidden=\"true\">\n            $\n          </span>\n          {text}\n        </code>\n      ) : null}\n      <button\n        type=\"button\"\n        disabled={disabled}\n        onClick={copy}\n        aria-label={iconOnly || showValue ? (copied ? copiedLabel : `${label}${showValue ? \" command\" : \"\"}`) : undefined}\n        className={`${styles.button} ${styles[variant]} ${iconOnly ? styles.iconOnly : \"\"}`.trim()}\n      >\n        <span className={styles.icon} aria-hidden=\"true\">\n          <AnimatePresence initial={false} mode=\"popLayout\">\n            {copied ? (\n              <motion.svg key=\"check\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" strokeWidth=\"2.25\" strokeLinecap=\"round\" strokeLinejoin=\"round\" className={styles.check} {...iconMotion} transition={spring}>\n                <motion.path d=\"M5 12.5l4.5 4.5L19 7\" initial={{ pathLength: reduce ? 1 : 0 }} animate={{ pathLength: 1 }} transition={{ duration: reduce ? 0 : 0.28, delay: reduce ? 0 : 0.06 }} />\n              </motion.svg>\n            ) : (\n              <motion.svg key=\"copy\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" strokeWidth=\"2\" strokeLinecap=\"round\" strokeLinejoin=\"round\" {...iconMotion} transition={spring}>\n                <rect x=\"9\" y=\"9\" width=\"12\" height=\"12\" rx=\"2\" />\n                <path d=\"M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1\" />\n              </motion.svg>\n            )}\n          </AnimatePresence>\n        </span>\n        {iconOnly ? null : (\n          <span className={styles.labelSlot} aria-hidden={showValue || undefined}>\n            <span className={styles.sizer} aria-hidden=\"true\">\n              {label}\n            </span>\n            <span className={styles.sizer} aria-hidden=\"true\">\n              {copiedLabel}\n            </span>\n            <AnimatePresence initial={false} mode=\"popLayout\">\n              <motion.span\n                key={copied ? \"copied\" : \"idle\"}\n                className={styles.label}\n                initial={reduce ? { opacity: 0 } : { opacity: 0, y: 8, filter: \"blur(2px)\" }}\n                animate={reduce ? { opacity: 1 } : { opacity: 1, y: 0, filter: \"blur(0px)\" }}\n                exit={reduce ? { opacity: 0 } : { opacity: 0, y: -8, filter: \"blur(2px)\" }}\n                transition={{ duration: reduce ? 0.1 : 0.2, ease: [0.16, 1, 0.3, 1] }}\n              >\n                {copied ? copiedLabel : label}\n              </motion.span>\n            </AnimatePresence>\n          </span>\n        )}\n      </button>\n      <span className={styles.srOnly} role=\"status\" aria-live=\"polite\">\n        {copied ? `${copiedLabel} to clipboard` : \"\"}\n      </span>\n    </div>\n  );\n}\n"
+    },
+    {
+      "path": "components/styles/copy-button.module.css",
+      "type": "registry:style",
+      "content": ".root {\n  --mf-cb-h: 2.375rem;\n  display: inline-flex;\n  align-items: center;\n  gap: 0.5rem;\n  max-width: 100%;\n  color: var(--mf-fg, #f4f4f6);\n  font-size: 0.875rem;\n}\n\n.sm {\n  --mf-cb-h: 2rem;\n  font-size: 0.8125rem;\n}\n\n.md {\n  --mf-cb-h: 2.375rem;\n}\n\n.lg {\n  --mf-cb-h: 2.75rem;\n  font-size: 0.9375rem;\n}\n\n.withValue {\n  padding: 0.3125rem 0.3125rem 0.3125rem 0.875rem;\n  border-radius: 0.75rem;\n  border: 1px solid var(--mf-border, #2e2e38);\n  background-color: var(--mf-surface, #141419);\n  transition: border-color 200ms ease, box-shadow 200ms ease;\n}\n\n.withValue[data-copied] {\n  border-color: color-mix(in srgb, var(--mf-cb-accent, #22c55e) 45%, var(--mf-border, #2e2e38));\n  box-shadow: 0 0 0 3px color-mix(in srgb, var(--mf-cb-accent, #22c55e) 14%, transparent);\n}\n\n.value {\n  min-width: 0;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;\n  font-size: 0.92em;\n  color: var(--mf-fg, #f4f4f6);\n}\n\n.prompt {\n  margin-right: 0.625em;\n  color: var(--mf-subtle, #71717a);\n  user-select: none;\n}\n\n.button {\n  position: relative;\n  flex-shrink: 0;\n  display: inline-flex;\n  align-items: center;\n  justify-content: center;\n  gap: 0.4375rem;\n  height: var(--mf-cb-h);\n  padding: 0 0.875rem;\n  border: 1px solid transparent;\n  border-radius: 0.5rem;\n  font: inherit;\n  font-weight: 500;\n  cursor: pointer;\n  -webkit-tap-highlight-color: transparent;\n  transition: background-color 160ms ease, border-color 160ms ease, color 160ms ease, transform 180ms cubic-bezier(0.34, 1.56, 0.64, 1);\n}\n\n.withValue .button {\n  height: calc(var(--mf-cb-h) - 0.375rem);\n}\n\n.button:active:not(:disabled) {\n  transform: scale(0.95);\n}\n\n.button:focus-visible {\n  outline: 2px solid var(--mf-fg, #e4e4e7);\n  outline-offset: 2px;\n}\n\n.button:disabled {\n  opacity: 0.5;\n  cursor: not-allowed;\n}\n\n.iconOnly {\n  width: var(--mf-cb-h);\n  padding: 0;\n}\n\n.withValue .iconOnly {\n  width: calc(var(--mf-cb-h) - 0.375rem);\n}\n\n.default {\n  background-color: var(--mf-fg, #f4f4f6);\n  color: var(--mf-bg, #09090b);\n}\n\n.default:hover:not(:disabled) {\n  opacity: 0.9;\n}\n\n.outline {\n  background-color: var(--mf-surface-raised, #1b1b22);\n  border-color: var(--mf-border, #2e2e38);\n  color: var(--mf-fg, #f4f4f6);\n}\n\n.outline:hover:not(:disabled) {\n  border-color: var(--mf-border-strong, #52525b);\n}\n\n.ghost {\n  background-color: transparent;\n  color: var(--mf-muted, #a1a1aa);\n}\n\n.ghost:hover:not(:disabled) {\n  background-color: var(--mf-surface-raised, #1b1b22);\n  color: var(--mf-fg, #f4f4f6);\n}\n\n.root[data-copied] .outline,\n.root[data-copied] .ghost {\n  color: var(--mf-cb-accent, #22c55e);\n  border-color: color-mix(in srgb, var(--mf-cb-accent, #22c55e) 40%, transparent);\n}\n\n.root[data-copied] .default {\n  background-color: var(--mf-cb-accent, #22c55e);\n  color: #ffffff;\n}\n\n.icon {\n  position: relative;\n  display: inline-grid;\n  place-items: center;\n  width: 1rem;\n  height: 1rem;\n}\n\n.icon svg {\n  width: 100%;\n  height: 100%;\n}\n\n.labelSlot {\n  position: relative;\n  display: inline-grid;\n  text-align: left;\n}\n\n.labelSlot > * {\n  grid-area: 1 / 1;\n}\n\n.sizer {\n  visibility: hidden;\n}\n\n.label {\n  display: inline-block;\n}\n\n.srOnly {\n  position: absolute;\n  width: 1px;\n  height: 1px;\n  margin: -1px;\n  padding: 0;\n  overflow: hidden;\n  clip: rect(0 0 0 0);\n  white-space: nowrap;\n  border: 0;\n}\n\n@media (prefers-reduced-motion: reduce) {\n  .button,\n  .withValue {\n    transition: none;\n  }\n\n  .button:active:not(:disabled) {\n    transform: none;\n  }\n}\n"
+    }
+  ],
+  "tailwindExample": "\"use client\";\n\nimport { AnimatePresence, motion } from \"motion/react\";\nimport { useState } from \"react\";\n\nexport function CopyButtonTailwind({ text = \"npx motionfoundry add copy-button\" }) {\n  const [copied, setCopied] = useState(false);\n  const copy = async () => {\n    await navigator.clipboard.writeText(text);\n    setCopied(true);\n    setTimeout(() => setCopied(false), 2000);\n  };\n  return (\n    <div className=\"inline-flex items-center gap-3 rounded-xl border border-zinc-800 bg-zinc-900 py-1.5 pl-3.5 pr-1.5\">\n      <code className=\"font-mono text-sm text-zinc-100\"><span className=\"mr-2 text-zinc-500\">$</span>{text}</code>\n      <button type=\"button\" onClick={copy} aria-label={copied ? \"Copied\" : \"Copy command\"} className={`inline-flex h-8 items-center gap-1.5 rounded-lg border px-3 text-sm font-medium transition active:scale-95 ${copied ? \"border-green-500/40 text-green-500\" : \"border-zinc-800 bg-zinc-800 text-zinc-100\"}`}>\n        <AnimatePresence initial={false} mode=\"popLayout\">\n          <motion.svg key={String(copied)} initial={{ scale: 0.4, rotate: -45, opacity: 0 }} animate={{ scale: 1, rotate: 0, opacity: 1 }} exit={{ scale: 0.4, rotate: 45, opacity: 0 }} aria-hidden=\"true\" width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" strokeWidth=\"2\" strokeLinecap=\"round\">\n            {copied ? <path d=\"M5 12.5l4.5 4.5L19 7\" /> : <><rect x=\"9\" y=\"9\" width=\"12\" height=\"12\" rx=\"2\" /><path d=\"M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1\" /></>}\n          </motion.svg>\n        </AnimatePresence>\n        {copied ? \"Copied\" : \"Copy\"}\n      </button>\n      <span role=\"status\" className=\"sr-only\">{copied ? \"Copied to clipboard\" : \"\"}</span>\n    </div>\n  );\n}"
+}

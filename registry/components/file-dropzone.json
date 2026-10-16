@@ -1,0 +1,196 @@
+{
+  "slug": "file-dropzone",
+  "name": "FileDropzone",
+  "category": "Forms and Inputs",
+  "collection": "ui",
+  "featured": false,
+  "addedAt": "2026-10-16",
+  "version": "2.3.0",
+  "requiresMotion": true,
+  "dependencies": [
+    "motion",
+    "react"
+  ],
+  "description": "A drag-and-drop upload area that lifts and glows in the accent color while files hover over it, with a file list that springs new entries in, animates simulated upload progress, draws a check on completion and slides removed files out. Oversized files are rejected inline.",
+  "tags": [
+    "file-upload",
+    "dropzone",
+    "drag-and-drop",
+    "progress",
+    "form",
+    "ui"
+  ],
+  "a11yNotes": "The drop area contains a real <button> (described by the hint text) that opens the native file picker, so it works by keyboard and screen reader without drag and drop; the hidden file input is removed from the tab order. Each file shows a role=\"progressbar\" with aria-valuenow and a labelled Remove button. A polite role=\"status\" live region announces added, uploaded and removed files. Under prefers-reduced-motion entries fade without movement and the zone does not scale.",
+  "defaultProps": {
+    "title": "Drag & drop files here",
+    "hint": "PNG, JPG, PDF or ZIP up to 10 MB",
+    "buttonLabel": "Browse files",
+    "multiple": true,
+    "maxFiles": 6,
+    "maxSizeMB": 10,
+    "uploadDuration": 2.4,
+    "showSampleFiles": true,
+    "accentColor": "#6366f1",
+    "disabled": false
+  },
+  "controls": [
+    {
+      "prop": "title",
+      "label": "Title",
+      "type": "text"
+    },
+    {
+      "prop": "hint",
+      "label": "Hint",
+      "type": "text"
+    },
+    {
+      "prop": "buttonLabel",
+      "label": "Button label",
+      "type": "text"
+    },
+    {
+      "prop": "multiple",
+      "label": "Multiple files",
+      "type": "boolean"
+    },
+    {
+      "prop": "maxFiles",
+      "label": "Max files",
+      "type": "range",
+      "min": 1,
+      "max": 10,
+      "step": 1
+    },
+    {
+      "prop": "maxSizeMB",
+      "label": "Max size (MB)",
+      "type": "range",
+      "min": 1,
+      "max": 50,
+      "step": 1
+    },
+    {
+      "prop": "uploadDuration",
+      "label": "Upload duration (s)",
+      "type": "range",
+      "min": 0.5,
+      "max": 8,
+      "step": 0.1
+    },
+    {
+      "prop": "showSampleFiles",
+      "label": "Show sample files",
+      "type": "boolean"
+    },
+    {
+      "prop": "accentColor",
+      "label": "Accent color",
+      "type": "color"
+    },
+    {
+      "prop": "disabled",
+      "label": "Disabled",
+      "type": "boolean"
+    }
+  ],
+  "propsApi": [
+    {
+      "name": "title",
+      "type": "string",
+      "default": "'Drag & drop files here'",
+      "description": "Main prompt inside the drop area."
+    },
+    {
+      "name": "hint",
+      "type": "string",
+      "default": "'PNG, JPG, PDF or ZIP up to 10 MB'",
+      "description": "Hint line under the prompt; also describes the browse button."
+    },
+    {
+      "name": "buttonLabel",
+      "type": "string",
+      "default": "'Browse files'",
+      "description": "Label of the browse button."
+    },
+    {
+      "name": "accept",
+      "type": "string",
+      "default": "''",
+      "description": "Value of the file input's accept attribute (e.g. 'image/*,.pdf')."
+    },
+    {
+      "name": "multiple",
+      "type": "boolean",
+      "default": "true",
+      "description": "Allow several files; when false a new file replaces the list."
+    },
+    {
+      "name": "maxFiles",
+      "type": "number",
+      "default": "6",
+      "description": "Maximum number of entries kept in the list (oldest are dropped)."
+    },
+    {
+      "name": "maxSizeMB",
+      "type": "number",
+      "default": "10",
+      "description": "Files larger than this are listed with an error instead of uploading."
+    },
+    {
+      "name": "uploadDuration",
+      "type": "number",
+      "default": "2.4",
+      "description": "Approximate simulated upload time per file in seconds."
+    },
+    {
+      "name": "showSampleFiles",
+      "type": "boolean",
+      "default": "true",
+      "description": "Start with two sample entries (one complete, one uploading)."
+    },
+    {
+      "name": "accentColor",
+      "type": "string",
+      "default": "'#6366f1'",
+      "description": "Color of the drag-over state, file badges and progress bars."
+    },
+    {
+      "name": "disabled",
+      "type": "boolean",
+      "default": "false",
+      "description": "Disable dropping and browsing."
+    },
+    {
+      "name": "onFilesChange",
+      "type": "(files: File[]) => void",
+      "default": "undefined",
+      "description": "Called with the accepted real files whenever the list changes."
+    },
+    {
+      "name": "className",
+      "type": "string",
+      "default": "''",
+      "description": "Additional class merged onto the root element."
+    },
+    {
+      "name": "style",
+      "type": "React.CSSProperties",
+      "default": "undefined",
+      "description": "Inline styles merged onto the root element."
+    }
+  ],
+  "files": [
+    {
+      "path": "components/ui/file-dropzone.tsx",
+      "type": "registry:component",
+      "content": "\"use client\";\n\nimport * as React from \"react\";\nimport { AnimatePresence, motion, useReducedMotion } from \"motion/react\";\nimport styles from \"../styles/file-dropzone.module.css\";\n\nexport interface DropzoneFile {\n  /** Stable id */\n  id: string;\n  /** File name */\n  name: string;\n  /** Size in bytes */\n  size: number;\n  /** Upload progress 0-1 */\n  progress: number;\n  /** Upload state */\n  status: \"uploading\" | \"done\" | \"error\";\n  /** Error message when status is \"error\" */\n  error?: string;\n  /** The underlying File (absent for sample entries) */\n  file?: File;\n}\n\nexport interface FileDropzoneProps {\n  /** Main prompt inside the drop area */\n  title?: string;\n  /** Hint line under the prompt (accepted types, limits) */\n  hint?: string;\n  /** Label of the browse button */\n  buttonLabel?: string;\n  /** Value for the file input's accept attribute */\n  accept?: string;\n  /** Allow selecting several files at once */\n  multiple?: boolean;\n  /** Maximum number of files kept in the list */\n  maxFiles?: number;\n  /** Maximum file size in megabytes (larger files are rejected) */\n  maxSizeMB?: number;\n  /** Simulated upload duration in seconds */\n  uploadDuration?: number;\n  /** Pre-fill the list with two sample files so the demo is not empty */\n  showSampleFiles?: boolean;\n  /** Accent color for the hover state and progress bars */\n  accentColor?: string;\n  /** Disable the dropzone */\n  disabled?: boolean;\n  /** Called whenever the list of real files changes */\n  onFilesChange?: (files: File[]) => void;\n  /** Optional className merged onto the root */\n  className?: string;\n  /** Optional inline styles merged onto the root */\n  style?: React.CSSProperties;\n}\n\nconst SAMPLES: DropzoneFile[] = [\n  { id: \"sample-1\", name: \"brand-guidelines.pdf\", size: 2_480_000, progress: 1, status: \"done\" },\n  { id: \"sample-2\", name: \"hero-shot@2x.png\", size: 4_120_000, progress: 0.18, status: \"uploading\" },\n];\n\nfunction formatBytes(n: number) {\n  if (n < 1024) return `${n} B`;\n  if (n < 1024 * 1024) return `${(n / 1024).toFixed(0)} KB`;\n  return `${(n / 1024 / 1024).toFixed(1)} MB`;\n}\n\n/** Deterministic 0-1 hash so each file gets its own upload pace. */\nfunction seeded(s: string) {\n  let h = 2166136261;\n  for (let i = 0; i < s.length; i++) h = Math.imul(h ^ s.charCodeAt(i), 16777619);\n  return ((h >>> 0) % 1000) / 1000;\n}\n\nexport function FileDropzone({\n  title = \"Drag & drop files here\",\n  hint = \"PNG, JPG, PDF or ZIP up to 10 MB\",\n  buttonLabel = \"Browse files\",\n  accept = \"\",\n  multiple = true,\n  maxFiles = 6,\n  maxSizeMB = 10,\n  uploadDuration = 2.4,\n  showSampleFiles = true,\n  accentColor = \"#6366f1\",\n  disabled = false,\n  onFilesChange,\n  className = \"\",\n  style,\n}: FileDropzoneProps) {\n  const reduce = useReducedMotion();\n  const id = React.useId();\n  const [items, setItems] = React.useState<DropzoneFile[]>(() => (showSampleFiles ? SAMPLES : []));\n  const [dragging, setDragging] = React.useState(false);\n  const [announce, setAnnounce] = React.useState(\"\");\n  const inputRef = React.useRef<HTMLInputElement>(null);\n  const depth = React.useRef(0);\n  const counter = React.useRef(0);\n  const uploading = items.some((f) => f.status === \"uploading\");\n\n  // Simulated upload: advance progress on a single rAF loop while anything is uploading.\n  React.useEffect(() => {\n    if (!uploading) return;\n    let raf = 0;\n    let last = performance.now();\n    const tick = (now: number) => {\n      const dt = Math.min(0.1, (now - last) / 1000);\n      last = now;\n      setItems((list) =>\n        list.map((f) => {\n          if (f.status !== \"uploading\") return f;\n          const pace = 0.7 + seeded(f.id) * 0.6;\n          const p = Math.min(1, f.progress + (dt / Math.max(0.2, uploadDuration)) * pace);\n          if (p >= 1) setAnnounce(`${f.name} uploaded`);\n          return { ...f, progress: p, status: p >= 1 ? \"done\" : \"uploading\" };\n        }),\n      );\n      raf = requestAnimationFrame(tick);\n    };\n    raf = requestAnimationFrame(tick);\n    return () => cancelAnimationFrame(raf);\n  }, [uploading, uploadDuration]);\n\n  const report = (list: DropzoneFile[]) => onFilesChange?.(list.flatMap((f) => (f.file && f.status !== \"error\" ? [f.file] : [])));\n\n  const addFiles = (incoming: FileList | null) => {\n    if (!incoming || disabled) return;\n    const picked = Array.from(incoming).slice(0, multiple ? undefined : 1);\n    const added = picked.map<DropzoneFile>((file) => {\n      counter.current += 1;\n      const tooBig = file.size > maxSizeMB * 1024 * 1024;\n      return {\n        id: `${id}-${counter.current}-${file.name}`,\n        name: file.name,\n        size: file.size,\n        progress: 0,\n        status: tooBig ? \"error\" : \"uploading\",\n        error: tooBig ? `Larger than ${maxSizeMB} MB` : undefined,\n        file,\n      };\n    });\n    const next = (multiple ? [...items, ...added] : added).slice(-Math.max(1, maxFiles));\n    setItems(next);\n    report(next);\n    setAnnounce(`${added.length} file${added.length === 1 ? \"\" : \"s\"} added`);\n  };\n\n  const remove = (f: DropzoneFile) => {\n    const next = items.filter((x) => x.id !== f.id);\n    setItems(next);\n    report(next);\n    setAnnounce(`${f.name} removed`);\n  };\n\n  const onDrag = (e: React.DragEvent<HTMLDivElement>, kind: \"enter\" | \"over\" | \"leave\" | \"drop\") => {\n    e.preventDefault();\n    if (disabled) return;\n    if (kind === \"enter\") depth.current += 1;\n    if (kind === \"leave\") depth.current = Math.max(0, depth.current - 1);\n    if (kind === \"drop\") {\n      depth.current = 0;\n      addFiles(e.dataTransfer.files);\n    }\n    setDragging(depth.current > 0);\n  };\n\n  const spring = reduce ? { duration: 0 } : { type: \"spring\" as const, stiffness: 420, damping: 32 };\n\n  return (\n    <div className={`${styles.root} ${className}`.trim()} style={{ \"--mf-fd-accent\": accentColor, ...style } as React.CSSProperties}>\n      <motion.div\n        className={styles.zone}\n        data-dragging={dragging ? \"\" : undefined}\n        data-disabled={disabled ? \"\" : undefined}\n        animate={{ scale: dragging && !reduce ? 1.015 : 1 }}\n        transition={spring}\n        onDragEnter={(e) => onDrag(e, \"enter\")}\n        onDragOver={(e) => onDrag(e, \"over\")}\n        onDragLeave={(e) => onDrag(e, \"leave\")}\n        onDrop={(e) => onDrag(e, \"drop\")}\n        onClick={(e) => {\n          if (e.target === e.currentTarget) inputRef.current?.click();\n        }}\n      >\n        <motion.span className={styles.iconWrap} aria-hidden=\"true\" animate={reduce ? undefined : { y: dragging ? -6 : 0 }} transition={spring}>\n          <svg width=\"22\" height=\"22\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" strokeWidth=\"2\" strokeLinecap=\"round\" strokeLinejoin=\"round\">\n            <path d=\"M12 16V4M7 9l5-5 5 5\" />\n            <path d=\"M4 15v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3\" />\n          </svg>\n        </motion.span>\n        <p className={styles.title}>{dragging ? \"Release to upload\" : title}</p>\n        <p id={`${id}-hint`} className={styles.hint}>\n          {hint}\n        </p>\n        <button type=\"button\" className={styles.browse} disabled={disabled} aria-describedby={`${id}-hint`} onClick={() => inputRef.current?.click()}>\n          {buttonLabel}\n        </button>\n        <input\n          ref={inputRef}\n          type=\"file\"\n          tabIndex={-1}\n          aria-hidden=\"true\"\n          className={styles.input}\n          accept={accept || undefined}\n          multiple={multiple}\n          disabled={disabled}\n          onChange={(e) => {\n            addFiles(e.target.files);\n            e.target.value = \"\";\n          }}\n        />\n      </motion.div>\n      <ul className={styles.list} aria-label=\"Files\">\n        <AnimatePresence initial={false}>\n          {items.map((f) => (\n            <motion.li\n              key={f.id}\n              layout={!reduce}\n              className={styles.item}\n              data-status={f.status}\n              initial={reduce ? { opacity: 0 } : { opacity: 0, y: -8, scale: 0.98 }}\n              animate={{ opacity: 1, y: 0, scale: 1 }}\n              exit={reduce ? { opacity: 0 } : { opacity: 0, x: 24, transition: { duration: 0.18 } }}\n              transition={spring}\n            >\n              <span className={styles.fileIcon} aria-hidden=\"true\">\n                {f.name.split(\".\").pop()?.slice(0, 4).toUpperCase()}\n              </span>\n              <span className={styles.meta}>\n                <span className={styles.nameRow}>\n                  <span className={styles.name}>{f.name}</span>\n                  <span className={styles.size}>\n                    {f.status === \"error\" ? f.error : f.status === \"done\" ? formatBytes(f.size) : `${Math.round(f.progress * 100)}%`}\n                  </span>\n                </span>\n                <span\n                  className={styles.bar}\n                  role=\"progressbar\"\n                  aria-label={`Upload progress for ${f.name}`}\n                  aria-valuemin={0}\n                  aria-valuemax={100}\n                  aria-valuenow={Math.round(f.progress * 100)}\n                >\n                  <span className={styles.fill} style={{ transform: `scaleX(${f.status === \"error\" ? 1 : f.progress})` }} />\n                </span>\n              </span>\n              <button type=\"button\" className={styles.remove} aria-label={`Remove ${f.name}`} onClick={() => remove(f)}>\n                {f.status === \"done\" ? (\n                  <svg aria-hidden=\"true\" className={styles.done} width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" strokeWidth=\"2.4\" strokeLinecap=\"round\" strokeLinejoin=\"round\">\n                    <motion.path d=\"M5 12.5l4.5 4.5L19 7.5\" initial={reduce ? false : { pathLength: 0 }} animate={{ pathLength: 1 }} transition={{ duration: 0.3 }} />\n                  </svg>\n                ) : null}\n                <svg aria-hidden=\"true\" className={styles.x} width=\"14\" height=\"14\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" strokeWidth=\"2.2\" strokeLinecap=\"round\">\n                  <path d=\"M18 6 6 18M6 6l12 12\" />\n                </svg>\n              </button>\n            </motion.li>\n          ))}\n        </AnimatePresence>\n      </ul>\n      <span className={styles.srOnly} role=\"status\" aria-live=\"polite\">\n        {announce}\n      </span>\n    </div>\n  );\n}\n"
+    },
+    {
+      "path": "components/styles/file-dropzone.module.css",
+      "type": "registry:style",
+      "content": ".root {\n  display: grid;\n  gap: 0.75rem;\n  width: 100%;\n  max-width: 30rem;\n  color: var(--mf-fg, #f4f4f6);\n  font-size: 0.875rem;\n}\n\n.zone {\n  position: relative;\n  display: flex;\n  flex-direction: column;\n  align-items: center;\n  gap: 0.25rem;\n  padding: 1.5rem 1.25rem;\n  border-radius: 0.75rem;\n  border: 1.5px dashed var(--mf-border-strong, #52525b);\n  background-color: var(--mf-surface, #141419);\n  text-align: center;\n  cursor: pointer;\n  transition: border-color 180ms ease, background-color 180ms ease, box-shadow 180ms ease;\n}\n\n.zone:hover:not([data-disabled]) {\n  border-color: color-mix(in srgb, var(--mf-fd-accent, #6366f1) 60%, var(--mf-border-strong, #52525b));\n}\n\n.zone[data-dragging] {\n  border-style: solid;\n  border-color: var(--mf-fd-accent, #6366f1);\n  background-color: color-mix(in srgb, var(--mf-fd-accent, #6366f1) 10%, var(--mf-surface, #141419));\n  box-shadow: 0 0 0 4px color-mix(in srgb, var(--mf-fd-accent, #6366f1) 18%, transparent);\n}\n\n.zone[data-disabled] {\n  opacity: 0.5;\n  cursor: not-allowed;\n}\n\n.zone > *:not(.browse) {\n  pointer-events: none;\n}\n\n.iconWrap {\n  display: inline-grid;\n  place-items: center;\n  width: 2.75rem;\n  height: 2.75rem;\n  margin-bottom: 0.5rem;\n  border-radius: 999px;\n  background-color: var(--mf-surface-raised, #1b1b22);\n  box-shadow: inset 0 0 0 1px var(--mf-border, #2e2e38);\n  color: var(--mf-muted, #a1a1aa);\n  transition: color 180ms ease, background-color 180ms ease;\n}\n\n.zone[data-dragging] .iconWrap {\n  color: #ffffff;\n  background-color: var(--mf-fd-accent, #6366f1);\n  box-shadow: none;\n}\n\n.title {\n  margin: 0;\n  font-weight: 600;\n}\n\n.hint {\n  margin: 0;\n  font-size: 0.8125rem;\n  color: var(--mf-muted, #a1a1aa);\n}\n\n.browse {\n  margin-top: 0.75rem;\n  height: 2.125rem;\n  padding: 0 0.875rem;\n  border-radius: 0.5rem;\n  border: 1px solid var(--mf-border, #2e2e38);\n  background-color: var(--mf-surface-raised, #1b1b22);\n  color: var(--mf-fg, #f4f4f6);\n  font: inherit;\n  font-size: 0.8125rem;\n  font-weight: 500;\n  cursor: pointer;\n  transition: border-color 150ms ease, transform 150ms ease;\n}\n\n.browse:hover:not(:disabled) {\n  border-color: var(--mf-border-strong, #52525b);\n}\n\n.browse:active:not(:disabled) {\n  transform: scale(0.98);\n}\n\n.browse:disabled {\n  cursor: not-allowed;\n}\n\n.browse:focus-visible,\n.remove:focus-visible {\n  outline: 2px solid var(--mf-fg, #e4e4e7);\n  outline-offset: 2px;\n}\n\n.input {\n  position: absolute;\n  width: 1px;\n  height: 1px;\n  opacity: 0;\n  pointer-events: none;\n}\n\n.list {\n  display: grid;\n  gap: 0.5rem;\n  margin: 0;\n  padding: 0;\n  list-style: none;\n}\n\n.list:empty {\n  display: none;\n}\n\n.item {\n  display: flex;\n  align-items: center;\n  gap: 0.75rem;\n  padding: 0.625rem 0.625rem 0.625rem 0.75rem;\n  border-radius: 0.625rem;\n  border: 1px solid var(--mf-border, #2e2e38);\n  background-color: var(--mf-surface, #141419);\n}\n\n.fileIcon {\n  display: inline-grid;\n  place-items: center;\n  flex-shrink: 0;\n  width: 2.25rem;\n  height: 2.25rem;\n  border-radius: 0.5rem;\n  background-color: color-mix(in srgb, var(--mf-fd-accent, #6366f1) 14%, var(--mf-surface-raised, #1b1b22));\n  color: var(--mf-fd-accent, #6366f1);\n  font-size: 0.625rem;\n  font-weight: 700;\n  letter-spacing: 0.02em;\n}\n\n.item[data-status=\"error\"] .fileIcon {\n  background-color: rgba(239, 68, 68, 0.14);\n  color: #ef4444;\n}\n\n.meta {\n  display: grid;\n  gap: 0.375rem;\n  flex: 1;\n  min-width: 0;\n}\n\n.nameRow {\n  display: flex;\n  align-items: baseline;\n  justify-content: space-between;\n  gap: 0.75rem;\n}\n\n.name {\n  min-width: 0;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n  font-weight: 500;\n}\n\n.size {\n  flex-shrink: 0;\n  font-size: 0.75rem;\n  font-variant-numeric: tabular-nums;\n  color: var(--mf-muted, #a1a1aa);\n}\n\n.item[data-status=\"error\"] .size {\n  color: #ef4444;\n}\n\n.bar {\n  position: relative;\n  display: block;\n  height: 0.25rem;\n  overflow: hidden;\n  border-radius: 999px;\n  background-color: var(--mf-surface-raised, #1b1b22);\n}\n\n.fill {\n  position: absolute;\n  inset: 0;\n  border-radius: inherit;\n  background-color: var(--mf-fd-accent, #6366f1);\n  transform-origin: left center;\n  transition: background-color 200ms ease;\n}\n\n.item[data-status=\"done\"] .fill {\n  background-color: #22c55e;\n}\n\n.item[data-status=\"error\"] .fill {\n  background-color: #ef4444;\n}\n\n.remove {\n  position: relative;\n  display: inline-grid;\n  place-items: center;\n  flex-shrink: 0;\n  width: 1.75rem;\n  height: 1.75rem;\n  padding: 0;\n  border: 0;\n  border-radius: 0.375rem;\n  background: transparent;\n  color: var(--mf-subtle, #71717a);\n  cursor: pointer;\n}\n\n.remove:hover {\n  color: var(--mf-fg, #f4f4f6);\n  background-color: var(--mf-surface-raised, #1b1b22);\n}\n\n.done {\n  position: absolute;\n  color: #22c55e;\n  transition: opacity 150ms ease;\n}\n\n.done + .x {\n  opacity: 0;\n  transition: opacity 150ms ease;\n}\n\n.remove:hover .done,\n.remove:focus-visible .done {\n  opacity: 0;\n}\n\n.remove:hover .done + .x,\n.remove:focus-visible .done + .x {\n  opacity: 1;\n}\n\n.srOnly {\n  position: absolute;\n  width: 1px;\n  height: 1px;\n  margin: -1px;\n  padding: 0;\n  overflow: hidden;\n  clip: rect(0 0 0 0);\n  white-space: nowrap;\n  border: 0;\n}\n\n@media (prefers-reduced-motion: reduce) {\n  .zone,\n  .iconWrap,\n  .browse,\n  .fill,\n  .done,\n  .done + .x {\n    transition: none;\n  }\n\n  .zone {\n    transform: none !important;\n  }\n}\n"
+    }
+  ],
+  "tailwindExample": "\"use client\";\n\nimport { AnimatePresence, motion } from \"motion/react\";\nimport { useEffect, useRef, useState } from \"react\";\n\ntype Item = { id: number; name: string; progress: number };\n\nexport function FileDropzoneTailwind() {\n  const [items, setItems] = useState<Item[]>([]);\n  const [over, setOver] = useState(false);\n  const input = useRef<HTMLInputElement>(null);\n  const busy = items.some((i) => i.progress < 1);\n  useEffect(() => {\n    if (!busy) return;\n    const t = setInterval(() => setItems((l) => l.map((i) => ({ ...i, progress: Math.min(1, i.progress + 0.04) }))), 50);\n    return () => clearInterval(t);\n  }, [busy]);\n  const add = (files: FileList | null) => files && setItems((l) => [...l, ...Array.from(files).map((f, k) => ({ id: Date.now() + k, name: f.name, progress: 0 }))]);\n  return (\n    <div className=\"grid w-full max-w-md gap-3 text-sm text-zinc-100\">\n      <motion.div animate={{ scale: over ? 1.015 : 1 }} onDragOver={(e) => { e.preventDefault(); setOver(true); }} onDragLeave={() => setOver(false)} onDrop={(e) => { e.preventDefault(); setOver(false); add(e.dataTransfer.files); }} className={`flex flex-col items-center gap-1 rounded-xl border-[1.5px] border-dashed p-6 text-center ${over ? \"border-solid border-indigo-500 bg-indigo-500/10\" : \"border-zinc-700 bg-zinc-900\"}`}>\n        <p className=\"font-semibold\">{over ? \"Release to upload\" : \"Drag & drop files here\"}</p>\n        <p className=\"text-xs text-zinc-400\">PNG, JPG or PDF up to 10 MB</p>\n        <button type=\"button\" onClick={() => input.current?.click()} className=\"mt-3 h-8 rounded-lg border border-zinc-800 bg-zinc-800 px-3 text-xs font-medium\">Browse files</button>\n        <input ref={input} type=\"file\" multiple hidden onChange={(e) => add(e.target.files)} />\n      </motion.div>\n      <ul className=\"grid gap-2\">\n        <AnimatePresence initial={false}>\n          {items.map((i) => (\n            <motion.li key={i.id} layout initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, x: 24 }} className=\"flex items-center gap-3 rounded-lg border border-zinc-800 bg-zinc-900 p-3\">\n              <div className=\"min-w-0 flex-1\">\n                <div className=\"truncate font-medium\">{i.name}</div>\n                <div role=\"progressbar\" aria-label={`Upload progress for ${i.name}`} aria-valuenow={Math.round(i.progress * 100)} className=\"mt-1.5 h-1 overflow-hidden rounded-full bg-zinc-800\"><div className={`h-full origin-left ${i.progress < 1 ? \"bg-indigo-500\" : \"bg-green-500\"}`} style={{ transform: `scaleX(${i.progress})` }} /></div>\n              </div>\n              <button type=\"button\" aria-label={`Remove ${i.name}`} onClick={() => setItems((l) => l.filter((x) => x.id !== i.id))} className=\"text-zinc-500 hover:text-zinc-100\">✕</button>\n            </motion.li>\n          ))}\n        </AnimatePresence>\n      </ul>\n    </div>\n  );\n}"
+}

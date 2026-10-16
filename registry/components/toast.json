@@ -1,0 +1,213 @@
+{
+  "slug": "toast",
+  "name": "Toast",
+  "category": "Overlays and Menus",
+  "collection": "ui",
+  "featured": true,
+  "addedAt": "2026-10-16",
+  "version": "2.3.0",
+  "requiresMotion": true,
+  "dependencies": [
+    "motion",
+    "react"
+  ],
+  "description": "A stacked toaster: notifications pile up with depth, fan out on hover or focus, auto-dismiss with pause-on-hover, swipe away sideways, and include success, error, and promise (loading → done) variants.",
+  "tags": [
+    "toast",
+    "toaster",
+    "notification",
+    "snackbar",
+    "sonner",
+    "ui"
+  ],
+  "a11yNotes": "Toasts render in a portal inside a labelled <section> whose list is an aria-live=\"polite\" region, so new messages are announced; error toasts additionally use role=\"alert\". Each toast is focusable, Escape dismisses the focused toast, and every toast has a labelled close button. Hovering or focusing the stack expands it and pauses auto-dismiss timers. Stacked-away toasts are aria-hidden and removed from the tab order. Reduced motion removes the spring stacking and slide animations.",
+  "defaultProps": {
+    "position": "bottom-right",
+    "duration": 4000,
+    "title": "Event has been created",
+    "description": "Sunday, December 03, 2023 at 9:00 AM",
+    "actionLabel": "Undo",
+    "maxVisible": 3,
+    "expand": false,
+    "closeButton": true,
+    "swipeToDismiss": true,
+    "richColors": false,
+    "accentColor": "#6366f1"
+  },
+  "controls": [
+    {
+      "prop": "position",
+      "label": "Position",
+      "type": "select",
+      "options": [
+        "top-left",
+        "top-center",
+        "top-right",
+        "bottom-left",
+        "bottom-center",
+        "bottom-right"
+      ]
+    },
+    {
+      "prop": "title",
+      "label": "Title",
+      "type": "text"
+    },
+    {
+      "prop": "description",
+      "label": "Description",
+      "type": "text"
+    },
+    {
+      "prop": "actionLabel",
+      "label": "Action label",
+      "type": "text"
+    },
+    {
+      "prop": "duration",
+      "label": "Duration (ms)",
+      "type": "range",
+      "min": 0,
+      "max": 10000,
+      "step": 500
+    },
+    {
+      "prop": "maxVisible",
+      "label": "Max visible",
+      "type": "range",
+      "min": 1,
+      "max": 5,
+      "step": 1
+    },
+    {
+      "prop": "expand",
+      "label": "Always expanded",
+      "type": "boolean"
+    },
+    {
+      "prop": "closeButton",
+      "label": "Close button",
+      "type": "boolean"
+    },
+    {
+      "prop": "swipeToDismiss",
+      "label": "Swipe to dismiss",
+      "type": "boolean"
+    },
+    {
+      "prop": "richColors",
+      "label": "Rich colors",
+      "type": "boolean"
+    },
+    {
+      "prop": "accentColor",
+      "label": "Accent",
+      "type": "color"
+    }
+  ],
+  "propsApi": [
+    {
+      "name": "position",
+      "type": "'top-left' | 'top-center' | 'top-right' | 'bottom-left' | 'bottom-center' | 'bottom-right'",
+      "default": "'bottom-right'",
+      "description": "Where the stack is pinned in the window."
+    },
+    {
+      "name": "duration",
+      "type": "number",
+      "default": "4000",
+      "description": "Auto-dismiss time in ms (0 keeps toasts until dismissed); paused while hovered or focused."
+    },
+    {
+      "name": "title",
+      "type": "string",
+      "default": "'Event has been created'",
+      "description": "Title of the default toast."
+    },
+    {
+      "name": "description",
+      "type": "string",
+      "default": "'Sunday, December 03, 2023 at 9:00 AM'",
+      "description": "Description of the default toast."
+    },
+    {
+      "name": "actionLabel",
+      "type": "string",
+      "default": "'Undo'",
+      "description": "Action button on the default toast (empty hides it)."
+    },
+    {
+      "name": "promiseDelay",
+      "type": "number",
+      "default": "2000",
+      "description": "Milliseconds before the promise toast resolves to success."
+    },
+    {
+      "name": "maxVisible",
+      "type": "number",
+      "default": "3",
+      "description": "Toasts visible in the stack at once."
+    },
+    {
+      "name": "gap",
+      "type": "number",
+      "default": "12",
+      "description": "Gap between toasts when expanded, in pixels."
+    },
+    {
+      "name": "expand",
+      "type": "boolean",
+      "default": "false",
+      "description": "Keep the stack expanded instead of expanding on hover."
+    },
+    {
+      "name": "closeButton",
+      "type": "boolean",
+      "default": "true",
+      "description": "Show a close button on each toast."
+    },
+    {
+      "name": "swipeToDismiss",
+      "type": "boolean",
+      "default": "true",
+      "description": "Allow dismissing toasts by dragging them sideways."
+    },
+    {
+      "name": "richColors",
+      "type": "boolean",
+      "default": "false",
+      "description": "Tint success and error toasts."
+    },
+    {
+      "name": "accentColor",
+      "type": "string",
+      "default": "'#6366f1'",
+      "description": "Spinner, focus ring, and accent color."
+    },
+    {
+      "name": "className",
+      "type": "string",
+      "default": "''",
+      "description": "Merged onto the root."
+    },
+    {
+      "name": "style",
+      "type": "React.CSSProperties",
+      "default": "undefined",
+      "description": "Merged onto the root."
+    }
+  ],
+  "files": [
+    {
+      "path": "components/ui/toast.tsx",
+      "type": "registry:component",
+      "content": "\"use client\";\n\nimport * as React from \"react\";\nimport { createPortal } from \"react-dom\";\nimport { AnimatePresence, motion, useReducedMotion } from \"motion/react\";\nimport styles from \"../styles/toast.module.css\";\n\ntype ToastKind = \"default\" | \"success\" | \"error\" | \"loading\";\ntype ToastPosition = \"top-left\" | \"top-center\" | \"top-right\" | \"bottom-left\" | \"bottom-center\" | \"bottom-right\";\n\ninterface ToastData {\n  id: number;\n  kind: ToastKind;\n  title: string;\n  description?: string;\n  action?: boolean;\n}\n\nexport interface ToastProps {\n  /** Corner or edge where toasts stack */\n  position?: ToastPosition;\n  /** Auto-dismiss duration in milliseconds (0 keeps toasts until dismissed) */\n  duration?: number;\n  /** Title of the default toast */\n  title?: string;\n  /** Description of the default toast */\n  description?: string;\n  /** Label of the action button on the default toast (empty hides it) */\n  actionLabel?: string;\n  /** Time in ms before the promise toast resolves */\n  promiseDelay?: number;\n  /** Maximum number of toasts visible in the stack */\n  maxVisible?: number;\n  /** Gap between toasts when expanded, in pixels */\n  gap?: number;\n  /** Keep the stack permanently expanded instead of expanding on hover */\n  expand?: boolean;\n  /** Show the close button on each toast */\n  closeButton?: boolean;\n  /** Allow dismissing toasts by dragging them sideways */\n  swipeToDismiss?: boolean;\n  /** Tint success and error toasts with their status colors */\n  richColors?: boolean;\n  /** Accent color for the loading spinner, action button and focus */\n  accentColor?: string;\n  /** Optional className merged onto the root */\n  className?: string;\n  /** Optional inline styles merged onto the root */\n  style?: React.CSSProperties;\n}\n\nconst THEME_TOKENS = [\"--mf-bg\", \"--mf-fg\", \"--mf-surface\", \"--mf-surface-raised\", \"--mf-muted\", \"--mf-subtle\", \"--mf-border\", \"--mf-border-strong\", \"--mf-accent\"];\nconst PEEK = 14;\n\nfunction readThemeVars(el: Element | null): Record<string, string> {\n  const out: Record<string, string> = {};\n  if (!el) return out;\n  const cs = getComputedStyle(el);\n  for (const t of THEME_TOKENS) {\n    const v = cs.getPropertyValue(t).trim();\n    if (v) out[t] = v;\n  }\n  return out;\n}\n\nconst exitVariants = {\n  exit: (dir: number) => (dir ? { x: dir * 420, opacity: 0, transition: { duration: 0.2 } } : { opacity: 0, scale: 0.92, transition: { duration: 0.2 } }),\n};\n\nfunction StatusIcon({ kind }: { kind: ToastKind }) {\n  if (kind === \"default\") return null;\n  if (kind === \"loading\") return <span aria-hidden=\"true\" className={styles.spinner} />;\n  return (\n    <svg aria-hidden=\"true\" className={styles[kind]} width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" strokeWidth=\"2\" strokeLinecap=\"round\" strokeLinejoin=\"round\">\n      <circle cx=\"12\" cy=\"12\" r=\"9.5\" />\n      <path d={kind === \"success\" ? \"m8 12.5 2.8 2.8L16.5 9\" : \"M9 9l6 6M15 9l-6 6\"} />\n    </svg>\n  );\n}\n\ninterface ItemProps {\n  data: ToastData;\n  index: number;\n  offset: number;\n  frontHeight: number;\n  height?: number;\n  expanded: boolean;\n  hidden: boolean;\n  bottom: boolean;\n  duration: number;\n  closeButton: boolean;\n  swipe: boolean;\n  actionLabel: string;\n  reduce: boolean;\n  onHeight: (id: number, h: number) => void;\n  onDismiss: (id: number, dir: number) => void;\n}\n\nfunction ToastItem({ data, index, offset, frontHeight, height, expanded, hidden, bottom, duration, closeButton, swipe, actionLabel, reduce, onHeight, onDismiss }: ItemProps) {\n  const innerRef = React.useRef<HTMLDivElement>(null);\n  const remaining = React.useRef(duration);\n\n  React.useEffect(() => {\n    const el = innerRef.current;\n    if (!el) return;\n    onHeight(data.id, el.offsetHeight);\n    if (typeof ResizeObserver === \"undefined\") return;\n    const ro = new ResizeObserver(() => onHeight(data.id, el.offsetHeight));\n    ro.observe(el);\n    return () => ro.disconnect();\n  }, [data.id, onHeight]);\n\n  React.useEffect(() => {\n    if (expanded || data.kind === \"loading\" || duration <= 0) return;\n    const start = performance.now();\n    const t = setTimeout(() => onDismiss(data.id, 0), Math.max(0, remaining.current));\n    return () => {\n      clearTimeout(t);\n      remaining.current -= performance.now() - start;\n    };\n  }, [expanded, data.kind, data.id, duration, onDismiss]);\n\n  const sign = bottom ? -1 : 1;\n  const front = index === 0;\n  const y = sign * (expanded ? offset : index * PEEK);\n  const spring = reduce ? { duration: 0 } : { type: \"spring\" as const, stiffness: 380, damping: 34 };\n\n  return (\n    <motion.li\n      tabIndex={hidden ? -1 : 0}\n      role={data.kind === \"error\" ? \"alert\" : undefined}\n      aria-hidden={hidden || undefined}\n      data-kind={data.kind}\n      className={styles.toast}\n      style={{ zIndex: 100 - index, pointerEvents: hidden ? \"none\" : \"auto\", [bottom ? \"bottom\" : \"top\"]: 0 }}\n      custom={0}\n      variants={exitVariants}\n      initial={{ opacity: 0, y: sign * -28, scale: 1 }}\n      animate={{\n        opacity: hidden ? 0 : 1,\n        y,\n        scale: expanded || reduce ? 1 : 1 - index * 0.05,\n        height: expanded || front ? (height ?? \"auto\") : frontHeight || \"auto\",\n      }}\n      exit=\"exit\"\n      transition={{ ...spring, opacity: { duration: 0.2 } }}\n      drag={swipe && !hidden ? \"x\" : false}\n      dragSnapToOrigin\n      dragElastic={0.6}\n      onDragEnd={(_, info) => {\n        if (Math.abs(info.offset.x) > 80 || Math.abs(info.velocity.x) > 600) onDismiss(data.id, Math.sign(info.offset.x || info.velocity.x));\n      }}\n      onKeyDown={(e) => {\n        if (e.key === \"Escape\" && e.target === e.currentTarget) onDismiss(data.id, 0);\n      }}\n    >\n      <motion.div ref={innerRef} className={styles.inner} animate={{ opacity: expanded || front ? 1 : 0 }} transition={{ duration: 0.15 }}>\n        <StatusIcon kind={data.kind} />\n        <div className={styles.text}>\n          <div className={styles.title}>{data.title}</div>\n          {data.description && <div className={styles.description}>{data.description}</div>}\n        </div>\n        {data.action && actionLabel && (\n          <button type=\"button\" className={styles.action} onClick={() => onDismiss(data.id, 0)}>\n            {actionLabel}\n          </button>\n        )}\n        {closeButton && (\n          <button type=\"button\" aria-label=\"Close notification\" className={styles.close} onClick={() => onDismiss(data.id, 0)}>\n            <svg aria-hidden=\"true\" width=\"12\" height=\"12\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" strokeWidth=\"2.5\" strokeLinecap=\"round\">\n              <path d=\"M18 6 6 18M6 6l12 12\" />\n            </svg>\n          </button>\n        )}\n      </motion.div>\n    </motion.li>\n  );\n}\n\nexport function Toast({\n  position = \"bottom-right\",\n  duration = 4000,\n  title = \"Event has been created\",\n  description = \"Sunday, December 03, 2023 at 9:00 AM\",\n  actionLabel = \"Undo\",\n  promiseDelay = 2000,\n  maxVisible = 3,\n  gap = 12,\n  expand = false,\n  closeButton = true,\n  swipeToDismiss = true,\n  richColors = false,\n  accentColor = \"#6366f1\",\n  className = \"\",\n  style,\n}: ToastProps) {\n  const reduce = !!useReducedMotion();\n  const rootRef = React.useRef<HTMLDivElement>(null);\n  const nextId = React.useRef(1);\n  const swipeDir = React.useRef(0);\n  const timers = React.useRef(new Set<ReturnType<typeof setTimeout>>());\n  const [mounted, setMounted] = React.useState(false);\n  const [toasts, setToasts] = React.useState<ToastData[]>([]);\n  const [heights, setHeights] = React.useState<Record<number, number>>({});\n  const [hovered, setHovered] = React.useState(false);\n  const [focused, setFocused] = React.useState(false);\n  const [themeVars, setThemeVars] = React.useState<Record<string, string>>({});\n\n  React.useEffect(() => {\n    setMounted(true);\n    const set = timers.current;\n    return () => set.forEach((t) => clearTimeout(t));\n  }, []);\n\n  const add = (t: Omit<ToastData, \"id\">) => {\n    const id = nextId.current++;\n    setThemeVars(readThemeVars(rootRef.current));\n    setToasts((list) => [...list, { ...t, id }].slice(-10));\n    return id;\n  };\n\n  const dismiss = React.useCallback((id: number, dir: number) => {\n    swipeDir.current = dir;\n    setToasts((list) => list.filter((t) => t.id !== id));\n  }, []);\n\n  const onHeight = React.useCallback((id: number, h: number) => setHeights((m) => (m[id] === h ? m : { ...m, [id]: h })), []);\n\n  const fire = (kind: \"default\" | \"success\" | \"error\" | \"promise\") => {\n    if (kind === \"default\") add({ kind, title, description, action: true });\n    else if (kind === \"success\") add({ kind, title: \"Changes saved\", description: \"Your profile has been updated.\" });\n    else if (kind === \"error\") add({ kind, title: \"Upload failed\", description: \"The file exceeds the 10 MB limit.\" });\n    else {\n      const id = add({ kind: \"loading\", title: \"Deploying to production…\", description: \"Building and uploading assets\" });\n      new Promise<number>((resolve) => {\n        const t = setTimeout(() => {\n          timers.current.delete(t);\n          resolve(promiseDelay);\n        }, promiseDelay);\n        timers.current.add(t);\n      }).then((ms) => setToasts((list) => list.map((x) => (x.id === id ? { ...x, kind: \"success\", title: \"Deployment complete\", description: `Live in ${(ms / 1000).toFixed(1)}s` } : x))));\n    }\n  };\n\n  const bottom = position.startsWith(\"bottom\");\n  const ordered = [...toasts].reverse();\n  const visible = ordered.slice(0, Math.max(1, maxVisible));\n  const expanded = expand || hovered || focused;\n  const frontHeight = heights[ordered[0]?.id] ?? 0;\n  const offsets: number[] = [];\n  let acc = 0;\n  for (const t of ordered) {\n    offsets.push(acc);\n    acc += (heights[t.id] ?? 0) + gap;\n  }\n  const listHeight = visible.length === 0 ? 0 : expanded ? offsets[visible.length - 1] + (heights[visible[visible.length - 1].id] ?? 0) : frontHeight + PEEK * (visible.length - 1);\n\n  return (\n    <div ref={rootRef} className={`${styles.root} ${className}`.trim()} style={{ \"--mf-toast-accent\": accentColor, ...style } as React.CSSProperties}>\n      {([\"default\", \"success\", \"error\", \"promise\"] as const).map((k) => (\n        <button key={k} type=\"button\" className={`${styles.trigger} ${k === \"default\" ? styles.primary : \"\"}`.trim()} onClick={() => fire(k)}>\n          {k === \"default\" ? \"Show toast\" : k[0].toUpperCase() + k.slice(1)}\n        </button>\n      ))}\n      {mounted &&\n        createPortal(\n          <section aria-label=\"Notifications\" className={styles.viewport} data-position={position} data-rich={richColors ? \"\" : undefined} style={{ ...themeVars, \"--mf-toast-accent\": accentColor } as React.CSSProperties}>\n            <ol\n              aria-live=\"polite\"\n              aria-relevant=\"additions text\"\n              className={styles.list}\n              style={{ height: listHeight }}\n              onPointerEnter={() => setHovered(true)}\n              onPointerLeave={() => setHovered(false)}\n              onFocus={() => setFocused(true)}\n              onBlur={(e) => {\n                if (!e.currentTarget.contains(e.relatedTarget as Node | null)) setFocused(false);\n              }}\n            >\n              <AnimatePresence custom={swipeDir.current}>\n                {ordered.map((t, i) => (\n                  <ToastItem\n                    key={t.id}\n                    data={t}\n                    index={i}\n                    offset={offsets[i]}\n                    frontHeight={frontHeight}\n                    height={heights[t.id]}\n                    expanded={expanded}\n                    hidden={i >= visible.length}\n                    bottom={bottom}\n                    duration={duration}\n                    closeButton={closeButton}\n                    swipe={swipeToDismiss}\n                    actionLabel={actionLabel}\n                    reduce={reduce}\n                    onHeight={onHeight}\n                    onDismiss={dismiss}\n                  />\n                ))}\n              </AnimatePresence>\n            </ol>\n          </section>,\n          document.body,\n        )}\n    </div>\n  );\n}\n"
+    },
+    {
+      "path": "components/styles/toast.module.css",
+      "type": "registry:style",
+      "content": ".root {\n  display: flex;\n  flex-wrap: wrap;\n  justify-content: center;\n  gap: 0.5rem;\n  color: var(--mf-fg, #f4f4f6);\n  font-size: 0.875rem;\n}\n\n.trigger {\n  height: 2.25rem;\n  padding: 0 0.875rem;\n  border: 1px solid var(--mf-border, #2e2e38);\n  border-radius: 0.5rem;\n  background-color: var(--mf-surface, #141419);\n  color: var(--mf-fg, #f4f4f6);\n  font: inherit;\n  font-weight: 500;\n  cursor: pointer;\n  transition: background-color 150ms ease, border-color 150ms ease, transform 120ms ease;\n}\n\n.trigger:hover {\n  border-color: var(--mf-border-strong, #52525b);\n  background-color: var(--mf-surface-raised, #1b1b22);\n}\n\n.trigger:active {\n  transform: scale(0.97);\n}\n\n.primary {\n  border-color: var(--mf-fg, #f4f4f6);\n  background-color: var(--mf-fg, #f4f4f6);\n  color: var(--mf-bg, #09090b);\n}\n\n.primary:hover {\n  border-color: var(--mf-fg, #f4f4f6);\n  background-color: var(--mf-fg, #f4f4f6);\n  opacity: 0.9;\n}\n\n.trigger:focus-visible,\n.action:focus-visible,\n.close:focus-visible,\n.toast:focus-visible {\n  outline: 2px solid var(--mf-toast-accent, #6366f1);\n  outline-offset: 2px;\n}\n\n/* Portaled viewport pinned to a corner or edge of the window. */\n.viewport {\n  position: fixed;\n  z-index: 2147483000;\n  width: min(356px, calc(100vw - 2rem));\n  color: var(--mf-fg, #f4f4f6);\n  font-family: inherit;\n  font-size: 0.875rem;\n  pointer-events: none;\n}\n\n.viewport[data-position^=\"top\"] {\n  top: 1.25rem;\n}\n\n.viewport[data-position^=\"bottom\"] {\n  bottom: 1.25rem;\n}\n\n.viewport[data-position$=\"left\"] {\n  left: 1.25rem;\n}\n\n.viewport[data-position$=\"right\"] {\n  right: 1.25rem;\n}\n\n.viewport[data-position$=\"center\"] {\n  left: 50%;\n  transform: translateX(-50%);\n}\n\n.list {\n  position: relative;\n  margin: 0;\n  padding: 0;\n  list-style: none;\n  transition: height 220ms ease;\n}\n\n.toast {\n  position: absolute;\n  left: 0;\n  right: 0;\n  overflow: hidden;\n  border: 1px solid var(--mf-border, #2e2e38);\n  border-radius: 0.75rem;\n  background-color: var(--mf-surface, #141419);\n  box-shadow: 0 10px 30px -12px rgba(0, 0, 0, 0.55), 0 2px 6px rgba(0, 0, 0, 0.18);\n  touch-action: pan-y;\n  cursor: grab;\n}\n\n.toast:active {\n  cursor: grabbing;\n}\n\n.inner {\n  display: flex;\n  align-items: flex-start;\n  gap: 0.75rem;\n  padding: 0.875rem 1rem;\n}\n\n.text {\n  flex: 1;\n  min-width: 0;\n}\n\n.title {\n  color: var(--mf-fg, #f4f4f6);\n  font-weight: 600;\n  line-height: 1.35;\n}\n\n.description {\n  margin-top: 0.125rem;\n  color: var(--mf-muted, #a1a1aa);\n  font-size: 0.8125rem;\n  line-height: 1.4;\n}\n\n.success,\n.error,\n.spinner {\n  flex-shrink: 0;\n  margin-top: 0.0625rem;\n}\n\n.success {\n  color: #22c55e;\n}\n\n.error {\n  color: #ef4444;\n}\n\n.spinner {\n  width: 1.125rem;\n  height: 1.125rem;\n  border: 2px solid color-mix(in srgb, var(--mf-toast-accent, #6366f1) 25%, transparent);\n  border-top-color: var(--mf-toast-accent, #6366f1);\n  border-radius: 999px;\n  animation: mf-toast-spin 700ms linear infinite;\n}\n\n.action {\n  flex-shrink: 0;\n  height: 1.75rem;\n  padding: 0 0.625rem;\n  border: 0;\n  border-radius: 0.375rem;\n  background-color: var(--mf-fg, #f4f4f6);\n  color: var(--mf-bg, #09090b);\n  font: inherit;\n  font-size: 0.75rem;\n  font-weight: 600;\n  cursor: pointer;\n}\n\n.close {\n  display: inline-flex;\n  flex-shrink: 0;\n  align-items: center;\n  justify-content: center;\n  width: 1.5rem;\n  height: 1.5rem;\n  border: 0;\n  border-radius: 0.375rem;\n  background: transparent;\n  color: var(--mf-subtle, #71717a);\n  cursor: pointer;\n  transition: background-color 150ms ease, color 150ms ease;\n}\n\n.close:hover {\n  background-color: var(--mf-surface-raised, #1b1b22);\n  color: var(--mf-fg, #f4f4f6);\n}\n\n/* richColors: tint status toasts. */\n.viewport[data-rich] .toast[data-kind=\"success\"] {\n  border-color: color-mix(in srgb, #22c55e 40%, var(--mf-border, #2e2e38));\n  background-color: color-mix(in srgb, #22c55e 12%, var(--mf-surface, #141419));\n}\n\n.viewport[data-rich] .toast[data-kind=\"error\"] {\n  border-color: color-mix(in srgb, #ef4444 40%, var(--mf-border, #2e2e38));\n  background-color: color-mix(in srgb, #ef4444 12%, var(--mf-surface, #141419));\n}\n\n@keyframes mf-toast-spin {\n  to {\n    transform: rotate(360deg);\n  }\n}\n\n@media (prefers-reduced-motion: reduce) {\n  .list,\n  .trigger,\n  .close {\n    transition: none;\n  }\n\n  .spinner {\n    animation-duration: 2s;\n  }\n}\n"
+    }
+  ],
+  "tailwindExample": "\"use client\";\n\nimport { useState } from \"react\";\nimport { AnimatePresence, motion } from \"motion/react\";\n\nexport function ToastTailwind() {\n  const [toasts, setToasts] = useState<{ id: number; title: string }[]>([]);\n  const add = () => {\n    const id = Date.now();\n    setToasts((t) => [...t, { id, title: \"Event has been created\" }]);\n    setTimeout(() => setToasts((t) => t.filter((x) => x.id !== id)), 4000);\n  };\n  return (\n    <>\n      <button onClick={add} className=\"h-9 rounded-lg bg-zinc-100 px-4 text-sm font-medium text-zinc-900\">Show toast</button>\n      <ol aria-live=\"polite\" className=\"fixed bottom-5 right-5 flex w-80 flex-col-reverse gap-2\">\n        <AnimatePresence>\n          {toasts.map((t) => (\n            <motion.li\n              key={t.id}\n              layout\n              initial={{ opacity: 0, y: 24 }}\n              animate={{ opacity: 1, y: 0 }}\n              exit={{ opacity: 0, x: 120 }}\n              drag=\"x\"\n              dragSnapToOrigin\n              onDragEnd={(_, info) => Math.abs(info.offset.x) > 80 && setToasts((list) => list.filter((x) => x.id !== t.id))}\n              className=\"rounded-xl border border-zinc-800 bg-zinc-950 px-4 py-3 text-sm font-semibold text-zinc-100 shadow-xl\"\n            >\n              {t.title}\n            </motion.li>\n          ))}\n        </AnimatePresence>\n      </ol>\n    </>\n  );\n}"
+}

@@ -2,7 +2,7 @@
   "slug": "grain-gradient",
   "name": "GrainGradient",
   "category": "Gradient Backgrounds",
-  "collection": "gradients",
+  "collection": "shaders",
   "featured": false,
   "addedAt": "2026-10-16",
   "version": "2.2.0",

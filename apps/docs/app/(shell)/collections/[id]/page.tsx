@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import { BRAND_CONFIG } from "../../../../lib/brand";
-import { NEW_VERSION_LABEL, getCategories, getCollection, getCollections, getComponentsByCollection, isNewComponent, toCatalog } from "../../../../lib/registry";
+import { NEW_VERSION_LABEL, getCategories, getCollection, getCollections, getComponentsByCollection, getListedCollections, isNewComponent, toCatalog } from "../../../../lib/registry";
 import { ComponentCatalog } from "../../../../components/component-catalog";
 import { CodeBlock } from "../../../../components/code-block";
 import { Callout, DocsPage } from "../../../../components/docs-page";
@@ -23,8 +23,10 @@ export default async function CollectionPage({ params }: { params: Promise<{ id:
   const components = getComponentsByCollection(id);
   const sample = components.slice(0, 3).map((c) => c.slug).join(" ");
   const all = getCollections();
-  const index = all.findIndex((c) => c.id === id);
-  const nextCollection = all.length > 1 ? all[(index + 1) % all.length] : undefined;
+  // Prev/next only cycle through listed collections. Unlisted collections (still reachable by URL) point to the first listed one.
+  const listed = getListedCollections();
+  const index = listed.findIndex((c) => c.id === id);
+  const nextCollection = index === -1 ? listed[0] : listed.length > 1 ? listed[(index + 1) % listed.length] : undefined;
   const isNew = components.some(isNewComponent);
 
   return (

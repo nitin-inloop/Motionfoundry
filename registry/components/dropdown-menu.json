@@ -1,0 +1,201 @@
+{
+  "slug": "dropdown-menu",
+  "name": "DropdownMenu",
+  "category": "Overlays and Menus",
+  "collection": "ui",
+  "featured": true,
+  "addedAt": "2026-10-16",
+  "version": "2.3.0",
+  "requiresMotion": true,
+  "dependencies": [
+    "motion",
+    "react"
+  ],
+  "description": "An account-style dropdown menu built on the WAI-ARIA menu button pattern, with icons, shortcut hints, group labels, separators, animated checkbox items and a flyout submenu. It scales in from the trigger with measured, viewport-aware placement and supports full keyboard navigation with typeahead.",
+  "tags": [
+    "dropdown",
+    "menu",
+    "menu-button",
+    "submenu",
+    "context",
+    "keyboard",
+    "typeahead",
+    "ui"
+  ],
+  "a11yNotes": "Follows the WAI-ARIA menu button pattern: the trigger has aria-haspopup=\"menu\", aria-expanded and aria-controls; the panel is role=\"menu\" labelled by the trigger, with role=\"menuitem\", role=\"menuitemcheckbox\" (aria-checked) and role=\"separator\" children and roving DOM focus. Enter/Space/ArrowDown on the trigger open and focus the first item, ArrowUp focuses the last. Inside: ArrowUp/ArrowDown wrap, Home/End jump, Enter/Space activate (checkbox items toggle without closing), printable keys typeahead, ArrowRight opens the submenu (aria-haspopup=\"menu\", aria-expanded) and ArrowLeft/Escape close it back to its parent, Escape closes the menu and returns focus to the trigger, Tab closes and continues the tab order. Disabled items are skipped and marked aria-disabled. Under prefers-reduced-motion the menus only fade.",
+  "defaultProps": {
+    "triggerLabel": "My account",
+    "side": "bottom",
+    "align": "start",
+    "width": 236,
+    "accentColor": "#6366f1",
+    "showIcons": true,
+    "showShortcuts": true,
+    "disabled": false
+  },
+  "controls": [
+    {
+      "prop": "triggerLabel",
+      "label": "Trigger label",
+      "type": "text"
+    },
+    {
+      "prop": "side",
+      "label": "Side",
+      "type": "select",
+      "options": [
+        "bottom",
+        "top"
+      ]
+    },
+    {
+      "prop": "align",
+      "label": "Align",
+      "type": "select",
+      "options": [
+        "start",
+        "center",
+        "end"
+      ]
+    },
+    {
+      "prop": "width",
+      "label": "Width (px)",
+      "type": "range",
+      "min": 180,
+      "max": 340,
+      "step": 4
+    },
+    {
+      "prop": "accentColor",
+      "label": "Accent color",
+      "type": "color"
+    },
+    {
+      "prop": "showIcons",
+      "label": "Show icons",
+      "type": "boolean"
+    },
+    {
+      "prop": "showShortcuts",
+      "label": "Show shortcuts",
+      "type": "boolean"
+    },
+    {
+      "prop": "disabled",
+      "label": "Disabled",
+      "type": "boolean"
+    }
+  ],
+  "propsApi": [
+    {
+      "name": "items",
+      "type": "DropdownMenuEntry[]",
+      "default": "account menu",
+      "description": "Entries of type 'item' (label, value, icon, shortcut, disabled), 'checkbox' (label, defaultChecked, disabled), 'label', 'separator' and 'submenu' (label, icon, items). Icons are built-in names: user, card, settings, keyboard, users, user-plus, mail, message, plus, help, cloud, logout."
+    },
+    {
+      "name": "open",
+      "type": "boolean",
+      "default": "undefined",
+      "description": "Controlled open state."
+    },
+    {
+      "name": "defaultOpen",
+      "type": "boolean",
+      "default": "false",
+      "description": "Initial open state when uncontrolled."
+    },
+    {
+      "name": "onOpenChange",
+      "type": "(open: boolean) => void",
+      "default": "undefined",
+      "description": "Called whenever the menu requests to open or close."
+    },
+    {
+      "name": "onSelect",
+      "type": "(value: string) => void",
+      "default": "undefined",
+      "description": "Called with the item's value (or label) when an item is chosen; the menu then closes."
+    },
+    {
+      "name": "onCheckedChange",
+      "type": "(label: string, checked: boolean) => void",
+      "default": "undefined",
+      "description": "Called when a checkbox item is toggled."
+    },
+    {
+      "name": "triggerLabel",
+      "type": "string",
+      "default": "'My account'",
+      "description": "Label of the trigger button."
+    },
+    {
+      "name": "side",
+      "type": "'bottom' | 'top'",
+      "default": "'bottom'",
+      "description": "Preferred side; flips when there is no room in the viewport."
+    },
+    {
+      "name": "align",
+      "type": "'start' | 'center' | 'end'",
+      "default": "'start'",
+      "description": "Horizontal alignment relative to the trigger, clamped inside the viewport."
+    },
+    {
+      "name": "width",
+      "type": "number",
+      "default": "236",
+      "description": "Menu width in pixels."
+    },
+    {
+      "name": "accentColor",
+      "type": "string",
+      "default": "'#6366f1'",
+      "description": "Highlight tint, check marks and active icon color."
+    },
+    {
+      "name": "showIcons",
+      "type": "boolean",
+      "default": "true",
+      "description": "Show item icons."
+    },
+    {
+      "name": "showShortcuts",
+      "type": "boolean",
+      "default": "true",
+      "description": "Show keyboard shortcut hints."
+    },
+    {
+      "name": "disabled",
+      "type": "boolean",
+      "default": "false",
+      "description": "Disable the trigger."
+    },
+    {
+      "name": "className",
+      "type": "string",
+      "default": "''",
+      "description": "Additional class merged onto the root element."
+    },
+    {
+      "name": "style",
+      "type": "React.CSSProperties",
+      "default": "undefined",
+      "description": "Inline styles merged onto the root element."
+    }
+  ],
+  "files": [
+    {
+      "path": "components/ui/dropdown-menu.tsx",
+      "type": "registry:component",
+      "content": "\"use client\";\n\nimport * as React from \"react\";\nimport { createPortal } from \"react-dom\";\nimport { AnimatePresence, motion, useReducedMotion } from \"motion/react\";\nimport styles from \"../styles/dropdown-menu.module.css\";\n\nexport type DropdownMenuIcon = \"user\" | \"card\" | \"settings\" | \"keyboard\" | \"users\" | \"user-plus\" | \"mail\" | \"message\" | \"plus\" | \"help\" | \"cloud\" | \"logout\";\n\nexport type DropdownMenuItemEntry = { type: \"item\"; label: string; value?: string; icon?: DropdownMenuIcon; shortcut?: string; disabled?: boolean };\nexport type DropdownMenuSubEntry = DropdownMenuItemEntry | { type: \"separator\" };\nexport type DropdownMenuEntry =\n  | DropdownMenuSubEntry\n  | { type: \"label\"; label: string }\n  | { type: \"checkbox\"; label: string; defaultChecked?: boolean; disabled?: boolean }\n  | { type: \"submenu\"; label: string; icon?: DropdownMenuIcon; items: DropdownMenuSubEntry[] };\n\nexport interface DropdownMenuProps {\n  /** Menu entries: items, labels, separators, checkbox items and one level of submenus */\n  items?: DropdownMenuEntry[];\n  /** Controlled open state */\n  open?: boolean;\n  /** Initial open state when uncontrolled */\n  defaultOpen?: boolean;\n  /** Called whenever the menu requests to open or close */\n  onOpenChange?: (open: boolean) => void;\n  /** Called with the item's value (or label) when an item is chosen */\n  onSelect?: (value: string) => void;\n  /** Called when a checkbox item is toggled */\n  onCheckedChange?: (label: string, checked: boolean) => void;\n  /** Label of the trigger button */\n  triggerLabel?: string;\n  /** Preferred side of the menu (flips when there is no room) */\n  side?: \"bottom\" | \"top\";\n  /** Alignment of the menu relative to the trigger */\n  align?: \"start\" | \"center\" | \"end\";\n  /** Menu width in pixels */\n  width?: number;\n  /** Accent color for the highlighted item, checks and focus */\n  accentColor?: string;\n  /** Show item icons */\n  showIcons?: boolean;\n  /** Show keyboard shortcut hints */\n  showShortcuts?: boolean;\n  /** Disable the trigger */\n  disabled?: boolean;\n  /** Optional className merged onto the root */\n  className?: string;\n  /** Optional inline styles merged onto the root */\n  style?: React.CSSProperties;\n}\n\nconst ICONS: Record<DropdownMenuIcon, string> = {\n  user: \"M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2M12 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8z\",\n  card: \"M3 5h18a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1zM2 10h20\",\n  settings: \"M4 21v-7M4 10V3M12 21v-9M12 8V3M20 21v-5M20 12V3M1 14h6M9 8h6M17 16h6\",\n  keyboard: \"M3 6h18a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1zM6 10h.01M10 10h.01M14 10h.01M18 10h.01M7 14h10\",\n  users: \"M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM23 21v-2a4 4 0 0 0-3-3.9M16 3.1a4 4 0 0 1 0 7.8\",\n  \"user-plus\": \"M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM19 8v6M22 11h-6\",\n  mail: \"M3 5h18v14H3zM3 6l9 7 9-7\",\n  message: \"M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12z\",\n  plus: \"M12 5v14M5 12h14\",\n  help: \"M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20zM9.1 9a3 3 0 0 1 5.8 1c0 2-3 3-3 3M12 17h.01\",\n  cloud: \"M17.5 19H9a7 7 0 1 1 6.7-9h1.8a4.5 4.5 0 1 1 0 9z\",\n  logout: \"M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9\",\n};\n\nconst DEFAULT_ITEMS: DropdownMenuEntry[] = [\n  { type: \"label\", label: \"My Account\" },\n  { type: \"item\", label: \"Profile\", icon: \"user\", shortcut: \"⇧⌘P\" },\n  { type: \"item\", label: \"Billing\", icon: \"card\", shortcut: \"⌘B\" },\n  { type: \"item\", label: \"Settings\", icon: \"settings\", shortcut: \"⌘S\" },\n  { type: \"item\", label: \"Keyboard shortcuts\", icon: \"keyboard\", shortcut: \"⌘K\" },\n  { type: \"separator\" },\n  {\n    type: \"submenu\",\n    label: \"Invite users\",\n    icon: \"user-plus\",\n    items: [{ type: \"item\", label: \"Email\", icon: \"mail\" }, { type: \"item\", label: \"Message\", icon: \"message\" }, { type: \"separator\" }, { type: \"item\", label: \"More…\", icon: \"plus\" }],\n  },\n  { type: \"item\", label: \"API\", icon: \"cloud\", disabled: true },\n  { type: \"separator\" },\n  { type: \"label\", label: \"View\" },\n  { type: \"checkbox\", label: \"Status bar\", defaultChecked: true },\n  { type: \"checkbox\", label: \"Activity bar\" },\n  { type: \"separator\" },\n  { type: \"item\", label: \"Log out\", icon: \"logout\", shortcut: \"⇧⌘Q\" },\n];\n\nconst THEME_TOKENS = [\"--mf-bg\", \"--mf-fg\", \"--mf-surface\", \"--mf-surface-raised\", \"--mf-muted\", \"--mf-subtle\", \"--mf-border\", \"--mf-border-strong\", \"--mf-accent\"];\nconst useIsoLayoutEffect = typeof window !== \"undefined\" ? React.useLayoutEffect : React.useEffect;\nconst clamp = (v: number, lo: number, hi: number) => Math.max(lo, Math.min(v, Math.max(lo, hi)));\nconst isNav = (e: DropdownMenuEntry) => (e.type === \"item\" || e.type === \"checkbox\" || e.type === \"submenu\") && !(\"disabled\" in e && e.disabled);\nconst labelOf = (e: DropdownMenuEntry) => (\"label\" in e ? e.label : \"\");\n\nfunction readThemeVars(el: Element | null): Record<string, string> {\n  const out: Record<string, string> = {};\n  if (!el) return out;\n  const cs = getComputedStyle(el);\n  for (const t of THEME_TOKENS) {\n    const v = cs.getPropertyValue(t).trim();\n    if (v) out[t] = v;\n  }\n  return out;\n}\n\nfunction Icon({ d, className }: { d: string; className?: string }) {\n  return (\n    <svg aria-hidden=\"true\" className={className} width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" strokeWidth=\"2\" strokeLinecap=\"round\" strokeLinejoin=\"round\">\n      <path d={d} />\n    </svg>\n  );\n}\n\nexport function DropdownMenu({\n  items = DEFAULT_ITEMS,\n  open: openProp,\n  defaultOpen = false,\n  onOpenChange,\n  onSelect,\n  onCheckedChange,\n  triggerLabel = \"My account\",\n  side = \"bottom\",\n  align = \"start\",\n  width = 236,\n  accentColor = \"#6366f1\",\n  showIcons = true,\n  showShortcuts = true,\n  disabled = false,\n  className = \"\",\n  style,\n}: DropdownMenuProps) {\n  const reduce = useReducedMotion();\n  const id = React.useId();\n  const [inner, setInner] = React.useState(defaultOpen);\n  const open = !disabled && (openProp !== undefined ? openProp : inner);\n  const [active, setActive] = React.useState(-1);\n  const [subOpen, setSubOpen] = React.useState(false);\n  const [subActive, setSubActive] = React.useState(-1);\n  const [subLeft, setSubLeft] = React.useState(false);\n  const [checked, setChecked] = React.useState<Record<number, boolean>>(() => {\n    const init: Record<number, boolean> = {};\n    items.forEach((e, i) => e.type === \"checkbox\" && (init[i] = !!e.defaultChecked));\n    return init;\n  });\n  const [mounted, setMounted] = React.useState(false);\n  const [pos, setPos] = React.useState<{ left: number; top: number; side: \"bottom\" | \"top\" } | null>(null);\n  const [themeVars, setThemeVars] = React.useState<Record<string, string>>({});\n  const triggerRef = React.useRef<HTMLButtonElement>(null);\n  const menuRef = React.useRef<HTMLDivElement>(null);\n  const subRef = React.useRef<HTMLDivElement>(null);\n  const itemRefs = React.useRef<Array<HTMLDivElement | null>>([]);\n  const subRefs = React.useRef<Array<HTMLDivElement | null>>([]);\n  const typed = React.useRef({ text: \"\", time: 0 });\n\n  const subIndex = items.findIndex((e) => e.type === \"submenu\");\n  const subEntry = items[subIndex];\n  const subItems = subEntry && subEntry.type === \"submenu\" ? subEntry.items : [];\n  const nav = items.map((e, i) => (isNav(e) ? i : -1)).filter((i) => i >= 0);\n  const subNav = subItems.map((e, i) => (isNav(e) ? i : -1)).filter((i) => i >= 0);\n\n  React.useEffect(() => setMounted(true), []);\n\n  const setOpen = React.useCallback(\n    (next: boolean, focus: \"first\" | \"last\" | \"none\" = \"none\") => {\n      if (openProp === undefined) setInner(next);\n      onOpenChange?.(next);\n      setSubOpen(false);\n      setSubActive(-1);\n      setActive(next && focus !== \"none\" ? (focus === \"first\" ? nav[0] ?? -1 : nav[nav.length - 1] ?? -1) : -1);\n    },\n    [openProp, onOpenChange, nav.join()],\n  );\n  const setOpenRef = React.useRef(setOpen);\n  setOpenRef.current = setOpen;\n  const close = (refocus = true) => {\n    setOpen(false);\n    if (refocus) triggerRef.current?.focus();\n  };\n\n  const place = React.useCallback(() => {\n    const t = triggerRef.current;\n    const m = menuRef.current;\n    if (!t || !m) return;\n    const r = t.getBoundingClientRect();\n    const [w, h] = [m.offsetWidth, m.offsetHeight];\n    const below = window.innerHeight - r.bottom;\n    const s = side === \"bottom\" ? (below < h + 12 && r.top > below ? \"top\" : \"bottom\") : r.top < h + 12 && below > r.top ? \"bottom\" : \"top\";\n    const raw = align === \"start\" ? r.left : align === \"end\" ? r.right - w : r.left + r.width / 2 - w / 2;\n    setPos({ side: s, left: clamp(raw, 8, window.innerWidth - w - 8), top: s === \"bottom\" ? r.bottom + 6 : r.top - 6 - h });\n  }, [side, align]);\n\n  useIsoLayoutEffect(() => {\n    if (!open) return;\n    setThemeVars(readThemeVars(triggerRef.current));\n    place();\n    const onDown = (e: PointerEvent) => {\n      const t = e.target as Node;\n      if (!triggerRef.current?.contains(t) && !menuRef.current?.contains(t)) setOpenRef.current(false);\n    };\n    window.addEventListener(\"resize\", place);\n    window.addEventListener(\"scroll\", place, true);\n    document.addEventListener(\"pointerdown\", onDown);\n    return () => {\n      window.removeEventListener(\"resize\", place);\n      window.removeEventListener(\"scroll\", place, true);\n      document.removeEventListener(\"pointerdown\", onDown);\n    };\n  }, [open, place]);\n\n  // Submenu collision: open to the left when there is no room on the right.\n  useIsoLayoutEffect(() => {\n    const anchor = itemRefs.current[subIndex];\n    if (!subOpen || !anchor || !subRef.current) return;\n    setSubLeft(anchor.getBoundingClientRect().right + subRef.current.offsetWidth + 12 > window.innerWidth);\n  }, [subOpen, subIndex]);\n\n  // Roving focus: DOM focus follows the active item.\n  React.useEffect(() => {\n    if (!open) return;\n    const el = subOpen && subActive >= 0 ? subRefs.current[subActive] : active >= 0 ? itemRefs.current[active] : menuRef.current;\n    el?.focus({ preventScroll: true });\n  }, [open, active, subOpen, subActive]);\n\n  const openSub = (focusFirst: boolean) => {\n    setActive(subIndex);\n    setSubOpen(true);\n    setSubActive(focusFirst ? subNav[0] ?? -1 : -1);\n  };\n  const closeSub = () => {\n    setSubOpen(false);\n    setSubActive(-1);\n  };\n\n  const activate = (i: number, inSub: boolean) => {\n    const e = inSub ? subItems[i] : items[i];\n    if (!e) return;\n    if (e.type === \"item\" && !e.disabled) {\n      onSelect?.(e.value ?? e.label);\n      close();\n    } else if (e.type === \"checkbox\" && !e.disabled) {\n      const next = !checked[i];\n      setChecked((c) => ({ ...c, [i]: next }));\n      onCheckedChange?.(e.label, next);\n    } else if (e.type === \"submenu\") openSub(true);\n  };\n\n  const onMenuKey = (e: React.KeyboardEvent<HTMLDivElement>) => {\n    const k = e.key;\n    const inSub = subOpen && subActive >= 0;\n    const list = inSub ? subNav : nav;\n    const cur = inSub ? subActive : active;\n    const setCur = (i: number) => {\n      if (inSub) setSubActive(i);\n      else {\n        setActive(i);\n        closeSub();\n      }\n    };\n    const n = list.length;\n    const at = list.indexOf(cur);\n    if (k === \"ArrowDown\" || k === \"ArrowUp\") {\n      e.preventDefault();\n      if (n) setCur(list[at < 0 ? (k === \"ArrowDown\" ? 0 : n - 1) : (at + (k === \"ArrowDown\" ? 1 : -1) + n) % n]);\n    } else if (k === \"Home\" || k === \"End\") {\n      e.preventDefault();\n      if (n) setCur(list[k === \"Home\" ? 0 : n - 1]);\n    } else if (k === \"ArrowRight\" && !inSub && cur === subIndex && cur >= 0) {\n      e.preventDefault();\n      openSub(true);\n    } else if ((k === \"ArrowLeft\" && inSub) || (k === \"Escape\" && subOpen)) {\n      e.preventDefault();\n      closeSub();\n    } else if (k === \"Escape\") {\n      e.preventDefault();\n      close();\n    } else if (k === \"Enter\" || k === \" \") {\n      e.preventDefault();\n      if (cur >= 0) activate(cur, inSub);\n    } else if (k === \"Tab\") {\n      close();\n    } else if (k.length === 1 && !e.ctrlKey && !e.metaKey && !e.altKey) {\n      const t = typed.current;\n      const now = performance.now();\n      t.text = now - t.time > 500 ? k : t.text + k;\n      t.time = now;\n      const source = inSub ? subItems : items;\n      const start = Math.max(0, at) + (t.text.length === 1 ? 1 : 0);\n      for (let j = 0; j < n; j++) {\n        const idx = list[(start + j) % n];\n        if (labelOf(source[idx]).toLowerCase().startsWith(t.text.toLowerCase())) return setCur(idx);\n      }\n    }\n  };\n\n  const onTriggerKey = (e: React.KeyboardEvent<HTMLButtonElement>) => {\n    if ([\"ArrowDown\", \"Enter\", \" \"].includes(e.key) || e.key === \"ArrowUp\") {\n      e.preventDefault();\n      setOpen(true, e.key === \"ArrowUp\" ? \"last\" : \"first\");\n    }\n  };\n\n  const renderEntry = (e: DropdownMenuEntry, i: number, inSub: boolean) => {\n    const key = `${inSub ? \"s\" : \"m\"}${i}`;\n    if (e.type === \"separator\") return <div key={key} role=\"separator\" className={styles.separator} />;\n    if (e.type === \"label\") return <div key={key} role=\"presentation\" className={styles.groupLabel}>{e.label}</div>;\n    const isActive = inSub ? subActive === i : active === i && (!subOpen || subActive < 0);\n    const off = \"disabled\" in e && !!e.disabled;\n    const refs = inSub ? subRefs : itemRefs;\n    const common = {\n      ref: (el: HTMLDivElement | null) => {\n        refs.current[i] = el;\n      },\n      tabIndex: -1,\n      \"aria-disabled\": off || undefined,\n      \"data-active\": isActive || (!inSub && e.type === \"submenu\" && subOpen) ? \"\" : undefined,\n      className: styles.item,\n      onClick: () => !off && activate(i, inSub),\n      onPointerMove: () => {\n        if (off) return;\n        if (inSub) return subActive !== i && setSubActive(i);\n        if (active !== i) setActive(i);\n        if (e.type !== \"submenu\") return subOpen && closeSub();\n        if (!subOpen) openSub(false);\n        else if (subActive >= 0) setSubActive(-1);\n      },\n    };\n    const icon = \"icon\" in e && e.icon && showIcons ? <Icon d={ICONS[e.icon]} className={styles.icon} /> : null;\n    if (e.type === \"checkbox\") {\n      return (\n        <div key={key} role=\"menuitemcheckbox\" aria-checked={!!checked[i]} {...common}>\n          <span className={styles.check} aria-hidden=\"true\">\n            {checked[i] && (\n              <svg width=\"14\" height=\"14\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" strokeWidth=\"2.6\" strokeLinecap=\"round\" strokeLinejoin=\"round\">\n                <motion.path d=\"M5 12.5l4.5 4.5L19 7.5\" initial={reduce ? false : { pathLength: 0 }} animate={{ pathLength: 1 }} transition={{ duration: 0.2 }} />\n              </svg>\n            )}\n          </span>\n          <span className={styles.text}>{e.label}</span>\n        </div>\n      );\n    }\n    if (e.type === \"submenu\") {\n      return (\n        <div key={key} role=\"none\" className={styles.subWrap}>\n          <div role=\"menuitem\" aria-haspopup=\"menu\" aria-expanded={subOpen} aria-controls={subOpen ? `${id}-sub` : undefined} {...common}>\n            {icon}\n            <span className={styles.text}>{e.label}</span>\n            <Icon d=\"m9 6 6 6-6 6\" className={styles.chevron} />\n          </div>\n          <AnimatePresence>\n            {subOpen && (\n              <motion.div\n                ref={subRef}\n                id={`${id}-sub`}\n                role=\"menu\"\n                aria-label={e.label}\n                className={styles.menu}\n                data-sub={subLeft ? \"left\" : \"right\"}\n                style={{ transformOrigin: subLeft ? \"top right\" : \"top left\" }}\n                initial={reduce ? { opacity: 0 } : { opacity: 0, scale: 0.96, x: subLeft ? 6 : -6 }}\n                animate={{ opacity: 1, scale: 1, x: 0 }}\n                exit={{ opacity: 0, scale: reduce ? 1 : 0.97 }}\n                transition={{ duration: reduce ? 0.06 : 0.14, ease: [0.16, 1, 0.3, 1] }}\n              >\n                {e.items.map((s, j) => renderEntry(s, j, true))}\n              </motion.div>\n            )}\n          </AnimatePresence>\n        </div>\n      );\n    }\n    return (\n      <div key={key} role=\"menuitem\" {...common}>\n        {icon}\n        <span className={styles.text}>{e.label}</span>\n        {showShortcuts && e.shortcut && <kbd className={styles.shortcut}>{e.shortcut}</kbd>}\n      </div>\n    );\n  };\n\n  const fromTop = (pos?.side ?? side) === \"bottom\";\n  const originX = align === \"start\" ? \"left\" : align === \"end\" ? \"right\" : \"center\";\n\n  return (\n    <div className={`${styles.root} ${className}`.trim()} style={{ \"--mf-dm-accent\": accentColor, ...style } as React.CSSProperties}>\n      <button\n        ref={triggerRef}\n        id={`${id}-trigger`}\n        type=\"button\"\n        aria-haspopup=\"menu\"\n        aria-expanded={open}\n        aria-controls={open ? `${id}-menu` : undefined}\n        disabled={disabled}\n        className={styles.trigger}\n        onClick={() => setOpen(!open)}\n        onKeyDown={onTriggerKey}\n      >\n        <span aria-hidden=\"true\" className={styles.avatar}>\n          AL\n        </span>\n        {triggerLabel}\n        <motion.svg aria-hidden=\"true\" width=\"14\" height=\"14\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" strokeWidth=\"2\" strokeLinecap=\"round\" strokeLinejoin=\"round\" animate={{ rotate: open ? 180 : 0 }} transition={{ duration: reduce ? 0 : 0.2 }}>\n          <path d=\"m6 9 6 6 6-6\" />\n        </motion.svg>\n      </button>\n      {mounted &&\n        createPortal(\n          <AnimatePresence>\n            {open && (\n              <motion.div\n                ref={menuRef}\n                id={`${id}-menu`}\n                role=\"menu\"\n                aria-labelledby={`${id}-trigger`}\n                aria-orientation=\"vertical\"\n                tabIndex={-1}\n                className={`${styles.menu} ${styles.panel}`}\n                style={{ ...themeVars, \"--mf-dm-accent\": accentColor, \"--mf-dm-w\": `${width}px`, left: pos?.left ?? 0, top: pos?.top ?? 0, visibility: pos ? \"visible\" : \"hidden\", transformOrigin: `${fromTop ? \"top\" : \"bottom\"} ${originX}` } as React.CSSProperties}\n                initial={reduce ? { opacity: 0 } : { opacity: 0, scale: 0.95, y: fromTop ? -6 : 6 }}\n                animate={{ opacity: 1, scale: 1, y: 0 }}\n                exit={reduce ? { opacity: 0 } : { opacity: 0, scale: 0.97, y: fromTop ? -4 : 4 }}\n                transition={{ duration: reduce ? 0.08 : 0.16, ease: [0.16, 1, 0.3, 1] }}\n                onKeyDown={onMenuKey}\n                onPointerLeave={() => !subOpen && setActive(-1)}\n              >\n                {items.map((e, i) => renderEntry(e, i, false))}\n              </motion.div>\n            )}\n          </AnimatePresence>,\n          document.body,\n        )}\n    </div>\n  );\n}\n"
+    },
+    {
+      "path": "components/styles/dropdown-menu.module.css",
+      "type": "registry:style",
+      "content": ".root {\n  display: inline-flex;\n  color: var(--mf-fg, #f4f4f6);\n}\n\n.trigger {\n  display: inline-flex;\n  align-items: center;\n  gap: 0.5rem;\n  height: 2.5rem;\n  padding: 0 0.75rem 0 0.375rem;\n  border-radius: 0.625rem;\n  border: 1px solid var(--mf-border, #2e2e38);\n  background-color: var(--mf-surface, #141419);\n  color: var(--mf-fg, #f4f4f6);\n  font: inherit;\n  font-size: 0.875rem;\n  font-weight: 500;\n  cursor: pointer;\n  transition: background-color 150ms ease, border-color 150ms ease, transform 150ms ease;\n}\n\n.trigger:hover:not(:disabled),\n.trigger[aria-expanded=\"true\"] {\n  background-color: var(--mf-surface-raised, #1b1b22);\n  border-color: var(--mf-border-strong, #52525b);\n}\n\n.trigger:active:not(:disabled) {\n  transform: scale(0.98);\n}\n\n.trigger:focus-visible {\n  outline: 2px solid var(--mf-fg, #e4e4e7);\n  outline-offset: 2px;\n}\n\n.trigger:disabled {\n  opacity: 0.5;\n  cursor: not-allowed;\n}\n\n.avatar {\n  display: grid;\n  place-items: center;\n  width: 1.75rem;\n  height: 1.75rem;\n  border-radius: 50%;\n  background: linear-gradient(135deg, var(--mf-dm-accent, #6366f1), color-mix(in srgb, var(--mf-dm-accent, #6366f1) 45%, #ec4899));\n  color: #ffffff;\n  font-size: 0.6875rem;\n  font-weight: 600;\n}\n\n.menu {\n  box-sizing: border-box;\n  width: var(--mf-dm-w, 236px);\n  max-width: calc(100vw - 16px);\n  padding: 0.25rem;\n  border-radius: 0.625rem;\n  border: 1px solid var(--mf-border, #2e2e38);\n  background-color: var(--mf-surface, #141419);\n  color: var(--mf-fg, #f4f4f6);\n  font-size: 0.875rem;\n  box-shadow: 0 16px 40px -12px rgba(0, 0, 0, 0.5), 0 2px 6px rgba(0, 0, 0, 0.15);\n  outline: none;\n  user-select: none;\n}\n\n.panel {\n  position: fixed;\n  z-index: 1000;\n}\n\n.menu[data-sub] {\n  position: absolute;\n  top: -0.3125rem;\n  z-index: 1;\n  width: 11rem;\n}\n\n.menu[data-sub=\"right\"] {\n  left: calc(100% + 0.5rem);\n}\n\n.menu[data-sub=\"left\"] {\n  right: calc(100% + 0.5rem);\n}\n\n.groupLabel {\n  padding: 0.375rem 0.5rem;\n  font-size: 0.75rem;\n  font-weight: 600;\n  color: var(--mf-muted, #a1a1aa);\n}\n\n.separator {\n  height: 1px;\n  margin: 0.25rem -0.25rem;\n  background-color: var(--mf-border, #2e2e38);\n}\n\n.subWrap {\n  position: relative;\n}\n\n.item {\n  position: relative;\n  display: flex;\n  align-items: center;\n  gap: 0.5rem;\n  min-height: 2rem;\n  padding: 0 0.5rem;\n  border-radius: 0.375rem;\n  cursor: default;\n  outline: none;\n  transition: background-color 120ms ease, color 120ms ease;\n}\n\n.item[data-active] {\n  background-color: color-mix(in srgb, var(--mf-dm-accent, #6366f1) 16%, transparent);\n  color: var(--mf-fg, #f4f4f6);\n}\n\n.item:focus-visible {\n  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--mf-dm-accent, #6366f1) 60%, transparent);\n}\n\n.item[aria-disabled=\"true\"] {\n  opacity: 0.45;\n}\n\n.icon {\n  flex-shrink: 0;\n  color: var(--mf-muted, #a1a1aa);\n  transition: color 120ms ease;\n}\n\n.item[data-active] .icon,\n.item[data-active] .chevron {\n  color: var(--mf-dm-accent, #6366f1);\n}\n\n.text {\n  flex: 1;\n  min-width: 0;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n}\n\n.shortcut {\n  margin-left: auto;\n  font-family: inherit;\n  font-size: 0.75rem;\n  letter-spacing: 0.08em;\n  color: var(--mf-subtle, #71717a);\n}\n\n.chevron {\n  margin-left: auto;\n  color: var(--mf-subtle, #71717a);\n}\n\n.check {\n  display: grid;\n  place-items: center;\n  flex-shrink: 0;\n  width: 1rem;\n  height: 1rem;\n  color: var(--mf-dm-accent, #6366f1);\n}\n\n@media (prefers-reduced-motion: reduce) {\n  .trigger,\n  .item,\n  .icon {\n    transition: none;\n  }\n}\n"
+    }
+  ],
+  "tailwindExample": "\"use client\";\n\nimport { AnimatePresence, motion } from \"motion/react\";\nimport { useEffect, useRef, useState } from \"react\";\n\nconst ITEMS = [\n  { label: \"Profile\", shortcut: \"⇧⌘P\" },\n  { label: \"Billing\", shortcut: \"⌘B\" },\n  { label: \"Settings\", shortcut: \"⌘S\" },\n  { label: \"Log out\", shortcut: \"⇧⌘Q\" },\n];\n\nexport function DropdownMenuTailwind() {\n  const [open, setOpen] = useState(false);\n  const [active, setActive] = useState(0);\n  const trigger = useRef<HTMLButtonElement>(null);\n  const items = useRef<Array<HTMLDivElement | null>>([]);\n  useEffect(() => { if (open) items.current[active]?.focus(); }, [open, active]);\n  const close = () => { setOpen(false); trigger.current?.focus(); };\n  const onKey = (e: React.KeyboardEvent) => {\n    const n = ITEMS.length;\n    if (e.key === \"ArrowDown\") { e.preventDefault(); setActive((a) => (a + 1) % n); }\n    else if (e.key === \"ArrowUp\") { e.preventDefault(); setActive((a) => (a - 1 + n) % n); }\n    else if (e.key === \"Home\") setActive(0);\n    else if (e.key === \"End\") setActive(n - 1);\n    else if (e.key === \"Escape\" || e.key === \"Enter\" || e.key === \" \") { e.preventDefault(); close(); }\n    else if (e.key === \"Tab\") setOpen(false);\n  };\n  return (\n    <div className=\"relative inline-flex text-sm text-zinc-100\">\n      <button ref={trigger} aria-haspopup=\"menu\" aria-expanded={open} onClick={() => { setActive(0); setOpen(!open); }} className=\"h-10 rounded-lg border border-zinc-800 bg-zinc-900 px-4 font-medium\">My account</button>\n      <AnimatePresence>\n        {open && (\n          <motion.div role=\"menu\" onKeyDown={onKey} className=\"absolute left-0 top-full z-50 mt-1.5 w-56 origin-top-left rounded-lg border border-zinc-800 bg-zinc-950 p-1 shadow-xl\" initial={{ opacity: 0, scale: 0.95, y: -6 }} animate={{ opacity: 1, scale: 1, y: 0 }} exit={{ opacity: 0, scale: 0.97 }} transition={{ duration: 0.16 }}>\n            {ITEMS.map((it, i) => (\n              <div key={it.label} ref={(el) => { items.current[i] = el; }} role=\"menuitem\" tabIndex={-1} onPointerMove={() => setActive(i)} onClick={close} className=\"flex h-8 items-center rounded-md px-2 outline-none focus:bg-indigo-500/15\">\n                {it.label}<kbd className=\"ml-auto font-sans text-xs tracking-widest text-zinc-500\">{it.shortcut}</kbd>\n              </div>\n            ))}\n          </motion.div>\n        )}\n      </AnimatePresence>\n    </div>\n  );\n}\n"
+}

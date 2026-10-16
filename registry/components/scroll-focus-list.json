@@ -1,0 +1,204 @@
+{
+  "slug": "scroll-focus-list",
+  "name": "ScrollFocusList",
+  "category": "Scroll Animations",
+  "collection": "scroll",
+  "featured": false,
+  "addedAt": "2026-10-16",
+  "version": "2.3.0",
+  "requiresMotion": false,
+  "dependencies": [
+    "react"
+  ],
+  "description": "A large-type list inside a smooth-scroll viewport where the entry nearest the center is sharp, bright, scaled up and underlined in the accent color, while every other entry blurs and dims continuously with its distance from center.",
+  "tags": [
+    "scroll",
+    "focus",
+    "blur",
+    "list",
+    "depth-of-field",
+    "smooth-scroll"
+  ],
+  "a11yNotes": "The viewport is a focusable role=\"region\" labelled by the title, so keyboard users can Tab to it and scroll with arrows/Page keys/Space (native) with a 2px :focus-visible outline. Entries are an ordered list of real text that stays in the accessibility tree regardless of blur; index numbers, the pinned title chip and edge fades are aria-hidden. Wheel input is smoothed only while the viewport can still move and is released at the edges so the page keeps scrolling; touch and scrollbar dragging stay native. Under prefers-reduced-motion the wheel is not intercepted and blur/scale are disabled (entries only dim).",
+  "defaultProps": {
+    "items": [
+      "Design in the browser",
+      "Prototype with real data",
+      "Review on any device",
+      "Ship behind a flag",
+      "Measure what changed",
+      "Learn and iterate",
+      "Repeat, faster"
+    ],
+    "title": "How we build",
+    "blur": 5,
+    "minOpacity": 0.22,
+    "scale": 1.08,
+    "accentColor": "#facc15",
+    "align": "left",
+    "lerp": 0.1,
+    "smooth": true
+  },
+  "controls": [
+    {
+      "prop": "items",
+      "label": "Items (comma separated)",
+      "type": "list"
+    },
+    {
+      "prop": "title",
+      "label": "Title",
+      "type": "text"
+    },
+    {
+      "prop": "blur",
+      "label": "Blur (px)",
+      "type": "range",
+      "min": 0,
+      "max": 14,
+      "step": 0.5
+    },
+    {
+      "prop": "minOpacity",
+      "label": "Dimmed opacity",
+      "type": "range",
+      "min": 0,
+      "max": 1,
+      "step": 0.02
+    },
+    {
+      "prop": "scale",
+      "label": "Focus scale",
+      "type": "range",
+      "min": 1,
+      "max": 1.3,
+      "step": 0.01
+    },
+    {
+      "prop": "accentColor",
+      "label": "Accent",
+      "type": "color"
+    },
+    {
+      "prop": "align",
+      "label": "Align",
+      "type": "select",
+      "options": [
+        "left",
+        "center"
+      ]
+    },
+    {
+      "prop": "lerp",
+      "label": "Lerp (smoothness)",
+      "type": "range",
+      "min": 0.05,
+      "max": 0.3,
+      "step": 0.01
+    },
+    {
+      "prop": "smooth",
+      "label": "Smooth scrolling",
+      "type": "boolean"
+    }
+  ],
+  "propsApi": [
+    {
+      "name": "items",
+      "type": "string[]",
+      "default": "['Design in the browser', 'Prototype with real data', 'Review on any device', 'Ship behind a flag', 'Measure what changed', 'Learn and iterate', 'Repeat, faster']",
+      "description": "List entries; the one nearest the viewport center is in focus."
+    },
+    {
+      "name": "title",
+      "type": "string",
+      "default": "'How we build'",
+      "description": "Small label pinned at the top; also the region's accessible name."
+    },
+    {
+      "name": "blur",
+      "type": "number",
+      "default": "5",
+      "description": "Maximum blur in px applied to entries far from center."
+    },
+    {
+      "name": "minOpacity",
+      "type": "number",
+      "default": "0.22",
+      "description": "Opacity of entries far from center (0 to 1)."
+    },
+    {
+      "name": "scale",
+      "type": "number",
+      "default": "1.08",
+      "description": "Scale of the focused entry (1 disables scaling)."
+    },
+    {
+      "name": "accentColor",
+      "type": "string",
+      "default": "'#facc15'",
+      "description": "Accent color for the focused entry's index and underline."
+    },
+    {
+      "name": "align",
+      "type": "'left' | 'center'",
+      "default": "'left'",
+      "description": "Text alignment of the list."
+    },
+    {
+      "name": "height",
+      "type": "number",
+      "default": "380",
+      "description": "Height of the component's own scroll viewport in px (width is always 100%)."
+    },
+    {
+      "name": "borderRadius",
+      "type": "number",
+      "default": "20",
+      "description": "Corner radius of the viewport in px."
+    },
+    {
+      "name": "lerp",
+      "type": "number",
+      "default": "0.1",
+      "description": "Interpolation factor per 60fps frame for wheel smoothing (0.05 floaty, 0.3 snappy)."
+    },
+    {
+      "name": "wheelMultiplier",
+      "type": "number",
+      "default": "1",
+      "description": "Multiplier applied to wheel and trackpad deltas."
+    },
+    {
+      "name": "smooth",
+      "type": "boolean",
+      "default": "true",
+      "description": "Enable smooth wheel scrolling; false (or prefers-reduced-motion) uses native scrolling."
+    },
+    {
+      "name": "className",
+      "type": "string",
+      "default": "''",
+      "description": "Additional class merged onto the root element."
+    },
+    {
+      "name": "style",
+      "type": "React.CSSProperties",
+      "default": "undefined",
+      "description": "Inline styles merged onto the root element."
+    }
+  ],
+  "files": [
+    {
+      "path": "components/ui/scroll-focus-list.tsx",
+      "type": "registry:component",
+      "content": "\"use client\";\n\nimport * as React from \"react\";\nimport styles from \"../styles/scroll-focus-list.module.css\";\n\ninterface SmoothScrollState {\n  /** Current scrollTop of the viewport in px */\n  scroll: number;\n  /** Maximum scrollTop in px */\n  limit: number;\n  /** scroll / limit, 0..1 */\n  progress: number;\n}\n\ninterface SmoothScrollOptions {\n  lerp: number;\n  wheelMultiplier: number;\n  smooth: boolean;\n  onScroll?: (state: SmoothScrollState) => void;\n}\n\nconst clamp = (v: number, min: number, max: number) => Math.min(max, Math.max(min, v));\n\nfunction usePrefersReducedMotion(): boolean {\n  const [reduced, setReduced] = React.useState(false);\n  React.useEffect(() => {\n    const mq = window.matchMedia(\"(prefers-reduced-motion: reduce)\");\n    const update = () => setReduced(mq.matches);\n    update();\n    mq.addEventListener(\"change\", update);\n    return () => mq.removeEventListener(\"change\", update);\n  }, []);\n  return reduced;\n}\n\n/** True when a nested scrollable element under the pointer can still scroll in the wheel direction. */\nfunction nestedCanScroll(node: EventTarget | null, root: HTMLElement, dy: number): boolean {\n  let el: Element | null = node instanceof Element ? node : null;\n  while (el && el !== root) {\n    if (el instanceof HTMLElement) {\n      const overflowY = window.getComputedStyle(el).overflowY;\n      if ((overflowY === \"auto\" || overflowY === \"scroll\") && el.scrollHeight > el.clientHeight + 1) {\n        if (dy < 0 ? el.scrollTop > 0 : el.scrollTop + el.clientHeight < el.scrollHeight - 1) return true;\n      }\n    }\n    el = el.parentElement;\n  }\n  return false;\n}\n\n/**\n * Self-contained smooth scroller for an overflow container: wheel input sets a target and a rAF\n * loop eases scrollTop toward it. Touch, keyboard and scrollbar stay native; wheel is released at\n * the edges so the page keeps scrolling.\n */\nfunction useSmoothScroll(\n  containerRef: React.RefObject<HTMLElement | null>,\n  { lerp, wheelMultiplier, smooth, onScroll }: SmoothScrollOptions,\n) {\n  const callbackRef = React.useRef(onScroll);\n  React.useEffect(() => {\n    callbackRef.current = onScroll;\n  }, [onScroll]);\n\n  React.useEffect(() => {\n    const el = containerRef.current;\n    if (!el) return;\n    const ease = clamp(Number.isFinite(lerp) ? lerp : 0.1, 0.01, 1);\n    const multiplier = Number.isFinite(wheelMultiplier) ? wheelMultiplier : 1;\n    let target = el.scrollTop;\n    let current = target;\n    let raf = 0;\n    let lastTime = 0;\n    const getLimit = () => Math.max(0, el.scrollHeight - el.clientHeight);\n    const emit = () => {\n      const limit = getLimit();\n      const scroll = clamp(el.scrollTop, 0, limit);\n      callbackRef.current?.({ scroll, limit, progress: limit > 0 ? scroll / limit : 0 });\n    };\n    const tick = (time: number) => {\n      const dt = lastTime ? Math.min(64, Math.max(1, time - lastTime)) : 16.667;\n      lastTime = time;\n      target = clamp(target, 0, getLimit());\n      if (Math.abs(el.scrollTop - current) > 2) {\n        current = target = el.scrollTop;\n        raf = 0;\n        lastTime = 0;\n        emit();\n        return;\n      }\n      current += (target - current) * (1 - Math.pow(1 - ease, dt / 16.667));\n      if (Math.abs(target - current) < 0.35) current = target;\n      el.scrollTop = current;\n      emit();\n      if (current === target) {\n        raf = 0;\n        lastTime = 0;\n        return;\n      }\n      raf = requestAnimationFrame(tick);\n    };\n    const onWheel = (event: WheelEvent) => {\n      if (event.ctrlKey || event.defaultPrevented || Math.abs(event.deltaX) > Math.abs(event.deltaY)) return;\n      let dy = event.deltaY;\n      if (event.deltaMode === 1) dy *= 16;\n      else if (event.deltaMode === 2) dy *= el.clientHeight;\n      dy *= multiplier;\n      if (dy === 0 || nestedCanScroll(event.target, el, dy)) return;\n      const limit = getLimit();\n      if (!raf) current = target = el.scrollTop;\n      if ((dy < 0 && target <= 0) || (dy > 0 && target >= limit - 0.5)) return;\n      event.preventDefault();\n      target = clamp(target + dy, 0, limit);\n      if (!raf) {\n        lastTime = 0;\n        raf = requestAnimationFrame(tick);\n      }\n    };\n    const onNativeScroll = () => {\n      if (raf) return;\n      current = target = el.scrollTop;\n      emit();\n    };\n    if (smooth) el.addEventListener(\"wheel\", onWheel, { passive: false });\n    el.addEventListener(\"scroll\", onNativeScroll, { passive: true });\n    const ro = new ResizeObserver(emit);\n    ro.observe(el);\n    if (el.firstElementChild) ro.observe(el.firstElementChild);\n    emit();\n    return () => {\n      if (smooth) el.removeEventListener(\"wheel\", onWheel);\n      el.removeEventListener(\"scroll\", onNativeScroll);\n      ro.disconnect();\n      if (raf) cancelAnimationFrame(raf);\n    };\n  }, [containerRef, lerp, wheelMultiplier, smooth]);\n}\n\nexport interface ScrollFocusListProps {\n  /** List entries; the one nearest the viewport center is in focus */\n  items?: string[];\n  /** Small label pinned at the top (also the region label) */\n  title?: string;\n  /** Maximum blur in px applied to entries far from center */\n  blur?: number;\n  /** Opacity of entries far from center (0..1) */\n  minOpacity?: number;\n  /** Scale of the focused entry (1 = no scaling) */\n  scale?: number;\n  /** Accent color for the focused entry marker */\n  accentColor?: string;\n  /** Text alignment of the list */\n  align?: \"left\" | \"center\";\n  /** Viewport height in px */\n  height?: number;\n  /** Viewport corner radius in px */\n  borderRadius?: number;\n  /** Interpolation factor per 60fps frame (0.05 = floaty, 0.3 = snappy) */\n  lerp?: number;\n  /** Multiplier applied to wheel / trackpad deltas */\n  wheelMultiplier?: number;\n  /** Enable smooth wheel scrolling (native scrolling when false or under reduced motion) */\n  smooth?: boolean;\n  /** Optional className merged onto the root */\n  className?: string;\n  /** Inline styles merged onto the root */\n  style?: React.CSSProperties;\n}\n\nconst DEFAULT_ITEMS = [\n  \"Design in the browser\",\n  \"Prototype with real data\",\n  \"Review on any device\",\n  \"Ship behind a flag\",\n  \"Measure what changed\",\n  \"Learn and iterate\",\n  \"Repeat, faster\",\n];\n\nexport function ScrollFocusList({\n  items = DEFAULT_ITEMS,\n  title = \"How we build\",\n  blur = 5,\n  minOpacity = 0.22,\n  scale = 1.08,\n  accentColor = \"#facc15\",\n  align = \"left\",\n  height = 380,\n  borderRadius = 20,\n  lerp = 0.1,\n  wheelMultiplier = 1,\n  smooth = true,\n  className = \"\",\n  style,\n}: ScrollFocusListProps) {\n  const reduced = usePrefersReducedMotion();\n  const viewportRef = React.useRef<HTMLDivElement>(null);\n  const itemRefs = React.useRef<(HTMLLIElement | null)[]>([]);\n  const scrollRef = React.useRef(0);\n\n  const apply = React.useCallback(() => {\n    const vp = viewportRef.current;\n    if (!vp) return;\n    const center = scrollRef.current + vp.clientHeight / 2;\n    const half = Math.max(1, vp.clientHeight * 0.5);\n    let nearest = -1;\n    let best = Infinity;\n    itemRefs.current.forEach((item, i) => {\n      if (!item) return;\n      const dist = Math.abs(item.offsetTop + item.offsetHeight / 2 - center);\n      if (dist < best) {\n        best = dist;\n        nearest = i;\n      }\n      item.style.setProperty(\"--mf-sfl-d\", clamp(dist / half, 0, 1).toFixed(4));\n    });\n    itemRefs.current.forEach((item, i) => {\n      if (item) item.dataset.active = String(i === nearest);\n    });\n  }, []);\n\n  const handleScroll = React.useCallback(\n    (state: SmoothScrollState) => {\n      scrollRef.current = state.scroll;\n      apply();\n    },\n    [apply],\n  );\n\n  useSmoothScroll(viewportRef, { lerp, wheelMultiplier, smooth: smooth && !reduced, onScroll: handleScroll });\n\n  React.useEffect(() => {\n    apply();\n  }, [apply, items, height]);\n\n  const vars = {\n    \"--mf-sfl-h\": `${height}px`,\n    \"--mf-sfl-r\": `${borderRadius}px`,\n    \"--mf-sfl-accent\": accentColor,\n    \"--mf-sfl-blur\": `${reduced ? 0 : Math.max(0, blur)}px`,\n    \"--mf-sfl-min\": clamp(minOpacity, 0, 1),\n    \"--mf-sfl-scale\": reduced ? 1 : scale,\n    ...style,\n  } as React.CSSProperties;\n\n  return (\n    <div style={vars} className={`${styles.root} ${className}`.trim()} data-align={align}>\n      <span className={styles.kicker} aria-hidden=\"true\">\n        {title}\n      </span>\n      <div ref={viewportRef} className={styles.viewport} tabIndex={0} role=\"region\" aria-label={title}>\n        <ol className={styles.list}>\n          {items.map((item, i) => (\n            <li\n              key={`${item}-${i}`}\n              ref={(node) => {\n                itemRefs.current[i] = node;\n              }}\n              className={styles.item}\n              data-active={i === 0 ? \"true\" : \"false\"}\n            >\n              <span className={styles.index} aria-hidden=\"true\">\n                {String(i + 1).padStart(2, \"0\")}\n              </span>\n              <span className={styles.text}>{item}</span>\n            </li>\n          ))}\n        </ol>\n      </div>\n      <span aria-hidden=\"true\" className={styles.fadeTop} />\n      <span aria-hidden=\"true\" className={styles.fadeBottom} />\n    </div>\n  );\n}\n"
+    },
+    {
+      "path": "components/styles/scroll-focus-list.module.css",
+      "type": "registry:style",
+      "content": ".root {\n  position: relative;\n  width: 100%;\n  height: var(--mf-sfl-h, 380px);\n  border-radius: var(--mf-sfl-r, 20px);\n  overflow: hidden;\n  border: 1px solid var(--mf-border, #2e2e38);\n  background:\n    radial-gradient(70% 45% at 50% 50%, color-mix(in srgb, var(--mf-sfl-accent, #facc15) 9%, transparent), transparent 70%),\n    var(--mf-surface, #141419);\n  color: var(--mf-fg, #f4f4f6);\n  container-type: inline-size;\n  isolation: isolate;\n}\n\n.root *,\n.root *::before,\n.root *::after {\n  box-sizing: border-box;\n}\n\n.kicker {\n  position: absolute;\n  z-index: 2;\n  top: 0.9rem;\n  left: 50%;\n  translate: -50% 0;\n  padding: 0.28rem 0.75rem;\n  border: 1px solid var(--mf-border, #2e2e38);\n  border-radius: 999px;\n  background: var(--mf-surface-raised, #1b1b22);\n  font-size: 0.7rem;\n  letter-spacing: 0.08em;\n  text-transform: uppercase;\n  white-space: nowrap;\n  color: var(--mf-sfl-accent, #facc15);\n  pointer-events: none;\n}\n\n.viewport {\n  position: relative;\n  height: 100%;\n  overflow-x: hidden;\n  overflow-y: auto;\n  overscroll-behavior: auto;\n  scroll-behavior: auto;\n  scrollbar-width: none;\n}\n\n.viewport::-webkit-scrollbar {\n  display: none;\n}\n\n.viewport:focus-visible {\n  outline: 2px solid var(--mf-fg, #e4e4e7);\n  outline-offset: -2px;\n}\n\n.list {\n  position: relative;\n  margin: 0;\n  padding: calc(var(--mf-sfl-h, 380px) * 0.5 - 1.6rem) clamp(1.25rem, 9cqi, 6rem);\n  list-style: none;\n  display: flex;\n  flex-direction: column;\n  gap: 0.35rem;\n}\n\n.item {\n  --mf-sfl-d: 1;\n  position: relative;\n  display: flex;\n  align-items: baseline;\n  gap: 0.9rem;\n  padding: 0.5rem 0;\n  font-size: clamp(1.4rem, 5cqi, 2.4rem);\n  font-weight: 650;\n  line-height: 1.15;\n  letter-spacing: -0.03em;\n  opacity: calc(1 - var(--mf-sfl-d) * (1 - var(--mf-sfl-min, 0.22)));\n  filter: blur(calc(var(--mf-sfl-d) * var(--mf-sfl-blur, 5px)));\n  transform: scale(calc(1 + (1 - var(--mf-sfl-d)) * (var(--mf-sfl-scale, 1.08) - 1)));\n  transform-origin: 0% 50%;\n  will-change: transform, filter, opacity;\n}\n\n.root[data-align=\"center\"] .item {\n  justify-content: center;\n  text-align: center;\n  transform-origin: 50% 50%;\n}\n\n.index {\n  flex: none;\n  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;\n  font-size: 0.8rem;\n  font-weight: 500;\n  letter-spacing: 0;\n  color: var(--mf-muted, #a1a1aa);\n  transition: color 250ms ease;\n}\n\n.text {\n  position: relative;\n  transition: color 250ms ease;\n}\n\n.text::after {\n  content: \"\";\n  position: absolute;\n  left: 0;\n  bottom: -0.12em;\n  width: 100%;\n  height: 0.08em;\n  border-radius: 999px;\n  background: var(--mf-sfl-accent, #facc15);\n  transform: scaleX(0);\n  transform-origin: 0% 50%;\n  transition: transform 450ms cubic-bezier(0.16, 1, 0.3, 1);\n}\n\n.item[data-active=\"true\"] .index {\n  color: var(--mf-sfl-accent, #facc15);\n}\n\n.item[data-active=\"true\"] .text::after {\n  transform: scaleX(1);\n}\n\n.fadeTop,\n.fadeBottom {\n  position: absolute;\n  left: 0;\n  right: 0;\n  height: 22%;\n  pointer-events: none;\n}\n\n.fadeTop {\n  top: 0;\n  background: linear-gradient(180deg, var(--mf-surface, #141419), transparent);\n}\n\n.fadeBottom {\n  bottom: 0;\n  background: linear-gradient(0deg, var(--mf-surface, #141419), transparent);\n}\n\n@media (prefers-reduced-motion: reduce) {\n  .item {\n    filter: none;\n    transform: none;\n    will-change: auto;\n  }\n\n  .text::after,\n  .index {\n    transition: none;\n  }\n}\n"
+    }
+  ],
+  "tailwindExample": "\"use client\";\n\nimport { useEffect, useRef } from \"react\";\n\nexport function ScrollFocusListTailwind() {\n  const ref = useRef(null);\n  const rows = useRef([]);\n  const items = [\"Design in the browser\", \"Prototype with real data\", \"Review on any device\", \"Ship behind a flag\", \"Measure what changed\"];\n  useEffect(() => {\n    const el = ref.current;\n    const update = () => {\n      const center = el.scrollTop + el.clientHeight / 2;\n      rows.current.forEach((r) => {\n        const d = Math.min(1, Math.abs(r.offsetTop + r.offsetHeight / 2 - center) / (el.clientHeight / 2));\n        r.style.opacity = String(1 - d * 0.78);\n        r.style.filter = `blur(${d * 5}px)`;\n        r.style.transform = `scale(${1 + (1 - d) * 0.08})`;\n      });\n    };\n    update();\n    el.addEventListener(\"scroll\", update, { passive: true });\n    return () => el.removeEventListener(\"scroll\", update);\n  }, []);\n  return (\n    <div ref={ref} tabIndex={0} className=\"h-[380px] w-full overflow-y-auto rounded-[20px] border border-zinc-800 bg-zinc-900 text-zinc-100\">\n      <ol className=\"relative flex flex-col gap-2 px-16 py-[165px]\">\n        {items.map((t, i) => (\n          <li key={t} ref={(n) => (rows.current[i] = n)} className=\"origin-left text-4xl font-semibold tracking-tight\">{t}</li>\n        ))}\n      </ol>\n    </div>\n  );\n}"
+}

@@ -1,0 +1,167 @@
+{
+  "slug": "data-table",
+  "name": "DataTable",
+  "category": "Data Display",
+  "collection": "ui",
+  "featured": true,
+  "addedAt": "2026-10-16",
+  "version": "2.3.0",
+  "requiresMotion": true,
+  "dependencies": [
+    "motion",
+    "react"
+  ],
+  "description": "A clean data table with sortable column headers, row hover, row selection with a tri-state select-all checkbox, colored status pills and simple pagination. Rows glide to their new positions with a spring when the sort changes and fade in when you page.",
+  "tags": [
+    "table",
+    "data-table",
+    "sort",
+    "selection",
+    "pagination",
+    "dashboard",
+    "ui"
+  ],
+  "a11yNotes": "A native <table> with a <caption> (visible or visually hidden) as its accessible name and scope=\"col\" headers. Sortable headers contain a native button and expose aria-sort (none / ascending / descending) on the <th>. Selection uses native labelled checkboxes; the header checkbox becomes indeterminate when part of the page is selected, and the selected count is announced in a polite live region. Pagination is a labelled <nav> with labelled Previous/Next buttons that disable at the ends. Under prefers-reduced-motion rows reorder and appear instantly.",
+  "defaultProps": {
+    "pageSize": 5,
+    "selectable": true,
+    "striped": false,
+    "dense": false,
+    "accentColor": "#6366f1",
+    "caption": "Recent customers",
+    "showCaption": true
+  },
+  "controls": [
+    {
+      "prop": "pageSize",
+      "label": "Rows per page",
+      "type": "range",
+      "min": 2,
+      "max": 12,
+      "step": 1
+    },
+    {
+      "prop": "selectable",
+      "label": "Row selection",
+      "type": "boolean"
+    },
+    {
+      "prop": "striped",
+      "label": "Striped rows",
+      "type": "boolean"
+    },
+    {
+      "prop": "dense",
+      "label": "Dense",
+      "type": "boolean"
+    },
+    {
+      "prop": "accentColor",
+      "label": "Accent color",
+      "type": "color"
+    },
+    {
+      "prop": "caption",
+      "label": "Caption",
+      "type": "text"
+    },
+    {
+      "prop": "showCaption",
+      "label": "Show caption",
+      "type": "boolean"
+    }
+  ],
+  "propsApi": [
+    {
+      "name": "columns",
+      "type": "DataTableColumn[]",
+      "default": "Customer / Status / Plan / Amount",
+      "description": "Column definitions: { key, header, type?: 'text' | 'number' | 'currency' | 'status', subKey?, sortable? }."
+    },
+    {
+      "name": "rows",
+      "type": "DataTableRow[]",
+      "default": "12 sample customers",
+      "description": "Row objects with a unique id plus string/number fields referenced by the columns."
+    },
+    {
+      "name": "pageSize",
+      "type": "number",
+      "default": "5",
+      "description": "Rows per page."
+    },
+    {
+      "name": "selectable",
+      "type": "boolean",
+      "default": "true",
+      "description": "Show row checkboxes and a tri-state select-all (current page) checkbox."
+    },
+    {
+      "name": "striped",
+      "type": "boolean",
+      "default": "false",
+      "description": "Alternate row backgrounds."
+    },
+    {
+      "name": "dense",
+      "type": "boolean",
+      "default": "false",
+      "description": "Compact row height (hides secondary lines)."
+    },
+    {
+      "name": "accentColor",
+      "type": "string",
+      "default": "'#6366f1'",
+      "description": "Checkbox, active sort arrow and selected-row tint color."
+    },
+    {
+      "name": "caption",
+      "type": "string",
+      "default": "'Recent customers'",
+      "description": "Table caption and accessible name."
+    },
+    {
+      "name": "showCaption",
+      "type": "boolean",
+      "default": "true",
+      "description": "Show the caption visibly (otherwise it is visually hidden)."
+    },
+    {
+      "name": "onSelectionChange",
+      "type": "(ids: string[]) => void",
+      "default": "undefined",
+      "description": "Called with the selected row ids whenever selection changes."
+    },
+    {
+      "name": "onSortChange",
+      "type": "(key: string | null, direction: 'ascending' | 'descending' | null) => void",
+      "default": "undefined",
+      "description": "Called when a header cycles ascending, descending and unsorted."
+    },
+    {
+      "name": "className",
+      "type": "string",
+      "default": "''",
+      "description": "Additional class merged onto the root element."
+    },
+    {
+      "name": "style",
+      "type": "React.CSSProperties",
+      "default": "undefined",
+      "description": "Inline styles merged onto the root element."
+    }
+  ],
+  "files": [
+    {
+      "path": "components/ui/data-table.tsx",
+      "type": "registry:component",
+      "content": "\"use client\";\n\nimport * as React from \"react\";\nimport { motion, useReducedMotion } from \"motion/react\";\nimport styles from \"../styles/data-table.module.css\";\n\nexport type DataTableRow = { id: string } & Record<string, string | number>;\n\nexport interface DataTableColumn {\n  /** Row field rendered in this column */\n  key: string;\n  /** Header text */\n  header: string;\n  /** Cell rendering: plain text, number, USD currency or a colored status pill */\n  type?: \"text\" | \"number\" | \"currency\" | \"status\";\n  /** Optional second field shown as a muted line under the value */\n  subKey?: string;\n  /** Allow sorting by this column (default true) */\n  sortable?: boolean;\n}\n\nexport interface DataTableProps {\n  /** Column definitions */\n  columns?: DataTableColumn[];\n  /** Row data (each row needs a unique `id`) */\n  rows?: DataTableRow[];\n  /** Rows per page */\n  pageSize?: number;\n  /** Show row selection checkboxes with a select-all header checkbox */\n  selectable?: boolean;\n  /** Alternate row backgrounds */\n  striped?: boolean;\n  /** Compact row height */\n  dense?: boolean;\n  /** Accent color for checkboxes, sort indicator and selected rows */\n  accentColor?: string;\n  /** Table caption / accessible name */\n  caption?: string;\n  /** Show the caption visibly above the table */\n  showCaption?: boolean;\n  /** Called with the selected row ids */\n  onSelectionChange?: (ids: string[]) => void;\n  /** Called when the sort changes (direction null = unsorted) */\n  onSortChange?: (key: string | null, direction: \"ascending\" | \"descending\" | null) => void;\n  /** Optional className merged onto the root */\n  className?: string;\n  /** Optional inline styles merged onto the root */\n  style?: React.CSSProperties;\n}\n\nconst DEFAULT_COLUMNS: DataTableColumn[] = [\n  { key: \"name\", header: \"Customer\", subKey: \"email\" },\n  { key: \"status\", header: \"Status\", type: \"status\" },\n  { key: \"plan\", header: \"Plan\" },\n  { key: \"amount\", header: \"Amount\", type: \"currency\" },\n];\n\nconst D: Array<[string, string, string, string, number]> = [\n  [\"Olivia Martin\", \"olivia@acme.io\", \"Active\", \"Pro\", 1999],\n  [\"Jackson Lee\", \"jackson@northwind.co\", \"Invited\", \"Starter\", 39],\n  [\"Isabella Nguyen\", \"isabella@globex.com\", \"Active\", \"Team\", 299],\n  [\"William Kim\", \"will@initech.dev\", \"Suspended\", \"Pro\", 99],\n  [\"Sofia Davis\", \"sofia@umbrella.org\", \"Active\", \"Enterprise\", 4250],\n  [\"Lucas Moreau\", \"lucas@hooli.xyz\", \"Active\", \"Team\", 450],\n  [\"Amara Singh\", \"amara@stark.ind\", \"Invited\", \"Pro\", 189],\n  [\"Mateo Rossi\", \"mateo@wayne.co\", \"Active\", \"Starter\", 29],\n  [\"Hana Suzuki\", \"hana@cyberdyne.ai\", \"Suspended\", \"Team\", 720],\n  [\"Noah Fischer\", \"noah@vandelay.com\", \"Active\", \"Enterprise\", 3180],\n  [\"Chloe Dubois\", \"chloe@pied.pi\", \"Active\", \"Pro\", 249],\n  [\"Elijah Brown\", \"elijah@soylent.co\", \"Invited\", \"Starter\", 59],\n];\nconst DEFAULT_ROWS: DataTableRow[] = D.map(([name, email, status, plan, amount], i) => ({ id: `r${i + 1}`, name, email, status, plan, amount }));\n\nconst fmtCell = (v: string | number | undefined, type: DataTableColumn[\"type\"]) => {\n  if (v === undefined) return \"\";\n  if (type === \"currency\" && typeof v === \"number\") return v.toLocaleString(\"en-US\", { style: \"currency\", currency: \"USD\", maximumFractionDigits: 0 });\n  if (type === \"number\" && typeof v === \"number\") return v.toLocaleString(\"en-US\");\n  return String(v);\n};\n\nexport function DataTable({\n  columns = DEFAULT_COLUMNS,\n  rows = DEFAULT_ROWS,\n  pageSize = 5,\n  selectable = true,\n  striped = false,\n  dense = false,\n  accentColor = \"#6366f1\",\n  caption = \"Recent customers\",\n  showCaption = true,\n  onSelectionChange,\n  onSortChange,\n  className = \"\",\n  style,\n}: DataTableProps) {\n  const reduce = useReducedMotion();\n  const [sort, setSort] = React.useState<{ key: string; dir: \"ascending\" | \"descending\" } | null>(null);\n  const [page, setPage] = React.useState(0);\n  const [selected, setSelected] = React.useState<Set<string>>(() => new Set(rows[2] ? [rows[2].id] : []));\n  const allRef = React.useRef<HTMLInputElement>(null);\n  const size = Math.max(1, Math.floor(pageSize));\n\n  const sorted = React.useMemo(() => {\n    if (!sort) return rows;\n    const m = sort.dir === \"ascending\" ? 1 : -1;\n    return rows\n      .map((r, i) => [r, i] as const)\n      .sort(([a, ia], [b, ib]) => {\n        const x = a[sort.key];\n        const y = b[sort.key];\n        const c = typeof x === \"number\" && typeof y === \"number\" ? x - y : String(x ?? \"\").localeCompare(String(y ?? \"\"));\n        return c * m || ia - ib;\n      })\n      .map(([r]) => r);\n  }, [rows, sort]);\n\n  const pages = Math.max(1, Math.ceil(sorted.length / size));\n  const current = Math.min(page, pages - 1);\n  const pageRows = sorted.slice(current * size, current * size + size);\n  const pageSelected = pageRows.filter((r) => selected.has(r.id)).length;\n  const allOnPage = pageRows.length > 0 && pageSelected === pageRows.length;\n\n  React.useEffect(() => {\n    if (allRef.current) allRef.current.indeterminate = pageSelected > 0 && !allOnPage;\n  }, [pageSelected, allOnPage]);\n\n  const commit = (next: Set<string>) => {\n    setSelected(next);\n    onSelectionChange?.([...next]);\n  };\n  const toggleRow = (id: string) => {\n    const next = new Set(selected);\n    if (next.has(id)) next.delete(id);\n    else next.add(id);\n    commit(next);\n  };\n  const toggleAll = () => {\n    const next = new Set(selected);\n    pageRows.forEach((r) => (allOnPage ? next.delete(r.id) : next.add(r.id)));\n    commit(next);\n  };\n  const cycleSort = (key: string) => {\n    const next = sort?.key !== key ? { key, dir: \"ascending\" as const } : sort.dir === \"ascending\" ? { key, dir: \"descending\" as const } : null;\n    setSort(next);\n    onSortChange?.(next ? next.key : null, next ? next.dir : null);\n  };\n\n  const spring = reduce ? { duration: 0 } : { type: \"spring\" as const, stiffness: 520, damping: 42, mass: 0.8 };\n\n  return (\n    <div\n      className={`${styles.root} ${className}`.trim()}\n      data-dense={dense ? \"\" : undefined}\n      data-striped={striped ? \"\" : undefined}\n      style={{ \"--mf-dt-accent\": accentColor, ...style } as React.CSSProperties}\n    >\n      <div className={styles.scroll}>\n        <table className={styles.table}>\n          <caption className={showCaption ? styles.caption : styles.srOnly}>{caption}</caption>\n          <thead>\n            <tr>\n              {selectable && (\n                <th scope=\"col\" className={styles.check}>\n                  <input ref={allRef} type=\"checkbox\" className={styles.box} aria-label=\"Select all rows on this page\" checked={allOnPage} onChange={toggleAll} />\n                </th>\n              )}\n              {columns.map((col) => {\n                const dir = sort?.key === col.key ? sort.dir : undefined;\n                const right = col.type === \"currency\" || col.type === \"number\";\n                return (\n                  <th key={col.key} scope=\"col\" aria-sort={col.sortable === false ? undefined : dir ?? \"none\"} data-align={right ? \"right\" : undefined}>\n                    {col.sortable === false ? (\n                      col.header\n                    ) : (\n                      <button type=\"button\" className={styles.sortBtn} onClick={() => cycleSort(col.key)} data-active={dir ? \"\" : undefined}>\n                        {col.header}\n                        <svg aria-hidden=\"true\" className={styles.sortIcon} data-dir={dir} width=\"14\" height=\"14\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" strokeWidth=\"2.25\" strokeLinecap=\"round\" strokeLinejoin=\"round\">\n                          <path className={styles.up} d=\"m8 10 4-4 4 4\" />\n                          <path className={styles.down} d=\"m8 14 4 4 4-4\" />\n                        </svg>\n                      </button>\n                    )}\n                  </th>\n                );\n              })}\n            </tr>\n          </thead>\n          <tbody>\n            {pageRows.map((row, i) => {\n              const isSel = selected.has(row.id);\n              return (\n                <motion.tr\n                  key={row.id}\n                  layout=\"position\"\n                  initial={reduce ? false : { opacity: 0, y: 6 }}\n                  animate={{ opacity: 1, y: 0 }}\n                  transition={{ ...spring, opacity: { duration: reduce ? 0 : 0.2, delay: reduce ? 0 : i * 0.03 } }}\n                  className={styles.row}\n                  data-state={isSel ? \"selected\" : undefined}\n                >\n                  {selectable && (\n                    <td className={styles.check}>\n                      <input type=\"checkbox\" className={styles.box} aria-label={`Select ${String(row[columns[0]?.key ?? \"id\"] ?? row.id)}`} checked={isSel} onChange={() => toggleRow(row.id)} />\n                    </td>\n                  )}\n                  {columns.map((col) => (\n                    <td key={col.key} data-align={col.type === \"currency\" || col.type === \"number\" ? \"right\" : undefined}>\n                      {col.type === \"status\" ? (\n                        <span className={styles.status} data-status={String(row[col.key] ?? \"\").toLowerCase()}>\n                          {fmtCell(row[col.key], col.type)}\n                        </span>\n                      ) : (\n                        <span className={styles.primary}>{fmtCell(row[col.key], col.type)}</span>\n                      )}\n                      {col.subKey && <span className={styles.secondary}>{fmtCell(row[col.subKey], \"text\")}</span>}\n                    </td>\n                  ))}\n                </motion.tr>\n              );\n            })}\n          </tbody>\n        </table>\n      </div>\n      <div className={styles.footer}>\n        <span className={styles.count} aria-live=\"polite\">\n          {selectable ? `${selected.size} of ${rows.length} row(s) selected` : `${rows.length} rows`}\n        </span>\n        <nav className={styles.pager} aria-label=\"Pagination\">\n          <span className={styles.pageInfo}>\n            Page {current + 1} of {pages}\n          </span>\n          <button type=\"button\" className={styles.pageBtn} aria-label=\"Previous page\" disabled={current === 0} onClick={() => setPage(current - 1)}>\n            <svg aria-hidden=\"true\" width=\"14\" height=\"14\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" strokeWidth=\"2.25\" strokeLinecap=\"round\" strokeLinejoin=\"round\">\n              <path d=\"m15 18-6-6 6-6\" />\n            </svg>\n          </button>\n          <button type=\"button\" className={styles.pageBtn} aria-label=\"Next page\" disabled={current >= pages - 1} onClick={() => setPage(current + 1)}>\n            <svg aria-hidden=\"true\" width=\"14\" height=\"14\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" strokeWidth=\"2.25\" strokeLinecap=\"round\" strokeLinejoin=\"round\">\n              <path d=\"m9 18 6-6-6-6\" />\n            </svg>\n          </button>\n        </nav>\n      </div>\n    </div>\n  );\n}\n"
+    },
+    {
+      "path": "components/styles/data-table.module.css",
+      "type": "registry:style",
+      "content": ".root {\n  --mf-dt-row-h: 3rem;\n  width: 100%;\n  max-width: 46rem;\n  overflow: hidden;\n  border-radius: 0.75rem;\n  border: 1px solid var(--mf-border, #2e2e38);\n  background-color: var(--mf-surface, #141419);\n  color: var(--mf-fg, #f4f4f6);\n  font-size: 0.875rem;\n}\n\n.root[data-dense] {\n  --mf-dt-row-h: 2.5rem;\n}\n\n.scroll {\n  overflow-x: auto;\n}\n\n.table {\n  width: 100%;\n  border-collapse: collapse;\n  border-spacing: 0;\n}\n\n.caption {\n  padding: 0.875rem 1rem 0.625rem;\n  text-align: left;\n  font-size: 0.9375rem;\n  font-weight: 600;\n  caption-side: top;\n}\n\n.table th {\n  height: 2.5rem;\n  padding: 0 1rem;\n  border-bottom: 1px solid var(--mf-border, #2e2e38);\n  color: var(--mf-muted, #a1a1aa);\n  font-size: 0.8125rem;\n  font-weight: 500;\n  text-align: left;\n  white-space: nowrap;\n}\n\n.table td {\n  height: var(--mf-dt-row-h);\n  padding: 0 1rem;\n  border-bottom: 1px solid var(--mf-border, #2e2e38);\n  vertical-align: middle;\n}\n\n.table th[data-align=\"right\"],\n.table td[data-align=\"right\"] {\n  text-align: right;\n}\n\n.table th[data-align=\"right\"] .sortBtn {\n  flex-direction: row-reverse;\n  margin-right: -0.5rem;\n  margin-left: 0;\n}\n\n.row {\n  position: relative;\n  transition: background-color 150ms ease;\n}\n\n.row:last-child td {\n  border-bottom: 0;\n}\n\n.root[data-striped] .row:nth-child(even) {\n  background-color: color-mix(in srgb, var(--mf-surface-raised, #1b1b22) 70%, transparent);\n}\n\n.row:hover {\n  background-color: var(--mf-surface-raised, #1b1b22);\n}\n\n.row[data-state=\"selected\"] {\n  background-color: color-mix(in srgb, var(--mf-dt-accent, #6366f1) 12%, transparent);\n}\n\n.row[data-state=\"selected\"] td:first-child {\n  box-shadow: inset 2px 0 0 var(--mf-dt-accent, #6366f1);\n}\n\n.check {\n  width: 2.75rem;\n  padding-right: 0 !important;\n}\n\n.box {\n  width: 1rem;\n  height: 1rem;\n  margin: 0;\n  vertical-align: middle;\n  accent-color: var(--mf-dt-accent, #6366f1);\n  cursor: pointer;\n}\n\n.box:focus-visible {\n  outline: 2px solid var(--mf-fg, #e4e4e7);\n  outline-offset: 2px;\n}\n\n.sortBtn {\n  display: inline-flex;\n  align-items: center;\n  gap: 0.25rem;\n  height: 1.875rem;\n  margin-left: -0.5rem;\n  padding: 0 0.5rem;\n  border: 0;\n  border-radius: 0.375rem;\n  background: transparent;\n  color: inherit;\n  font: inherit;\n  cursor: pointer;\n  transition: background-color 150ms ease, color 150ms ease;\n}\n\n.sortBtn:hover,\n.sortBtn[data-active] {\n  color: var(--mf-fg, #f4f4f6);\n}\n\n.sortBtn:hover {\n  background-color: var(--mf-surface-raised, #1b1b22);\n}\n\n.sortBtn:focus-visible,\n.pageBtn:focus-visible {\n  outline: 2px solid var(--mf-fg, #e4e4e7);\n  outline-offset: 1px;\n}\n\n.sortIcon path {\n  opacity: 0.45;\n  transition: opacity 180ms ease, transform 220ms cubic-bezier(0.16, 1, 0.3, 1);\n}\n\n.sortIcon[data-dir=\"ascending\"] .up,\n.sortIcon[data-dir=\"descending\"] .down {\n  opacity: 1;\n  stroke: var(--mf-dt-accent, #6366f1);\n}\n\n.sortIcon[data-dir=\"ascending\"] .down,\n.sortIcon[data-dir=\"descending\"] .up {\n  opacity: 0.15;\n}\n\n.sortIcon[data-dir=\"ascending\"] .up {\n  transform: translateY(2px);\n}\n\n.sortIcon[data-dir=\"descending\"] .down {\n  transform: translateY(-2px);\n}\n\n.primary {\n  display: block;\n  font-weight: 500;\n  font-variant-numeric: tabular-nums;\n  white-space: nowrap;\n}\n\n.secondary {\n  display: block;\n  margin-top: 0.125rem;\n  color: var(--mf-subtle, #71717a);\n  font-size: 0.75rem;\n  white-space: nowrap;\n}\n\n.root[data-dense] .secondary {\n  display: none;\n}\n\n.status {\n  display: inline-flex;\n  align-items: center;\n  gap: 0.375rem;\n  height: 1.375rem;\n  padding: 0 0.5rem;\n  border-radius: 999px;\n  border: 1px solid var(--mf-border, #2e2e38);\n  color: var(--mf-muted, #a1a1aa);\n  font-size: 0.75rem;\n  font-weight: 500;\n}\n\n.status::before {\n  content: \"\";\n  width: 0.375rem;\n  height: 0.375rem;\n  border-radius: 999px;\n  background-color: currentColor;\n}\n\n.status[data-status=\"active\"] {\n  color: #22c55e;\n  border-color: color-mix(in srgb, #22c55e 35%, transparent);\n  background-color: color-mix(in srgb, #22c55e 10%, transparent);\n}\n\n.status[data-status=\"invited\"] {\n  color: #f59e0b;\n  border-color: color-mix(in srgb, #f59e0b 35%, transparent);\n  background-color: color-mix(in srgb, #f59e0b 10%, transparent);\n}\n\n.status[data-status=\"suspended\"] {\n  color: #ef4444;\n  border-color: color-mix(in srgb, #ef4444 35%, transparent);\n  background-color: color-mix(in srgb, #ef4444 10%, transparent);\n}\n\n.footer {\n  display: flex;\n  align-items: center;\n  justify-content: space-between;\n  gap: 1rem;\n  padding: 0.625rem 1rem;\n  border-top: 1px solid var(--mf-border, #2e2e38);\n  color: var(--mf-muted, #a1a1aa);\n  font-size: 0.8125rem;\n}\n\n.pager {\n  display: flex;\n  align-items: center;\n  gap: 0.375rem;\n}\n\n.pageInfo {\n  margin-right: 0.375rem;\n  font-variant-numeric: tabular-nums;\n}\n\n.pageBtn {\n  display: inline-flex;\n  align-items: center;\n  justify-content: center;\n  width: 2rem;\n  height: 2rem;\n  border-radius: 0.5rem;\n  border: 1px solid var(--mf-border, #2e2e38);\n  background-color: var(--mf-surface, #141419);\n  color: var(--mf-fg, #f4f4f6);\n  cursor: pointer;\n  transition: background-color 150ms ease, border-color 150ms ease, transform 120ms ease;\n}\n\n.pageBtn:hover:not(:disabled) {\n  background-color: var(--mf-surface-raised, #1b1b22);\n  border-color: var(--mf-border-strong, #52525b);\n}\n\n.pageBtn:active:not(:disabled) {\n  transform: scale(0.94);\n}\n\n.pageBtn:disabled {\n  opacity: 0.4;\n  cursor: not-allowed;\n}\n\n.srOnly {\n  position: absolute;\n  width: 1px;\n  height: 1px;\n  margin: -1px;\n  padding: 0;\n  overflow: hidden;\n  clip: rect(0 0 0 0);\n  white-space: nowrap;\n  border: 0;\n}\n\n@media (prefers-reduced-motion: reduce) {\n  .row,\n  .sortBtn,\n  .sortIcon path,\n  .pageBtn {\n    transition: none;\n  }\n}\n"
+    }
+  ],
+  "tailwindExample": "\"use client\";\n\nimport { useMemo, useState } from \"react\";\nimport { motion } from \"motion/react\";\n\nconst rows = [\n  { id: \"1\", name: \"Olivia Martin\", status: \"Active\", amount: 1999 },\n  { id: \"2\", name: \"Jackson Lee\", status: \"Invited\", amount: 39 },\n  { id: \"3\", name: \"Isabella Nguyen\", status: \"Active\", amount: 299 },\n  { id: \"4\", name: \"William Kim\", status: \"Suspended\", amount: 99 },\n  { id: \"5\", name: \"Sofia Davis\", status: \"Active\", amount: 4250 },\n];\ntype Key = \"name\" | \"status\" | \"amount\";\n\nexport function DataTableTailwind() {\n  const [sort, setSort] = useState<{ key: Key; asc: boolean } | null>(null);\n  const [sel, setSel] = useState<string[]>([]);\n  const data = useMemo(() => !sort ? rows : [...rows].sort((a, b) => (a[sort.key] > b[sort.key] ? 1 : -1) * (sort.asc ? 1 : -1)), [sort]);\n  const th = (key: Key, label: string) => (\n    <th scope=\"col\" aria-sort={sort?.key === key ? (sort.asc ? \"ascending\" : \"descending\") : \"none\"} className=\"h-10 px-4 text-left text-xs font-medium text-zinc-400\">\n      <button type=\"button\" onClick={() => setSort({ key, asc: sort?.key === key ? !sort.asc : true })} className=\"-ml-2 rounded-md px-2 py-1 hover:bg-zinc-800 hover:text-zinc-100\">{label} {sort?.key === key ? (sort.asc ? \"↑\" : \"↓\") : \"↕\"}</button>\n    </th>\n  );\n  return (\n    <div className=\"w-full max-w-2xl overflow-hidden rounded-xl border border-zinc-800 bg-zinc-900 text-sm text-zinc-100\">\n      <table className=\"w-full\">\n        <caption className=\"px-4 py-3 text-left font-semibold\">Recent customers</caption>\n        <thead className=\"border-b border-zinc-800\"><tr>\n          <th className=\"w-10 pl-4\"><input type=\"checkbox\" aria-label=\"Select all\" className=\"accent-indigo-500\" checked={sel.length === rows.length} onChange={() => setSel(sel.length === rows.length ? [] : rows.map((r) => r.id))} /></th>\n          {th(\"name\", \"Customer\")}{th(\"status\", \"Status\")}{th(\"amount\", \"Amount\")}\n        </tr></thead>\n        <tbody>\n          {data.map((r) => (\n            <motion.tr layout key={r.id} className={`border-b border-zinc-800 last:border-0 hover:bg-zinc-800/60 ${sel.includes(r.id) ? \"bg-indigo-500/10\" : \"\"}`}>\n              <td className=\"pl-4\"><input type=\"checkbox\" aria-label={`Select ${r.name}`} className=\"accent-indigo-500\" checked={sel.includes(r.id)} onChange={() => setSel(sel.includes(r.id) ? sel.filter((x) => x !== r.id) : [...sel, r.id])} /></td>\n              <td className=\"h-12 px-4 font-medium\">{r.name}</td>\n              <td className=\"px-4 text-zinc-400\">{r.status}</td>\n              <td className=\"px-4 tabular-nums\">${r.amount.toLocaleString(\"en-US\")}</td>\n            </motion.tr>\n          ))}\n        </tbody>\n      </table>\n    </div>\n  );\n}"
+}

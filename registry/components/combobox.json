@@ -1,0 +1,247 @@
+{
+  "slug": "combobox",
+  "name": "Combobox",
+  "category": "Forms and Inputs",
+  "collection": "ui",
+  "featured": false,
+  "addedAt": "2026-10-16",
+  "version": "2.3.0",
+  "requiresMotion": true,
+  "dependencies": [
+    "motion",
+    "react"
+  ],
+  "description": "A filterable autocomplete input: typing narrows a popover listbox, highlights the matched characters and shows an animated empty state when nothing matches. The popover scales out of the field, flips above it near the viewport edge, and marks the selected option with a check.",
+  "tags": [
+    "combobox",
+    "autocomplete",
+    "search",
+    "typeahead",
+    "listbox",
+    "form",
+    "ui"
+  ],
+  "a11yNotes": "Implements the WAI-ARIA editable combobox with list autocomplete: the input is role=\"combobox\" with aria-autocomplete=\"list\", aria-expanded, aria-controls and aria-activedescendant, so DOM focus always stays in the input. The popup is role=\"listbox\" of role=\"option\" items with aria-selected. ArrowDown/ArrowUp open and move (wrapping), Alt+ArrowDown opens without moving, Enter selects, Escape closes and restores the text (or clears it when already closed). The empty state is a role=\"status\" live region. The visible label is a real <label>. Under prefers-reduced-motion the popup only fades.",
+  "defaultProps": {
+    "options": [
+      "Next.js",
+      "SvelteKit",
+      "Nuxt",
+      "Remix",
+      "Astro",
+      "SolidStart",
+      "Gatsby",
+      "Qwik City",
+      "Angular",
+      "Vite"
+    ],
+    "label": "Framework",
+    "placeholder": "Search frameworks…",
+    "emptyMessage": "No framework found.",
+    "matchMode": "contains",
+    "highlightMatches": true,
+    "showClear": true,
+    "size": "md",
+    "width": 280,
+    "accentColor": "#6366f1",
+    "disabled": false
+  },
+  "controls": [
+    {
+      "prop": "options",
+      "label": "Options (comma separated)",
+      "type": "list"
+    },
+    {
+      "prop": "label",
+      "label": "Label",
+      "type": "text"
+    },
+    {
+      "prop": "placeholder",
+      "label": "Placeholder",
+      "type": "text"
+    },
+    {
+      "prop": "emptyMessage",
+      "label": "Empty message",
+      "type": "text"
+    },
+    {
+      "prop": "matchMode",
+      "label": "Match mode",
+      "type": "select",
+      "options": [
+        "contains",
+        "startsWith"
+      ]
+    },
+    {
+      "prop": "highlightMatches",
+      "label": "Highlight matches",
+      "type": "boolean"
+    },
+    {
+      "prop": "showClear",
+      "label": "Show clear button",
+      "type": "boolean"
+    },
+    {
+      "prop": "size",
+      "label": "Size",
+      "type": "select",
+      "options": [
+        "sm",
+        "md",
+        "lg"
+      ]
+    },
+    {
+      "prop": "width",
+      "label": "Width (px)",
+      "type": "range",
+      "min": 180,
+      "max": 420,
+      "step": 10
+    },
+    {
+      "prop": "accentColor",
+      "label": "Accent color",
+      "type": "color"
+    },
+    {
+      "prop": "disabled",
+      "label": "Disabled",
+      "type": "boolean"
+    }
+  ],
+  "propsApi": [
+    {
+      "name": "options",
+      "type": "string[]",
+      "default": "10 frameworks",
+      "description": "Options to choose from."
+    },
+    {
+      "name": "value",
+      "type": "string",
+      "default": "undefined",
+      "description": "Controlled selected value."
+    },
+    {
+      "name": "defaultValue",
+      "type": "string",
+      "default": "''",
+      "description": "Initial selected value when uncontrolled."
+    },
+    {
+      "name": "onValueChange",
+      "type": "(value: string) => void",
+      "default": "undefined",
+      "description": "Called with the newly selected value (an empty string when cleared)."
+    },
+    {
+      "name": "open",
+      "type": "boolean",
+      "default": "undefined",
+      "description": "Controlled open state of the listbox."
+    },
+    {
+      "name": "defaultOpen",
+      "type": "boolean",
+      "default": "false",
+      "description": "Initial open state when uncontrolled."
+    },
+    {
+      "name": "onOpenChange",
+      "type": "(open: boolean) => void",
+      "default": "undefined",
+      "description": "Called when the listbox requests to open or close."
+    },
+    {
+      "name": "label",
+      "type": "string",
+      "default": "'Framework'",
+      "description": "Visible field label, used as the accessible name."
+    },
+    {
+      "name": "placeholder",
+      "type": "string",
+      "default": "'Search frameworks…'",
+      "description": "Input placeholder."
+    },
+    {
+      "name": "emptyMessage",
+      "type": "string",
+      "default": "'No framework found.'",
+      "description": "Message shown (and announced) when no option matches."
+    },
+    {
+      "name": "matchMode",
+      "type": "'contains' | 'startsWith'",
+      "default": "'contains'",
+      "description": "How the query is matched against options (case-insensitive)."
+    },
+    {
+      "name": "highlightMatches",
+      "type": "boolean",
+      "default": "true",
+      "description": "Highlight the matched characters in each option."
+    },
+    {
+      "name": "showClear",
+      "type": "boolean",
+      "default": "true",
+      "description": "Show an animated clear button while the field has text."
+    },
+    {
+      "name": "size",
+      "type": "'sm' | 'md' | 'lg'",
+      "default": "'md'",
+      "description": "Field and option height / type size preset."
+    },
+    {
+      "name": "width",
+      "type": "number",
+      "default": "280",
+      "description": "Field width in pixels; the popover matches it."
+    },
+    {
+      "name": "accentColor",
+      "type": "string",
+      "default": "'#6366f1'",
+      "description": "Color of the match highlight, check mark and focus ring."
+    },
+    {
+      "name": "disabled",
+      "type": "boolean",
+      "default": "false",
+      "description": "Disable the field."
+    },
+    {
+      "name": "className",
+      "type": "string",
+      "default": "''",
+      "description": "Additional class merged onto the root element."
+    },
+    {
+      "name": "style",
+      "type": "React.CSSProperties",
+      "default": "undefined",
+      "description": "Inline styles merged onto the root element."
+    }
+  ],
+  "files": [
+    {
+      "path": "components/ui/combobox.tsx",
+      "type": "registry:component",
+      "content": "\"use client\";\n\nimport * as React from \"react\";\nimport { createPortal } from \"react-dom\";\nimport { AnimatePresence, motion, useReducedMotion } from \"motion/react\";\nimport styles from \"../styles/combobox.module.css\";\n\nexport interface ComboboxProps {\n  /** Options to choose from */\n  options?: string[];\n  /** Controlled selected value */\n  value?: string;\n  /** Initial selected value when uncontrolled */\n  defaultValue?: string;\n  /** Called with the newly selected value (\"\" when cleared) */\n  onValueChange?: (value: string) => void;\n  /** Controlled open state of the listbox */\n  open?: boolean;\n  /** Initial open state when uncontrolled */\n  defaultOpen?: boolean;\n  /** Called when the listbox requests to open or close */\n  onOpenChange?: (open: boolean) => void;\n  /** Visible field label (accessible name) */\n  label?: string;\n  /** Input placeholder */\n  placeholder?: string;\n  /** Message shown when no option matches */\n  emptyMessage?: string;\n  /** How the query is matched against options */\n  matchMode?: \"contains\" | \"startsWith\";\n  /** Highlight the matched part of each option */\n  highlightMatches?: boolean;\n  /** Show a clear button when there is text */\n  showClear?: boolean;\n  /** Size preset */\n  size?: \"sm\" | \"md\" | \"lg\";\n  /** Field width in pixels */\n  width?: number;\n  /** Accent color for highlights, check mark and focus ring */\n  accentColor?: string;\n  /** Disable the field */\n  disabled?: boolean;\n  /** Optional className merged onto the root */\n  className?: string;\n  /** Optional inline styles merged onto the root */\n  style?: React.CSSProperties;\n}\n\nconst DEFAULT_OPTIONS = [\"Next.js\", \"SvelteKit\", \"Nuxt\", \"Remix\", \"Astro\", \"SolidStart\", \"Gatsby\", \"Qwik City\", \"Angular\", \"Vite\"];\nconst THEME_TOKENS = [\"--mf-bg\", \"--mf-fg\", \"--mf-surface\", \"--mf-surface-raised\", \"--mf-muted\", \"--mf-subtle\", \"--mf-border\", \"--mf-border-strong\", \"--mf-accent\"];\nconst useIsoLayoutEffect = typeof window !== \"undefined\" ? React.useLayoutEffect : React.useEffect;\n\nfunction readThemeVars(el: Element | null): Record<string, string> {\n  const out: Record<string, string> = {};\n  if (!el) return out;\n  const cs = getComputedStyle(el);\n  for (const t of THEME_TOKENS) {\n    const v = cs.getPropertyValue(t).trim();\n    if (v) out[t] = v;\n  }\n  return out;\n}\n\nfunction Highlight({ text, query, mode, className }: { text: string; query: string; mode: \"contains\" | \"startsWith\"; className: string }) {\n  const at = query ? text.toLowerCase().indexOf(query.toLowerCase()) : -1;\n  if (at < 0 || (mode === \"startsWith\" && at !== 0)) return <>{text}</>;\n  return (\n    <>\n      {text.slice(0, at)}\n      <mark className={className}>{text.slice(at, at + query.length)}</mark>\n      {text.slice(at + query.length)}\n    </>\n  );\n}\n\nexport function Combobox({\n  options = DEFAULT_OPTIONS,\n  value: valueProp,\n  defaultValue = \"\",\n  onValueChange,\n  open: openProp,\n  defaultOpen = false,\n  onOpenChange,\n  label = \"Framework\",\n  placeholder = \"Search frameworks…\",\n  emptyMessage = \"No framework found.\",\n  matchMode = \"contains\",\n  highlightMatches = true,\n  showClear = true,\n  size = \"md\",\n  width = 280,\n  accentColor = \"#6366f1\",\n  disabled = false,\n  className = \"\",\n  style,\n}: ComboboxProps) {\n  const reduce = useReducedMotion();\n  const id = React.useId();\n  const [innerValue, setInnerValue] = React.useState(defaultValue);\n  const [innerOpen, setInnerOpen] = React.useState(defaultOpen);\n  const value = valueProp !== undefined ? valueProp : innerValue;\n  const open = !disabled && (openProp !== undefined ? openProp : innerOpen);\n  const [query, setQuery] = React.useState(value);\n  const [filtering, setFiltering] = React.useState(false);\n  const [active, setActive] = React.useState(-1);\n  const [mounted, setMounted] = React.useState(false);\n  const [pos, setPos] = React.useState<React.CSSProperties>({});\n  const [below, setBelow] = React.useState(true);\n  const [themeVars, setThemeVars] = React.useState<Record<string, string>>({});\n  const fieldRef = React.useRef<HTMLDivElement>(null);\n  const inputRef = React.useRef<HTMLInputElement>(null);\n  const listRef = React.useRef<HTMLUListElement>(null);\n\n  const q = filtering ? query.trim() : \"\";\n  const results = React.useMemo(() => {\n    const lq = q.toLowerCase();\n    return lq ? options.filter((o) => (matchMode === \"startsWith\" ? o.toLowerCase().startsWith(lq) : o.toLowerCase().includes(lq))) : options;\n  }, [options, q, matchMode]);\n\n  React.useEffect(() => setMounted(true), []);\n  React.useEffect(() => setQuery(value), [value]);\n\n  const setOpen = (next: boolean) => {\n    if (next === open) return;\n    if (openProp === undefined) setInnerOpen(next);\n    onOpenChange?.(next);\n  };\n\n  const commit = (v: string) => {\n    if (valueProp === undefined) setInnerValue(v);\n    if (v !== value) onValueChange?.(v);\n    setQuery(v);\n    setFiltering(false);\n    setOpen(false);\n  };\n\n  const place = React.useCallback(() => {\n    const f = fieldRef.current;\n    if (!f) return;\n    const r = f.getBoundingClientRect();\n    const fitsBelow = window.innerHeight - r.bottom >= 260 || window.innerHeight - r.bottom >= r.top;\n    setBelow(fitsBelow);\n    setPos(fitsBelow ? { left: r.left, width: r.width, top: r.bottom + 6 } : { left: r.left, width: r.width, bottom: window.innerHeight - r.top + 6 });\n  }, []);\n\n  useIsoLayoutEffect(() => {\n    if (!open) return;\n    setThemeVars(readThemeVars(fieldRef.current));\n    place();\n    window.addEventListener(\"resize\", place);\n    window.addEventListener(\"scroll\", place, true);\n    return () => {\n      window.removeEventListener(\"resize\", place);\n      window.removeEventListener(\"scroll\", place, true);\n    };\n  }, [open, place]);\n\n  // Keep the active option valid and visible.\n  React.useEffect(() => {\n    if (!open) return setActive(-1);\n    setActive((a) => {\n      if (filtering) return results.length ? 0 : -1;\n      const sel = results.indexOf(value);\n      return a >= 0 && a < results.length ? a : sel;\n    });\n  }, [open, results, filtering, value]);\n\n  React.useEffect(() => {\n    if (active >= 0) listRef.current?.querySelector<HTMLElement>(`[data-index=\"${active}\"]`)?.scrollIntoView({ block: \"nearest\" });\n  }, [active]);\n\n  const onKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {\n    const n = results.length;\n    if (e.key === \"ArrowDown\" || e.key === \"ArrowUp\") {\n      e.preventDefault();\n      if (!open) {\n        setOpen(true);\n        if (!e.altKey && n) setActive(e.key === \"ArrowDown\" ? 0 : n - 1);\n        return;\n      }\n      if (n) setActive((a) => (e.key === \"ArrowDown\" ? (a + 1) % n : a <= 0 ? n - 1 : a - 1));\n    } else if (e.key === \"Enter\") {\n      if (open && active >= 0 && results[active]) {\n        e.preventDefault();\n        commit(results[active]);\n      }\n    } else if (e.key === \"Escape\") {\n      e.preventDefault();\n      if (open) {\n        setOpen(false);\n        setQuery(value);\n        setFiltering(false);\n      } else commit(\"\");\n    }\n  };\n\n  const listId = `${id}-list`;\n  const optId = (i: number) => `${id}-opt-${i}`;\n\n  return (\n    <div className={`${styles.root} ${styles[size] ?? \"\"} ${className}`.trim()} style={{ \"--mf-cb-accent\": accentColor, \"--mf-cb-w\": `${width}px`, ...style } as React.CSSProperties}>\n      {label && (\n        <label htmlFor={`${id}-input`} id={`${id}-label`} className={styles.label}>\n          {label}\n        </label>\n      )}\n      <div ref={fieldRef} className={styles.field} data-open={open ? \"\" : undefined} data-disabled={disabled ? \"\" : undefined}>\n        <svg aria-hidden=\"true\" className={styles.icon} width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" strokeWidth=\"2\" strokeLinecap=\"round\">\n          <circle cx=\"11\" cy=\"11\" r=\"7\" />\n          <path d=\"m20 20-3.5-3.5\" />\n        </svg>\n        <input\n          ref={inputRef}\n          id={`${id}-input`}\n          type=\"text\"\n          role=\"combobox\"\n          aria-autocomplete=\"list\"\n          aria-expanded={open}\n          aria-controls={listId}\n          aria-activedescendant={open && active >= 0 ? optId(active) : undefined}\n          autoComplete=\"off\"\n          spellCheck={false}\n          disabled={disabled}\n          placeholder={placeholder}\n          value={query}\n          className={styles.input}\n          onChange={(e) => {\n            setQuery(e.target.value);\n            setFiltering(true);\n            setOpen(true);\n          }}\n          onClick={() => setOpen(!open)}\n          onKeyDown={onKeyDown}\n          onBlur={() => {\n            if (query.trim() === \"\" && value) return commit(\"\");\n            setOpen(false);\n            setFiltering(false);\n            setQuery(value);\n          }}\n        />\n        <AnimatePresence>\n          {showClear && query && !disabled && (\n            <motion.button\n              type=\"button\"\n              aria-label=\"Clear\"\n              tabIndex={-1}\n              className={styles.clear}\n              initial={{ opacity: 0, scale: 0.6 }}\n              animate={{ opacity: 1, scale: 1 }}\n              exit={{ opacity: 0, scale: 0.6 }}\n              transition={{ duration: reduce ? 0 : 0.15 }}\n              onPointerDown={(e) => e.preventDefault()}\n              onClick={() => {\n                commit(\"\");\n                inputRef.current?.focus();\n              }}\n            >\n              <svg aria-hidden=\"true\" width=\"14\" height=\"14\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" strokeWidth=\"2.2\" strokeLinecap=\"round\">\n                <path d=\"M18 6 6 18M6 6l12 12\" />\n              </svg>\n            </motion.button>\n          )}\n        </AnimatePresence>\n      </div>\n      {mounted &&\n        createPortal(\n          <AnimatePresence>\n            {open && (\n              <motion.div\n                className={`${styles.popover} ${styles[size] ?? \"\"}`.trim()}\n                style={{ ...themeVars, ...pos, \"--mf-cb-accent\": accentColor, transformOrigin: below ? \"top center\" : \"bottom center\" } as React.CSSProperties}\n                initial={reduce ? { opacity: 0 } : { opacity: 0, scale: 0.96, y: below ? -6 : 6 }}\n                animate={reduce ? { opacity: 1 } : { opacity: 1, scale: 1, y: 0 }}\n                exit={reduce ? { opacity: 0 } : { opacity: 0, scale: 0.97, y: below ? -4 : 4 }}\n                transition={{ duration: reduce ? 0.08 : 0.16, ease: [0.16, 1, 0.3, 1] }}\n                onPointerDown={(e) => e.preventDefault()}\n              >\n                <ul ref={listRef} id={listId} role=\"listbox\" aria-labelledby={label ? `${id}-label` : undefined} aria-label={label ? undefined : \"Suggestions\"} className={styles.list}>\n                  {results.map((o, i) => (\n                    <li\n                      key={o}\n                      id={optId(i)}\n                      role=\"option\"\n                      aria-selected={o === value}\n                      data-index={i}\n                      data-active={i === active ? \"\" : undefined}\n                      className={styles.option}\n                      onPointerMove={() => active !== i && setActive(i)}\n                      onClick={() => commit(o)}\n                    >\n                      <span className={styles.optionLabel}>{highlightMatches ? <Highlight text={o} query={q} mode={matchMode} className={styles.mark} /> : o}</span>\n                      {o === value && (\n                        <svg aria-hidden=\"true\" className={styles.check} width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" strokeWidth=\"2.4\" strokeLinecap=\"round\" strokeLinejoin=\"round\">\n                          <path d=\"M5 12.5l4.5 4.5L19 7.5\" />\n                        </svg>\n                      )}\n                    </li>\n                  ))}\n                </ul>\n                {results.length === 0 && (\n                  <motion.div role=\"status\" className={styles.empty} initial={{ opacity: 0, y: reduce ? 0 : 4 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: reduce ? 0 : 0.18 }}>\n                    {emptyMessage}\n                  </motion.div>\n                )}\n              </motion.div>\n            )}\n          </AnimatePresence>,\n          document.body,\n        )}\n    </div>\n  );\n}\n"
+    },
+    {
+      "path": "components/styles/combobox.module.css",
+      "type": "registry:style",
+      "content": ".root {\n  display: inline-flex;\n  flex-direction: column;\n  gap: 0.5rem;\n  width: var(--mf-cb-w, 280px);\n  max-width: 100%;\n  color: var(--mf-fg, #f4f4f6);\n  font-size: 0.875rem;\n  --mf-cb-h: 2.375rem;\n}\n\n.sm {\n  font-size: 0.8125rem;\n  --mf-cb-h: 2rem;\n  --mf-cb-opt: 1.875rem;\n}\n\n.lg {\n  font-size: 0.9375rem;\n  --mf-cb-h: 2.75rem;\n  --mf-cb-opt: 2.5rem;\n}\n\n.label {\n  font-size: 0.8125rem;\n  font-weight: 500;\n  color: var(--mf-fg, #f4f4f6);\n}\n\n.field {\n  position: relative;\n  display: flex;\n  align-items: center;\n  height: var(--mf-cb-h);\n  border-radius: 0.5rem;\n  border: 1px solid var(--mf-border, #2e2e38);\n  background-color: var(--mf-surface, #141419);\n  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.12);\n  transition: border-color 150ms ease, box-shadow 150ms ease;\n}\n\n.field:hover:not([data-disabled]) {\n  border-color: var(--mf-border-strong, #52525b);\n}\n\n.field:focus-within {\n  border-color: var(--mf-cb-accent, #6366f1);\n  box-shadow: 0 0 0 3px color-mix(in srgb, var(--mf-cb-accent, #6366f1) 25%, transparent);\n}\n\n.field:has(.input:focus-visible) {\n  outline: 2px solid var(--mf-fg, #e4e4e7);\n  outline-offset: 2px;\n}\n\n.field[data-disabled] {\n  opacity: 0.5;\n}\n\n.icon {\n  position: absolute;\n  left: 0.6875rem;\n  color: var(--mf-subtle, #71717a);\n  pointer-events: none;\n}\n\n.input {\n  flex: 1;\n  min-width: 0;\n  height: 100%;\n  padding: 0 2.25rem 0 2.125rem;\n  border: 0;\n  background: transparent;\n  color: var(--mf-fg, #f4f4f6);\n  font: inherit;\n  outline: none;\n}\n\n.input::placeholder {\n  color: var(--mf-muted, #a1a1aa);\n}\n\n.input:disabled {\n  cursor: not-allowed;\n}\n\n.clear {\n  position: absolute;\n  right: 0.4375rem;\n  display: inline-grid;\n  place-items: center;\n  width: 1.5rem;\n  height: 1.5rem;\n  padding: 0;\n  border: 0;\n  border-radius: 0.375rem;\n  background: transparent;\n  color: var(--mf-subtle, #71717a);\n  cursor: pointer;\n}\n\n.clear:hover {\n  color: var(--mf-fg, #f4f4f6);\n  background-color: var(--mf-surface-raised, #1b1b22);\n}\n\n.popover {\n  position: fixed;\n  z-index: 1000;\n  box-sizing: border-box;\n  padding: 0.25rem;\n  border-radius: 0.625rem;\n  border: 1px solid var(--mf-border, #2e2e38);\n  background-color: var(--mf-surface, #141419);\n  color: var(--mf-fg, #f4f4f6);\n  font-family: inherit;\n  font-size: 0.875rem;\n  box-shadow: 0 16px 40px -12px rgba(0, 0, 0, 0.5), 0 2px 6px rgba(0, 0, 0, 0.15);\n}\n\n.popover.sm {\n  font-size: 0.8125rem;\n}\n\n.popover.lg {\n  font-size: 0.9375rem;\n}\n\n.list {\n  max-height: 248px;\n  margin: 0;\n  padding: 0;\n  overflow-y: auto;\n  overscroll-behavior: contain;\n  list-style: none;\n}\n\n.list:empty {\n  display: none;\n}\n\n.option {\n  display: flex;\n  align-items: center;\n  justify-content: space-between;\n  gap: 0.5rem;\n  height: var(--mf-cb-opt, 2.125rem);\n  padding: 0 0.5rem 0 0.625rem;\n  border-radius: 0.375rem;\n  cursor: pointer;\n  user-select: none;\n  transition: background-color 120ms ease;\n}\n\n.option[data-active] {\n  background-color: var(--mf-surface-raised, #1b1b22);\n}\n\n.optionLabel {\n  min-width: 0;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n  color: var(--mf-muted, #a1a1aa);\n}\n\n.option[data-active] .optionLabel,\n.option[aria-selected=\"true\"] .optionLabel {\n  color: var(--mf-fg, #f4f4f6);\n}\n\n.mark {\n  padding: 0;\n  border-radius: 0.1875rem;\n  background-color: color-mix(in srgb, var(--mf-cb-accent, #6366f1) 22%, transparent);\n  color: var(--mf-fg, #f4f4f6);\n  font-weight: 600;\n}\n\n.check {\n  flex-shrink: 0;\n  color: var(--mf-cb-accent, #6366f1);\n}\n\n.empty {\n  padding: 1.25rem 0.75rem;\n  text-align: center;\n  color: var(--mf-muted, #a1a1aa);\n}\n\n@media (prefers-reduced-motion: reduce) {\n  .field,\n  .option {\n    transition: none;\n  }\n\n  .popover {\n    transform: none !important;\n  }\n}\n"
+    }
+  ],
+  "tailwindExample": "\"use client\";\n\nimport { AnimatePresence, motion } from \"motion/react\";\nimport { useState } from \"react\";\n\nconst items = [\"Next.js\", \"SvelteKit\", \"Nuxt\", \"Remix\", \"Astro\", \"Vite\"];\n\nexport function ComboboxTailwind() {\n  const [query, setQuery] = useState(\"\");\n  const [open, setOpen] = useState(false);\n  const [active, setActive] = useState(0);\n  const results = items.filter((i) => i.toLowerCase().includes(query.toLowerCase()));\n  const pick = (v: string) => { setQuery(v); setOpen(false); };\n  const onKey = (e: React.KeyboardEvent) => {\n    if (e.key === \"ArrowDown\") { e.preventDefault(); setOpen(true); setActive((a) => (a + 1) % Math.max(1, results.length)); }\n    if (e.key === \"ArrowUp\") { e.preventDefault(); setActive((a) => (a <= 0 ? results.length - 1 : a - 1)); }\n    if (e.key === \"Enter\" && open && results[active]) { e.preventDefault(); pick(results[active]); }\n    if (e.key === \"Escape\") setOpen(false);\n  };\n  return (\n    <div className=\"relative w-72 text-sm text-zinc-100\">\n      <input role=\"combobox\" aria-autocomplete=\"list\" aria-expanded={open} aria-controls=\"cb-list\" aria-activedescendant={open && results[active] ? `cb-${active}` : undefined} value={query} placeholder=\"Search frameworks…\" onChange={(e) => { setQuery(e.target.value); setActive(0); setOpen(true); }} onKeyDown={onKey} onBlur={() => setOpen(false)} className=\"h-9 w-full rounded-lg border border-zinc-800 bg-zinc-900 px-3 outline-none placeholder:text-zinc-500 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/20\" />\n      <AnimatePresence>\n        {open && (\n          <motion.div initial={{ opacity: 0, scale: 0.96, y: -6 }} animate={{ opacity: 1, scale: 1, y: 0 }} exit={{ opacity: 0 }} transition={{ duration: 0.16 }} className=\"absolute inset-x-0 top-11 z-50 origin-top rounded-xl border border-zinc-800 bg-zinc-900 p-1 shadow-xl\">\n            <ul id=\"cb-list\" role=\"listbox\">\n              {results.map((r, i) => (\n                <li key={r} id={`cb-${i}`} role=\"option\" aria-selected={r === query} onPointerDown={(e) => e.preventDefault()} onClick={() => pick(r)} className={`cursor-pointer rounded-md px-2 py-1.5 ${i === active ? \"bg-zinc-800\" : \"\"}`}>{r}</li>\n              ))}\n            </ul>\n            {results.length === 0 && <p role=\"status\" className=\"py-5 text-center text-zinc-400\">No framework found.</p>}\n          </motion.div>\n        )}\n      </AnimatePresence>\n    </div>\n  );\n}"
+}

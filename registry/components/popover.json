@@ -1,0 +1,216 @@
+{
+  "slug": "popover",
+  "name": "Popover",
+  "category": "Overlays and Menus",
+  "collection": "ui",
+  "featured": false,
+  "addedAt": "2026-10-16",
+  "version": "2.3.0",
+  "requiresMotion": true,
+  "dependencies": [
+    "motion",
+    "react"
+  ],
+  "description": "A click-triggered floating panel with a pointing arrow that scales in from the trigger. Placement is measured against the viewport: it honours side and align, flips to the opposite side when there is no room and keeps the arrow pointed at the trigger.",
+  "tags": [
+    "popover",
+    "floating",
+    "overlay",
+    "arrow",
+    "placement",
+    "ui"
+  ],
+  "a11yNotes": "The trigger is a button with aria-haspopup=\"dialog\", aria-expanded and aria-controls. The panel is a non-modal role=\"dialog\" labelled by its heading and described by its description. Focus moves to the first field on open; Escape closes and returns focus to the trigger, as does the labelled Close button. Pressing outside or tabbing out of the panel closes it. All inputs have associated labels. The arrow is aria-hidden. Under prefers-reduced-motion the panel only fades.",
+  "defaultProps": {
+    "side": "bottom",
+    "align": "center",
+    "sideOffset": 10,
+    "showArrow": true,
+    "triggerLabel": "Open popover",
+    "title": "Dimensions",
+    "description": "Set the dimensions for the layer.",
+    "width": 320,
+    "accentColor": "#6366f1",
+    "closeOnOutsideClick": true
+  },
+  "controls": [
+    {
+      "prop": "side",
+      "label": "Side",
+      "type": "select",
+      "options": [
+        "bottom",
+        "top",
+        "right",
+        "left"
+      ]
+    },
+    {
+      "prop": "align",
+      "label": "Align",
+      "type": "select",
+      "options": [
+        "center",
+        "start",
+        "end"
+      ]
+    },
+    {
+      "prop": "sideOffset",
+      "label": "Side offset (px)",
+      "type": "range",
+      "min": 0,
+      "max": 32,
+      "step": 1
+    },
+    {
+      "prop": "showArrow",
+      "label": "Show arrow",
+      "type": "boolean"
+    },
+    {
+      "prop": "triggerLabel",
+      "label": "Trigger label",
+      "type": "text"
+    },
+    {
+      "prop": "title",
+      "label": "Title",
+      "type": "text"
+    },
+    {
+      "prop": "description",
+      "label": "Description",
+      "type": "text"
+    },
+    {
+      "prop": "width",
+      "label": "Width (px)",
+      "type": "range",
+      "min": 200,
+      "max": 480,
+      "step": 10
+    },
+    {
+      "prop": "accentColor",
+      "label": "Accent color",
+      "type": "color"
+    },
+    {
+      "prop": "closeOnOutsideClick",
+      "label": "Close on outside click",
+      "type": "boolean"
+    }
+  ],
+  "propsApi": [
+    {
+      "name": "open",
+      "type": "boolean",
+      "default": "undefined",
+      "description": "Controlled open state."
+    },
+    {
+      "name": "defaultOpen",
+      "type": "boolean",
+      "default": "false",
+      "description": "Initial open state when uncontrolled."
+    },
+    {
+      "name": "onOpenChange",
+      "type": "(open: boolean) => void",
+      "default": "undefined",
+      "description": "Called whenever the popover requests to open or close."
+    },
+    {
+      "name": "side",
+      "type": "'top' | 'right' | 'bottom' | 'left'",
+      "default": "'bottom'",
+      "description": "Preferred side of the trigger; flips to the opposite side when it does not fit."
+    },
+    {
+      "name": "align",
+      "type": "'start' | 'center' | 'end'",
+      "default": "'center'",
+      "description": "Alignment along the trigger edge; the panel is clamped inside the viewport."
+    },
+    {
+      "name": "sideOffset",
+      "type": "number",
+      "default": "10",
+      "description": "Gap between trigger and panel in pixels."
+    },
+    {
+      "name": "showArrow",
+      "type": "boolean",
+      "default": "true",
+      "description": "Show the arrow pointing at the trigger."
+    },
+    {
+      "name": "triggerLabel",
+      "type": "string",
+      "default": "'Open popover'",
+      "description": "Label of the trigger button."
+    },
+    {
+      "name": "title",
+      "type": "string",
+      "default": "'Dimensions'",
+      "description": "Panel heading, used as the accessible name."
+    },
+    {
+      "name": "description",
+      "type": "string",
+      "default": "'Set the dimensions for the layer.'",
+      "description": "Supporting text under the heading, used as the accessible description."
+    },
+    {
+      "name": "children",
+      "type": "React.ReactNode",
+      "default": "dimensions form",
+      "description": "Panel content; defaults to four labelled dimension inputs."
+    },
+    {
+      "name": "width",
+      "type": "number",
+      "default": "320",
+      "description": "Panel width in pixels (capped to the viewport)."
+    },
+    {
+      "name": "accentColor",
+      "type": "string",
+      "default": "'#6366f1'",
+      "description": "Focus ring color of the inputs."
+    },
+    {
+      "name": "closeOnOutsideClick",
+      "type": "boolean",
+      "default": "true",
+      "description": "Close when pressing outside the trigger and panel."
+    },
+    {
+      "name": "className",
+      "type": "string",
+      "default": "''",
+      "description": "Additional class merged onto the root element."
+    },
+    {
+      "name": "style",
+      "type": "React.CSSProperties",
+      "default": "undefined",
+      "description": "Inline styles merged onto the root element."
+    }
+  ],
+  "files": [
+    {
+      "path": "components/ui/popover.tsx",
+      "type": "registry:component",
+      "content": "\"use client\";\n\nimport * as React from \"react\";\nimport { createPortal } from \"react-dom\";\nimport { AnimatePresence, motion, useReducedMotion } from \"motion/react\";\nimport styles from \"../styles/popover.module.css\";\n\ntype Side = \"top\" | \"right\" | \"bottom\" | \"left\";\ntype Align = \"start\" | \"center\" | \"end\";\n\nexport interface PopoverProps {\n  /** Controlled open state */\n  open?: boolean;\n  /** Initial open state when uncontrolled */\n  defaultOpen?: boolean;\n  /** Called whenever the popover requests to open or close */\n  onOpenChange?: (open: boolean) => void;\n  /** Preferred side of the trigger (flips when there is no room) */\n  side?: Side;\n  /** Alignment along the trigger edge */\n  align?: Align;\n  /** Gap between trigger and panel in pixels */\n  sideOffset?: number;\n  /** Show the pointing arrow */\n  showArrow?: boolean;\n  /** Label of the trigger button */\n  triggerLabel?: string;\n  /** Panel heading (accessible name) */\n  title?: string;\n  /** Supporting text under the heading */\n  description?: string;\n  /** Panel content; defaults to a dimensions form */\n  children?: React.ReactNode;\n  /** Panel width in pixels */\n  width?: number;\n  /** Accent color for inputs and focus highlights */\n  accentColor?: string;\n  /** Close when pressing outside the panel */\n  closeOnOutsideClick?: boolean;\n  /** Optional className merged onto the root */\n  className?: string;\n  /** Optional inline styles merged onto the root */\n  style?: React.CSSProperties;\n}\n\nconst THEME_TOKENS = [\"--mf-bg\", \"--mf-fg\", \"--mf-surface\", \"--mf-surface-raised\", \"--mf-muted\", \"--mf-subtle\", \"--mf-border\", \"--mf-border-strong\", \"--mf-accent\"];\nconst FOCUSABLE = 'a[href],button:not([disabled]),input:not([disabled]),select:not([disabled]),textarea:not([disabled]),[tabindex]:not([tabindex=\"-1\"])';\nconst useIsoLayoutEffect = typeof window !== \"undefined\" ? React.useLayoutEffect : React.useEffect;\nconst OPPOSITE: Record<Side, Side> = { top: \"bottom\", bottom: \"top\", left: \"right\", right: \"left\" };\nconst MARGIN = 8;\n\nfunction readThemeVars(el: Element | null): Record<string, string> {\n  const out: Record<string, string> = {};\n  if (!el) return out;\n  const cs = getComputedStyle(el);\n  for (const t of THEME_TOKENS) {\n    const v = cs.getPropertyValue(t).trim();\n    if (v) out[t] = v;\n  }\n  return out;\n}\n\nconst clamp = (v: number, lo: number, hi: number) => Math.max(lo, Math.min(v, Math.max(lo, hi)));\n\ninterface Placement {\n  side: Side;\n  left: number;\n  top: number;\n  arrow: number;\n}\n\n/** Measured placement: preferred side, flipped to the opposite side when it does not fit, then clamped into the viewport. */\nfunction computePlacement(r: DOMRect, w: number, h: number, side: Side, align: Align, gap: number): Placement {\n  const vw = window.innerWidth;\n  const vh = window.innerHeight;\n  const room: Record<Side, number> = { bottom: vh - r.bottom, top: r.top, right: vw - r.right, left: r.left };\n  const need = (s: Side) => (s === \"top\" || s === \"bottom\" ? h : w) + gap + MARGIN;\n  const s = room[side] < need(side) && room[OPPOSITE[side]] > room[side] ? OPPOSITE[side] : side;\n  if (s === \"top\" || s === \"bottom\") {\n    const raw = align === \"start\" ? r.left : align === \"end\" ? r.right - w : r.left + r.width / 2 - w / 2;\n    const left = clamp(raw, MARGIN, vw - w - MARGIN);\n    return { side: s, left, top: s === \"bottom\" ? r.bottom + gap : r.top - gap - h, arrow: clamp(r.left + r.width / 2 - left, 14, w - 14) };\n  }\n  const raw = align === \"start\" ? r.top : align === \"end\" ? r.bottom - h : r.top + r.height / 2 - h / 2;\n  const top = clamp(raw, MARGIN, vh - h - MARGIN);\n  return { side: s, top, left: s === \"right\" ? r.right + gap : r.left - gap - w, arrow: clamp(r.top + r.height / 2 - top, 14, h - 14) };\n}\n\nconst FIELDS = [\n  [\"Width\", \"100%\"],\n  [\"Max. width\", \"300px\"],\n  [\"Height\", \"25px\"],\n  [\"Max. height\", \"none\"],\n];\n\nfunction DefaultBody({ id }: { id: string }) {\n  return (\n    <div className={styles.form}>\n      {FIELDS.map(([label, value], i) => (\n        <div key={label} className={styles.field}>\n          <label htmlFor={`${id}-f${i}`} className={styles.label}>\n            {label}\n          </label>\n          <input id={`${id}-f${i}`} className={styles.input} defaultValue={value} />\n        </div>\n      ))}\n    </div>\n  );\n}\n\nexport function Popover({\n  open: openProp,\n  defaultOpen = false,\n  onOpenChange,\n  side = \"bottom\",\n  align = \"center\",\n  sideOffset = 10,\n  showArrow = true,\n  triggerLabel = \"Open popover\",\n  title = \"Dimensions\",\n  description = \"Set the dimensions for the layer.\",\n  children,\n  width = 320,\n  accentColor = \"#6366f1\",\n  closeOnOutsideClick = true,\n  className = \"\",\n  style,\n}: PopoverProps) {\n  const reduce = useReducedMotion();\n  const [inner, setInner] = React.useState(defaultOpen);\n  const open = openProp !== undefined ? openProp : inner;\n  const setOpen = React.useCallback(\n    (v: boolean) => {\n      if (openProp === undefined) setInner(v);\n      onOpenChange?.(v);\n    },\n    [openProp, onOpenChange],\n  );\n  const setOpenRef = React.useRef(setOpen);\n  setOpenRef.current = setOpen;\n  const [mounted, setMounted] = React.useState(false);\n  const [themeVars, setThemeVars] = React.useState<Record<string, string>>({});\n  const [placement, setPlacement] = React.useState<Placement | null>(null);\n  const triggerRef = React.useRef<HTMLButtonElement>(null);\n  const panelRef = React.useRef<HTMLDivElement>(null);\n  const id = React.useId();\n\n  React.useEffect(() => setMounted(true), []);\n\n  const place = React.useCallback(() => {\n    const t = triggerRef.current;\n    const p = panelRef.current;\n    if (!t || !p) return;\n    setPlacement(computePlacement(t.getBoundingClientRect(), p.offsetWidth, p.offsetHeight, side, align, sideOffset + (showArrow ? 2 : 0)));\n  }, [side, align, sideOffset, showArrow]);\n\n  useIsoLayoutEffect(() => {\n    if (!open) return;\n    setThemeVars(readThemeVars(triggerRef.current));\n    place();\n    const onDown = (e: PointerEvent) => {\n      const target = e.target as Node;\n      if (closeOnOutsideClick && !triggerRef.current?.contains(target) && !panelRef.current?.contains(target)) setOpenRef.current(false);\n    };\n    const onKey = (e: KeyboardEvent) => {\n      if (e.key !== \"Escape\") return;\n      e.preventDefault();\n      setOpenRef.current(false);\n      triggerRef.current?.focus();\n    };\n    const raf = requestAnimationFrame(() => (panelRef.current?.querySelector<HTMLElement>(FOCUSABLE) ?? panelRef.current)?.focus());\n    window.addEventListener(\"resize\", place);\n    window.addEventListener(\"scroll\", place, true);\n    document.addEventListener(\"pointerdown\", onDown);\n    document.addEventListener(\"keydown\", onKey);\n    return () => {\n      cancelAnimationFrame(raf);\n      window.removeEventListener(\"resize\", place);\n      window.removeEventListener(\"scroll\", place, true);\n      document.removeEventListener(\"pointerdown\", onDown);\n      document.removeEventListener(\"keydown\", onKey);\n    };\n  }, [open, place, closeOnOutsideClick]);\n\n  const s = placement?.side ?? side;\n  const vertical = s === \"top\" || s === \"bottom\";\n  const shift = 6 * (s === \"bottom\" || s === \"right\" ? -1 : 1);\n  const origin = placement ? (vertical ? `${placement.arrow}px ${s === \"bottom\" ? \"0\" : \"100%\"}` : `${s === \"right\" ? \"0\" : \"100%\"} ${placement.arrow}px`) : \"center\";\n\n  return (\n    <div className={`${styles.root} ${className}`.trim()} style={{ \"--mf-pop-accent\": accentColor, ...style } as React.CSSProperties}>\n      <button\n        ref={triggerRef}\n        type=\"button\"\n        aria-haspopup=\"dialog\"\n        aria-expanded={open}\n        aria-controls={open ? `${id}-panel` : undefined}\n        className={styles.trigger}\n        onClick={() => setOpen(!open)}\n      >\n        {triggerLabel}\n      </button>\n      {mounted &&\n        createPortal(\n          <AnimatePresence>\n            {open && (\n              <motion.div\n                ref={panelRef}\n                id={`${id}-panel`}\n                role=\"dialog\"\n                aria-labelledby={`${id}-title`}\n                aria-describedby={description ? `${id}-desc` : undefined}\n                tabIndex={-1}\n                data-side={s}\n                className={styles.panel}\n                style={\n                  {\n                    ...themeVars,\n                    \"--mf-pop-accent\": accentColor,\n                    \"--mf-pop-w\": `${width}px`,\n                    \"--mf-pop-arrow\": `${placement?.arrow ?? 0}px`,\n                    left: placement?.left ?? 0,\n                    top: placement?.top ?? 0,\n                    visibility: placement ? \"visible\" : \"hidden\",\n                    transformOrigin: origin,\n                  } as React.CSSProperties\n                }\n                initial={reduce ? { opacity: 0 } : { opacity: 0, scale: 0.95, x: vertical ? 0 : shift, y: vertical ? shift : 0 }}\n                animate={{ opacity: 1, scale: 1, x: 0, y: 0 }}\n                exit={reduce ? { opacity: 0 } : { opacity: 0, scale: 0.96, x: vertical ? 0 : shift / 2, y: vertical ? shift / 2 : 0 }}\n                transition={{ duration: reduce ? 0.08 : 0.18, ease: [0.16, 1, 0.3, 1] }}\n                onBlur={(e) => {\n                  const next = e.relatedTarget as Node | null;\n                  if (next && !e.currentTarget.contains(next) && !triggerRef.current?.contains(next)) setOpen(false);\n                }}\n              >\n                {showArrow && <span aria-hidden=\"true\" className={styles.arrow} />}\n                <div className={styles.header}>\n                  <h3 id={`${id}-title`} className={styles.title}>\n                    {title}\n                  </h3>\n                  {description && (\n                    <p id={`${id}-desc`} className={styles.description}>\n                      {description}\n                    </p>\n                  )}\n                </div>\n                {children ?? <DefaultBody id={id} />}\n                <button\n                  type=\"button\"\n                  aria-label=\"Close\"\n                  className={styles.close}\n                  onClick={() => {\n                    setOpen(false);\n                    triggerRef.current?.focus();\n                  }}\n                >\n                  <svg aria-hidden=\"true\" width=\"14\" height=\"14\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" strokeWidth=\"2\" strokeLinecap=\"round\">\n                    <path d=\"M18 6 6 18M6 6l12 12\" />\n                  </svg>\n                </button>\n              </motion.div>\n            )}\n          </AnimatePresence>,\n          document.body,\n        )}\n    </div>\n  );\n}\n"
+    },
+    {
+      "path": "components/styles/popover.module.css",
+      "type": "registry:style",
+      "content": ".root {\n  display: inline-flex;\n  color: var(--mf-fg, #f4f4f6);\n}\n\n.trigger {\n  display: inline-flex;\n  align-items: center;\n  justify-content: center;\n  height: 2.375rem;\n  padding: 0 1rem;\n  border-radius: 0.5rem;\n  border: 1px solid var(--mf-border, #2e2e38);\n  background-color: var(--mf-surface, #141419);\n  color: var(--mf-fg, #f4f4f6);\n  font: inherit;\n  font-size: 0.875rem;\n  font-weight: 500;\n  cursor: pointer;\n  transition: background-color 150ms ease, border-color 150ms ease, transform 150ms ease;\n}\n\n.trigger:hover,\n.trigger[aria-expanded=\"true\"] {\n  background-color: var(--mf-surface-raised, #1b1b22);\n  border-color: var(--mf-border-strong, #52525b);\n}\n\n.trigger:active {\n  transform: scale(0.98);\n}\n\n.trigger:focus-visible,\n.close:focus-visible {\n  outline: 2px solid var(--mf-fg, #e4e4e7);\n  outline-offset: 2px;\n}\n\n.panel {\n  position: fixed;\n  z-index: 1000;\n  box-sizing: border-box;\n  width: min(var(--mf-pop-w, 320px), calc(100vw - 16px));\n  padding: 1rem;\n  border-radius: 0.75rem;\n  border: 1px solid var(--mf-border, #2e2e38);\n  background-color: var(--mf-surface, #141419);\n  color: var(--mf-fg, #f4f4f6);\n  font-size: 0.875rem;\n  box-shadow: 0 16px 40px -12px rgba(0, 0, 0, 0.5), 0 2px 6px rgba(0, 0, 0, 0.15);\n  outline: none;\n}\n\n.arrow {\n  position: absolute;\n  width: 0.75rem;\n  height: 0.75rem;\n  background-color: var(--mf-surface, #141419);\n  border: 0 solid var(--mf-border, #2e2e38);\n  transform: rotate(45deg);\n}\n\n.panel[data-side=\"bottom\"] .arrow {\n  top: -0.4rem;\n  left: calc(var(--mf-pop-arrow, 50%) - 0.375rem);\n  border-top-width: 1px;\n  border-left-width: 1px;\n  border-top-left-radius: 2px;\n}\n\n.panel[data-side=\"top\"] .arrow {\n  bottom: -0.4rem;\n  left: calc(var(--mf-pop-arrow, 50%) - 0.375rem);\n  border-bottom-width: 1px;\n  border-right-width: 1px;\n  border-bottom-right-radius: 2px;\n}\n\n.panel[data-side=\"right\"] .arrow {\n  left: -0.4rem;\n  top: calc(var(--mf-pop-arrow, 50%) - 0.375rem);\n  border-bottom-width: 1px;\n  border-left-width: 1px;\n  border-bottom-left-radius: 2px;\n}\n\n.panel[data-side=\"left\"] .arrow {\n  right: -0.4rem;\n  top: calc(var(--mf-pop-arrow, 50%) - 0.375rem);\n  border-top-width: 1px;\n  border-right-width: 1px;\n  border-top-right-radius: 2px;\n}\n\n.header {\n  display: grid;\n  gap: 0.25rem;\n  margin-bottom: 0.875rem;\n  padding-right: 1.5rem;\n}\n\n.title {\n  margin: 0;\n  font-size: 0.9375rem;\n  font-weight: 600;\n  line-height: 1.3;\n}\n\n.description {\n  margin: 0;\n  font-size: 0.8125rem;\n  line-height: 1.5;\n  color: var(--mf-muted, #a1a1aa);\n}\n\n.form {\n  display: grid;\n  gap: 0.5rem;\n}\n\n.field {\n  display: grid;\n  grid-template-columns: 6.5rem 1fr;\n  align-items: center;\n  gap: 0.75rem;\n}\n\n.label {\n  font-size: 0.8125rem;\n  color: var(--mf-muted, #a1a1aa);\n}\n\n.input {\n  box-sizing: border-box;\n  width: 100%;\n  min-width: 0;\n  height: 2rem;\n  padding: 0 0.625rem;\n  border-radius: 0.375rem;\n  border: 1px solid var(--mf-border, #2e2e38);\n  background-color: var(--mf-bg, #09090b);\n  color: var(--mf-fg, #f4f4f6);\n  font: inherit;\n  font-size: 0.8125rem;\n  transition: border-color 150ms ease, box-shadow 150ms ease;\n}\n\n.input:focus {\n  outline: none;\n  border-color: var(--mf-pop-accent, #6366f1);\n  box-shadow: 0 0 0 3px color-mix(in srgb, var(--mf-pop-accent, #6366f1) 28%, transparent);\n}\n\n.close {\n  position: absolute;\n  top: 0.625rem;\n  right: 0.625rem;\n  display: inline-flex;\n  align-items: center;\n  justify-content: center;\n  width: 1.5rem;\n  height: 1.5rem;\n  border: 0;\n  border-radius: 0.375rem;\n  background: transparent;\n  color: var(--mf-subtle, #71717a);\n  cursor: pointer;\n  transition: color 150ms ease, background-color 150ms ease;\n}\n\n.close:hover {\n  color: var(--mf-fg, #f4f4f6);\n  background-color: var(--mf-surface-raised, #1b1b22);\n}\n\n@media (prefers-reduced-motion: reduce) {\n  .trigger,\n  .input,\n  .close {\n    transition: none;\n  }\n}\n"
+    }
+  ],
+  "tailwindExample": "\"use client\";\n\nimport { AnimatePresence, motion } from \"motion/react\";\nimport { useEffect, useRef, useState } from \"react\";\n\nexport function PopoverTailwind() {\n  const [open, setOpen] = useState(false);\n  const root = useRef<HTMLDivElement>(null);\n  const trigger = useRef<HTMLButtonElement>(null);\n  useEffect(() => {\n    if (!open) return;\n    const onDown = (e: PointerEvent) => !root.current?.contains(e.target as Node) && setOpen(false);\n    const onKey = (e: KeyboardEvent) => { if (e.key === \"Escape\") { setOpen(false); trigger.current?.focus(); } };\n    document.addEventListener(\"pointerdown\", onDown);\n    document.addEventListener(\"keydown\", onKey);\n    return () => { document.removeEventListener(\"pointerdown\", onDown); document.removeEventListener(\"keydown\", onKey); };\n  }, [open]);\n  return (\n    <div ref={root} className=\"relative inline-flex text-sm text-zinc-100\">\n      <button ref={trigger} aria-haspopup=\"dialog\" aria-expanded={open} onClick={() => setOpen(!open)} className=\"h-9 rounded-lg border border-zinc-800 bg-zinc-900 px-4 font-medium\">Open popover</button>\n      <AnimatePresence>\n        {open && (\n          <motion.div role=\"dialog\" aria-label=\"Dimensions\" className=\"absolute left-1/2 top-full z-50 mt-3 w-80 rounded-xl border border-zinc-800 bg-zinc-950 p-4 shadow-xl\" style={{ x: \"-50%\", originY: 0 }} initial={{ opacity: 0, scale: 0.95, y: -6 }} animate={{ opacity: 1, scale: 1, y: 0 }} exit={{ opacity: 0, scale: 0.96 }} transition={{ duration: 0.18 }}>\n            <span className=\"absolute -top-1.5 left-1/2 h-3 w-3 -translate-x-1/2 rotate-45 border-l border-t border-zinc-800 bg-zinc-950\" />\n            <h3 className=\"font-semibold\">Dimensions</h3>\n            <p className=\"mb-3 text-zinc-400\">Set the dimensions for the layer.</p>\n            {[\"Width\", \"Height\"].map((f) => (\n              <label key={f} className=\"mb-2 grid grid-cols-[6rem_1fr] items-center gap-3\">\n                <span className=\"text-zinc-400\">{f}</span>\n                <input autoFocus={f === \"Width\"} defaultValue=\"100%\" className=\"h-8 rounded-md border border-zinc-800 bg-black px-2 outline-none focus:border-indigo-500\" />\n              </label>\n            ))}\n          </motion.div>\n        )}\n      </AnimatePresence>\n    </div>\n  );\n}\n"
+}
