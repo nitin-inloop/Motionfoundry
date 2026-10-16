@@ -21,18 +21,16 @@ import {
   EclipseGradient,
   EmberGradient,
   FlipCard,
-  HoldToConfirm,
   LikeButton,
   LoadingButton,
-  MeshGradient,
   Meteors,
   MoonPhaseLoader,
   NebulaGradient,
   NotificationStack,
+  NumberStepper,
   NumberTicker,
   OrbitLoader,
   PasswordInput,
-  PlasmaGradient,
   Popover,
   ProgressBar,
   RangeSlider,
@@ -85,8 +83,7 @@ const SHADERS: { slug: string; fallback: string; className: string; render: Reac
   },
   { slug: "silk-gradient", fallback: "Silk Gradient", className: "", render: <SilkGradient className={FILL}>{BLANK}</SilkGradient> },
   { slug: "eclipse-gradient", fallback: "Eclipse Gradient", className: "", render: <EclipseGradient className={FILL}>{BLANK}</EclipseGradient> },
-  { slug: "plasma-gradient", fallback: "Plasma Gradient", className: "", render: <PlasmaGradient className={FILL}>{BLANK}</PlasmaGradient> },
-  { slug: "ember-gradient", fallback: "Ember Gradient", className: "", render: <EmberGradient className={FILL}>{BLANK}</EmberGradient> },
+  { slug: "ember-gradient", fallback: "Ember Gradient", className: "col-span-2", render: <EmberGradient className={FILL}>{BLANK}</EmberGradient> },
   { slug: "wave-gradient", fallback: "Wave Gradient", className: "col-span-2", render: <WaveGradient className={FILL}>{BLANK}</WaveGradient> },
   { slug: "aurora-ribbons", fallback: "Aurora Ribbons", className: "col-span-2", render: <AuroraRibbons className={FILL}>{BLANK}</AuroraRibbons> },
 ];
@@ -117,7 +114,7 @@ const UI_TILES: { slug: string; fallback: string; className: string; render: Rea
   { slug: "contribution-heatmap", fallback: "Contribution Heatmap", className: "sm:col-span-2", render: <ContributionHeatmap /> },
   { slug: "range-slider", fallback: "Range Slider", className: "", render: <RangeSlider /> },
   { slug: "toggle-group", fallback: "Toggle Group", className: "", render: <ToggleGroup /> },
-  { slug: "hold-to-confirm", fallback: "Hold to Confirm", className: "", render: <HoldToConfirm /> },
+  { slug: "number-stepper", fallback: "Number Stepper", className: "", render: <NumberStepper /> },
   { slug: "copy-button", fallback: "Copy Button", className: "", render: <CopyButton /> },
   { slug: "combobox", fallback: "Combobox", className: "", render: <Combobox /> },
   { slug: "tag-input", fallback: "Tag Input", className: "", render: <TagInput /> },
@@ -140,9 +137,6 @@ const STUDIO_TILES: { slug: string; fallback: string; className: string; render:
   { slug: "reorder-list", fallback: "Reorder List", className: "md:row-span-2", render: <ReorderList /> },
   { slug: "loading-button", fallback: "Loading Button", className: "md:col-span-2", render: <LoadingButton /> },
 ];
-
-/** Backgrounds default to a fixed pixel height; let the hero gradient grow with its content. */
-const HERO_GRADIENT_STYLE: React.CSSProperties = { height: "auto", border: "none" };
 
 export default function HomePage() {
   const components = getAllComponents();
@@ -168,9 +162,7 @@ export default function HomePage() {
   return (
     <div className="space-y-28 overflow-x-clip pb-24 sm:space-y-36">
       <section className="relative overflow-hidden border-b border-border">
-        <MeshGradient borderRadius={0} style={HERO_GRADIENT_STYLE}>
-          {/* Cancels the background’s 2rem content padding so the hero aligns with the rest of the page. */}
-          <div className="-m-8 w-[calc(100%+4rem)] self-stretch bg-gradient-to-b from-background/30 via-background/50 to-background text-left">
+          <div className="bg-background text-left">
             <div className="mx-auto grid max-w-7xl gap-12 px-6 pb-20 pt-16 lg:grid-cols-[1.15fr_1fr] lg:items-center">
               <div className="min-w-0 space-y-7">
                 {newComponents.length > 0 ? (
@@ -208,12 +200,11 @@ export default function HomePage() {
                 <CodeBlock
                   filename="terminal"
                   language="bash"
-                  code={`# copy components (source + CSS module) into your app\nnpx ${BRAND_CONFIG.cliName} add mesh-gradient split-text smooth-scroll\n\n# or install the package\npnpm add ${BRAND_CONFIG.packageScope} motion`}
+                  code={`# copy components (source + CSS module) into your app\nnpx ${BRAND_CONFIG.cliName} add eclipse-gradient split-text smooth-scroll\n\n# or install the package\npnpm add ${BRAND_CONFIG.packageScope} motion`}
                 />
               </div>
             </div>
           </div>
-        </MeshGradient>
       </section>
 
       {/* 2 — Scroll */}

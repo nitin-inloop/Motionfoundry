@@ -1,6 +1,6 @@
 {
   "name": "motionfoundry",
-  "version": "2.4.0",
+  "version": "2.4.1",
   "description": "Official CLI for installing MotionFoundry animated React components (Scroll, Shaders, UI, Text FX, Studio Kit, Core) and their CSS Modules into your project.",
   "license": "MIT",
   "type": "module",

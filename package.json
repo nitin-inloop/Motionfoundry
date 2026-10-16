@@ -1,6 +1,6 @@
 {
   "name": "motionfoundry-monorepo",
-  "version": "2.4.0",
+  "version": "2.4.1",
   "private": true,
   "description": "MotionFoundry — Production-ready open-source animated React component library, CLI, and documentation ecosystem.",
   "license": "MIT",

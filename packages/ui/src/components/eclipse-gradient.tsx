@@ -236,13 +236,13 @@ function useShader(
 }
 
 export function EclipseGradient({
-  color1 = "#ffd9a8",
-  color2 = "#ff6a3d",
-  color3 = "#7dd3fc",
+  color1 = "#a8aeff",
+  color2 = "#caabd3",
+  color3 = "#0d3040",
   backgroundColor = "#020205",
-  speed = 1,
-  ringSize = 1,
-  rayIntensity = 1,
+  speed = 3,
+  ringSize = 0.5,
+  rayIntensity = 0,
   interactive = true,
   height = 380,
   borderRadius = 20,

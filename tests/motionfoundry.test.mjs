@@ -115,7 +115,7 @@ const SCROLL_V23_SLUGS = [
 ];
 
 const UI_SLUGS = [
-  "button", "icon-button", "button-group", "copy-button", "toggle-group", "like-button", "split-button", "hold-to-confirm",
+  "button", "icon-button", "button-group", "copy-button", "toggle-group", "like-button", "split-button",
   "floating-input", "otp-input", "password-input", "tag-input", "number-stepper", "range-slider", "radio-cards",
   "segmented-control", "select", "combobox", "file-dropzone", "star-rating",
   "tabs", "breadcrumb", "pagination", "stepper", "accordion",
@@ -168,8 +168,8 @@ const RETIRED_SLUGS = [
   "bento-grid-card",
 ];
 
-test("1. Registry contains all 143 components across 6 collections and 13 categories", () => {
-  assert.equal(TOTAL, 143);
+test("1. Registry contains all 142 components across 6 collections and 13 categories", () => {
+  assert.equal(TOTAL, 142);
   assert.equal(registry.components.length, TOTAL, `Expected exactly ${TOTAL} components in registry`);
   assert.equal(registry.totalComponents, TOTAL);
   assert.equal(registry.categories.length, 13, "Expected 13 categories");
@@ -212,7 +212,7 @@ test("2. Registry source code matches actual packages/ui/src implementation file
   }
 });
 
-test("3. Accessibility & Reduced Motion support verified for all 143 components", () => {
+test("3. Accessibility & Reduced Motion support verified for all 142 components", () => {
   for (const comp of registry.components) {
     const tsx = comp.files[0].content;
     const css = comp.files[1].content;
@@ -341,7 +341,7 @@ test("7. All 18 documentation pages exist, including the Studio Kit, Design Syst
 
 test("8. Registry JSON is in sync with packages/ui source (scripts/build-registry.mjs --check)", () => {
   const out = execFileSync(process.execPath, [path.join(rootDir, "scripts/build-registry.mjs"), "--check"], { encoding: "utf8" });
-  assert.match(out, /Verified 143 components/);
+  assert.match(out, /Verified 142 components/);
 });
 
 const EXPECTED_DESIGNS = ["vercel", "cursor", "claude", "framer", "apple", "airbnb", "expo", "elevenlabs", "runwayml", "resend", "spotify"];
@@ -421,7 +421,10 @@ test("14. v2.4 additions: card, loader, and rotating-icon components with full m
   }
   const landing = fs.readFileSync(path.join(rootDir, "apps/docs/app/page.tsx"), "utf8");
   // The landing restores the original v2.2 hero and showcases the v2.4 cards & loaders.
-  for (const name of ["<MeshGradient", "<BlurInText", "<CreditCard", "<AccordionCards", "<ProgressBar", "<MoonPhaseLoader", "<SkeletonShimmer"]) {
+  assert.ok(!landing.includes("<MeshGradient"), "hero has a plain black background (no shader)");
+  assert.ok(!landing.includes("<PlasmaGradient"), "Plasma was removed from the landing");
+  assert.ok(!landing.includes("HoldToConfirm"), "HoldToConfirm was removed");
+  for (const name of ["<BlurInText", "<EclipseGradient", "<CreditCard", "<AccordionCards", "<ProgressBar", "<MoonPhaseLoader", "<SkeletonShimmer"]) {
     assert.ok(landing.includes(name), `landing should render ${name.slice(1)}`);
   }
   assert.ok(!landing.includes("scroll-color-heading"), "the color-follows-scroll section was removed");

@@ -1,13 +1,13 @@
 <p align="center"><img src="apps/docs/public/logo.png" width="96" height="96" alt="MotionFoundry logo" /></p>
 
-# MotionFoundry (`@motionfoundry/ui` v2.4.0)
+# MotionFoundry (`@motionfoundry/ui` v2.4.1)
 
 > **Get started:** see [SETUP.md](./SETUP.md) for prerequisites, running the docs site, builds, tests, and deployment.
 > Repository: https://github.com/nitin-inloop/Motionfoundry
 
 Precision-engineered, open-source animated React component library, CLI source installer, and interactive documentation platform built with **Next.js App Router**, **TypeScript**, **Motion (`motion/react`)**, **SVG**, **HTML5 Canvas**, and **scoped CSS Modules**.
 
-## 143 Animated Components
+## 142 Animated Components
 
 ### Core (24)
 

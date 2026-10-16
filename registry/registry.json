@@ -3,9 +3,9 @@
   "name": "motionfoundry",
   "brandName": "MotionFoundry",
   "packageName": "@motionfoundry/ui",
-  "version": "2.4.0",
+  "version": "2.4.1",
   "license": "MIT",
-  "totalComponents": 143,
+  "totalComponents": 142,
   "categories": [
     "Advanced Text Animations",
     "Interactive Buttons and Controls",
@@ -44,7 +44,7 @@
       "order": 3,
       "listed": true,
       "description": "Animated UI primitives built from scratch with no Radix or shadcn dependency: buttons, inputs, selects, dialogs, menus, tabs, toasts, tables, charts, and more — accessible and keyboard friendly.",
-      "count": 56
+      "count": 55
     },
     {
       "id": "text-fx",
@@ -11023,7 +11023,7 @@
       "dependencies": [
         "react"
       ],
-      "description": "A raw WebGL eclipse shader: a pure black disk ringed by a slowly turning corona of noise-driven rays, a hot inner glow and an RGB-split chromatic rim, with optional pointer tilt that parallaxes the disk against its corona. Falls back to a CSS disk with a rotating masked conic corona when WebGL is unavailable.",
+      "description": "A raw WebGL eclipse shader: a pure black disk ringed by a slowly turning corona of noise-driven rays, a hot inner glow and an RGB-split chromatic rim, with optional pointer tilt that parallaxes the disk against its corona. Falls back to a CSS disk with a rotating masked conic corona when WebGL is unavailable. Defaults to a cool lavender corona with a crisp rim.",
       "tags": [
         "eclipse",
         "corona",
@@ -11037,13 +11037,13 @@
       ],
       "a11yNotes": "The canvas (or CSS fallback) is an aria-hidden decorative layer; children render above with light, heavily shadowed text. Pointer tilt is purely cosmetic and needs no interaction. Animation stops off-screen, at speed 0 (tilt still eases when interactive), and under prefers-reduced-motion (one static frame, tilt disabled). GL resources are deleted on unmount and a lost context switches to the CSS fallback.",
       "defaultProps": {
-        "color1": "#ffd9a8",
-        "color2": "#ff6a3d",
-        "color3": "#7dd3fc",
+        "color1": "#a8aeff",
+        "color2": "#caabd3",
+        "color3": "#0d3040",
         "backgroundColor": "#020205",
-        "speed": 1,
-        "ringSize": 1,
-        "rayIntensity": 1,
+        "speed": 3,
+        "ringSize": 0.5,
+        "rayIntensity": 0,
         "interactive": true
       },
       "controls": [
@@ -11101,19 +11101,19 @@
         {
           "name": "color1",
           "type": "string",
-          "default": "'#ffd9a8'",
+          "default": "'#a8aeff'",
           "description": "Hot inner corona color (hex)."
         },
         {
           "name": "color2",
           "type": "string",
-          "default": "'#ff6a3d'",
+          "default": "'#caabd3'",
           "description": "Outer corona and halo color (hex)."
         },
         {
           "name": "color3",
           "type": "string",
-          "default": "'#7dd3fc'",
+          "default": "'#0d3040'",
           "description": "Chromatic rim color around the disk (hex)."
         },
         {
@@ -11125,19 +11125,19 @@
         {
           "name": "speed",
           "type": "number",
-          "default": "1",
+          "default": "3",
           "description": "Corona animation speed (0 pauses)."
         },
         {
           "name": "ringSize",
           "type": "number",
-          "default": "1",
+          "default": "0.5",
           "description": "Size of the eclipsed disk (0.5–1.6)."
         },
         {
           "name": "rayIntensity",
           "type": "number",
-          "default": "1",
+          "default": "0",
           "description": "Length and brightness of the corona rays (0–2)."
         },
         {
@@ -11181,7 +11181,7 @@
         {
           "path": "components/ui/eclipse-gradient.tsx",
           "type": "registry:component",
-          "content": "\"use client\";\n\nimport * as React from \"react\";\nimport styles from \"../styles/eclipse-gradient.module.css\";\n\nexport interface EclipseGradientProps {\n  /** Hot inner corona color */\n  color1?: string;\n  /** Outer corona / halo color */\n  color2?: string;\n  /** Chromatic rim color around the disk */\n  color3?: string;\n  /** Deep space color behind the eclipse */\n  backgroundColor?: string;\n  /** Corona animation speed (1 = default, 0 = paused) */\n  speed?: number;\n  /** Size of the eclipsed disk (0.5–1.6) */\n  ringSize?: number;\n  /** Length and brightness of the corona rays (0–2) */\n  rayIntensity?: number;\n  /** Tilt the eclipse toward the pointer */\n  interactive?: boolean;\n  /** Height of the background in px */\n  height?: number;\n  /** Corner radius in px */\n  borderRadius?: number;\n  /** Foreground content rendered centered on top */\n  children?: React.ReactNode;\n  /** Optional className merged onto the root */\n  className?: string;\n  /** Inline styles merged onto the root */\n  style?: React.CSSProperties;\n}\n\ntype RGB = [number, number, number];\ntype UniformMap = Record<string, number | readonly number[]>;\n\nconst FRAG = `\n#ifdef GL_FRAGMENT_PRECISION_HIGH\nprecision highp float;\n#else\nprecision mediump float;\n#endif\nuniform vec2 u_res; uniform float u_time;\nuniform vec3 u_c1; uniform vec3 u_c2; uniform vec3 u_c3; uniform vec3 u_bg;\nuniform float u_ring; uniform float u_rays; uniform vec2 u_ptr;\nfloat hash(vec2 p){ p = fract(p * vec2(123.34, 456.21)); p += dot(p, p + 45.32); return fract(p.x * p.y); }\nfloat noise(vec2 p){ vec2 i = floor(p), f = fract(p); vec2 u = f * f * (3.0 - 2.0 * f);\n  return mix(mix(hash(i), hash(i + vec2(1.0, 0.0)), u.x), mix(hash(i + vec2(0.0, 1.0)), hash(i + vec2(1.0, 1.0)), u.x), u.y); }\nfloat fbm(vec2 p){ float v = 0.0, a = 0.5; mat2 m = mat2(1.6, 1.2, -1.2, 1.6);\n  for (int i = 0; i < 4; i++){ v += a * noise(p); p = m * p; a *= 0.5; } return v; }\nvoid main(){\n  vec2 uv = (gl_FragCoord.xy - 0.5 * u_res) / u_res.y;\n  float t = u_time;\n  vec2 ctr = u_ptr * vec2(0.05, 0.04);\n  float R = 0.26 * u_ring;\n  vec2 d = uv - ctr; float r = length(d);\n  vec2 dc = uv - ctr * 0.4; float rc = length(dc); vec2 dir = dc / max(rc, 0.0001);\n  float ca = cos(t * 0.03), sa = sin(t * 0.03);\n  vec2 rd = mat2(ca, -sa, sa, ca) * dir;\n  float rays = fbm(dir * 2.2 + vec2(t * 0.06, -t * 0.04)) * 0.6 + noise(rd * 7.0 + t * 0.15) * 0.3 + noise(rd * 17.0 - t * 0.1) * 0.15;\n  float x = max(rc - R, 0.0);\n  float corona = exp(-x * 4.5 / (0.3 + rays * rays * 2.4 * u_rays)) * (0.5 + rays * 0.9 * u_rays);\n  float inner = exp(-x * 26.0);\n  vec3 col = mix(u_c2, u_c1, clamp(inner + exp(-x * 9.0) * 0.5, 0.0, 1.0)) * corona * 1.3 + u_c1 * inner * 1.1;\n  col += u_c2 * exp(-rc * 3.0) * 0.16;\n  col = 1.0 - exp(-col * 1.1);\n  float disk = smoothstep(R + 0.0015, R - 0.0015, r);\n  vec3 diskCol = u_bg * 0.5 + u_c3 * 0.05 * smoothstep(R * 0.55, R, r);\n  vec3 c = mix(u_bg + col, diskCol, disk);\n  float w = 0.0035 + 0.002 * u_ring;\n  float dl = 0.0055;\n  vec3 e3 = (vec3(r) - vec3(R + dl, R, R - dl * 0.6)) / w;\n  vec3 edge = exp(-e3 * e3);\n  float lp = length(u_ptr);\n  float bias = 0.75 + 0.6 * max(dot(d / max(r, 0.0001), u_ptr / max(lp, 0.0001)), 0.0) * lp;\n  c += edge * mix(vec3(1.0), u_c3, 0.55) * 1.5 * bias;\n  c *= 1.0 - 0.25 * dot(uv, uv);\n  gl_FragColor = vec4(c, 1.0);\n}`;\n\nconst VERT = \"attribute vec2 a_pos;void main(){gl_Position=vec4(a_pos,0.0,1.0);}\";\n\nfunction hexRgb(hex: string, fb: RGB): RGB {\n  const m = hex.trim().replace(/^#/, \"\");\n  const full = m.length === 3 ? m.split(\"\").map((ch) => ch + ch).join(\"\") : m;\n  if (!/^[0-9a-fA-F]{6}$/.test(full)) return fb;\n  const n = parseInt(full, 16);\n  return [((n >> 16) & 255) / 255, ((n >> 8) & 255) / 255, (n & 255) / 255];\n}\n\nconst rgba = (c: RGB, a: number) => `rgba(${Math.round(c[0] * 255)},${Math.round(c[1] * 255)},${Math.round(c[2] * 255)},${a})`;\n\nfunction useReducedMotionPref() {\n  const [reduced, setReduced] = React.useState(false);\n  React.useEffect(() => {\n    if (typeof window === \"undefined\" || !window.matchMedia) return;\n    const mq = window.matchMedia(\"(prefers-reduced-motion: reduce)\");\n    const update = () => setReduced(mq.matches);\n    update();\n    mq.addEventListener(\"change\", update);\n    return () => mq.removeEventListener(\"change\", update);\n  }, []);\n  return reduced;\n}\n\nfunction useInView(ref: React.RefObject<HTMLElement | null>) {\n  const [inView, setInView] = React.useState(true);\n  React.useEffect(() => {\n    const el = ref.current;\n    if (!el || typeof IntersectionObserver === \"undefined\") return;\n    const io = new IntersectionObserver((entries) => {\n      const entry = entries[entries.length - 1];\n      if (entry) setInView(entry.isIntersecting);\n    }, { rootMargin: \"80px\" });\n    io.observe(el);\n    return () => io.disconnect();\n  }, [ref]);\n  return inView;\n}\n\nfunction compile(gl: WebGLRenderingContext, type: number, src: string) {\n  const sh = gl.createShader(type);\n  if (!sh) return null;\n  gl.shaderSource(sh, src);\n  gl.compileShader(sh);\n  if (gl.getShaderParameter(sh, gl.COMPILE_STATUS)) return sh;\n  gl.deleteShader(sh);\n  return null;\n}\n\n/** Full-screen-triangle WebGL renderer; returns true when the CSS fallback should be shown instead */\nfunction useShader(\n  rootRef: React.RefObject<HTMLDivElement | null>,\n  canvasRef: React.RefObject<HTMLCanvasElement | null>,\n  frag: string,\n  uniforms: () => UniformMap,\n  running: boolean,\n  speed: number,\n  paramsKey: string,\n  maxDpr = 2,\n) {\n  const [fallback, setFallback] = React.useState(false);\n  const timeRef = React.useRef(12);\n  const drawRef = React.useRef<(() => void) | null>(null);\n  const uniRef = React.useRef(uniforms);\n  uniRef.current = uniforms;\n  const speedRef = React.useRef(speed);\n  speedRef.current = speed;\n\n  React.useEffect(() => {\n    const root = rootRef.current;\n    const canvas = canvasRef.current;\n    if (!root || !canvas || fallback) return;\n    const gl = canvas.getContext(\"webgl\", { alpha: false, antialias: false, depth: false, stencil: false, powerPreference: \"low-power\" });\n    if (!gl) { setFallback(true); return; }\n    const vs = compile(gl, gl.VERTEX_SHADER, VERT);\n    const fs = compile(gl, gl.FRAGMENT_SHADER, frag);\n    const prog = gl.createProgram();\n    const buf = gl.createBuffer();\n    const dispose = () => {\n      gl.deleteBuffer(buf);\n      gl.deleteProgram(prog);\n      gl.deleteShader(vs);\n      gl.deleteShader(fs);\n    };\n    if (!vs || !fs || !prog || !buf) { dispose(); setFallback(true); return; }\n    gl.attachShader(prog, vs);\n    gl.attachShader(prog, fs);\n    gl.linkProgram(prog);\n    if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) { dispose(); setFallback(true); return; }\n    gl.useProgram(prog);\n    gl.bindBuffer(gl.ARRAY_BUFFER, buf);\n    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);\n    const aPos = gl.getAttribLocation(prog, \"a_pos\");\n    gl.enableVertexAttribArray(aPos);\n    gl.vertexAttribPointer(aPos, 2, gl.FLOAT, false, 0, 0);\n    const locs = new Map<string, WebGLUniformLocation | null>();\n    const loc = (n: string) => {\n      if (!locs.has(n)) locs.set(n, gl.getUniformLocation(prog, n));\n      return locs.get(n) ?? null;\n    };\n    const resize = () => {\n      const rect = root.getBoundingClientRect();\n      const dpr = Math.min(maxDpr, window.devicePixelRatio || 1);\n      canvas.width = Math.max(1, Math.round(rect.width * dpr));\n      canvas.height = Math.max(1, Math.round(rect.height * dpr));\n      gl.viewport(0, 0, canvas.width, canvas.height);\n    };\n    const draw = () => {\n      if (gl.isContextLost()) return;\n      gl.uniform2f(loc(\"u_res\"), canvas.width, canvas.height);\n      gl.uniform1f(loc(\"u_time\"), timeRef.current);\n      const u = uniRef.current();\n      for (const k in u) {\n        const v = u[k];\n        if (typeof v === \"number\") gl.uniform1f(loc(k), v);\n        else if (v.length === 2) gl.uniform2f(loc(k), v[0], v[1]);\n        else gl.uniform3f(loc(k), v[0], v[1], v[2]);\n      }\n      gl.drawArrays(gl.TRIANGLES, 0, 3);\n    };\n    resize();\n    draw();\n    drawRef.current = draw;\n    const ro = new ResizeObserver(() => { resize(); draw(); });\n    ro.observe(root);\n    const onLost = (e: Event) => { e.preventDefault(); drawRef.current = null; setFallback(true); };\n    canvas.addEventListener(\"webglcontextlost\", onLost);\n    return () => {\n      ro.disconnect();\n      canvas.removeEventListener(\"webglcontextlost\", onLost);\n      drawRef.current = null;\n      if (!gl.isContextLost()) dispose();\n    };\n  }, [frag, fallback, maxDpr, rootRef, canvasRef]);\n\n  React.useEffect(() => {\n    if (!running || fallback) return;\n    let raf = 0;\n    let last = performance.now();\n    const tick = (now: number) => {\n      const dt = Math.min(0.05, (now - last) / 1000);\n      last = now;\n      timeRef.current += dt * speedRef.current;\n      drawRef.current?.();\n      raf = requestAnimationFrame(tick);\n    };\n    raf = requestAnimationFrame(tick);\n    return () => cancelAnimationFrame(raf);\n  }, [running, fallback]);\n\n  React.useEffect(() => { drawRef.current?.(); }, [paramsKey]);\n\n  return fallback;\n}\n\nexport function EclipseGradient({\n  color1 = \"#ffd9a8\",\n  color2 = \"#ff6a3d\",\n  color3 = \"#7dd3fc\",\n  backgroundColor = \"#020205\",\n  speed = 1,\n  ringSize = 1,\n  rayIntensity = 1,\n  interactive = true,\n  height = 380,\n  borderRadius = 20,\n  children,\n  className = \"\",\n  style,\n}: EclipseGradientProps) {\n  const rootRef = React.useRef<HTMLDivElement>(null);\n  const canvasRef = React.useRef<HTMLCanvasElement>(null);\n  const target = React.useRef({ x: 0, y: 0 });\n  const ptr = React.useRef({ x: 0, y: 0 });\n  const reduced = useReducedMotionPref();\n  const inView = useInView(rootRef);\n  const safeSpeed = Math.max(0, speed);\n  const safeRing = Math.max(0.5, Math.min(1.6, ringSize));\n  const safeRays = Math.max(0, Math.min(2, rayIntensity));\n  const tilt = interactive && !reduced;\n  const c1 = hexRgb(color1, [1, 0.85, 0.66]);\n  const c2 = hexRgb(color2, [1, 0.42, 0.24]);\n  const c3 = hexRgb(color3, [0.49, 0.83, 0.99]);\n  const bg = hexRgb(backgroundColor, [0.008, 0.008, 0.02]);\n\n  const fallback = useShader(\n    rootRef,\n    canvasRef,\n    FRAG,\n    () => {\n      const p = ptr.current;\n      p.x += (target.current.x - p.x) * 0.07;\n      p.y += (target.current.y - p.y) * 0.07;\n      return { u_c1: c1, u_c2: c2, u_c3: c3, u_bg: bg, u_ring: safeRing, u_rays: safeRays, u_ptr: [p.x, p.y] };\n    },\n    !reduced && inView && (safeSpeed > 0 || tilt),\n    safeSpeed,\n    [color1, color2, color3, backgroundColor, safeRing, safeRays].join(\"|\"),\n    2,\n  );\n\n  React.useEffect(() => {\n    const root = rootRef.current;\n    if (!root || !tilt) return;\n    const move = (e: PointerEvent) => {\n      const rect = root.getBoundingClientRect();\n      target.current = {\n        x: ((e.clientX - rect.left) / rect.width) * 2 - 1,\n        y: -(((e.clientY - rect.top) / rect.height) * 2 - 1),\n      };\n      root.style.setProperty(\"--mf-ec-tx\", `${(target.current.x * 10).toFixed(1)}px`);\n      root.style.setProperty(\"--mf-ec-ty\", `${(-target.current.y * 8).toFixed(1)}px`);\n    };\n    const leave = () => {\n      target.current = { x: 0, y: 0 };\n      root.style.setProperty(\"--mf-ec-tx\", \"0px\");\n      root.style.setProperty(\"--mf-ec-ty\", \"0px\");\n    };\n    root.addEventListener(\"pointermove\", move);\n    root.addEventListener(\"pointerleave\", leave);\n    return () => {\n      root.removeEventListener(\"pointermove\", move);\n      root.removeEventListener(\"pointerleave\", leave);\n      target.current = { x: 0, y: 0 };\n    };\n  }, [tilt]);\n\n  const styleVars = {\n    \"--mf-ec-bg\": backgroundColor,\n    \"--mf-ec-c1\": color1,\n    \"--mf-ec-c2\": color2,\n    \"--mf-ec-c3\": color3,\n    \"--mf-ec-size\": `${(52 * safeRing).toFixed(1)}%`,\n    \"--mf-ec-corona\": `conic-gradient(from 0deg, ${rgba(c2, 0.9)}, ${rgba(c1, 0.35 + 0.3 * safeRays)}, ${rgba(c2, 0.5)}, ${rgba(c1, 0.8)}, ${rgba(c2, 0.4)}, ${rgba(c1, 0.6)}, ${rgba(c2, 0.9)})`,\n    \"--mf-ec-op\": (0.35 + safeRays * 0.5).toFixed(2),\n    \"--mf-ec-dur\": `${(40 / Math.max(0.1, safeSpeed)).toFixed(1)}s`,\n    height: `${height}px`,\n    borderRadius: `${borderRadius}px`,\n    ...style,\n  } as React.CSSProperties;\n\n  return (\n    <div ref={rootRef} style={styleVars} className={`${styles.root} ${className}`.trim()}>\n      {fallback ? (\n        <div aria-hidden=\"true\" className={`${styles.fallback} ${safeSpeed === 0 ? styles.paused : \"\"}`.trim()}>\n          <div className={styles.corona} />\n          <div className={styles.disk} />\n        </div>\n      ) : (\n        <canvas ref={canvasRef} aria-hidden=\"true\" className={styles.canvas} />\n      )}\n      <div className={styles.content}>\n        {children ?? (\n          <div className={styles.copy}>\n            <h3 className={styles.title}>Eclipse Gradient</h3>\n            <p className={styles.subtitle}>A living corona blazing around a perfect black disk.</p>\n          </div>\n        )}\n      </div>\n    </div>\n  );\n}\n"
+          "content": "\"use client\";\n\nimport * as React from \"react\";\nimport styles from \"../styles/eclipse-gradient.module.css\";\n\nexport interface EclipseGradientProps {\n  /** Hot inner corona color */\n  color1?: string;\n  /** Outer corona / halo color */\n  color2?: string;\n  /** Chromatic rim color around the disk */\n  color3?: string;\n  /** Deep space color behind the eclipse */\n  backgroundColor?: string;\n  /** Corona animation speed (1 = default, 0 = paused) */\n  speed?: number;\n  /** Size of the eclipsed disk (0.5–1.6) */\n  ringSize?: number;\n  /** Length and brightness of the corona rays (0–2) */\n  rayIntensity?: number;\n  /** Tilt the eclipse toward the pointer */\n  interactive?: boolean;\n  /** Height of the background in px */\n  height?: number;\n  /** Corner radius in px */\n  borderRadius?: number;\n  /** Foreground content rendered centered on top */\n  children?: React.ReactNode;\n  /** Optional className merged onto the root */\n  className?: string;\n  /** Inline styles merged onto the root */\n  style?: React.CSSProperties;\n}\n\ntype RGB = [number, number, number];\ntype UniformMap = Record<string, number | readonly number[]>;\n\nconst FRAG = `\n#ifdef GL_FRAGMENT_PRECISION_HIGH\nprecision highp float;\n#else\nprecision mediump float;\n#endif\nuniform vec2 u_res; uniform float u_time;\nuniform vec3 u_c1; uniform vec3 u_c2; uniform vec3 u_c3; uniform vec3 u_bg;\nuniform float u_ring; uniform float u_rays; uniform vec2 u_ptr;\nfloat hash(vec2 p){ p = fract(p * vec2(123.34, 456.21)); p += dot(p, p + 45.32); return fract(p.x * p.y); }\nfloat noise(vec2 p){ vec2 i = floor(p), f = fract(p); vec2 u = f * f * (3.0 - 2.0 * f);\n  return mix(mix(hash(i), hash(i + vec2(1.0, 0.0)), u.x), mix(hash(i + vec2(0.0, 1.0)), hash(i + vec2(1.0, 1.0)), u.x), u.y); }\nfloat fbm(vec2 p){ float v = 0.0, a = 0.5; mat2 m = mat2(1.6, 1.2, -1.2, 1.6);\n  for (int i = 0; i < 4; i++){ v += a * noise(p); p = m * p; a *= 0.5; } return v; }\nvoid main(){\n  vec2 uv = (gl_FragCoord.xy - 0.5 * u_res) / u_res.y;\n  float t = u_time;\n  vec2 ctr = u_ptr * vec2(0.05, 0.04);\n  float R = 0.26 * u_ring;\n  vec2 d = uv - ctr; float r = length(d);\n  vec2 dc = uv - ctr * 0.4; float rc = length(dc); vec2 dir = dc / max(rc, 0.0001);\n  float ca = cos(t * 0.03), sa = sin(t * 0.03);\n  vec2 rd = mat2(ca, -sa, sa, ca) * dir;\n  float rays = fbm(dir * 2.2 + vec2(t * 0.06, -t * 0.04)) * 0.6 + noise(rd * 7.0 + t * 0.15) * 0.3 + noise(rd * 17.0 - t * 0.1) * 0.15;\n  float x = max(rc - R, 0.0);\n  float corona = exp(-x * 4.5 / (0.3 + rays * rays * 2.4 * u_rays)) * (0.5 + rays * 0.9 * u_rays);\n  float inner = exp(-x * 26.0);\n  vec3 col = mix(u_c2, u_c1, clamp(inner + exp(-x * 9.0) * 0.5, 0.0, 1.0)) * corona * 1.3 + u_c1 * inner * 1.1;\n  col += u_c2 * exp(-rc * 3.0) * 0.16;\n  col = 1.0 - exp(-col * 1.1);\n  float disk = smoothstep(R + 0.0015, R - 0.0015, r);\n  vec3 diskCol = u_bg * 0.5 + u_c3 * 0.05 * smoothstep(R * 0.55, R, r);\n  vec3 c = mix(u_bg + col, diskCol, disk);\n  float w = 0.0035 + 0.002 * u_ring;\n  float dl = 0.0055;\n  vec3 e3 = (vec3(r) - vec3(R + dl, R, R - dl * 0.6)) / w;\n  vec3 edge = exp(-e3 * e3);\n  float lp = length(u_ptr);\n  float bias = 0.75 + 0.6 * max(dot(d / max(r, 0.0001), u_ptr / max(lp, 0.0001)), 0.0) * lp;\n  c += edge * mix(vec3(1.0), u_c3, 0.55) * 1.5 * bias;\n  c *= 1.0 - 0.25 * dot(uv, uv);\n  gl_FragColor = vec4(c, 1.0);\n}`;\n\nconst VERT = \"attribute vec2 a_pos;void main(){gl_Position=vec4(a_pos,0.0,1.0);}\";\n\nfunction hexRgb(hex: string, fb: RGB): RGB {\n  const m = hex.trim().replace(/^#/, \"\");\n  const full = m.length === 3 ? m.split(\"\").map((ch) => ch + ch).join(\"\") : m;\n  if (!/^[0-9a-fA-F]{6}$/.test(full)) return fb;\n  const n = parseInt(full, 16);\n  return [((n >> 16) & 255) / 255, ((n >> 8) & 255) / 255, (n & 255) / 255];\n}\n\nconst rgba = (c: RGB, a: number) => `rgba(${Math.round(c[0] * 255)},${Math.round(c[1] * 255)},${Math.round(c[2] * 255)},${a})`;\n\nfunction useReducedMotionPref() {\n  const [reduced, setReduced] = React.useState(false);\n  React.useEffect(() => {\n    if (typeof window === \"undefined\" || !window.matchMedia) return;\n    const mq = window.matchMedia(\"(prefers-reduced-motion: reduce)\");\n    const update = () => setReduced(mq.matches);\n    update();\n    mq.addEventListener(\"change\", update);\n    return () => mq.removeEventListener(\"change\", update);\n  }, []);\n  return reduced;\n}\n\nfunction useInView(ref: React.RefObject<HTMLElement | null>) {\n  const [inView, setInView] = React.useState(true);\n  React.useEffect(() => {\n    const el = ref.current;\n    if (!el || typeof IntersectionObserver === \"undefined\") return;\n    const io = new IntersectionObserver((entries) => {\n      const entry = entries[entries.length - 1];\n      if (entry) setInView(entry.isIntersecting);\n    }, { rootMargin: \"80px\" });\n    io.observe(el);\n    return () => io.disconnect();\n  }, [ref]);\n  return inView;\n}\n\nfunction compile(gl: WebGLRenderingContext, type: number, src: string) {\n  const sh = gl.createShader(type);\n  if (!sh) return null;\n  gl.shaderSource(sh, src);\n  gl.compileShader(sh);\n  if (gl.getShaderParameter(sh, gl.COMPILE_STATUS)) return sh;\n  gl.deleteShader(sh);\n  return null;\n}\n\n/** Full-screen-triangle WebGL renderer; returns true when the CSS fallback should be shown instead */\nfunction useShader(\n  rootRef: React.RefObject<HTMLDivElement | null>,\n  canvasRef: React.RefObject<HTMLCanvasElement | null>,\n  frag: string,\n  uniforms: () => UniformMap,\n  running: boolean,\n  speed: number,\n  paramsKey: string,\n  maxDpr = 2,\n) {\n  const [fallback, setFallback] = React.useState(false);\n  const timeRef = React.useRef(12);\n  const drawRef = React.useRef<(() => void) | null>(null);\n  const uniRef = React.useRef(uniforms);\n  uniRef.current = uniforms;\n  const speedRef = React.useRef(speed);\n  speedRef.current = speed;\n\n  React.useEffect(() => {\n    const root = rootRef.current;\n    const canvas = canvasRef.current;\n    if (!root || !canvas || fallback) return;\n    const gl = canvas.getContext(\"webgl\", { alpha: false, antialias: false, depth: false, stencil: false, powerPreference: \"low-power\" });\n    if (!gl) { setFallback(true); return; }\n    const vs = compile(gl, gl.VERTEX_SHADER, VERT);\n    const fs = compile(gl, gl.FRAGMENT_SHADER, frag);\n    const prog = gl.createProgram();\n    const buf = gl.createBuffer();\n    const dispose = () => {\n      gl.deleteBuffer(buf);\n      gl.deleteProgram(prog);\n      gl.deleteShader(vs);\n      gl.deleteShader(fs);\n    };\n    if (!vs || !fs || !prog || !buf) { dispose(); setFallback(true); return; }\n    gl.attachShader(prog, vs);\n    gl.attachShader(prog, fs);\n    gl.linkProgram(prog);\n    if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) { dispose(); setFallback(true); return; }\n    gl.useProgram(prog);\n    gl.bindBuffer(gl.ARRAY_BUFFER, buf);\n    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);\n    const aPos = gl.getAttribLocation(prog, \"a_pos\");\n    gl.enableVertexAttribArray(aPos);\n    gl.vertexAttribPointer(aPos, 2, gl.FLOAT, false, 0, 0);\n    const locs = new Map<string, WebGLUniformLocation | null>();\n    const loc = (n: string) => {\n      if (!locs.has(n)) locs.set(n, gl.getUniformLocation(prog, n));\n      return locs.get(n) ?? null;\n    };\n    const resize = () => {\n      const rect = root.getBoundingClientRect();\n      const dpr = Math.min(maxDpr, window.devicePixelRatio || 1);\n      canvas.width = Math.max(1, Math.round(rect.width * dpr));\n      canvas.height = Math.max(1, Math.round(rect.height * dpr));\n      gl.viewport(0, 0, canvas.width, canvas.height);\n    };\n    const draw = () => {\n      if (gl.isContextLost()) return;\n      gl.uniform2f(loc(\"u_res\"), canvas.width, canvas.height);\n      gl.uniform1f(loc(\"u_time\"), timeRef.current);\n      const u = uniRef.current();\n      for (const k in u) {\n        const v = u[k];\n        if (typeof v === \"number\") gl.uniform1f(loc(k), v);\n        else if (v.length === 2) gl.uniform2f(loc(k), v[0], v[1]);\n        else gl.uniform3f(loc(k), v[0], v[1], v[2]);\n      }\n      gl.drawArrays(gl.TRIANGLES, 0, 3);\n    };\n    resize();\n    draw();\n    drawRef.current = draw;\n    const ro = new ResizeObserver(() => { resize(); draw(); });\n    ro.observe(root);\n    const onLost = (e: Event) => { e.preventDefault(); drawRef.current = null; setFallback(true); };\n    canvas.addEventListener(\"webglcontextlost\", onLost);\n    return () => {\n      ro.disconnect();\n      canvas.removeEventListener(\"webglcontextlost\", onLost);\n      drawRef.current = null;\n      if (!gl.isContextLost()) dispose();\n    };\n  }, [frag, fallback, maxDpr, rootRef, canvasRef]);\n\n  React.useEffect(() => {\n    if (!running || fallback) return;\n    let raf = 0;\n    let last = performance.now();\n    const tick = (now: number) => {\n      const dt = Math.min(0.05, (now - last) / 1000);\n      last = now;\n      timeRef.current += dt * speedRef.current;\n      drawRef.current?.();\n      raf = requestAnimationFrame(tick);\n    };\n    raf = requestAnimationFrame(tick);\n    return () => cancelAnimationFrame(raf);\n  }, [running, fallback]);\n\n  React.useEffect(() => { drawRef.current?.(); }, [paramsKey]);\n\n  return fallback;\n}\n\nexport function EclipseGradient({\n  color1 = \"#a8aeff\",\n  color2 = \"#caabd3\",\n  color3 = \"#0d3040\",\n  backgroundColor = \"#020205\",\n  speed = 3,\n  ringSize = 0.5,\n  rayIntensity = 0,\n  interactive = true,\n  height = 380,\n  borderRadius = 20,\n  children,\n  className = \"\",\n  style,\n}: EclipseGradientProps) {\n  const rootRef = React.useRef<HTMLDivElement>(null);\n  const canvasRef = React.useRef<HTMLCanvasElement>(null);\n  const target = React.useRef({ x: 0, y: 0 });\n  const ptr = React.useRef({ x: 0, y: 0 });\n  const reduced = useReducedMotionPref();\n  const inView = useInView(rootRef);\n  const safeSpeed = Math.max(0, speed);\n  const safeRing = Math.max(0.5, Math.min(1.6, ringSize));\n  const safeRays = Math.max(0, Math.min(2, rayIntensity));\n  const tilt = interactive && !reduced;\n  const c1 = hexRgb(color1, [1, 0.85, 0.66]);\n  const c2 = hexRgb(color2, [1, 0.42, 0.24]);\n  const c3 = hexRgb(color3, [0.49, 0.83, 0.99]);\n  const bg = hexRgb(backgroundColor, [0.008, 0.008, 0.02]);\n\n  const fallback = useShader(\n    rootRef,\n    canvasRef,\n    FRAG,\n    () => {\n      const p = ptr.current;\n      p.x += (target.current.x - p.x) * 0.07;\n      p.y += (target.current.y - p.y) * 0.07;\n      return { u_c1: c1, u_c2: c2, u_c3: c3, u_bg: bg, u_ring: safeRing, u_rays: safeRays, u_ptr: [p.x, p.y] };\n    },\n    !reduced && inView && (safeSpeed > 0 || tilt),\n    safeSpeed,\n    [color1, color2, color3, backgroundColor, safeRing, safeRays].join(\"|\"),\n    2,\n  );\n\n  React.useEffect(() => {\n    const root = rootRef.current;\n    if (!root || !tilt) return;\n    const move = (e: PointerEvent) => {\n      const rect = root.getBoundingClientRect();\n      target.current = {\n        x: ((e.clientX - rect.left) / rect.width) * 2 - 1,\n        y: -(((e.clientY - rect.top) / rect.height) * 2 - 1),\n      };\n      root.style.setProperty(\"--mf-ec-tx\", `${(target.current.x * 10).toFixed(1)}px`);\n      root.style.setProperty(\"--mf-ec-ty\", `${(-target.current.y * 8).toFixed(1)}px`);\n    };\n    const leave = () => {\n      target.current = { x: 0, y: 0 };\n      root.style.setProperty(\"--mf-ec-tx\", \"0px\");\n      root.style.setProperty(\"--mf-ec-ty\", \"0px\");\n    };\n    root.addEventListener(\"pointermove\", move);\n    root.addEventListener(\"pointerleave\", leave);\n    return () => {\n      root.removeEventListener(\"pointermove\", move);\n      root.removeEventListener(\"pointerleave\", leave);\n      target.current = { x: 0, y: 0 };\n    };\n  }, [tilt]);\n\n  const styleVars = {\n    \"--mf-ec-bg\": backgroundColor,\n    \"--mf-ec-c1\": color1,\n    \"--mf-ec-c2\": color2,\n    \"--mf-ec-c3\": color3,\n    \"--mf-ec-size\": `${(52 * safeRing).toFixed(1)}%`,\n    \"--mf-ec-corona\": `conic-gradient(from 0deg, ${rgba(c2, 0.9)}, ${rgba(c1, 0.35 + 0.3 * safeRays)}, ${rgba(c2, 0.5)}, ${rgba(c1, 0.8)}, ${rgba(c2, 0.4)}, ${rgba(c1, 0.6)}, ${rgba(c2, 0.9)})`,\n    \"--mf-ec-op\": (0.35 + safeRays * 0.5).toFixed(2),\n    \"--mf-ec-dur\": `${(40 / Math.max(0.1, safeSpeed)).toFixed(1)}s`,\n    height: `${height}px`,\n    borderRadius: `${borderRadius}px`,\n    ...style,\n  } as React.CSSProperties;\n\n  return (\n    <div ref={rootRef} style={styleVars} className={`${styles.root} ${className}`.trim()}>\n      {fallback ? (\n        <div aria-hidden=\"true\" className={`${styles.fallback} ${safeSpeed === 0 ? styles.paused : \"\"}`.trim()}>\n          <div className={styles.corona} />\n          <div className={styles.disk} />\n        </div>\n      ) : (\n        <canvas ref={canvasRef} aria-hidden=\"true\" className={styles.canvas} />\n      )}\n      <div className={styles.content}>\n        {children ?? (\n          <div className={styles.copy}>\n            <h3 className={styles.title}>Eclipse Gradient</h3>\n            <p className={styles.subtitle}>A living corona blazing around a perfect black disk.</p>\n          </div>\n        )}\n      </div>\n    </div>\n  );\n}\n"
         },
         {
           "path": "components/styles/eclipse-gradient.module.css",
@@ -14610,235 +14610,6 @@
         }
       ],
       "tailwindExample": "\"use client\";\n\nimport { AnimatePresence, motion } from \"motion/react\";\nimport { useEffect, useRef, useState } from \"react\";\n\nexport function SplitButtonTailwind({ actions = [\"Deploy to preview\", \"Deploy without cache\", \"Roll back\"] }) {\n  const [open, setOpen] = useState(false);\n  const root = useRef<HTMLDivElement>(null);\n  const trigger = useRef<HTMLButtonElement>(null);\n  const items = useRef<(HTMLButtonElement | null)[]>([]);\n  useEffect(() => {\n    if (!open) return;\n    items.current[0]?.focus();\n    const out = (e: PointerEvent) => !root.current?.contains(e.target as Node) && setOpen(false);\n    document.addEventListener(\"pointerdown\", out);\n    return () => document.removeEventListener(\"pointerdown\", out);\n  }, [open]);\n  const onKey = (e: React.KeyboardEvent) => {\n    const i = items.current.indexOf(document.activeElement as HTMLButtonElement);\n    if (e.key === \"Escape\") { setOpen(false); trigger.current?.focus(); }\n    if (e.key === \"ArrowDown\" || e.key === \"ArrowUp\") { e.preventDefault(); items.current[(i + (e.key === \"ArrowDown\" ? 1 : -1) + actions.length) % actions.length]?.focus(); }\n  };\n  return (\n    <div ref={root} className=\"relative inline-flex text-sm font-medium text-white\">\n      <button type=\"button\" className=\"h-9 rounded-l-lg bg-indigo-500 px-4 hover:bg-indigo-400\">Deploy to production</button>\n      <button ref={trigger} type=\"button\" aria-label=\"More deploy options\" aria-haspopup=\"menu\" aria-expanded={open} onClick={() => setOpen(!open)} className=\"grid h-9 w-8 place-items-center rounded-r-lg border-l border-white/30 bg-indigo-500 hover:bg-indigo-400\">\n        <svg aria-hidden=\"true\" width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" strokeWidth=\"2\" className={`transition-transform ${open ? \"rotate-180\" : \"\"}`}><path d=\"m6 9 6 6 6-6\" /></svg>\n      </button>\n      <AnimatePresence>\n        {open && (\n          <motion.div role=\"menu\" onKeyDown={onKey} initial={{ opacity: 0, scale: 0.95, y: -4 }} animate={{ opacity: 1, scale: 1, y: 0 }} exit={{ opacity: 0, scale: 0.97 }} transition={{ duration: 0.16 }} className=\"absolute right-0 top-full z-50 mt-1.5 min-w-52 origin-top-right rounded-xl border border-zinc-800 bg-zinc-900 p-1 text-zinc-100 shadow-xl\">\n            {actions.map((a, i) => (\n              <button key={a} ref={(el) => { items.current[i] = el; }} role=\"menuitem\" tabIndex={-1} type=\"button\" onClick={() => { setOpen(false); trigger.current?.focus(); }} className=\"flex h-8 w-full items-center rounded-md px-2.5 text-left outline-none hover:bg-zinc-800 focus:bg-zinc-800\">{a}</button>\n            ))}\n          </motion.div>\n        )}\n      </AnimatePresence>\n    </div>\n  );\n}"
-    },
-    {
-      "slug": "hold-to-confirm",
-      "name": "HoldToConfirm",
-      "category": "Interactive Buttons and Controls",
-      "collection": "ui",
-      "featured": false,
-      "addedAt": "2026-10-16",
-      "version": "2.3.0",
-      "requiresMotion": false,
-      "dependencies": [
-        "react"
-      ],
-      "description": "A press-and-hold button for destructive actions: holding sweeps an accent fill across the button (the label inverts as it is covered), releasing early drains it back, and completing the hold fires onConfirm with a pop and a check mark before resetting.",
-      "tags": [
-        "hold",
-        "confirm",
-        "destructive",
-        "progress",
-        "long-press",
-        "ui"
-      ],
-      "a11yNotes": "Native <button> described by a visually hidden hint (\"Press and hold, or hold Space or Enter, to confirm\"). Holding Space or Enter works like a pointer hold (key repeat is ignored, keyup or blur cancels). A polite role=\"status\" region announces the confirmed label, and the button is aria-disabled until it resets. Progress is driven by requestAnimationFrame through a CSS variable without re-rendering. Under prefers-reduced-motion the press scale and confirm pop are removed; the progress fill remains because it conveys state.",
-      "defaultProps": {
-        "label": "Hold to delete",
-        "holdingLabel": "Keep holding…",
-        "confirmedLabel": "Deleted",
-        "holdDuration": 1500,
-        "resetAfter": 2200,
-        "fillStyle": "fill",
-        "variant": "outline",
-        "size": "md",
-        "accentColor": "#ef4444",
-        "showIcon": true,
-        "haptics": true,
-        "disabled": false
-      },
-      "controls": [
-        {
-          "prop": "label",
-          "label": "Label",
-          "type": "text"
-        },
-        {
-          "prop": "holdingLabel",
-          "label": "Holding label",
-          "type": "text"
-        },
-        {
-          "prop": "confirmedLabel",
-          "label": "Confirmed label",
-          "type": "text"
-        },
-        {
-          "prop": "holdDuration",
-          "label": "Hold duration (ms)",
-          "type": "range",
-          "min": 400,
-          "max": 4000,
-          "step": 100
-        },
-        {
-          "prop": "resetAfter",
-          "label": "Reset after (ms, 0 = never)",
-          "type": "range",
-          "min": 0,
-          "max": 6000,
-          "step": 100
-        },
-        {
-          "prop": "fillStyle",
-          "label": "Progress style",
-          "type": "select",
-          "options": [
-            "fill",
-            "bar"
-          ]
-        },
-        {
-          "prop": "variant",
-          "label": "Variant",
-          "type": "select",
-          "options": [
-            "solid",
-            "outline"
-          ]
-        },
-        {
-          "prop": "size",
-          "label": "Size",
-          "type": "select",
-          "options": [
-            "sm",
-            "md",
-            "lg"
-          ]
-        },
-        {
-          "prop": "accentColor",
-          "label": "Accent color",
-          "type": "color"
-        },
-        {
-          "prop": "showIcon",
-          "label": "Show icon",
-          "type": "boolean"
-        },
-        {
-          "prop": "haptics",
-          "label": "Haptics",
-          "type": "boolean"
-        },
-        {
-          "prop": "disabled",
-          "label": "Disabled",
-          "type": "boolean"
-        }
-      ],
-      "propsApi": [
-        {
-          "name": "label",
-          "type": "string",
-          "default": "'Hold to delete'",
-          "description": "Idle label."
-        },
-        {
-          "name": "holdingLabel",
-          "type": "string",
-          "default": "'Keep holding…'",
-          "description": "Label shown while the button is held."
-        },
-        {
-          "name": "confirmedLabel",
-          "type": "string",
-          "default": "'Deleted'",
-          "description": "Label shown (and announced) once confirmed."
-        },
-        {
-          "name": "holdDuration",
-          "type": "number",
-          "default": "1500",
-          "description": "Milliseconds the button must be held (minimum 200)."
-        },
-        {
-          "name": "resetAfter",
-          "type": "number",
-          "default": "2200",
-          "description": "Milliseconds after confirming before it resets; 0 keeps it confirmed."
-        },
-        {
-          "name": "fillStyle",
-          "type": "'fill' | 'bar'",
-          "default": "'fill'",
-          "description": "Sweep the whole button with an inverting label, or grow a thin bar along the bottom."
-        },
-        {
-          "name": "variant",
-          "type": "'solid' | 'outline'",
-          "default": "'outline'",
-          "description": "Tinted or neutral outlined surface."
-        },
-        {
-          "name": "size",
-          "type": "'sm' | 'md' | 'lg'",
-          "default": "'md'",
-          "description": "Size preset."
-        },
-        {
-          "name": "accentColor",
-          "type": "string",
-          "default": "'#ef4444'",
-          "description": "Color of the progress fill."
-        },
-        {
-          "name": "showIcon",
-          "type": "boolean",
-          "default": "true",
-          "description": "Show the trash / check icon."
-        },
-        {
-          "name": "haptics",
-          "type": "boolean",
-          "default": "true",
-          "description": "Call navigator.vibrate on confirm where supported."
-        },
-        {
-          "name": "disabled",
-          "type": "boolean",
-          "default": "false",
-          "description": "Disable the button."
-        },
-        {
-          "name": "onConfirm",
-          "type": "() => void",
-          "default": "undefined",
-          "description": "Called once the hold completes."
-        },
-        {
-          "name": "onCancel",
-          "type": "() => void",
-          "default": "undefined",
-          "description": "Called when a hold is released before completing."
-        },
-        {
-          "name": "className",
-          "type": "string",
-          "default": "''",
-          "description": "Additional class merged onto the root element."
-        },
-        {
-          "name": "style",
-          "type": "React.CSSProperties",
-          "default": "undefined",
-          "description": "Inline styles merged onto the root element."
-        }
-      ],
-      "files": [
-        {
-          "path": "components/ui/hold-to-confirm.tsx",
-          "type": "registry:component",
-          "content": "\"use client\";\n\nimport * as React from \"react\";\nimport styles from \"../styles/hold-to-confirm.module.css\";\n\nexport interface HoldToConfirmProps {\n  /** Idle label */\n  label?: string;\n  /** Label shown while holding */\n  holdingLabel?: string;\n  /** Label shown once confirmed */\n  confirmedLabel?: string;\n  /** Milliseconds the button must be held */\n  holdDuration?: number;\n  /** Milliseconds after confirming before it resets (0 = stay confirmed) */\n  resetAfter?: number;\n  /** Visual style of the progress */\n  fillStyle?: \"fill\" | \"bar\";\n  /** Visual style of the button */\n  variant?: \"solid\" | \"outline\";\n  /** Size preset */\n  size?: \"sm\" | \"md\" | \"lg\";\n  /** Color of the progress fill */\n  accentColor?: string;\n  /** Show the leading icon */\n  showIcon?: boolean;\n  /** Vibrate on confirm where supported */\n  haptics?: boolean;\n  /** Disable the button */\n  disabled?: boolean;\n  /** Called once the hold completes */\n  onConfirm?: () => void;\n  /** Called when a hold is released early */\n  onCancel?: () => void;\n  /** Optional className merged onto the root */\n  className?: string;\n  /** Optional inline styles merged onto the root */\n  style?: React.CSSProperties;\n}\n\ntype Phase = \"idle\" | \"holding\" | \"confirmed\";\nconst RELEASE_MS = 320;\n\nfunction Glyph({ done }: { done: boolean }) {\n  return (\n    <svg aria-hidden=\"true\" width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" strokeWidth=\"2\" strokeLinecap=\"round\" strokeLinejoin=\"round\">\n      <path d={done ? \"M5 12.5l4.5 4.5L19 7\" : \"M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6M10 11v6M14 11v6\"} />\n    </svg>\n  );\n}\n\nexport function HoldToConfirm({\n  label = \"Hold to delete\",\n  holdingLabel = \"Keep holding…\",\n  confirmedLabel = \"Deleted\",\n  holdDuration = 1500,\n  resetAfter = 2200,\n  fillStyle = \"fill\",\n  variant = \"outline\",\n  size = \"md\",\n  accentColor = \"#ef4444\",\n  showIcon = true,\n  haptics = true,\n  disabled = false,\n  onConfirm,\n  onCancel,\n  className = \"\",\n  style,\n}: HoldToConfirmProps) {\n  const [phase, setPhase] = React.useState<Phase>(\"idle\");\n  const btnRef = React.useRef<HTMLButtonElement>(null);\n  const progress = React.useRef(0);\n  const holding = React.useRef(false);\n  const raf = React.useRef(0);\n  const last = React.useRef(0);\n  const resetTimer = React.useRef<ReturnType<typeof setTimeout> | null>(null);\n  const hintId = React.useId();\n  const cbs = React.useRef({ onConfirm, onCancel });\n  cbs.current = { onConfirm, onCancel };\n\n  const paint = (p: number) => btnRef.current?.style.setProperty(\"--mf-htc-p\", p.toFixed(4));\n\n  const tick = React.useCallback(\n    (now: number) => {\n      const dt = Math.min(64, now - last.current);\n      last.current = now;\n      const dur = Math.max(200, holdDuration);\n      progress.current = holding.current ? progress.current + dt / dur : progress.current - dt / RELEASE_MS;\n      if (progress.current >= 1) {\n        progress.current = 1;\n        holding.current = false;\n        paint(1);\n        setPhase(\"confirmed\");\n        if (haptics && typeof navigator !== \"undefined\" && \"vibrate\" in navigator) navigator.vibrate(30);\n        cbs.current.onConfirm?.();\n        if (resetAfter > 0) {\n          resetTimer.current = setTimeout(() => {\n            progress.current = 0;\n            paint(0);\n            setPhase(\"idle\");\n          }, resetAfter);\n        }\n        return;\n      }\n      if (progress.current <= 0) {\n        progress.current = 0;\n        paint(0);\n        return;\n      }\n      paint(progress.current);\n      raf.current = requestAnimationFrame(tick);\n    },\n    [holdDuration, resetAfter, haptics],\n  );\n\n  const run = () => {\n    cancelAnimationFrame(raf.current);\n    last.current = performance.now();\n    raf.current = requestAnimationFrame(tick);\n  };\n\n  const start = () => {\n    if (disabled || phase === \"confirmed\" || holding.current) return;\n    holding.current = true;\n    setPhase(\"holding\");\n    run();\n  };\n\n  const release = () => {\n    if (!holding.current) return;\n    holding.current = false;\n    setPhase(\"idle\");\n    cbs.current.onCancel?.();\n    run();\n  };\n\n  React.useEffect(\n    () => () => {\n      cancelAnimationFrame(raf.current);\n      if (resetTimer.current) clearTimeout(resetTimer.current);\n    },\n    [],\n  );\n\n  const text = phase === \"confirmed\" ? confirmedLabel : phase === \"holding\" ? holdingLabel : label;\n  const inner = (\n    <>\n      {showIcon ? <Glyph done={phase === \"confirmed\"} /> : null}\n      <span>{text}</span>\n    </>\n  );\n\n  return (\n    <div className={`${styles.root} ${className}`.trim()} style={{ \"--mf-htc-accent\": accentColor, ...style } as React.CSSProperties}>\n      <button\n        ref={btnRef}\n        type=\"button\"\n        disabled={disabled}\n        aria-describedby={hintId}\n        aria-disabled={phase === \"confirmed\" || undefined}\n        data-phase={phase}\n        data-fill={fillStyle}\n        className={[styles.button, styles[variant], styles[size]].filter(Boolean).join(\" \")}\n        onPointerDown={(e) => {\n          if (e.button !== 0) return;\n          e.currentTarget.setPointerCapture(e.pointerId);\n          start();\n        }}\n        onPointerUp={release}\n        onPointerCancel={release}\n        onPointerMove={(e) => {\n          if (!holding.current) return;\n          const r = e.currentTarget.getBoundingClientRect();\n          if (e.clientX < r.left - 16 || e.clientX > r.right + 16 || e.clientY < r.top - 16 || e.clientY > r.bottom + 16) release();\n        }}\n        onKeyDown={(e) => {\n          if (e.key !== \" \" && e.key !== \"Enter\") return;\n          e.preventDefault();\n          if (!e.repeat) start();\n        }}\n        onKeyUp={(e) => {\n          if (e.key === \" \" || e.key === \"Enter\") release();\n        }}\n        onBlur={release}\n        onContextMenu={(e) => e.preventDefault()}\n      >\n        <span className={styles.track} aria-hidden=\"true\">\n          <span className={styles.fill} />\n        </span>\n        {[label, holdingLabel, confirmedLabel].map((t, i) => (\n          <span key={i} className={`${styles.content} ${styles.sizer}`} aria-hidden=\"true\">\n            {showIcon ? <Glyph done={false} /> : null}\n            <span>{t}</span>\n          </span>\n        ))}\n        <span className={styles.content}>{inner}</span>\n        <span className={styles.overlay} aria-hidden=\"true\">\n          {inner}\n        </span>\n      </button>\n      <span id={hintId} className={styles.srOnly}>\n        Press and hold, or hold Space or Enter, to confirm.\n      </span>\n      <span className={styles.srOnly} role=\"status\" aria-live=\"polite\">\n        {phase === \"confirmed\" ? confirmedLabel : \"\"}\n      </span>\n    </div>\n  );\n}\n"
-        },
-        {
-          "path": "components/styles/hold-to-confirm.module.css",
-          "type": "registry:style",
-          "content": ".root {\n  position: relative;\n  display: inline-flex;\n  color: var(--mf-fg, #f4f4f6);\n}\n\n.button {\n  --mf-htc-p: 0;\n  --mf-htc-h: 2.5rem;\n  position: relative;\n  display: inline-grid;\n  place-items: center;\n  height: var(--mf-htc-h);\n  padding: 0 1.125rem;\n  border: 1px solid transparent;\n  border-radius: 0.5rem;\n  overflow: hidden;\n  isolation: isolate;\n  font: inherit;\n  font-size: 0.875rem;\n  font-weight: 500;\n  white-space: nowrap;\n  cursor: pointer;\n  user-select: none;\n  -webkit-user-select: none;\n  -webkit-touch-callout: none;\n  touch-action: none;\n  -webkit-tap-highlight-color: transparent;\n  transition: border-color 180ms ease, background-color 180ms ease, color 180ms ease, transform 220ms cubic-bezier(0.34, 1.56, 0.64, 1);\n}\n\n.button > * {\n  grid-area: 1 / 1;\n}\n\n.sm {\n  --mf-htc-h: 2rem;\n  padding: 0 0.875rem;\n  font-size: 0.8125rem;\n}\n\n.md {\n  --mf-htc-h: 2.5rem;\n}\n\n.lg {\n  --mf-htc-h: 3rem;\n  padding: 0 1.5rem;\n  font-size: 0.9375rem;\n}\n\n.button:focus-visible {\n  outline: 2px solid var(--mf-fg, #e4e4e7);\n  outline-offset: 2px;\n}\n\n.button:disabled {\n  opacity: 0.5;\n  cursor: not-allowed;\n}\n\n.button[data-phase=\"holding\"] {\n  transform: scale(0.97);\n}\n\n.button[data-phase=\"confirmed\"] {\n  cursor: default;\n  animation: mf-htc-pop 360ms cubic-bezier(0.34, 1.56, 0.64, 1);\n}\n\n@keyframes mf-htc-pop {\n  40% {\n    transform: scale(1.04);\n  }\n}\n\n.outline {\n  background-color: var(--mf-surface, #141419);\n  border-color: var(--mf-border, #2e2e38);\n  color: var(--mf-fg, #f4f4f6);\n}\n\n.outline:hover:not(:disabled) {\n  border-color: color-mix(in srgb, var(--mf-htc-accent, #ef4444) 50%, var(--mf-border, #2e2e38));\n}\n\n.solid {\n  background-color: color-mix(in srgb, var(--mf-htc-accent, #ef4444) 16%, var(--mf-surface, #141419));\n  border-color: color-mix(in srgb, var(--mf-htc-accent, #ef4444) 35%, transparent);\n  color: var(--mf-htc-accent, #ef4444);\n}\n\n.content,\n.overlay {\n  position: relative;\n  z-index: 1;\n  display: inline-flex;\n  align-items: center;\n  gap: 0.5rem;\n}\n\n.sizer {\n  visibility: hidden;\n}\n\n.track {\n  position: absolute;\n  inset: 0;\n  z-index: 0;\n  pointer-events: none;\n}\n\n.fill {\n  position: absolute;\n  inset: 0;\n  background-color: var(--mf-htc-accent, #ef4444);\n  transform-origin: left center;\n  transform: scaleX(var(--mf-htc-p, 0));\n}\n\n.overlay {\n  position: absolute;\n  inset: 0;\n  justify-content: center;\n  z-index: 2;\n  color: #ffffff;\n  clip-path: inset(0 calc((1 - var(--mf-htc-p, 0)) * 100%) 0 0);\n}\n\n.button[data-fill=\"bar\"] .track {\n  top: auto;\n  height: 3px;\n  background-color: color-mix(in srgb, var(--mf-htc-accent, #ef4444) 18%, transparent);\n}\n\n.button[data-fill=\"bar\"] .overlay {\n  display: none;\n}\n\n.button[data-fill=\"bar\"][data-phase=\"confirmed\"] {\n  color: var(--mf-htc-accent, #ef4444);\n  border-color: color-mix(in srgb, var(--mf-htc-accent, #ef4444) 50%, transparent);\n}\n\n.srOnly {\n  position: absolute;\n  width: 1px;\n  height: 1px;\n  margin: -1px;\n  padding: 0;\n  overflow: hidden;\n  clip: rect(0 0 0 0);\n  white-space: nowrap;\n  border: 0;\n}\n\n@media (prefers-reduced-motion: reduce) {\n  .button {\n    transition: none;\n  }\n\n  .button[data-phase=\"holding\"] {\n    transform: none;\n  }\n\n  .button[data-phase=\"confirmed\"] {\n    animation: none;\n  }\n}\n"
-        }
-      ],
-      "tailwindExample": "\"use client\";\n\nimport { useEffect, useRef, useState } from \"react\";\n\nexport function HoldToConfirmTailwind({ holdDuration = 1500, onConfirm = () => {} }) {\n  const [p, setP] = useState(0);\n  const [done, setDone] = useState(false);\n  const holding = useRef(false);\n  const raf = useRef(0);\n  useEffect(() => () => cancelAnimationFrame(raf.current), []);\n  const loop = (last: number) => (now: number) => {\n    setP((v) => {\n      const next = Math.min(1, Math.max(0, v + (holding.current ? 1 : -4) * (now - last) / holdDuration));\n      if (next >= 1) { setDone(true); onConfirm(); }\n      else if (next > 0 || holding.current) raf.current = requestAnimationFrame(loop(now));\n      return next;\n    });\n  };\n  const go = (h: boolean) => { if (done) return; holding.current = h; cancelAnimationFrame(raf.current); raf.current = requestAnimationFrame(loop(performance.now())); };\n  return (\n    <button\n      type=\"button\"\n      onPointerDown={() => go(true)} onPointerUp={() => go(false)} onPointerLeave={() => go(false)}\n      onKeyDown={(e) => { if ((e.key === \" \" || e.key === \"Enter\") && !e.repeat) { e.preventDefault(); go(true); } }}\n      onKeyUp={() => go(false)}\n      className=\"relative h-10 select-none overflow-hidden rounded-lg border border-zinc-800 bg-zinc-900 px-5 text-sm font-medium text-zinc-100 touch-none\"\n    >\n      <span aria-hidden=\"true\" className=\"absolute inset-0 origin-left bg-red-500\" style={{ transform: `scaleX(${p})` }} />\n      <span className=\"relative\">{done ? \"Deleted\" : p > 0 ? \"Keep holding…\" : \"Hold to delete\"}</span>\n    </button>\n  );\n}"
     },
     {
       "slug": "floating-input",

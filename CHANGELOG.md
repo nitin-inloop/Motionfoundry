@@ -1,5 +1,11 @@
 # Changelog
 
+## [2.4.1] - 2026-10-16
+
+- `EclipseGradient` defaults to a cool lavender corona (`#a8aeff` / `#caabd3`, rim `#0d3040`, speed 3, ring size 0.5, no rays).
+- `HoldToConfirm` (it was never published to npm).
+- landing hero is plain black; Plasma removed from the landing shader showcase.
+
 ## [2.4.0] - 2026-10-16
 
 - `RotatingIcons` (headline accent that cube-flips through icons), `CreditCard` (pointer-following glow + tilt), `AccordionCards` (horizontal panels that expand on hover/focus), `ProgressBar` (spring fill with sheen), `SkeletonShimmer` (synced shimmer placeholders), and `MoonPhaseLoader` (moon cycling through its phases).
@@ -10,7 +16,7 @@
 
 - 5 dark WebGL shader backgrounds, hand-written GLSL with CSS fallbacks: `NebulaGradient`, `PlasmaGradient`, `SilkGradient`, `EmberGradient`, `EclipseGradient`.
 - 10 more Lenis-style scroll components: `ScrollCoverflow`, `SplitScreenScroll`, `PinnedSteps`, `ParallaxColumns`, `ScrollWordSwap`, `ScrollTiltCards`, `ScrollPathDraw`, `ScrollFocusList`, `SnapSections`, `ScrollColorShift`.
-- UI collection — 50 animated primitives built from scratch (no Radix/shadcn), following WAI-ARIA patterns: `Button`, `IconButton`, `ButtonGroup`, `CopyButton`, `ToggleGroup`, `LikeButton`, `SplitButton`, `HoldToConfirm`, `FloatingInput`, `OtpInput`, `PasswordInput`, `TagInput`, `NumberStepper`, `RangeSlider`, `RadioCards`, `SegmentedControl`, `Select`, `Combobox`, `FileDropzone`, `StarRating`, `Tabs`, `Breadcrumb`, `Dialog`, `Drawer`, `AvatarGroup`, `Badge`, `Pagination`, `Stepper`, `Accordion`, `BottomSheet`, `Popover`, `HoverCard`, `Tooltip`, `ProgressRing`, `StatCard`, `BarChart`, `Sparkline`, `TreeView`, `DropdownMenu`, `DataTable`, `ActivityFeed`, `ContributionHeatmap`, `ImageCompare`, `NavigationMenu`, `ContextMenu`, `AlertDialog`, `Carousel`, `SidebarNav`, `Menubar`, `Toast`, `RotatingIcons`, `MoonPhaseLoader`, `CreditCard`, `AccordionCards`, `ProgressBar`, `SkeletonShimmer`.
+- UI collection — 50 animated primitives built from scratch (no Radix/shadcn), following WAI-ARIA patterns: `Button`, `IconButton`, `ButtonGroup`, `CopyButton`, `ToggleGroup`, `LikeButton`, `SplitButton`, `FloatingInput`, `OtpInput`, `PasswordInput`, `TagInput`, `NumberStepper`, `RangeSlider`, `RadioCards`, `SegmentedControl`, `Select`, `Combobox`, `FileDropzone`, `StarRating`, `Tabs`, `Breadcrumb`, `Dialog`, `Drawer`, `AvatarGroup`, `Badge`, `Pagination`, `Stepper`, `Accordion`, `BottomSheet`, `Popover`, `HoverCard`, `Tooltip`, `ProgressRing`, `StatCard`, `BarChart`, `Sparkline`, `TreeView`, `DropdownMenu`, `DataTable`, `ActivityFeed`, `ContributionHeatmap`, `ImageCompare`, `NavigationMenu`, `ContextMenu`, `AlertDialog`, `Carousel`, `SidebarNav`, `Menubar`, `Toast`, `RotatingIcons`, `MoonPhaseLoader`, `CreditCard`, `AccordionCards`, `ProgressBar`, `SkeletonShimmer`.
 - the Gradients collection is now **Shaders** (`--collection gradients` still works in the CLI). Site navigation lists Scroll, Shaders, then UI; Core, Studio Kit, and Text FX stay in the package and remain reachable by URL.
 - Dark / Light toggle on every component preview and design-system preview, with dark and light variants derived for any brand preset.
 - docs sidebar groups all setup and guide pages under Docs; redesigned typography-led landing page.

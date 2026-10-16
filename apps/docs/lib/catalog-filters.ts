@@ -4,7 +4,7 @@
  */
 
 /** The current release; its label is used for the "New in vX.Y" filter. */
-export const NEW_VERSION = "2.4.0";
+export const NEW_VERSION = "2.4.1";
 /** Short label for NEW_VERSION, e.g. "v2.4". */
 export const NEW_VERSION_LABEL = `v${NEW_VERSION.split(".").slice(0, 2).join(".")}`;
 /** Last version published to npm — anything added after it counts as new. */

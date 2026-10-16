@@ -1,12 +1,12 @@
 /**
  * @motionfoundry/ui — Production-Ready Open-Source Animated React Component Library
- * Version: 2.4.0 (Scroll, Shaders, UI, Text FX, Studio Kit, Core)
+ * Version: 2.4.1 (Scroll, Shaders, UI, Text FX, Studio Kit, Core)
  * License: MIT
  *
  * Export order defines the registry order (see scripts/build-registry.mjs).
  */
 
-export const MOTIONFOUNDRY_VERSION = "2.4.0";
+export const MOTIONFOUNDRY_VERSION = "2.4.1";
 
 export const MOTIONFOUNDRY_BRAND = "MotionFoundry";
 
@@ -119,7 +119,6 @@ export { CopyButton, type CopyButtonProps } from "./components/copy-button";
 export { ToggleGroup, type ToggleGroupProps } from "./components/toggle-group";
 export { LikeButton, type LikeButtonProps } from "./components/like-button";
 export { SplitButton, type SplitButtonProps } from "./components/split-button";
-export { HoldToConfirm, type HoldToConfirmProps } from "./components/hold-to-confirm";
 export { FloatingInput, type FloatingInputProps } from "./components/floating-input";
 export { OtpInput, type OtpInputProps } from "./components/otp-input";
 export { PasswordInput, type PasswordInputProps } from "./components/password-input";
