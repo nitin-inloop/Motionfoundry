@@ -7,65 +7,52 @@ import { DesignMock } from "../components/design-mock";
 import { HeroActions } from "../components/hero-actions";
 import { BLANK, DemoFrame, FILL, SectionHeader, ShaderTile } from "../components/landing/frames";
 import {
-  // Text
-  RotatingIcons,
-  RotatingWords,
-  SplitText,
-  NumberTicker,
-  // Shaders
+  AccordionCards,
   AuroraRibbons,
+  BarChart,
+  BlurInText,
+  ButtonGroup,
+  Carousel,
+  Combobox,
+  ConfettiButton,
+  ContributionHeatmap,
+  CopyButton,
+  CreditCard,
   EclipseGradient,
   EmberGradient,
-  NebulaGradient,
-  PlasmaGradient,
-  SilkGradient,
-  WaveGradient,
-  // Scroll
-  ScrollColorShift,
-  ScrollCoverflow,
-  ScrollFocusList,
-  ScrollWordSwap,
-  StickyStackCards,
-  VelocityMarquee,
-  // Cards & loaders
-  AccordionCards,
-  CreditCard,
-  MoonPhaseLoader,
-  ProgressBar,
-  SkeletonShimmer,
-  // UI
-  AvatarGroup,
-  Badge,
-  Button,
-  DataTable,
-  Dialog,
-  DropdownMenu,
-  FloatingInput,
-  OtpInput,
-  ProgressRing,
-  SegmentedControl,
-  Select,
-  Sparkline,
-  StatCard,
-  Tabs,
-  Toast,
-  // Studio Kit
-  ConfettiButton,
   FlipCard,
+  HoldToConfirm,
+  LikeButton,
   LoadingButton,
+  MeshGradient,
   Meteors,
+  MoonPhaseLoader,
+  NebulaGradient,
   NotificationStack,
+  NumberTicker,
   OrbitLoader,
+  PasswordInput,
+  PlasmaGradient,
+  Popover,
+  ProgressBar,
+  RangeSlider,
   ReorderList,
+  RotatingWords,
+  ScrollCoverflow,
+  SilkGradient,
+  SkeletonShimmer,
+  StarRating,
+  StickyStackCards,
   SwipeCards,
+  TagInput,
+  ToggleGroup,
   ToggleSwitch,
+  Tooltip,
+  VelocityMarquee,
+  WaveGradient,
 } from "@motionfoundry/ui";
 
 /** CSS custom properties the text components read for their font size — headline and accent scale together. */
-type SizeVars = React.CSSProperties & Record<`--${string}`, string>;
-const HEADLINE_SIZE = "clamp(2.25rem, 1rem + 4.2vw, 4.25rem)";
-const HEADLINE_STYLE: SizeVars = { "--mf-st-size": HEADLINE_SIZE, padding: 0 };
-const ACCENT_STYLE: SizeVars = { "--mf-ri-size": HEADLINE_SIZE };
 
 /** Display name + one-line caption from the registry (falls back while a component is still being registered). */
 function meta(slug: string, fallback: string) {
@@ -124,21 +111,21 @@ const CARD_TILES: { slug: string; fallback: string; className: string; render: R
 
 /** UI bento: spans sum to full rows at 2 columns (sm) and 4 columns (lg). */
 const UI_TILES: { slug: string; fallback: string; className: string; render: React.ReactNode }[] = [
-  { slug: "data-table", fallback: "Data Table", className: "sm:col-span-2 row-span-2", render: <DataTable /> },
-  { slug: "stat-card", fallback: "Stat Card", className: "", render: <StatCard /> },
-  { slug: "progress-ring", fallback: "Progress Ring", className: "", render: <ProgressRing /> },
-  { slug: "tabs", fallback: "Tabs", className: "sm:col-span-2", render: <Tabs /> },
-  { slug: "otp-input", fallback: "OTP Input", className: "", render: <OtpInput /> },
-  { slug: "floating-input", fallback: "Floating Input", className: "", render: <FloatingInput /> },
-  { slug: "segmented-control", fallback: "Segmented Control", className: "", render: <SegmentedControl /> },
-  { slug: "button", fallback: "Button", className: "", render: <Button /> },
-  { slug: "select", fallback: "Select", className: "", render: <Select /> },
-  { slug: "dropdown-menu", fallback: "Dropdown Menu", className: "", render: <DropdownMenu /> },
-  { slug: "toast", fallback: "Toast", className: "sm:col-span-2", render: <Toast /> },
-  { slug: "avatar-group", fallback: "Avatar Group", className: "", render: <AvatarGroup /> },
-  { slug: "badge", fallback: "Badge", className: "", render: <Badge /> },
-  { slug: "dialog", fallback: "Dialog", className: "", render: <Dialog /> },
-  { slug: "sparkline", fallback: "Sparkline", className: "", render: <Sparkline /> },
+  { slug: "bar-chart", fallback: "Bar Chart", className: "sm:col-span-2 row-span-2", render: <BarChart /> },
+  { slug: "like-button", fallback: "Like Button", className: "", render: <LikeButton /> },
+  { slug: "star-rating", fallback: "Star Rating", className: "", render: <StarRating /> },
+  { slug: "contribution-heatmap", fallback: "Contribution Heatmap", className: "sm:col-span-2", render: <ContributionHeatmap /> },
+  { slug: "range-slider", fallback: "Range Slider", className: "", render: <RangeSlider /> },
+  { slug: "toggle-group", fallback: "Toggle Group", className: "", render: <ToggleGroup /> },
+  { slug: "hold-to-confirm", fallback: "Hold to Confirm", className: "", render: <HoldToConfirm /> },
+  { slug: "copy-button", fallback: "Copy Button", className: "", render: <CopyButton /> },
+  { slug: "combobox", fallback: "Combobox", className: "", render: <Combobox /> },
+  { slug: "tag-input", fallback: "Tag Input", className: "", render: <TagInput /> },
+  { slug: "carousel", fallback: "Carousel", className: "sm:col-span-2", render: <div className="w-full origin-center scale-[0.78]"><Carousel /></div> },
+  { slug: "button-group", fallback: "Button Group", className: "", render: <ButtonGroup /> },
+  { slug: "password-input", fallback: "Password Input", className: "", render: <div className="w-full origin-center scale-[0.82]"><PasswordInput /></div> },
+  { slug: "popover", fallback: "Popover", className: "", render: <Popover /> },
+  { slug: "tooltip", fallback: "Tooltip", className: "", render: <Tooltip /> },
 ];
 
 /** Studio Kit bento (3 columns at md): every row is full. */
@@ -153,6 +140,9 @@ const STUDIO_TILES: { slug: string; fallback: string; className: string; render:
   { slug: "reorder-list", fallback: "Reorder List", className: "md:row-span-2", render: <ReorderList /> },
   { slug: "loading-button", fallback: "Loading Button", className: "md:col-span-2", render: <LoadingButton /> },
 ];
+
+/** Backgrounds default to a fixed pixel height; let the hero gradient grow with its content. */
+const HERO_GRADIENT_STYLE: React.CSSProperties = { height: "auto", border: "none" };
 
 export default function HomePage() {
   const components = getAllComponents();
@@ -171,72 +161,59 @@ export default function HomePage() {
   const studioKit = collection("studio-kit");
   const scrollName = scroll?.name ?? "Scroll";
 
+  const newCollectionNames = collections.filter((col) => newComponents.some((c) => c.collection === col.id)).map((c) => c.name);
+  const newCollectionList =
+    newCollectionNames.length > 1 ? `${newCollectionNames.slice(0, -1).join(", ")} & ${newCollectionNames[newCollectionNames.length - 1]}` : newCollectionNames[0] ?? "";
+
   return (
     <div className="space-y-28 overflow-x-clip pb-24 sm:space-y-36">
-      {/* 1 — Hero: plain background, dotted grid, headline + install snippet. */}
-      <section className="mf-stage relative border-b border-border" aria-labelledby="hero-heading">
-        <div className="mx-auto grid max-w-7xl gap-12 px-4 pb-20 pt-14 sm:px-6 sm:pt-20 lg:grid-cols-[1.15fr_1fr] lg:items-center">
-          <div className="min-w-0 space-y-7">
-            {newComponents.length > 0 ? (
-              <Link
-                href="/components?new=1"
-                className="inline-flex max-w-full items-center gap-2 rounded-full border border-border bg-background/70 px-3.5 py-1 text-xs text-muted-foreground backdrop-blur transition hover:border-neutral-600 hover:text-foreground"
-              >
-                <span className="font-mono text-foreground/90">{NEW_VERSION_LABEL}</span>
-                <span aria-hidden="true" className="h-3 w-px shrink-0 bg-border" />
-                <span className="min-w-0 truncate">{newComponents.length} new components →</span>
-              </Link>
-            ) : (
-              <span className="inline-flex max-w-full items-center gap-2 rounded-full border border-border bg-background/70 px-3.5 py-1 text-xs text-muted-foreground backdrop-blur">
-                <span className="font-mono text-foreground/90">v{BRAND_CONFIG.version}</span>
-                <span aria-hidden="true" className="h-3 w-px shrink-0 bg-border" />
-                <span className="min-w-0 truncate">Open source · {BRAND_CONFIG.license}</span>
-              </span>
-            )}
-
-            <div id="hero-heading" className="flex min-w-0 flex-col items-start gap-1">
-              <SplitText
-                as="h1"
-                text="Motion primitives forged for production React"
-                splitBy="chars"
-                stagger={0.02}
-                fromBlur={8}
-                className="!text-left !font-semibold"
-                style={HEADLINE_STYLE}
-              />
-              <RotatingIcons
-                as="p"
-                prefix="built for"
-                icons={["scroll", "shader", "interface", "sparkles"]}
-                labels={["scroll", "shaders", "interfaces", "delight"]}
-                color="#737373"
-                iconColor="#fafafa"
-                tileColor="#18181b"
-                className="!font-semibold"
-                style={ACCENT_STYLE}
-              />
+      <section className="relative overflow-hidden border-b border-border">
+        <MeshGradient borderRadius={0} style={HERO_GRADIENT_STYLE}>
+          {/* Cancels the background’s 2rem content padding so the hero aligns with the rest of the page. */}
+          <div className="-m-8 w-[calc(100%+4rem)] self-stretch bg-gradient-to-b from-background/30 via-background/50 to-background text-left">
+            <div className="mx-auto grid max-w-7xl gap-12 px-6 pb-20 pt-16 lg:grid-cols-[1.15fr_1fr] lg:items-center">
+              <div className="min-w-0 space-y-7">
+                {newComponents.length > 0 ? (
+                  <Link
+                    href="/components?new=1"
+                    className="inline-flex max-w-full items-center gap-2 rounded-full border border-emerald-400/30 bg-emerald-500/10 px-3.5 py-1 font-mono text-xs text-emerald-200 backdrop-blur hover:border-emerald-300/50"
+                  >
+                    <span className="min-w-0 truncate">
+                      {NEW_VERSION_LABEL} • New: {newCollectionList} — {newComponents.length} components →
+                    </span>
+                  </Link>
+                ) : (
+                  <Link
+                    href="/collections/scroll"
+                    className="inline-flex max-w-full items-center gap-2 rounded-full border border-sky-500/30 bg-sky-500/10 px-3.5 py-1 font-mono text-xs text-sky-300 backdrop-blur hover:border-sky-400/50"
+                  >
+                    <span className="min-w-0 truncate">v{BRAND_CONFIG.version} • {components.length} components →</span>
+                  </Link>
+                )}
+                <BlurInText
+                  as="h1"
+                  text="Motion primitives forged for production React"
+                  className="text-4xl font-semibold leading-[1.05] tracking-tight text-foreground sm:text-5xl md:text-6xl"
+                />
+                <p className="max-w-xl text-lg leading-relaxed text-foreground/75">
+                  {components.length} animated components across {collections.length} collections. Copy the source with one CLI command or import the package — every
+                  component is typed, SSR-safe, and respects reduced motion.
+                </p>
+                <HeroActions
+                  componentCount={components.length}
+                  secondary={newComponents.length > 0 ? { label: `What's new in ${NEW_VERSION_LABEL}`, href: "/components?new=1" } : { label: "Browse Scroll", href: "/collections/scroll" }}
+                />
+              </div>
+              <div className="min-w-0">
+                <CodeBlock
+                  filename="terminal"
+                  language="bash"
+                  code={`# copy components (source + CSS module) into your app\nnpx ${BRAND_CONFIG.cliName} add mesh-gradient split-text smooth-scroll\n\n# or install the package\npnpm add ${BRAND_CONFIG.packageScope} motion`}
+                />
+              </div>
             </div>
-
-            <p className="max-w-xl text-lg leading-relaxed text-foreground/75">
-              {components.length} animated components across {collections.length} collections. Copy the source with one CLI command or import the package — every
-              component is typed, SSR-safe, and respects reduced motion.
-            </p>
-
-            <HeroActions
-              align="start"
-              primary={{ label: "Get started", href: "/docs/getting-started" }}
-              secondary={{ label: "Browse components", href: "/components" }}
-            />
           </div>
-
-          <div className="min-w-0">
-            <CodeBlock
-              filename="terminal"
-              language="bash"
-              code={`# copy components (source + CSS module) into your app\nnpx ${BRAND_CONFIG.cliName} add sticky-stack-cards scroll-color-shift\n\n# or install the package\npnpm add ${BRAND_CONFIG.packageScope} motion`}
-            />
-          </div>
-        </div>
+        </MeshGradient>
       </section>
 
       {/* 2 — Scroll */}
@@ -308,33 +285,6 @@ export default function HomePage() {
         ))}
       </section>
 
-      {/* 5 — Scroll color */}
-      <section className="mx-auto max-w-7xl space-y-10 px-4 sm:px-6" aria-labelledby="scroll-color-heading">
-        <SectionHeader
-          id="scroll-color-heading"
-          eyebrow={`${scrollName} · color`}
-          title="Color that follows the scroll"
-          description={
-            getComponentBySlug("scroll-color-shift")?.description ??
-            "Background and text colors blend from section to section as you scroll — contrast stays readable the whole way."
-          }
-          href="/collections/scroll"
-          linkLabel={`Browse ${scrollName}`}
-        />
-        <div className="grid min-w-0 grid-cols-1 gap-4 md:grid-cols-[minmax(0,1.5fr)_minmax(0,1fr)]">
-          <DemoFrame slug="scroll-color-shift" title={meta("scroll-color-shift", "Scroll Color Shift").title} stageClassName="h-[460px]" hint="Scroll inside ↓" padded={false}>
-            <ScrollColorShift height={460} borderRadius={0} className="!border-0" />
-          </DemoFrame>
-          <div className="flex min-w-0 flex-col gap-4">
-            <DemoFrame slug="scroll-word-swap" title={meta("scroll-word-swap", "Scroll Word Swap").title} stageClassName="h-[202px]" hint="Scroll inside ↓" padded={false}>
-              <ScrollWordSwap height={202} borderRadius={0} className="!border-0" />
-            </DemoFrame>
-            <DemoFrame slug="scroll-focus-list" title={meta("scroll-focus-list", "Scroll Focus List").title} stageClassName="h-[202px]" hint="Scroll inside ↓" padded={false}>
-              <ScrollFocusList height={202} borderRadius={0} className="!border-0" />
-            </DemoFrame>
-          </div>
-        </div>
-      </section>
 
       {/* 6 — Cards & loaders */}
       <section className="mx-auto max-w-7xl space-y-10 px-4 sm:px-6" aria-labelledby="cards-heading">

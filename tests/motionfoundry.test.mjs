@@ -420,6 +420,9 @@ test("14. v2.4 additions: card, loader, and rotating-icon components with full m
     assert.ok(comp.dependencies.every((d) => d === "react" || d === "motion"));
   }
   const landing = fs.readFileSync(path.join(rootDir, "apps/docs/app/page.tsx"), "utf8");
-  assert.ok(landing.includes("<RotatingIcons"), "Landing hero uses rotating icons instead of rotating words");
-  assert.ok(!landing.includes("<CubeFlipWords"), "Rotating text was replaced on the landing hero");
+  // The landing restores the original v2.2 hero and showcases the v2.4 cards & loaders.
+  for (const name of ["<MeshGradient", "<BlurInText", "<CreditCard", "<AccordionCards", "<ProgressBar", "<MoonPhaseLoader", "<SkeletonShimmer"]) {
+    assert.ok(landing.includes(name), `landing should render ${name.slice(1)}`);
+  }
+  assert.ok(!landing.includes("scroll-color-heading"), "the color-follows-scroll section was removed");
 });
