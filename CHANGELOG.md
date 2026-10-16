@@ -1,10 +1,16 @@
 # Changelog
 
+## [2.4.0] - 2026-10-16
+
+- `RotatingIcons` (headline accent that cube-flips through icons), `CreditCard` (pointer-following glow + tilt), `AccordionCards` (horizontal panels that expand on hover/focus), `ProgressBar` (spring fill with sheen), `SkeletonShimmer` (synced shimmer placeholders), and `MoonPhaseLoader` (moon cycling through its phases).
+- the landing hero now rotates icons instead of words.
+- 2.2.0 and 2.3.0 were staged but never published; 2.4.0 includes everything from both.
+
 ## [2.3.0] - 2026-10-16
 
 - 5 dark WebGL shader backgrounds, hand-written GLSL with CSS fallbacks: `NebulaGradient`, `PlasmaGradient`, `SilkGradient`, `EmberGradient`, `EclipseGradient`.
 - 10 more Lenis-style scroll components: `ScrollCoverflow`, `SplitScreenScroll`, `PinnedSteps`, `ParallaxColumns`, `ScrollWordSwap`, `ScrollTiltCards`, `ScrollPathDraw`, `ScrollFocusList`, `SnapSections`, `ScrollColorShift`.
-- UI collection — 50 animated primitives built from scratch (no Radix/shadcn), following WAI-ARIA patterns: `Button`, `IconButton`, `ButtonGroup`, `CopyButton`, `ToggleGroup`, `LikeButton`, `SplitButton`, `HoldToConfirm`, `FloatingInput`, `OtpInput`, `PasswordInput`, `TagInput`, `NumberStepper`, `RangeSlider`, `RadioCards`, `SegmentedControl`, `Select`, `Combobox`, `FileDropzone`, `StarRating`, `Tabs`, `Breadcrumb`, `Dialog`, `Drawer`, `AvatarGroup`, `Badge`, `Pagination`, `Stepper`, `Accordion`, `BottomSheet`, `Popover`, `HoverCard`, `Tooltip`, `ProgressRing`, `StatCard`, `BarChart`, `Sparkline`, `TreeView`, `DropdownMenu`, `DataTable`, `ActivityFeed`, `ContributionHeatmap`, `ImageCompare`, `NavigationMenu`, `ContextMenu`, `AlertDialog`, `Carousel`, `SidebarNav`, `Menubar`, `Toast`.
+- UI collection — 50 animated primitives built from scratch (no Radix/shadcn), following WAI-ARIA patterns: `Button`, `IconButton`, `ButtonGroup`, `CopyButton`, `ToggleGroup`, `LikeButton`, `SplitButton`, `HoldToConfirm`, `FloatingInput`, `OtpInput`, `PasswordInput`, `TagInput`, `NumberStepper`, `RangeSlider`, `RadioCards`, `SegmentedControl`, `Select`, `Combobox`, `FileDropzone`, `StarRating`, `Tabs`, `Breadcrumb`, `Dialog`, `Drawer`, `AvatarGroup`, `Badge`, `Pagination`, `Stepper`, `Accordion`, `BottomSheet`, `Popover`, `HoverCard`, `Tooltip`, `ProgressRing`, `StatCard`, `BarChart`, `Sparkline`, `TreeView`, `DropdownMenu`, `DataTable`, `ActivityFeed`, `ContributionHeatmap`, `ImageCompare`, `NavigationMenu`, `ContextMenu`, `AlertDialog`, `Carousel`, `SidebarNav`, `Menubar`, `Toast`, `RotatingIcons`, `MoonPhaseLoader`, `CreditCard`, `AccordionCards`, `ProgressBar`, `SkeletonShimmer`.
 - the Gradients collection is now **Shaders** (`--collection gradients` still works in the CLI). Site navigation lists Scroll, Shaders, then UI; Core, Studio Kit, and Text FX stay in the package and remain reachable by URL.
 - Dark / Light toggle on every component preview and design-system preview, with dark and light variants derived for any brand preset.
 - docs sidebar groups all setup and guide pages under Docs; redesigned typography-led landing page.

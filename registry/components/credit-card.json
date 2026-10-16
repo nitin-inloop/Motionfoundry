@@ -1,0 +1,177 @@
+{
+  "slug": "credit-card",
+  "name": "CreditCard",
+  "category": "High-End Animated Cards",
+  "collection": "ui",
+  "featured": true,
+  "addedAt": "2026-10-16",
+  "version": "2.4.0",
+  "files": [
+    {
+      "path": "components/ui/credit-card.tsx",
+      "type": "registry:component",
+      "content": "\"use client\";\n\nimport * as React from \"react\";\nimport styles from \"../styles/credit-card.module.css\";\n\nexport interface CreditCardProps {\n  /** Issuer / brand text in the top-left corner */\n  brand?: string;\n  /** Card number (spaces are kept as typed) */\n  number?: string;\n  /** Cardholder name */\n  holder?: string;\n  /** Expiry date */\n  expiry?: string;\n  /** Glow color that follows the pointer */\n  glowColor?: string;\n  /** EMV chip color */\n  chipColor?: string;\n  /** Card surface color */\n  cardColor?: string;\n  /** Tilt the card in 3D toward the pointer */\n  tilt?: boolean;\n  /** Mask all but the last four digits */\n  maskNumber?: boolean;\n  /** Card width in pixels (height follows the ISO card ratio) */\n  width?: number;\n  /** Optional className merged onto the root */\n  className?: string;\n  /** Optional inline styles merged onto the root */\n  style?: React.CSSProperties;\n}\n\nconst REST = { x: 0.5, y: 0.85 };\n\nfunction masked(value: string): string {\n  const digits = value.replace(/\\D/g, \"\");\n  const last = digits.slice(-4);\n  return `•••• •••• •••• ${last}`;\n}\n\nexport function CreditCard({\n  brand = \"MOTIONFOUNDRY\",\n  number = \"4242 4242 4242 4242\",\n  holder = \"ALEX MORGAN\",\n  expiry = \"12/28\",\n  glowColor = \"#ff8a1f\",\n  chipColor = \"#9a5617\",\n  cardColor = \"#1a1817\",\n  tilt = true,\n  maskNumber = false,\n  width = 380,\n  className = \"\",\n  style,\n}: CreditCardProps) {\n  const cardRef = React.useRef<HTMLDivElement>(null);\n  const target = React.useRef({ ...REST, hover: 0 });\n  const current = React.useRef({ ...REST, hover: 0 });\n  const frame = React.useRef(0);\n  const reduceMotion = React.useRef(false);\n\n  React.useEffect(() => {\n    const mq = window.matchMedia(\"(prefers-reduced-motion: reduce)\");\n    reduceMotion.current = mq.matches;\n    const onChange = () => (reduceMotion.current = mq.matches);\n    mq.addEventListener(\"change\", onChange);\n    return () => {\n      mq.removeEventListener(\"change\", onChange);\n      cancelAnimationFrame(frame.current);\n    };\n  }, []);\n\n  // Ease the glow (and tilt) toward the pointer; stop the loop once it settles.\n  const tick = React.useCallback(() => {\n    const el = cardRef.current;\n    if (!el) return;\n    const t = target.current;\n    const c = current.current;\n    const k = reduceMotion.current ? 1 : 0.14;\n    c.x += (t.x - c.x) * k;\n    c.y += (t.y - c.y) * k;\n    c.hover += (t.hover - c.hover) * k;\n    el.style.setProperty(\"--mf-cc-x\", `${(c.x * 100).toFixed(2)}%`);\n    el.style.setProperty(\"--mf-cc-y\", `${(c.y * 100).toFixed(2)}%`);\n    el.style.setProperty(\"--mf-cc-hover\", c.hover.toFixed(3));\n    const tiltOn = tilt && !reduceMotion.current;\n    el.style.setProperty(\"--mf-cc-rx\", tiltOn ? `${((0.5 - c.y) * 14 * c.hover).toFixed(2)}deg` : \"0deg\");\n    el.style.setProperty(\"--mf-cc-ry\", tiltOn ? `${((c.x - 0.5) * 18 * c.hover).toFixed(2)}deg` : \"0deg\");\n    const settled = Math.abs(t.x - c.x) + Math.abs(t.y - c.y) + Math.abs(t.hover - c.hover) < 0.001;\n    frame.current = settled ? 0 : requestAnimationFrame(tick);\n  }, [tilt]);\n\n  const kick = () => {\n    if (!frame.current) frame.current = requestAnimationFrame(tick);\n  };\n\n  const onPointerMove = (e: React.PointerEvent<HTMLDivElement>) => {\n    const rect = e.currentTarget.getBoundingClientRect();\n    target.current = { x: (e.clientX - rect.left) / rect.width, y: (e.clientY - rect.top) / rect.height, hover: 1 };\n    kick();\n  };\n\n  const onPointerLeave = () => {\n    target.current = { ...REST, hover: 0 };\n    kick();\n  };\n\n  const shown = maskNumber ? masked(number) : number;\n  const last4 = number.replace(/\\D/g, \"\").slice(-4);\n\n  return (\n    <div\n      className={`${styles.root} ${className}`.trim()}\n      style={\n        {\n          \"--mf-cc-width\": `${width}px`,\n          \"--mf-cc-glow\": glowColor,\n          \"--mf-cc-chip\": chipColor,\n          \"--mf-cc-card\": cardColor,\n          ...style,\n        } as React.CSSProperties\n      }\n    >\n      <div\n        ref={cardRef}\n        role=\"img\"\n        aria-label={`${brand} card ending in ${last4}, ${holder}, expires ${expiry}`}\n        className={styles.card}\n        onPointerMove={onPointerMove}\n        onPointerLeave={onPointerLeave}\n      >\n        <span className={styles.glow} aria-hidden=\"true\" />\n        <span className={styles.sheen} aria-hidden=\"true\" />\n        <div className={styles.top} aria-hidden=\"true\">\n          <span className={styles.brand}>{brand}</span>\n          <span className={styles.chip}>\n            <span />\n            <span />\n          </span>\n        </div>\n        <div className={styles.number} aria-hidden=\"true\">\n          {shown}\n        </div>\n        <div className={styles.bottom} aria-hidden=\"true\">\n          <span>{holder}</span>\n          <span>{expiry}</span>\n        </div>\n      </div>\n    </div>\n  );\n}\n"
+    },
+    {
+      "path": "components/styles/credit-card.module.css",
+      "type": "registry:style",
+      "content": ".root {\n  display: inline-flex;\n  perspective: 1000px;\n  color: var(--mf-fg, #f4f4f6);\n}\n\n.card {\n  --mf-cc-x: 50%;\n  --mf-cc-y: 85%;\n  --mf-cc-hover: 0;\n  --mf-cc-rx: 0deg;\n  --mf-cc-ry: 0deg;\n  position: relative;\n  display: flex;\n  flex-direction: column;\n  justify-content: space-between;\n  width: var(--mf-cc-width, 380px);\n  aspect-ratio: 1.586;\n  padding: calc(var(--mf-cc-width, 380px) * 0.075);\n  overflow: hidden;\n  border-radius: calc(var(--mf-cc-width, 380px) * 0.055);\n  border: 1px solid rgba(255, 255, 255, 0.06);\n  background-color: var(--mf-cc-card, #1a1817);\n  box-shadow: 0 24px 48px -24px rgba(0, 0, 0, 0.7);\n  color: #f4f1ec;\n  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;\n  transform: rotateX(var(--mf-cc-rx)) rotateY(var(--mf-cc-ry));\n  transform-style: preserve-3d;\n  will-change: transform;\n  user-select: none;\n}\n\n/* Pointer-following glow, brighter while hovered. */\n.glow {\n  position: absolute;\n  inset: 0;\n  background: radial-gradient(\n    circle at var(--mf-cc-x) var(--mf-cc-y),\n    color-mix(in srgb, var(--mf-cc-glow, #ff8a1f) 70%, transparent) 0%,\n    color-mix(in srgb, var(--mf-cc-glow, #ff8a1f) 34%, transparent) 22%,\n    color-mix(in srgb, var(--mf-cc-glow, #ff8a1f) 10%, transparent) 42%,\n    transparent 62%\n  );\n  opacity: calc(0.75 + var(--mf-cc-hover) * 0.25);\n  pointer-events: none;\n}\n\n.sheen {\n  position: absolute;\n  inset: 0;\n  background: linear-gradient(115deg, transparent 30%, rgba(255, 255, 255, calc(0.04 + var(--mf-cc-hover) * 0.06)) 48%, transparent 62%);\n  pointer-events: none;\n}\n\n.top,\n.number,\n.bottom {\n  position: relative;\n}\n\n.top {\n  display: flex;\n  align-items: flex-start;\n  justify-content: space-between;\n}\n\n.brand {\n  color: rgba(244, 241, 236, 0.62);\n  font-size: calc(var(--mf-cc-width, 380px) * 0.034);\n  letter-spacing: 0.08em;\n}\n\n.chip {\n  display: grid;\n  grid-template-rows: 1fr 1fr;\n  gap: 2px;\n  width: calc(var(--mf-cc-width, 380px) * 0.13);\n  aspect-ratio: 1.3;\n  padding: 3px;\n  border-radius: calc(var(--mf-cc-width, 380px) * 0.016);\n  background: linear-gradient(135deg, color-mix(in srgb, var(--mf-cc-chip, #9a5617) 80%, #fff), var(--mf-cc-chip, #9a5617));\n}\n\n.chip span {\n  border-radius: 2px;\n  background-color: rgba(0, 0, 0, 0.12);\n}\n\n.number {\n  font-size: calc(var(--mf-cc-width, 380px) * 0.068);\n  font-weight: 500;\n  letter-spacing: 0.08em;\n  white-space: nowrap;\n}\n\n.bottom {\n  display: flex;\n  justify-content: space-between;\n  color: rgba(244, 241, 236, 0.6);\n  font-size: calc(var(--mf-cc-width, 380px) * 0.036);\n  letter-spacing: 0.08em;\n}\n\n@media (prefers-reduced-motion: reduce) {\n  .card {\n    transform: none;\n  }\n}\n"
+    }
+  ],
+  "requiresMotion": false,
+  "dependencies": [
+    "react"
+  ],
+  "description": "A dark payment card with chip, number, holder and expiry, whose warm glow follows the pointer with smoothing and an optional 3D tilt, settling back to a soft rest glow when the pointer leaves.",
+  "tags": [
+    "credit card",
+    "payment",
+    "glow",
+    "tilt",
+    "card",
+    "ui"
+  ],
+  "a11yNotes": "Exposed as a single role=\"img\" with a descriptive label (brand, last four digits, holder, expiry) so the decorative layout isn't read piece by piece; the full number is never announced. Pointer effects are visual only, and under prefers-reduced-motion the tilt is disabled and the glow jumps without easing.",
+  "defaultProps": {
+    "brand": "MOTIONFOUNDRY",
+    "number": "4242 4242 4242 4242",
+    "holder": "ALEX MORGAN",
+    "expiry": "12/28",
+    "glowColor": "#ff8a1f",
+    "chipColor": "#9a5617",
+    "cardColor": "#1a1817",
+    "tilt": true,
+    "maskNumber": false,
+    "width": 380
+  },
+  "controls": [
+    {
+      "prop": "brand",
+      "label": "Brand",
+      "type": "text"
+    },
+    {
+      "prop": "number",
+      "label": "Card number",
+      "type": "text"
+    },
+    {
+      "prop": "holder",
+      "label": "Cardholder",
+      "type": "text"
+    },
+    {
+      "prop": "expiry",
+      "label": "Expiry",
+      "type": "text"
+    },
+    {
+      "prop": "glowColor",
+      "label": "Glow color",
+      "type": "color"
+    },
+    {
+      "prop": "chipColor",
+      "label": "Chip color",
+      "type": "color"
+    },
+    {
+      "prop": "cardColor",
+      "label": "Card color",
+      "type": "color"
+    },
+    {
+      "prop": "tilt",
+      "label": "3D tilt",
+      "type": "boolean"
+    },
+    {
+      "prop": "maskNumber",
+      "label": "Mask number",
+      "type": "boolean"
+    },
+    {
+      "prop": "width",
+      "label": "Width (px)",
+      "type": "range",
+      "min": 260,
+      "max": 480,
+      "step": 10
+    }
+  ],
+  "propsApi": [
+    {
+      "name": "brand",
+      "type": "string",
+      "default": "'MOTIONFOUNDRY'",
+      "description": "Issuer text in the top-left corner."
+    },
+    {
+      "name": "number",
+      "type": "string",
+      "default": "'4242 4242 4242 4242'",
+      "description": "Card number, spaces kept as typed."
+    },
+    {
+      "name": "holder",
+      "type": "string",
+      "default": "'ALEX MORGAN'",
+      "description": "Cardholder name."
+    },
+    {
+      "name": "expiry",
+      "type": "string",
+      "default": "'12/28'",
+      "description": "Expiry date."
+    },
+    {
+      "name": "glowColor",
+      "type": "string",
+      "default": "'#ff8a1f'",
+      "description": "Pointer-following glow color."
+    },
+    {
+      "name": "chipColor",
+      "type": "string",
+      "default": "'#9a5617'",
+      "description": "EMV chip color."
+    },
+    {
+      "name": "cardColor",
+      "type": "string",
+      "default": "'#1a1817'",
+      "description": "Card surface color."
+    },
+    {
+      "name": "tilt",
+      "type": "boolean",
+      "default": "true",
+      "description": "Tilt the card in 3D toward the pointer."
+    },
+    {
+      "name": "maskNumber",
+      "type": "boolean",
+      "default": "false",
+      "description": "Show only the last four digits."
+    },
+    {
+      "name": "width",
+      "type": "number",
+      "default": "380",
+      "description": "Width in pixels; height follows the ISO card ratio."
+    },
+    {
+      "name": "className",
+      "type": "string",
+      "default": "''",
+      "description": "Merged onto the root."
+    },
+    {
+      "name": "style",
+      "type": "React.CSSProperties",
+      "default": "undefined",
+      "description": "Merged onto the root."
+    }
+  ],
+  "tailwindExample": "\"use client\";\n\nimport { useState } from \"react\";\n\nexport function CreditCardTailwind() {\n  const [pos, setPos] = useState({ x: 50, y: 85 });\n  return (\n    <div\n      onPointerMove={(e) => {\n        const r = e.currentTarget.getBoundingClientRect();\n        setPos({ x: ((e.clientX - r.left) / r.width) * 100, y: ((e.clientY - r.top) / r.height) * 100 });\n      }}\n      onPointerLeave={() => setPos({ x: 50, y: 85 })}\n      style={{ backgroundImage: `radial-gradient(circle at ${pos.x}% ${pos.y}%, rgba(255,138,31,0.55), transparent 45%)` }}\n      className=\"relative flex aspect-[1.586] w-96 flex-col justify-between rounded-2xl border border-white/5 bg-stone-900 p-7 font-mono text-stone-100 transition-[background-image]\"\n    >\n      <div className=\"flex justify-between text-xs tracking-widest text-stone-400\">\n        MOTIONFOUNDRY <span className=\"h-9 w-12 rounded-md bg-amber-700\" />\n      </div>\n      <div className=\"text-2xl tracking-widest\">4242 4242 4242 4242</div>\n      <div className=\"flex justify-between text-xs tracking-widest text-stone-400\">\n        <span>ALEX MORGAN</span>\n        <span>12/28</span>\n      </div>\n    </div>\n  );\n}"
+}

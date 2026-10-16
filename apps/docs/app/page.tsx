@@ -8,7 +8,7 @@ import { BLANK, DemoFrame, FILL, SectionHeader, ShaderTile } from "../components
 import { InstallCommand } from "../components/landing/install-command";
 import {
   // Text
-  CubeFlipWords,
+  RotatingIcons,
   MarkerHighlight,
   SplitText,
   // Shaders
@@ -46,7 +46,7 @@ import {
 type SizeVars = React.CSSProperties & Record<`--${string}`, string>;
 const HEADLINE_SIZE = "clamp(2.25rem, 1rem + 6vw, 5.25rem)";
 const HEADLINE_STYLE: SizeVars = { "--mf-st-size": HEADLINE_SIZE, padding: 0 };
-const ACCENT_STYLE: SizeVars = { "--mf-cf-size": HEADLINE_SIZE };
+const ACCENT_STYLE: SizeVars = { "--mf-ri-size": HEADLINE_SIZE };
 const CLOSING_STYLE: SizeVars = { "--mf-mh-size": "clamp(1.875rem, 1rem + 4vw, 3.5rem)" };
 
 /** Display name + one-line caption from the registry (falls back while a component is still being registered). */
@@ -153,12 +153,14 @@ export default function HomePage() {
                   className="!font-semibold"
                   style={HEADLINE_STYLE}
                 />
-                <CubeFlipWords
+                <RotatingIcons
                   as="p"
                   prefix="built for"
-                  words={["scroll", "shaders", "interfaces"]}
+                  icons={["scroll", "shader", "interface", "sparkles"]}
+                  labels={["scroll", "shaders", "interfaces", "delight"]}
                   color="#737373"
-                  accentColor="#fafafa"
+                  iconColor="#fafafa"
+                  tileColor="#18181b"
                   className="!font-semibold"
                   style={ACCENT_STYLE}
                 />
@@ -171,7 +173,7 @@ export default function HomePage() {
 
               <HeroActions className="mt-9" primary={{ label: "Get started", href: "/docs/getting-started" }} secondary={{ label: "Explore Scroll", href: "/collections/scroll" }} />
 
-              <InstallCommand className="mt-6" command={`npx ${BRAND_CONFIG.cliName} add split-text cube-flip-words`} />
+              <InstallCommand className="mt-6" command={`npx ${BRAND_CONFIG.cliName} add split-text rotating-icons`} />
             </div>
           </SpotlightGradient>
 

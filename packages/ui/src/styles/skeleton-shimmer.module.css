@@ -1,0 +1,73 @@
+.root {
+  display: flex;
+  flex-direction: column;
+  gap: 1.125rem;
+  width: var(--mf-sk-width, 360px);
+  max-width: 100%;
+  color: var(--mf-fg, #f4f4f6);
+}
+
+.card {
+  padding: 1.5rem;
+  border: 1px solid var(--mf-border, #2e2e38);
+  border-radius: 1.125rem;
+  background-color: var(--mf-surface, #141419);
+}
+
+.head {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.titles {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 0.625rem;
+}
+
+.body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.625rem;
+}
+
+/* Every bar runs the same sweep on the same clock, so the shimmer reads as one band across the card. */
+.bar {
+  display: block;
+  height: 0.75rem;
+  border-radius: var(--mf-sk-radius, 6px);
+  background-color: var(--mf-sk-base, var(--mf-surface-raised, #1b1b22));
+  background-image: linear-gradient(100deg, transparent 20%, var(--mf-sk-shine, rgba(255, 255, 255, 0.09)) 40%, transparent 60%);
+  background-size: 200% 100%;
+  background-repeat: no-repeat;
+  animation: mf-sk-sweep var(--mf-sk-speed, 1.6s) ease-in-out infinite;
+}
+
+.avatar {
+  flex-shrink: 0;
+  width: 3rem;
+  height: 3rem;
+  border-radius: calc(var(--mf-sk-radius, 6px) * 2);
+}
+
+.circle {
+  border-radius: 999px;
+}
+
+@keyframes mf-sk-sweep {
+  from {
+    background-position: 150% 0;
+  }
+  to {
+    background-position: -50% 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bar {
+    animation: none;
+    background-image: none;
+  }
+}

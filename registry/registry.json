@@ -3,9 +3,9 @@
   "name": "motionfoundry",
   "brandName": "MotionFoundry",
   "packageName": "@motionfoundry/ui",
-  "version": "2.3.0",
+  "version": "2.4.0",
   "license": "MIT",
-  "totalComponents": 137,
+  "totalComponents": 143,
   "categories": [
     "Advanced Text Animations",
     "Interactive Buttons and Controls",
@@ -44,7 +44,7 @@
       "order": 3,
       "listed": true,
       "description": "Animated UI primitives built from scratch with no Radix or shadcn dependency: buttons, inputs, selects, dialogs, menus, tabs, toasts, tables, charts, and more — accessible and keyboard friendly.",
-      "count": 50
+      "count": 56
     },
     {
       "id": "text-fx",
@@ -23473,6 +23473,1081 @@
         }
       ],
       "tailwindExample": "\"use client\";\n\nimport { useState } from \"react\";\nimport { AnimatePresence, motion } from \"motion/react\";\n\nexport function ToastTailwind() {\n  const [toasts, setToasts] = useState<{ id: number; title: string }[]>([]);\n  const add = () => {\n    const id = Date.now();\n    setToasts((t) => [...t, { id, title: \"Event has been created\" }]);\n    setTimeout(() => setToasts((t) => t.filter((x) => x.id !== id)), 4000);\n  };\n  return (\n    <>\n      <button onClick={add} className=\"h-9 rounded-lg bg-zinc-100 px-4 text-sm font-medium text-zinc-900\">Show toast</button>\n      <ol aria-live=\"polite\" className=\"fixed bottom-5 right-5 flex w-80 flex-col-reverse gap-2\">\n        <AnimatePresence>\n          {toasts.map((t) => (\n            <motion.li\n              key={t.id}\n              layout\n              initial={{ opacity: 0, y: 24 }}\n              animate={{ opacity: 1, y: 0 }}\n              exit={{ opacity: 0, x: 120 }}\n              drag=\"x\"\n              dragSnapToOrigin\n              onDragEnd={(_, info) => Math.abs(info.offset.x) > 80 && setToasts((list) => list.filter((x) => x.id !== t.id))}\n              className=\"rounded-xl border border-zinc-800 bg-zinc-950 px-4 py-3 text-sm font-semibold text-zinc-100 shadow-xl\"\n            >\n              {t.title}\n            </motion.li>\n          ))}\n        </AnimatePresence>\n      </ol>\n    </>\n  );\n}"
+    },
+    {
+      "slug": "rotating-icons",
+      "name": "RotatingIcons",
+      "category": "Reveals and Continuous Motion",
+      "collection": "ui",
+      "featured": true,
+      "addedAt": "2026-10-16",
+      "version": "2.4.0",
+      "files": [
+        {
+          "path": "components/ui/rotating-icons.tsx",
+          "type": "registry:component",
+          "content": "\"use client\";\n\nimport * as React from \"react\";\nimport { AnimatePresence, motion, useReducedMotion } from \"motion/react\";\nimport styles from \"../styles/rotating-icons.module.css\";\n\nexport type RotatingIconName = \"scroll\" | \"shader\" | \"interface\" | \"sparkles\" | \"cursor\" | \"layers\" | \"code\" | \"palette\" | \"zap\" | \"globe\";\n\nexport interface RotatingIconsProps {\n  /** Static text before the rotating icon (empty hides it) */\n  prefix?: string;\n  /** Icons to cycle through, in order */\n  icons?: RotatingIconName[];\n  /** Spoken label per icon, in the same order (defaults to the icon names) */\n  labels?: string[];\n  /** Milliseconds each icon stays visible */\n  interval?: number;\n  /** Flip duration in seconds */\n  duration?: number;\n  /** Direction the cube rolls */\n  direction?: \"up\" | \"down\";\n  /** Render each icon inside a rounded tile */\n  tile?: boolean;\n  /** Icon stroke color */\n  iconColor?: string;\n  /** Tile background color (when tile is on) */\n  tileColor?: string;\n  /** Prefix text color (defaults to the theme foreground) */\n  color?: string;\n  /** Font size of the prefix in px — the icon scales with it */\n  fontSize?: number;\n  /** Element rendered for the whole line */\n  as?: \"h1\" | \"h2\" | \"h3\" | \"p\" | \"span\";\n  /** Optional className merged onto the root */\n  className?: string;\n  /** Optional inline styles merged onto the root */\n  style?: React.CSSProperties;\n}\n\nconst ICON_PATHS: Record<RotatingIconName, string[]> = {\n  scroll: [\"M12 2a6 6 0 0 1 6 6v8a6 6 0 0 1-12 0V8a6 6 0 0 1 6-6z\", \"M12 6v4\", \"M9 21l3 2 3-2\"],\n  shader: [\"M12 3a9 9 0 1 0 9 9\", \"M12 3a9 9 0 0 1 9 9\", \"M7.5 12a4.5 4.5 0 0 1 9 0\", \"M12 7.5a4.5 4.5 0 0 0 0 9\"],\n  interface: [\"M3 5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z\", \"M3 9h18\", \"M9 21V9\"],\n  sparkles: [\"M12 3l1.8 4.7L18.5 9.5l-4.7 1.8L12 16l-1.8-4.7L5.5 9.5l4.7-1.8z\", \"M19 15l.8 2.2L22 18l-2.2.8L19 21l-.8-2.2L16 18l2.2-.8z\"],\n  cursor: [\"M4 3l7 17 2.5-7.5L21 10z\", \"M13.5 12.5L20 19\"],\n  layers: [\"M12 3l9 5-9 5-9-5z\", \"M3 13l9 5 9-5\", \"M3 17.5l9 5 9-5\"],\n  code: [\"M8 7l-5 5 5 5\", \"M16 7l5 5-5 5\", \"M14 4l-4 16\"],\n  palette: [\"M12 3a9 9 0 1 0 0 18c1.1 0 1.6-.8 1.6-1.7 0-1.5-1.2-1.8-1.2-3 0-1 .8-1.6 1.8-1.6H17a4 4 0 0 0 4-4C21 6.6 17 3 12 3z\", \"M7.5 11.5h.01\", \"M10 7.5h.01\", \"M15 7.5h.01\"],\n  zap: [\"M13 2L4 14h7l-1 8 9-12h-7z\"],\n  globe: [\"M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18z\", \"M3 12h18\", \"M12 3c2.5 2.6 3.8 5.6 3.8 9s-1.3 6.4-3.8 9c-2.5-2.6-3.8-5.6-3.8-9S9.5 5.6 12 3z\"],\n};\n\nconst DEFAULT_ICONS: RotatingIconName[] = [\"scroll\", \"shader\", \"interface\"];\nconst DEFAULT_LABELS: Record<RotatingIconName, string> = {\n  scroll: \"scroll\",\n  shader: \"shaders\",\n  interface: \"interfaces\",\n  sparkles: \"delight\",\n  cursor: \"interaction\",\n  layers: \"depth\",\n  code: \"developers\",\n  palette: \"design\",\n  zap: \"speed\",\n  globe: \"the web\",\n};\n\nfunction Glyph({ name }: { name: RotatingIconName }) {\n  return (\n    <svg className={styles.glyph} viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" strokeWidth={1.75} strokeLinecap=\"round\" strokeLinejoin=\"round\" aria-hidden=\"true\">\n      {ICON_PATHS[name].map((d) => (\n        <path key={d} d={d} />\n      ))}\n    </svg>\n  );\n}\n\nexport function RotatingIcons({\n  prefix = \"built for\",\n  icons = DEFAULT_ICONS,\n  labels,\n  interval = 2200,\n  duration = 0.6,\n  direction = \"up\",\n  tile = true,\n  iconColor = \"#fafafa\",\n  tileColor = \"#1c1c1f\",\n  color,\n  fontSize = 56,\n  as: Tag = \"p\",\n  className = \"\",\n  style,\n}: RotatingIconsProps) {\n  const reduceMotion = useReducedMotion();\n  const rootRef = React.useRef<HTMLElement>(null);\n  const list = icons.length > 0 ? icons : DEFAULT_ICONS;\n  const spoken = list.map((icon, i) => labels?.[i] ?? DEFAULT_LABELS[icon] ?? icon);\n  const [index, setIndex] = React.useState(0);\n  const [visible, setVisible] = React.useState(true);\n\n  // Pause the loop when off-screen or when the tab is hidden.\n  React.useEffect(() => {\n    const el = rootRef.current;\n    if (!el || typeof IntersectionObserver === \"undefined\") return;\n    const io = new IntersectionObserver(([entry]) => setVisible(entry.isIntersecting && document.visibilityState === \"visible\"));\n    io.observe(el);\n    const onVis = () => setVisible(document.visibilityState === \"visible\");\n    document.addEventListener(\"visibilitychange\", onVis);\n    return () => {\n      io.disconnect();\n      document.removeEventListener(\"visibilitychange\", onVis);\n    };\n  }, []);\n\n  React.useEffect(() => {\n    if (reduceMotion || !visible || list.length < 2) return;\n    const id = window.setInterval(() => setIndex((i) => (i + 1) % list.length), Math.max(600, interval));\n    return () => window.clearInterval(id);\n  }, [reduceMotion, visible, list.length, interval]);\n\n  const current = list[index % list.length];\n  const sign = direction === \"up\" ? 1 : -1;\n  const sentence = `${prefix ? `${prefix} ` : \"\"}${spoken.join(\", \")}`;\n  const ElementTag = Tag as React.ElementType;\n\n  return (\n    <ElementTag\n      ref={rootRef}\n      className={`${styles.root} ${className}`.trim()}\n      style={\n        {\n          \"--mf-ri-size\": `${fontSize}px`,\n          \"--mf-ri-icon\": iconColor,\n          \"--mf-ri-tile\": tileColor,\n          ...(color ? { color } : null),\n          ...style,\n        } as React.CSSProperties\n      }\n    >\n      <span className={styles.srOnly}>{sentence}</span>\n      <span className={styles.visual} aria-hidden=\"true\">\n        {prefix && <span className={styles.prefix}>{prefix}</span>}\n        <span className={`${styles.slot} ${tile ? styles.tile : \"\"}`.trim()}>\n          <AnimatePresence initial={false} mode=\"popLayout\">\n            <motion.span\n              key={`${index}-${current}`}\n              className={styles.face}\n              initial={reduceMotion ? false : { rotateX: -90 * sign, y: `${45 * sign}%`, opacity: 0 }}\n              animate={{ rotateX: 0, y: \"0%\", opacity: 1 }}\n              exit={reduceMotion ? { opacity: 0 } : { rotateX: 90 * sign, y: `${-45 * sign}%`, opacity: 0 }}\n              transition={reduceMotion ? { duration: 0 } : { duration, ease: [0.22, 1, 0.36, 1] }}\n            >\n              <Glyph name={current} />\n            </motion.span>\n          </AnimatePresence>\n        </span>\n      </span>\n    </ElementTag>\n  );\n}\n"
+        },
+        {
+          "path": "components/styles/rotating-icons.module.css",
+          "type": "registry:style",
+          "content": ".root {\n  margin: 0;\n  color: var(--mf-fg, #f4f4f6);\n  font-size: var(--mf-ri-size, 56px);\n  font-weight: 650;\n  letter-spacing: -0.04em;\n  line-height: 1.05;\n}\n\n.visual {\n  display: inline-flex;\n  align-items: center;\n  gap: 0.28em;\n}\n\n.prefix {\n  white-space: nowrap;\n}\n\n.slot {\n  position: relative;\n  display: inline-flex;\n  align-items: center;\n  justify-content: center;\n  width: 1.05em;\n  height: 1.05em;\n  overflow: hidden;\n  perspective: 600px;\n  color: var(--mf-ri-icon, #fafafa);\n  vertical-align: middle;\n}\n\n.tile {\n  width: 1.15em;\n  height: 1.15em;\n  border-radius: 0.26em;\n  border: 1px solid color-mix(in srgb, var(--mf-ri-icon, #fafafa) 16%, transparent);\n  background-color: var(--mf-ri-tile, #1c1c1f);\n  box-shadow: inset 0 1px 0 color-mix(in srgb, var(--mf-ri-icon, #fafafa) 10%, transparent), 0 0.08em 0.3em rgba(0, 0, 0, 0.35);\n}\n\n.face {\n  position: absolute;\n  inset: 0;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  transform-origin: 50% 50% -0.5em;\n  backface-visibility: hidden;\n}\n\n.glyph {\n  width: 0.7em;\n  height: 0.7em;\n}\n\n.srOnly {\n  position: absolute;\n  width: 1px;\n  height: 1px;\n  margin: -1px;\n  padding: 0;\n  overflow: hidden;\n  clip: rect(0, 0, 0, 0);\n  white-space: nowrap;\n  border: 0;\n}\n\n@media (prefers-reduced-motion: reduce) {\n  .face {\n    transform: none !important;\n  }\n}\n"
+        }
+      ],
+      "requiresMotion": true,
+      "dependencies": [
+        "motion",
+        "react"
+      ],
+      "description": "A headline accent that rolls through icons on a 3D cube flip instead of words — a static prefix followed by a tiled icon that turns over on an interval.",
+      "tags": [
+        "rotating",
+        "icons",
+        "cube flip",
+        "hero",
+        "headline",
+        "ui"
+      ],
+      "a11yNotes": "The animated icons are aria-hidden; a visually hidden sentence (prefix plus every icon's spoken label) gives screen readers the full meaning once instead of announcing each flip. The loop pauses when off-screen or the tab is hidden, and reduced motion shows the first icon without flipping.",
+      "defaultProps": {
+        "prefix": "built for",
+        "icons": [
+          "scroll",
+          "shader",
+          "interface"
+        ],
+        "interval": 2200,
+        "duration": 0.6,
+        "direction": "up",
+        "tile": true,
+        "iconColor": "#fafafa",
+        "tileColor": "#1c1c1f",
+        "fontSize": 56
+      },
+      "controls": [
+        {
+          "prop": "prefix",
+          "label": "Prefix",
+          "type": "text"
+        },
+        {
+          "prop": "icons",
+          "label": "Icons (comma separated: scroll, shader, interface, sparkles, cursor, layers, code, palette, zap, globe)",
+          "type": "list"
+        },
+        {
+          "prop": "interval",
+          "label": "Interval (ms)",
+          "type": "range",
+          "min": 800,
+          "max": 5000,
+          "step": 100
+        },
+        {
+          "prop": "duration",
+          "label": "Flip duration (s)",
+          "type": "range",
+          "min": 0.2,
+          "max": 1.4,
+          "step": 0.05
+        },
+        {
+          "prop": "direction",
+          "label": "Direction",
+          "type": "select",
+          "options": [
+            "up",
+            "down"
+          ]
+        },
+        {
+          "prop": "tile",
+          "label": "Icon tile",
+          "type": "boolean"
+        },
+        {
+          "prop": "iconColor",
+          "label": "Icon color",
+          "type": "color"
+        },
+        {
+          "prop": "tileColor",
+          "label": "Tile color",
+          "type": "color"
+        },
+        {
+          "prop": "fontSize",
+          "label": "Size (px)",
+          "type": "range",
+          "min": 24,
+          "max": 96,
+          "step": 2
+        }
+      ],
+      "propsApi": [
+        {
+          "name": "prefix",
+          "type": "string",
+          "default": "'built for'",
+          "description": "Static text before the icon (empty hides it)."
+        },
+        {
+          "name": "icons",
+          "type": "RotatingIconName[]",
+          "default": "['scroll', 'shader', 'interface']",
+          "description": "Built-in icons: scroll, shader, interface, sparkles, cursor, layers, code, palette, zap, globe."
+        },
+        {
+          "name": "labels",
+          "type": "string[]",
+          "default": "per-icon defaults",
+          "description": "Spoken label per icon for screen readers."
+        },
+        {
+          "name": "interval",
+          "type": "number",
+          "default": "2200",
+          "description": "Milliseconds each icon stays visible."
+        },
+        {
+          "name": "duration",
+          "type": "number",
+          "default": "0.6",
+          "description": "Flip duration in seconds."
+        },
+        {
+          "name": "direction",
+          "type": "'up' | 'down'",
+          "default": "'up'",
+          "description": "Direction the cube rolls."
+        },
+        {
+          "name": "tile",
+          "type": "boolean",
+          "default": "true",
+          "description": "Render the icon inside a rounded tile."
+        },
+        {
+          "name": "iconColor",
+          "type": "string",
+          "default": "'#fafafa'",
+          "description": "Icon stroke color."
+        },
+        {
+          "name": "tileColor",
+          "type": "string",
+          "default": "'#1c1c1f'",
+          "description": "Tile background color."
+        },
+        {
+          "name": "color",
+          "type": "string",
+          "default": "undefined",
+          "description": "Prefix text color (defaults to the theme foreground)."
+        },
+        {
+          "name": "fontSize",
+          "type": "number",
+          "default": "56",
+          "description": "Prefix font size in px; the icon scales with it."
+        },
+        {
+          "name": "as",
+          "type": "'h1' | 'h2' | 'h3' | 'p' | 'span'",
+          "default": "'p'",
+          "description": "Element rendered for the line."
+        },
+        {
+          "name": "className",
+          "type": "string",
+          "default": "''",
+          "description": "Merged onto the root."
+        },
+        {
+          "name": "style",
+          "type": "React.CSSProperties",
+          "default": "undefined",
+          "description": "Merged onto the root."
+        }
+      ],
+      "tailwindExample": "\"use client\";\n\nimport { useEffect, useState } from \"react\";\nimport { AnimatePresence, motion } from \"motion/react\";\n\nconst icons = [\"M12 2a6 6 0 0 1 6 6v8a6 6 0 0 1-12 0V8a6 6 0 0 1 6-6z\", \"M13 2L4 14h7l-1 8 9-12h-7z\", \"M3 5h18v14H3z\"];\n\nexport function RotatingIconsTailwind() {\n  const [i, setI] = useState(0);\n  useEffect(() => {\n    const id = setInterval(() => setI((n) => (n + 1) % icons.length), 2200);\n    return () => clearInterval(id);\n  }, []);\n  return (\n    <p className=\"flex items-center gap-3 text-5xl font-semibold tracking-tight text-zinc-100\">\n      built for\n      <span className=\"relative inline-flex h-14 w-14 items-center justify-center overflow-hidden rounded-xl border border-white/10 bg-zinc-900 [perspective:600px]\">\n        <AnimatePresence initial={false} mode=\"popLayout\">\n          <motion.svg key={i} initial={{ rotateX: -90, opacity: 0 }} animate={{ rotateX: 0, opacity: 1 }} exit={{ rotateX: 90, opacity: 0 }} viewBox=\"0 0 24 24\" className=\"h-9 w-9\" fill=\"none\" stroke=\"currentColor\" strokeWidth={1.75}>\n            <path d={icons[i]} />\n          </motion.svg>\n        </AnimatePresence>\n      </span>\n    </p>\n  );\n}"
+    },
+    {
+      "slug": "moon-phase-loader",
+      "name": "MoonPhaseLoader",
+      "category": "Loaders and Feedback",
+      "collection": "ui",
+      "featured": false,
+      "addedAt": "2026-10-16",
+      "version": "2.4.0",
+      "files": [
+        {
+          "path": "components/ui/moon-phase-loader.tsx",
+          "type": "registry:component",
+          "content": "\"use client\";\n\nimport * as React from \"react\";\nimport styles from \"../styles/moon-phase-loader.module.css\";\n\nexport interface MoonPhaseLoaderProps {\n  /** Moon diameter in pixels */\n  size?: number;\n  /** Seconds for one full cycle of phases */\n  duration?: number;\n  /** Lit moon color */\n  color?: string;\n  /** Shadow disc color (match your background) */\n  shadowColor?: string;\n  /** Soft glow around the lit moon */\n  glow?: boolean;\n  /** Clip the shadow to the moon so only the lit shape shows */\n  clip?: boolean;\n  /** Accessible loading label */\n  label?: string;\n  /** Optional className merged onto the root */\n  className?: string;\n  /** Optional inline styles merged onto the root */\n  style?: React.CSSProperties;\n}\n\nexport function MoonPhaseLoader({\n  size = 72,\n  duration = 2.4,\n  color = \"#ff8a1f\",\n  shadowColor = \"#0b0a09\",\n  glow = true,\n  clip = false,\n  label = \"Loading\",\n  className = \"\",\n  style,\n}: MoonPhaseLoaderProps) {\n  return (\n    <div\n      role=\"status\"\n      aria-label={label}\n      className={`${styles.root} ${clip ? styles.clip : \"\"} ${glow ? styles.glow : \"\"} ${className}`.trim()}\n      style={\n        {\n          \"--mf-mp-size\": `${size}px`,\n          \"--mf-mp-duration\": `${Math.max(0.4, duration)}s`,\n          \"--mf-mp-color\": color,\n          \"--mf-mp-shadow\": shadowColor,\n          ...style,\n        } as React.CSSProperties\n      }\n    >\n      <span className={styles.moon} aria-hidden=\"true\">\n        <span className={styles.shadow} />\n      </span>\n    </div>\n  );\n}\n"
+        },
+        {
+          "path": "components/styles/moon-phase-loader.module.css",
+          "type": "registry:style",
+          "content": ".root {\n  display: inline-flex;\n  align-items: center;\n  justify-content: center;\n  padding: calc(var(--mf-mp-size, 72px) * 0.4);\n  color: var(--mf-fg, #f4f4f6);\n}\n\n.moon {\n  position: relative;\n  display: block;\n  width: var(--mf-mp-size, 72px);\n  height: var(--mf-mp-size, 72px);\n  border-radius: 999px;\n  background: radial-gradient(circle at 38% 34%, color-mix(in srgb, var(--mf-mp-color, #ff8a1f) 70%, #fff) 0%, var(--mf-mp-color, #ff8a1f) 46%, color-mix(in srgb, var(--mf-mp-color, #ff8a1f) 82%, #000) 100%);\n}\n\n.glow .moon {\n  box-shadow: 0 0 calc(var(--mf-mp-size, 72px) * 0.45) color-mix(in srgb, var(--mf-mp-color, #ff8a1f) 35%, transparent);\n}\n\n.clip .moon {\n  overflow: hidden;\n}\n\n/* The shadow disc sweeps across the lit disc: waxing to full, then waning back to new. */\n.shadow {\n  position: absolute;\n  inset: 0;\n  border-radius: 999px;\n  background-color: var(--mf-mp-shadow, #0b0a09);\n  /* Ping-pong so the sweep never jumps: crescent → new moon → opposite crescent → back. */\n  animation: mf-moon-phase calc(var(--mf-mp-duration, 2.4s) / 2) cubic-bezier(0.45, 0, 0.55, 1) infinite alternate;\n}\n\n@keyframes mf-moon-phase {\n  from {\n    transform: translateX(-62%);\n  }\n  to {\n    transform: translateX(62%);\n  }\n}\n\n/* Clipped: one-directional cycle; the jump happens while the shadow is fully outside the disc. */\n.clip .shadow {\n  animation: mf-moon-phase-clip var(--mf-mp-duration, 2.4s) linear infinite;\n}\n\n@keyframes mf-moon-phase-clip {\n  0% {\n    transform: translateX(0%);\n  }\n  49.99% {\n    transform: translateX(105%);\n  }\n  50% {\n    transform: translateX(-105%);\n  }\n  100% {\n    transform: translateX(0%);\n  }\n}\n\n@media (prefers-reduced-motion: reduce) {\n  .shadow {\n    animation: none;\n    transform: translateX(-38%);\n  }\n}\n"
+        }
+      ],
+      "requiresMotion": false,
+      "dependencies": [
+        "react"
+      ],
+      "description": "A loader where a shadow disc sweeps across a glowing moon, cycling crescent → new → crescent; optionally clipped to the moon for a crisp phase silhouette.",
+      "tags": [
+        "loader",
+        "moon",
+        "phase",
+        "spinner",
+        "loading",
+        "ui"
+      ],
+      "a11yNotes": "Renders role=\"status\" with an aria-label (default \"Loading\"); the moon itself is decorative and aria-hidden. Pure CSS animation that stops under prefers-reduced-motion, leaving a static crescent.",
+      "defaultProps": {
+        "size": 72,
+        "duration": 2.4,
+        "color": "#ff8a1f",
+        "shadowColor": "#0b0a09",
+        "glow": true,
+        "clip": false,
+        "label": "Loading"
+      },
+      "controls": [
+        {
+          "prop": "size",
+          "label": "Size (px)",
+          "type": "range",
+          "min": 24,
+          "max": 160,
+          "step": 4
+        },
+        {
+          "prop": "duration",
+          "label": "Cycle (s)",
+          "type": "range",
+          "min": 0.6,
+          "max": 6,
+          "step": 0.2
+        },
+        {
+          "prop": "color",
+          "label": "Moon color",
+          "type": "color"
+        },
+        {
+          "prop": "shadowColor",
+          "label": "Shadow color",
+          "type": "color"
+        },
+        {
+          "prop": "glow",
+          "label": "Glow",
+          "type": "boolean"
+        },
+        {
+          "prop": "clip",
+          "label": "Clip shadow to moon",
+          "type": "boolean"
+        },
+        {
+          "prop": "label",
+          "label": "Accessible label",
+          "type": "text"
+        }
+      ],
+      "propsApi": [
+        {
+          "name": "size",
+          "type": "number",
+          "default": "72",
+          "description": "Moon diameter in pixels."
+        },
+        {
+          "name": "duration",
+          "type": "number",
+          "default": "2.4",
+          "description": "Seconds for one full cycle of phases."
+        },
+        {
+          "name": "color",
+          "type": "string",
+          "default": "'#ff8a1f'",
+          "description": "Lit moon color."
+        },
+        {
+          "name": "shadowColor",
+          "type": "string",
+          "default": "'#0b0a09'",
+          "description": "Shadow disc color — match your background."
+        },
+        {
+          "name": "glow",
+          "type": "boolean",
+          "default": "true",
+          "description": "Soft glow around the moon."
+        },
+        {
+          "name": "clip",
+          "type": "boolean",
+          "default": "false",
+          "description": "Clip the shadow to the moon so only the lit shape shows."
+        },
+        {
+          "name": "label",
+          "type": "string",
+          "default": "'Loading'",
+          "description": "Accessible loading label."
+        },
+        {
+          "name": "className",
+          "type": "string",
+          "default": "''",
+          "description": "Merged onto the root."
+        },
+        {
+          "name": "style",
+          "type": "React.CSSProperties",
+          "default": "undefined",
+          "description": "Merged onto the root."
+        }
+      ],
+      "tailwindExample": "export function MoonPhaseLoaderTailwind() {\n  return (\n    <div role=\"status\" aria-label=\"Loading\" className=\"p-8\">\n      <span className=\"relative block h-16 w-16 rounded-full bg-orange-500 shadow-[0_0_32px_rgba(255,138,31,0.35)]\">\n        <span className=\"absolute inset-0 animate-[moon_1.2s_ease-in-out_infinite_alternate] rounded-full bg-zinc-950\" />\n      </span>\n      <style>{\"@keyframes moon{from{transform:translateX(-62%)}to{transform:translateX(62%)}}\"}</style>\n    </div>\n  );\n}"
+    },
+    {
+      "slug": "credit-card",
+      "name": "CreditCard",
+      "category": "High-End Animated Cards",
+      "collection": "ui",
+      "featured": true,
+      "addedAt": "2026-10-16",
+      "version": "2.4.0",
+      "files": [
+        {
+          "path": "components/ui/credit-card.tsx",
+          "type": "registry:component",
+          "content": "\"use client\";\n\nimport * as React from \"react\";\nimport styles from \"../styles/credit-card.module.css\";\n\nexport interface CreditCardProps {\n  /** Issuer / brand text in the top-left corner */\n  brand?: string;\n  /** Card number (spaces are kept as typed) */\n  number?: string;\n  /** Cardholder name */\n  holder?: string;\n  /** Expiry date */\n  expiry?: string;\n  /** Glow color that follows the pointer */\n  glowColor?: string;\n  /** EMV chip color */\n  chipColor?: string;\n  /** Card surface color */\n  cardColor?: string;\n  /** Tilt the card in 3D toward the pointer */\n  tilt?: boolean;\n  /** Mask all but the last four digits */\n  maskNumber?: boolean;\n  /** Card width in pixels (height follows the ISO card ratio) */\n  width?: number;\n  /** Optional className merged onto the root */\n  className?: string;\n  /** Optional inline styles merged onto the root */\n  style?: React.CSSProperties;\n}\n\nconst REST = { x: 0.5, y: 0.85 };\n\nfunction masked(value: string): string {\n  const digits = value.replace(/\\D/g, \"\");\n  const last = digits.slice(-4);\n  return `•••• •••• •••• ${last}`;\n}\n\nexport function CreditCard({\n  brand = \"MOTIONFOUNDRY\",\n  number = \"4242 4242 4242 4242\",\n  holder = \"ALEX MORGAN\",\n  expiry = \"12/28\",\n  glowColor = \"#ff8a1f\",\n  chipColor = \"#9a5617\",\n  cardColor = \"#1a1817\",\n  tilt = true,\n  maskNumber = false,\n  width = 380,\n  className = \"\",\n  style,\n}: CreditCardProps) {\n  const cardRef = React.useRef<HTMLDivElement>(null);\n  const target = React.useRef({ ...REST, hover: 0 });\n  const current = React.useRef({ ...REST, hover: 0 });\n  const frame = React.useRef(0);\n  const reduceMotion = React.useRef(false);\n\n  React.useEffect(() => {\n    const mq = window.matchMedia(\"(prefers-reduced-motion: reduce)\");\n    reduceMotion.current = mq.matches;\n    const onChange = () => (reduceMotion.current = mq.matches);\n    mq.addEventListener(\"change\", onChange);\n    return () => {\n      mq.removeEventListener(\"change\", onChange);\n      cancelAnimationFrame(frame.current);\n    };\n  }, []);\n\n  // Ease the glow (and tilt) toward the pointer; stop the loop once it settles.\n  const tick = React.useCallback(() => {\n    const el = cardRef.current;\n    if (!el) return;\n    const t = target.current;\n    const c = current.current;\n    const k = reduceMotion.current ? 1 : 0.14;\n    c.x += (t.x - c.x) * k;\n    c.y += (t.y - c.y) * k;\n    c.hover += (t.hover - c.hover) * k;\n    el.style.setProperty(\"--mf-cc-x\", `${(c.x * 100).toFixed(2)}%`);\n    el.style.setProperty(\"--mf-cc-y\", `${(c.y * 100).toFixed(2)}%`);\n    el.style.setProperty(\"--mf-cc-hover\", c.hover.toFixed(3));\n    const tiltOn = tilt && !reduceMotion.current;\n    el.style.setProperty(\"--mf-cc-rx\", tiltOn ? `${((0.5 - c.y) * 14 * c.hover).toFixed(2)}deg` : \"0deg\");\n    el.style.setProperty(\"--mf-cc-ry\", tiltOn ? `${((c.x - 0.5) * 18 * c.hover).toFixed(2)}deg` : \"0deg\");\n    const settled = Math.abs(t.x - c.x) + Math.abs(t.y - c.y) + Math.abs(t.hover - c.hover) < 0.001;\n    frame.current = settled ? 0 : requestAnimationFrame(tick);\n  }, [tilt]);\n\n  const kick = () => {\n    if (!frame.current) frame.current = requestAnimationFrame(tick);\n  };\n\n  const onPointerMove = (e: React.PointerEvent<HTMLDivElement>) => {\n    const rect = e.currentTarget.getBoundingClientRect();\n    target.current = { x: (e.clientX - rect.left) / rect.width, y: (e.clientY - rect.top) / rect.height, hover: 1 };\n    kick();\n  };\n\n  const onPointerLeave = () => {\n    target.current = { ...REST, hover: 0 };\n    kick();\n  };\n\n  const shown = maskNumber ? masked(number) : number;\n  const last4 = number.replace(/\\D/g, \"\").slice(-4);\n\n  return (\n    <div\n      className={`${styles.root} ${className}`.trim()}\n      style={\n        {\n          \"--mf-cc-width\": `${width}px`,\n          \"--mf-cc-glow\": glowColor,\n          \"--mf-cc-chip\": chipColor,\n          \"--mf-cc-card\": cardColor,\n          ...style,\n        } as React.CSSProperties\n      }\n    >\n      <div\n        ref={cardRef}\n        role=\"img\"\n        aria-label={`${brand} card ending in ${last4}, ${holder}, expires ${expiry}`}\n        className={styles.card}\n        onPointerMove={onPointerMove}\n        onPointerLeave={onPointerLeave}\n      >\n        <span className={styles.glow} aria-hidden=\"true\" />\n        <span className={styles.sheen} aria-hidden=\"true\" />\n        <div className={styles.top} aria-hidden=\"true\">\n          <span className={styles.brand}>{brand}</span>\n          <span className={styles.chip}>\n            <span />\n            <span />\n          </span>\n        </div>\n        <div className={styles.number} aria-hidden=\"true\">\n          {shown}\n        </div>\n        <div className={styles.bottom} aria-hidden=\"true\">\n          <span>{holder}</span>\n          <span>{expiry}</span>\n        </div>\n      </div>\n    </div>\n  );\n}\n"
+        },
+        {
+          "path": "components/styles/credit-card.module.css",
+          "type": "registry:style",
+          "content": ".root {\n  display: inline-flex;\n  perspective: 1000px;\n  color: var(--mf-fg, #f4f4f6);\n}\n\n.card {\n  --mf-cc-x: 50%;\n  --mf-cc-y: 85%;\n  --mf-cc-hover: 0;\n  --mf-cc-rx: 0deg;\n  --mf-cc-ry: 0deg;\n  position: relative;\n  display: flex;\n  flex-direction: column;\n  justify-content: space-between;\n  width: var(--mf-cc-width, 380px);\n  aspect-ratio: 1.586;\n  padding: calc(var(--mf-cc-width, 380px) * 0.075);\n  overflow: hidden;\n  border-radius: calc(var(--mf-cc-width, 380px) * 0.055);\n  border: 1px solid rgba(255, 255, 255, 0.06);\n  background-color: var(--mf-cc-card, #1a1817);\n  box-shadow: 0 24px 48px -24px rgba(0, 0, 0, 0.7);\n  color: #f4f1ec;\n  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;\n  transform: rotateX(var(--mf-cc-rx)) rotateY(var(--mf-cc-ry));\n  transform-style: preserve-3d;\n  will-change: transform;\n  user-select: none;\n}\n\n/* Pointer-following glow, brighter while hovered. */\n.glow {\n  position: absolute;\n  inset: 0;\n  background: radial-gradient(\n    circle at var(--mf-cc-x) var(--mf-cc-y),\n    color-mix(in srgb, var(--mf-cc-glow, #ff8a1f) 70%, transparent) 0%,\n    color-mix(in srgb, var(--mf-cc-glow, #ff8a1f) 34%, transparent) 22%,\n    color-mix(in srgb, var(--mf-cc-glow, #ff8a1f) 10%, transparent) 42%,\n    transparent 62%\n  );\n  opacity: calc(0.75 + var(--mf-cc-hover) * 0.25);\n  pointer-events: none;\n}\n\n.sheen {\n  position: absolute;\n  inset: 0;\n  background: linear-gradient(115deg, transparent 30%, rgba(255, 255, 255, calc(0.04 + var(--mf-cc-hover) * 0.06)) 48%, transparent 62%);\n  pointer-events: none;\n}\n\n.top,\n.number,\n.bottom {\n  position: relative;\n}\n\n.top {\n  display: flex;\n  align-items: flex-start;\n  justify-content: space-between;\n}\n\n.brand {\n  color: rgba(244, 241, 236, 0.62);\n  font-size: calc(var(--mf-cc-width, 380px) * 0.034);\n  letter-spacing: 0.08em;\n}\n\n.chip {\n  display: grid;\n  grid-template-rows: 1fr 1fr;\n  gap: 2px;\n  width: calc(var(--mf-cc-width, 380px) * 0.13);\n  aspect-ratio: 1.3;\n  padding: 3px;\n  border-radius: calc(var(--mf-cc-width, 380px) * 0.016);\n  background: linear-gradient(135deg, color-mix(in srgb, var(--mf-cc-chip, #9a5617) 80%, #fff), var(--mf-cc-chip, #9a5617));\n}\n\n.chip span {\n  border-radius: 2px;\n  background-color: rgba(0, 0, 0, 0.12);\n}\n\n.number {\n  font-size: calc(var(--mf-cc-width, 380px) * 0.068);\n  font-weight: 500;\n  letter-spacing: 0.08em;\n  white-space: nowrap;\n}\n\n.bottom {\n  display: flex;\n  justify-content: space-between;\n  color: rgba(244, 241, 236, 0.6);\n  font-size: calc(var(--mf-cc-width, 380px) * 0.036);\n  letter-spacing: 0.08em;\n}\n\n@media (prefers-reduced-motion: reduce) {\n  .card {\n    transform: none;\n  }\n}\n"
+        }
+      ],
+      "requiresMotion": false,
+      "dependencies": [
+        "react"
+      ],
+      "description": "A dark payment card with chip, number, holder and expiry, whose warm glow follows the pointer with smoothing and an optional 3D tilt, settling back to a soft rest glow when the pointer leaves.",
+      "tags": [
+        "credit card",
+        "payment",
+        "glow",
+        "tilt",
+        "card",
+        "ui"
+      ],
+      "a11yNotes": "Exposed as a single role=\"img\" with a descriptive label (brand, last four digits, holder, expiry) so the decorative layout isn't read piece by piece; the full number is never announced. Pointer effects are visual only, and under prefers-reduced-motion the tilt is disabled and the glow jumps without easing.",
+      "defaultProps": {
+        "brand": "MOTIONFOUNDRY",
+        "number": "4242 4242 4242 4242",
+        "holder": "ALEX MORGAN",
+        "expiry": "12/28",
+        "glowColor": "#ff8a1f",
+        "chipColor": "#9a5617",
+        "cardColor": "#1a1817",
+        "tilt": true,
+        "maskNumber": false,
+        "width": 380
+      },
+      "controls": [
+        {
+          "prop": "brand",
+          "label": "Brand",
+          "type": "text"
+        },
+        {
+          "prop": "number",
+          "label": "Card number",
+          "type": "text"
+        },
+        {
+          "prop": "holder",
+          "label": "Cardholder",
+          "type": "text"
+        },
+        {
+          "prop": "expiry",
+          "label": "Expiry",
+          "type": "text"
+        },
+        {
+          "prop": "glowColor",
+          "label": "Glow color",
+          "type": "color"
+        },
+        {
+          "prop": "chipColor",
+          "label": "Chip color",
+          "type": "color"
+        },
+        {
+          "prop": "cardColor",
+          "label": "Card color",
+          "type": "color"
+        },
+        {
+          "prop": "tilt",
+          "label": "3D tilt",
+          "type": "boolean"
+        },
+        {
+          "prop": "maskNumber",
+          "label": "Mask number",
+          "type": "boolean"
+        },
+        {
+          "prop": "width",
+          "label": "Width (px)",
+          "type": "range",
+          "min": 260,
+          "max": 480,
+          "step": 10
+        }
+      ],
+      "propsApi": [
+        {
+          "name": "brand",
+          "type": "string",
+          "default": "'MOTIONFOUNDRY'",
+          "description": "Issuer text in the top-left corner."
+        },
+        {
+          "name": "number",
+          "type": "string",
+          "default": "'4242 4242 4242 4242'",
+          "description": "Card number, spaces kept as typed."
+        },
+        {
+          "name": "holder",
+          "type": "string",
+          "default": "'ALEX MORGAN'",
+          "description": "Cardholder name."
+        },
+        {
+          "name": "expiry",
+          "type": "string",
+          "default": "'12/28'",
+          "description": "Expiry date."
+        },
+        {
+          "name": "glowColor",
+          "type": "string",
+          "default": "'#ff8a1f'",
+          "description": "Pointer-following glow color."
+        },
+        {
+          "name": "chipColor",
+          "type": "string",
+          "default": "'#9a5617'",
+          "description": "EMV chip color."
+        },
+        {
+          "name": "cardColor",
+          "type": "string",
+          "default": "'#1a1817'",
+          "description": "Card surface color."
+        },
+        {
+          "name": "tilt",
+          "type": "boolean",
+          "default": "true",
+          "description": "Tilt the card in 3D toward the pointer."
+        },
+        {
+          "name": "maskNumber",
+          "type": "boolean",
+          "default": "false",
+          "description": "Show only the last four digits."
+        },
+        {
+          "name": "width",
+          "type": "number",
+          "default": "380",
+          "description": "Width in pixels; height follows the ISO card ratio."
+        },
+        {
+          "name": "className",
+          "type": "string",
+          "default": "''",
+          "description": "Merged onto the root."
+        },
+        {
+          "name": "style",
+          "type": "React.CSSProperties",
+          "default": "undefined",
+          "description": "Merged onto the root."
+        }
+      ],
+      "tailwindExample": "\"use client\";\n\nimport { useState } from \"react\";\n\nexport function CreditCardTailwind() {\n  const [pos, setPos] = useState({ x: 50, y: 85 });\n  return (\n    <div\n      onPointerMove={(e) => {\n        const r = e.currentTarget.getBoundingClientRect();\n        setPos({ x: ((e.clientX - r.left) / r.width) * 100, y: ((e.clientY - r.top) / r.height) * 100 });\n      }}\n      onPointerLeave={() => setPos({ x: 50, y: 85 })}\n      style={{ backgroundImage: `radial-gradient(circle at ${pos.x}% ${pos.y}%, rgba(255,138,31,0.55), transparent 45%)` }}\n      className=\"relative flex aspect-[1.586] w-96 flex-col justify-between rounded-2xl border border-white/5 bg-stone-900 p-7 font-mono text-stone-100 transition-[background-image]\"\n    >\n      <div className=\"flex justify-between text-xs tracking-widest text-stone-400\">\n        MOTIONFOUNDRY <span className=\"h-9 w-12 rounded-md bg-amber-700\" />\n      </div>\n      <div className=\"text-2xl tracking-widest\">4242 4242 4242 4242</div>\n      <div className=\"flex justify-between text-xs tracking-widest text-stone-400\">\n        <span>ALEX MORGAN</span>\n        <span>12/28</span>\n      </div>\n    </div>\n  );\n}"
+    },
+    {
+      "slug": "accordion-cards",
+      "name": "AccordionCards",
+      "category": "High-End Animated Cards",
+      "collection": "ui",
+      "featured": true,
+      "addedAt": "2026-10-16",
+      "version": "2.4.0",
+      "files": [
+        {
+          "path": "components/ui/accordion-cards.tsx",
+          "type": "registry:component",
+          "content": "\"use client\";\n\nimport * as React from \"react\";\nimport styles from \"../styles/accordion-cards.module.css\";\n\nexport interface AccordionCardsProps {\n  /** Panel titles, left to right */\n  items?: string[];\n  /** One-line description per panel (shown when expanded) */\n  descriptions?: string[];\n  /** Initially expanded panel index */\n  defaultIndex?: number;\n  /** Controlled expanded panel index */\n  index?: number;\n  /** Called when the expanded panel changes */\n  onIndexChange?: (index: number) => void;\n  /** Expand on hover/focus, or only on click/Enter */\n  expandOn?: \"hover\" | \"click\";\n  /** Fill color of the expanded panel */\n  accentColor?: string;\n  /** Text color on the expanded panel */\n  activeTextColor?: string;\n  /** Height in pixels */\n  height?: number;\n  /** Gap between panels in pixels */\n  gap?: number;\n  /** How much wider the expanded panel grows */\n  expandRatio?: number;\n  /** Optional className merged onto the root */\n  className?: string;\n  /** Optional inline styles merged onto the root */\n  style?: React.CSSProperties;\n}\n\nconst DEFAULT_ITEMS = [\"Design\", \"Develop\", \"Deploy\", \"Scale\"];\nconst DEFAULT_DESCRIPTIONS = [\"Shape the idea into flows and screens.\", \"Build it with typed, tested components.\", \"Ship to the edge in one command.\", \"Grow without rewriting the foundation.\"];\n\nexport function AccordionCards({\n  items = DEFAULT_ITEMS,\n  descriptions = DEFAULT_DESCRIPTIONS,\n  defaultIndex = 0,\n  index,\n  onIndexChange,\n  expandOn = \"hover\",\n  accentColor = \"#ff8a1f\",\n  activeTextColor = \"#140b02\",\n  height = 260,\n  gap = 10,\n  expandRatio = 3.2,\n  className = \"\",\n  style,\n}: AccordionCardsProps) {\n  const list = items.length ? items : DEFAULT_ITEMS;\n  const [indexState, setIndexState] = React.useState(Math.min(Math.max(defaultIndex, 0), list.length - 1));\n  const active = index ?? indexState;\n  const buttons = React.useRef<(HTMLButtonElement | null)[]>([]);\n  const baseId = React.useId();\n\n  const activate = (i: number) => {\n    if (i === active) return;\n    if (index === undefined) setIndexState(i);\n    onIndexChange?.(i);\n  };\n\n  const onKeyDown = (e: React.KeyboardEvent, i: number) => {\n    const map: Record<string, number> = { ArrowRight: i + 1, ArrowDown: i + 1, ArrowLeft: i - 1, ArrowUp: i - 1, Home: 0, End: list.length - 1 };\n    if (!(e.key in map)) return;\n    e.preventDefault();\n    const next = (map[e.key] + list.length) % list.length;\n    buttons.current[next]?.focus();\n    activate(next);\n  };\n\n  return (\n    <div\n      role=\"group\"\n      aria-label=\"Expandable panels\"\n      className={`${styles.root} ${className}`.trim()}\n      style={\n        {\n          \"--mf-ac-height\": `${height}px`,\n          \"--mf-ac-gap\": `${gap}px`,\n          \"--mf-ac-accent\": accentColor,\n          \"--mf-ac-on\": activeTextColor,\n          \"--mf-ac-grow\": expandRatio,\n          ...style,\n        } as React.CSSProperties\n      }\n    >\n      {list.map((title, i) => {\n        const isActive = i === active;\n        const panelId = `${baseId}-panel-${i}`;\n        return (\n          <button\n            key={`${title}-${i}`}\n            ref={(el) => {\n              buttons.current[i] = el;\n            }}\n            type=\"button\"\n            className={styles.panel}\n            data-active={isActive || undefined}\n            aria-expanded={isActive}\n            aria-controls={panelId}\n            onPointerEnter={() => expandOn === \"hover\" && activate(i)}\n            onFocus={() => expandOn === \"hover\" && activate(i)}\n            onClick={() => activate(i)}\n            onKeyDown={(e) => onKeyDown(e, i)}\n          >\n            <span className={styles.index}>{String(i + 1).padStart(2, \"0\")}</span>\n            <span id={panelId} className={styles.content} aria-hidden={!isActive}>\n              <span className={styles.title}>{title}</span>\n              {descriptions[i] && <span className={styles.description}>{descriptions[i]}</span>}\n            </span>\n            {!isActive && <span className={styles.srOnly}>{title}</span>}\n          </button>\n        );\n      })}\n    </div>\n  );\n}\n"
+        },
+        {
+          "path": "components/styles/accordion-cards.module.css",
+          "type": "registry:style",
+          "content": ".root {\n  display: flex;\n  gap: var(--mf-ac-gap, 10px);\n  width: 100%;\n  max-width: 44rem;\n  height: var(--mf-ac-height, 260px);\n  color: var(--mf-fg, #f4f4f6);\n}\n\n.panel {\n  position: relative;\n  display: flex;\n  flex: 1 1 0;\n  flex-direction: column;\n  justify-content: space-between;\n  min-width: 0;\n  padding: 1.25rem;\n  overflow: hidden;\n  border: 1px solid var(--mf-border, #2e2e38);\n  border-radius: 1rem;\n  background-color: var(--mf-surface, #141419);\n  color: var(--mf-fg, #f4f4f6);\n  font: inherit;\n  text-align: left;\n  cursor: pointer;\n  transition:\n    flex-grow 520ms cubic-bezier(0.22, 1, 0.36, 1),\n    background-color 320ms ease,\n    border-color 320ms ease,\n    color 320ms ease;\n}\n\n.panel:hover {\n  border-color: var(--mf-border-strong, #52525b);\n}\n\n.panel[data-active] {\n  flex-grow: var(--mf-ac-grow, 3.2);\n  border-color: var(--mf-ac-accent, #ff8a1f);\n  background-color: var(--mf-ac-accent, #ff8a1f);\n  color: var(--mf-ac-on, #140b02);\n}\n\n.panel:focus-visible {\n  outline: 2px solid var(--mf-fg, #e4e4e7);\n  outline-offset: 3px;\n}\n\n.index {\n  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;\n  font-size: 0.875rem;\n  opacity: 0.85;\n}\n\n.content {\n  display: flex;\n  flex-direction: column;\n  gap: 0.375rem;\n  /* Fixed minimum so text doesn't reflow while the panel grows; the description wraps within it. */\n  min-width: min(13rem, 100%);\n  opacity: 0;\n  transform: translateY(10px);\n  transition: opacity 260ms ease, transform 420ms cubic-bezier(0.22, 1, 0.36, 1);\n}\n\n.panel[data-active] .content {\n  opacity: 1;\n  transform: none;\n  transition-delay: 140ms;\n}\n\n.title {\n  white-space: nowrap;\n  font-size: 1.625rem;\n  font-weight: 700;\n  letter-spacing: -0.02em;\n  line-height: 1.1;\n}\n\n.description {\n  max-width: 16rem;\n  font-size: 0.875rem;\n  line-height: 1.4;\n  opacity: 0.8;\n  white-space: normal;\n}\n\n.srOnly {\n  position: absolute;\n  width: 1px;\n  height: 1px;\n  margin: -1px;\n  overflow: hidden;\n  clip: rect(0, 0, 0, 0);\n  white-space: nowrap;\n}\n\n@media (prefers-reduced-motion: reduce) {\n  .panel,\n  .content {\n    transition: none;\n  }\n}\n"
+        }
+      ],
+      "requiresMotion": false,
+      "dependencies": [
+        "react"
+      ],
+      "description": "A row of numbered panels where the hovered or focused one expands, fills with the accent color, and reveals its title and description while the others narrow.",
+      "tags": [
+        "accordion",
+        "cards",
+        "panels",
+        "expand",
+        "hover",
+        "ui"
+      ],
+      "a11yNotes": "Each panel is a native button with aria-expanded and aria-controls pointing at its content; collapsed panels keep their title as visually hidden text. Focus expands a panel just like hover (or use expandOn=\"click\"), and Arrow keys, Home and End move between panels. Reduced motion removes the width and fade transitions.",
+      "defaultProps": {
+        "items": [
+          "Design",
+          "Develop",
+          "Deploy",
+          "Scale"
+        ],
+        "defaultIndex": 0,
+        "expandOn": "hover",
+        "accentColor": "#ff8a1f",
+        "activeTextColor": "#140b02",
+        "height": 260,
+        "gap": 10,
+        "expandRatio": 3.2
+      },
+      "controls": [
+        {
+          "prop": "items",
+          "label": "Panels (comma separated)",
+          "type": "list"
+        },
+        {
+          "prop": "defaultIndex",
+          "label": "Initially expanded",
+          "type": "range",
+          "min": 0,
+          "max": 5,
+          "step": 1
+        },
+        {
+          "prop": "expandOn",
+          "label": "Expand on",
+          "type": "select",
+          "options": [
+            "hover",
+            "click"
+          ]
+        },
+        {
+          "prop": "accentColor",
+          "label": "Accent",
+          "type": "color"
+        },
+        {
+          "prop": "activeTextColor",
+          "label": "Active text",
+          "type": "color"
+        },
+        {
+          "prop": "height",
+          "label": "Height (px)",
+          "type": "range",
+          "min": 160,
+          "max": 420,
+          "step": 10
+        },
+        {
+          "prop": "gap",
+          "label": "Gap (px)",
+          "type": "range",
+          "min": 0,
+          "max": 24,
+          "step": 2
+        },
+        {
+          "prop": "expandRatio",
+          "label": "Expand ratio",
+          "type": "range",
+          "min": 1.5,
+          "max": 6,
+          "step": 0.1
+        }
+      ],
+      "propsApi": [
+        {
+          "name": "items",
+          "type": "string[]",
+          "default": "['Design', 'Develop', 'Deploy', 'Scale']",
+          "description": "Panel titles, left to right."
+        },
+        {
+          "name": "descriptions",
+          "type": "string[]",
+          "default": "four sample lines",
+          "description": "One-line description per panel, shown when expanded."
+        },
+        {
+          "name": "defaultIndex",
+          "type": "number",
+          "default": "0",
+          "description": "Initially expanded panel (uncontrolled)."
+        },
+        {
+          "name": "index",
+          "type": "number",
+          "default": "undefined",
+          "description": "Controlled expanded panel."
+        },
+        {
+          "name": "onIndexChange",
+          "type": "(index: number) => void",
+          "default": "undefined",
+          "description": "Called when the expanded panel changes."
+        },
+        {
+          "name": "expandOn",
+          "type": "'hover' | 'click'",
+          "default": "'hover'",
+          "description": "Expand on hover/focus, or only on click/Enter."
+        },
+        {
+          "name": "accentColor",
+          "type": "string",
+          "default": "'#ff8a1f'",
+          "description": "Fill color of the expanded panel."
+        },
+        {
+          "name": "activeTextColor",
+          "type": "string",
+          "default": "'#140b02'",
+          "description": "Text color on the expanded panel."
+        },
+        {
+          "name": "height",
+          "type": "number",
+          "default": "260",
+          "description": "Height in pixels."
+        },
+        {
+          "name": "gap",
+          "type": "number",
+          "default": "10",
+          "description": "Gap between panels in pixels."
+        },
+        {
+          "name": "expandRatio",
+          "type": "number",
+          "default": "3.2",
+          "description": "How much wider the expanded panel grows."
+        },
+        {
+          "name": "className",
+          "type": "string",
+          "default": "''",
+          "description": "Merged onto the root."
+        },
+        {
+          "name": "style",
+          "type": "React.CSSProperties",
+          "default": "undefined",
+          "description": "Merged onto the root."
+        }
+      ],
+      "tailwindExample": "\"use client\";\n\nimport { useState } from \"react\";\n\nconst items = [\"Design\", \"Develop\", \"Deploy\", \"Scale\"];\n\nexport function AccordionCardsTailwind() {\n  const [active, setActive] = useState(0);\n  return (\n    <div className=\"flex h-64 w-full max-w-2xl gap-2.5\">\n      {items.map((title, i) => (\n        <button\n          key={title}\n          onPointerEnter={() => setActive(i)}\n          onFocus={() => setActive(i)}\n          aria-expanded={active === i}\n          className={`flex min-w-0 flex-col justify-between overflow-hidden rounded-2xl border p-5 text-left transition-all duration-500 ${active === i ? \"flex-[3.2] border-orange-500 bg-orange-500 text-orange-950\" : \"flex-1 border-zinc-800 bg-zinc-900 text-zinc-100\"}`}\n        >\n          <span className=\"font-mono text-sm\">{String(i + 1).padStart(2, \"0\")}</span>\n          <span className={`text-2xl font-bold transition-opacity ${active === i ? \"opacity-100\" : \"opacity-0\"}`}>{title}</span>\n        </button>\n      ))}\n    </div>\n  );\n}"
+    },
+    {
+      "slug": "progress-bar",
+      "name": "ProgressBar",
+      "category": "Loaders and Feedback",
+      "collection": "ui",
+      "featured": false,
+      "addedAt": "2026-10-16",
+      "version": "2.4.0",
+      "files": [
+        {
+          "path": "components/ui/progress-bar.tsx",
+          "type": "registry:component",
+          "content": "\"use client\";\n\nimport * as React from \"react\";\nimport { animate, motion, useMotionValue, useReducedMotion, useSpring, useTransform } from \"motion/react\";\nimport styles from \"../styles/progress-bar.module.css\";\n\nexport interface ProgressBarProps {\n  /** Current value */\n  value?: number;\n  /** Maximum value */\n  max?: number;\n  /** Label shown above the bar (empty hides the header) */\n  label?: string;\n  /** Show the percentage readout */\n  showValue?: boolean;\n  /** Fill color */\n  color?: string;\n  /** Track color */\n  trackColor?: string;\n  /** Bar thickness in pixels */\n  height?: number;\n  /** Moving sheen across the fill */\n  sheen?: boolean;\n  /** Spring stiffness — lower is bouncier and slower */\n  stiffness?: number;\n  /** Demo mode: keep moving between sample values to show the spring */\n  autoPlay?: boolean;\n  /** Width in pixels */\n  width?: number;\n  /** Optional className merged onto the root */\n  className?: string;\n  /** Optional inline styles merged onto the root */\n  style?: React.CSSProperties;\n}\n\nconst DEMO_VALUES = [65, 28, 92, 46];\n\nexport function ProgressBar({\n  value = 65,\n  max = 100,\n  label = \"Progress\",\n  showValue = true,\n  color = \"#ff8a1f\",\n  trackColor,\n  height = 10,\n  sheen = true,\n  stiffness = 120,\n  autoPlay = false,\n  width = 360,\n  className = \"\",\n  style,\n}: ProgressBarProps) {\n  const reduceMotion = useReducedMotion();\n  const labelId = React.useId();\n  const [demoIndex, setDemoIndex] = React.useState(-1);\n  const shown = autoPlay && demoIndex >= 0 ? (DEMO_VALUES[demoIndex] / 100) * max : value;\n  const pct = max > 0 ? Math.min(100, Math.max(0, (shown / max) * 100)) : 0;\n\n  const raw = useMotionValue(0);\n  const spring = useSpring(raw, { stiffness, damping: Math.max(8, stiffness / 9), mass: 0.9 });\n  const widthPct = useTransform(spring, (v) => `${Math.min(100, Math.max(0, v))}%`);\n  const readout = React.useRef<HTMLSpanElement>(null);\n\n  React.useEffect(() => {\n    if (reduceMotion) {\n      raw.jump(pct);\n      spring.jump(pct);\n    } else raw.set(pct);\n    // Count the readout along with the spring.\n    const controls = animate(Number(readout.current?.dataset.value ?? 0), pct, {\n      duration: reduceMotion ? 0 : 0.8,\n      ease: [0.22, 1, 0.36, 1],\n      onUpdate: (v) => {\n        if (readout.current) {\n          readout.current.textContent = `${Math.round(v)}%`;\n          readout.current.dataset.value = String(v);\n        }\n      },\n    });\n    return () => controls.stop();\n  }, [pct, reduceMotion, raw, spring]);\n\n  React.useEffect(() => {\n    if (!autoPlay || reduceMotion) return;\n    setDemoIndex(0);\n    const id = window.setInterval(() => setDemoIndex((i) => (i + 1) % DEMO_VALUES.length), 1800);\n    return () => window.clearInterval(id);\n  }, [autoPlay, reduceMotion]);\n\n  return (\n    <div\n      className={`${styles.root} ${className}`.trim()}\n      style={\n        {\n          \"--mf-pb-color\": color,\n          \"--mf-pb-height\": `${height}px`,\n          \"--mf-pb-width\": `${width}px`,\n          ...(trackColor ? { \"--mf-pb-track\": trackColor } : null),\n          ...style,\n        } as React.CSSProperties\n      }\n    >\n      {(label || showValue) && (\n        <div className={styles.header}>\n          <span id={labelId}>{label}</span>\n          {showValue && (\n            <span ref={readout} className={styles.value} aria-hidden=\"true\" data-value=\"0\">\n              0%\n            </span>\n          )}\n        </div>\n      )}\n      <div\n        role=\"progressbar\"\n        aria-labelledby={label ? labelId : undefined}\n        aria-label={label ? undefined : \"Progress\"}\n        aria-valuemin={0}\n        aria-valuemax={max}\n        aria-valuenow={Math.round(shown)}\n        aria-valuetext={`${Math.round(pct)}%`}\n        className={styles.track}\n      >\n        <motion.div className={styles.fill} style={{ width: widthPct }}>\n          {sheen && !reduceMotion && <span className={styles.sheen} aria-hidden=\"true\" />}\n        </motion.div>\n      </div>\n    </div>\n  );\n}\n"
+        },
+        {
+          "path": "components/styles/progress-bar.module.css",
+          "type": "registry:style",
+          "content": ".root {\n  width: var(--mf-pb-width, 360px);\n  max-width: 100%;\n  color: var(--mf-fg, #f4f4f6);\n}\n\n.header {\n  display: flex;\n  align-items: baseline;\n  justify-content: space-between;\n  margin-bottom: 0.625rem;\n  color: var(--mf-muted, #a1a1aa);\n  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;\n  font-size: 0.8125rem;\n}\n\n.value {\n  color: var(--mf-fg, #f4f4f6);\n  font-variant-numeric: tabular-nums;\n}\n\n.track {\n  position: relative;\n  height: var(--mf-pb-height, 10px);\n  overflow: hidden;\n  border-radius: 999px;\n  background-color: var(--mf-pb-track, var(--mf-surface-raised, #1b1b22));\n}\n\n/* Solid fill that fades toward its leading edge, like a glowing tip. */\n.fill {\n  position: relative;\n  height: 100%;\n  overflow: hidden;\n  border-radius: inherit;\n  background: linear-gradient(90deg, var(--mf-pb-color, #ff8a1f) 0%, var(--mf-pb-color, #ff8a1f) 82%, color-mix(in srgb, var(--mf-pb-color, #ff8a1f) 45%, transparent) 100%);\n}\n\n.sheen {\n  position: absolute;\n  inset: 0;\n  background: linear-gradient(100deg, transparent 0%, rgba(255, 255, 255, 0.45) 45%, transparent 70%);\n  transform: translateX(-120%);\n  animation: mf-pb-sheen 1.8s ease-in-out infinite;\n}\n\n@keyframes mf-pb-sheen {\n  to {\n    transform: translateX(160%);\n  }\n}\n\n@media (prefers-reduced-motion: reduce) {\n  .sheen {\n    animation: none;\n  }\n}\n"
+        }
+      ],
+      "requiresMotion": true,
+      "dependencies": [
+        "motion",
+        "react"
+      ],
+      "description": "A labelled progress bar whose fill springs to each new value with a glowing leading edge, a sheen sweeping along it, and a percentage that counts with it.",
+      "tags": [
+        "progress",
+        "bar",
+        "spring",
+        "loading",
+        "meter",
+        "ui"
+      ],
+      "a11yNotes": "Uses role=\"progressbar\" with aria-valuemin/max/now and an aria-valuetext percentage, labelled by its visible label. The animated readout is aria-hidden so values aren't announced mid-animation. Reduced motion jumps straight to the value and removes the sheen.",
+      "defaultProps": {
+        "value": 65,
+        "max": 100,
+        "label": "Progress",
+        "showValue": true,
+        "color": "#ff8a1f",
+        "height": 10,
+        "sheen": true,
+        "stiffness": 120,
+        "autoPlay": false,
+        "width": 360
+      },
+      "controls": [
+        {
+          "prop": "value",
+          "label": "Value",
+          "type": "range",
+          "min": 0,
+          "max": 100,
+          "step": 1
+        },
+        {
+          "prop": "label",
+          "label": "Label",
+          "type": "text"
+        },
+        {
+          "prop": "showValue",
+          "label": "Show percentage",
+          "type": "boolean"
+        },
+        {
+          "prop": "color",
+          "label": "Fill color",
+          "type": "color"
+        },
+        {
+          "prop": "height",
+          "label": "Thickness (px)",
+          "type": "range",
+          "min": 4,
+          "max": 24,
+          "step": 1
+        },
+        {
+          "prop": "sheen",
+          "label": "Sheen",
+          "type": "boolean"
+        },
+        {
+          "prop": "stiffness",
+          "label": "Spring stiffness",
+          "type": "range",
+          "min": 40,
+          "max": 400,
+          "step": 10
+        },
+        {
+          "prop": "autoPlay",
+          "label": "Demo autoplay",
+          "type": "boolean"
+        },
+        {
+          "prop": "max",
+          "label": "Max",
+          "type": "range",
+          "min": 10,
+          "max": 1000,
+          "step": 10
+        },
+        {
+          "prop": "width",
+          "label": "Width (px)",
+          "type": "range",
+          "min": 200,
+          "max": 560,
+          "step": 10
+        }
+      ],
+      "propsApi": [
+        {
+          "name": "value",
+          "type": "number",
+          "default": "65",
+          "description": "Current value."
+        },
+        {
+          "name": "max",
+          "type": "number",
+          "default": "100",
+          "description": "Maximum value."
+        },
+        {
+          "name": "label",
+          "type": "string",
+          "default": "'Progress'",
+          "description": "Label above the bar; empty hides the header label."
+        },
+        {
+          "name": "showValue",
+          "type": "boolean",
+          "default": "true",
+          "description": "Show the percentage readout."
+        },
+        {
+          "name": "color",
+          "type": "string",
+          "default": "'#ff8a1f'",
+          "description": "Fill color."
+        },
+        {
+          "name": "trackColor",
+          "type": "string",
+          "default": "theme raised surface",
+          "description": "Track color."
+        },
+        {
+          "name": "height",
+          "type": "number",
+          "default": "10",
+          "description": "Bar thickness in pixels."
+        },
+        {
+          "name": "sheen",
+          "type": "boolean",
+          "default": "true",
+          "description": "Moving sheen across the fill."
+        },
+        {
+          "name": "stiffness",
+          "type": "number",
+          "default": "120",
+          "description": "Spring stiffness; lower is bouncier and slower."
+        },
+        {
+          "name": "autoPlay",
+          "type": "boolean",
+          "default": "false",
+          "description": "Demo mode: cycle through sample values."
+        },
+        {
+          "name": "width",
+          "type": "number",
+          "default": "360",
+          "description": "Width in pixels."
+        },
+        {
+          "name": "className",
+          "type": "string",
+          "default": "''",
+          "description": "Merged onto the root."
+        },
+        {
+          "name": "style",
+          "type": "React.CSSProperties",
+          "default": "undefined",
+          "description": "Merged onto the root."
+        }
+      ],
+      "tailwindExample": "\"use client\";\n\nimport { motion } from \"motion/react\";\n\nexport function ProgressBarTailwind({ value = 65 }: { value?: number }) {\n  return (\n    <div className=\"w-80\">\n      <div className=\"mb-2.5 flex justify-between font-mono text-xs text-zinc-400\">\n        <span>Progress</span>\n        <span className=\"text-zinc-100\">{value}%</span>\n      </div>\n      <div role=\"progressbar\" aria-valuenow={value} aria-valuemin={0} aria-valuemax={100} className=\"h-2.5 overflow-hidden rounded-full bg-zinc-800\">\n        <motion.div\n          className=\"h-full rounded-full bg-gradient-to-r from-orange-500 via-orange-500 to-orange-500/40\"\n          initial={{ width: 0 }}\n          animate={{ width: `${value}%` }}\n          transition={{ type: \"spring\", stiffness: 120, damping: 14 }}\n        />\n      </div>\n    </div>\n  );\n}"
+    },
+    {
+      "slug": "skeleton-shimmer",
+      "name": "SkeletonShimmer",
+      "category": "Loaders and Feedback",
+      "collection": "ui",
+      "featured": false,
+      "addedAt": "2026-10-16",
+      "version": "2.4.0",
+      "files": [
+        {
+          "path": "components/ui/skeleton-shimmer.tsx",
+          "type": "registry:component",
+          "content": "\"use client\";\n\nimport * as React from \"react\";\nimport styles from \"../styles/skeleton-shimmer.module.css\";\n\nexport interface SkeletonShimmerProps {\n  /** Number of body lines */\n  lines?: number;\n  /** Show the avatar + title block */\n  avatar?: boolean;\n  /** Avatar shape */\n  avatarShape?: \"rounded\" | \"circle\";\n  /** Wrap the placeholder in a bordered card */\n  card?: boolean;\n  /** Seconds per shimmer sweep */\n  speed?: number;\n  /** Placeholder block color (defaults to the theme's raised surface) */\n  baseColor?: string;\n  /** Shimmer highlight color */\n  shimmerColor?: string;\n  /** Corner radius of the bars in pixels */\n  radius?: number;\n  /** Width in pixels */\n  width?: number;\n  /** Accessible loading label */\n  label?: string;\n  /** Optional className merged onto the root */\n  className?: string;\n  /** Optional inline styles merged onto the root */\n  style?: React.CSSProperties;\n}\n\n// Deterministic widths so server and client markup match.\nconst LINE_WIDTHS = [\"100%\", \"100%\", \"62%\", \"88%\", \"74%\", \"94%\", \"56%\"];\n\nexport function SkeletonShimmer({\n  lines = 3,\n  avatar = true,\n  avatarShape = \"rounded\",\n  card = true,\n  speed = 1.6,\n  baseColor,\n  shimmerColor = \"rgba(255, 255, 255, 0.09)\",\n  radius = 6,\n  width = 360,\n  label = \"Loading content\",\n  className = \"\",\n  style,\n}: SkeletonShimmerProps) {\n  const count = Math.max(0, Math.min(7, Math.round(lines)));\n  const widths = Array.from({ length: count }, (_, i) => (i === count - 1 && count > 1 ? \"58%\" : LINE_WIDTHS[i]));\n\n  return (\n    <div\n      role=\"status\"\n      aria-busy=\"true\"\n      aria-label={label}\n      className={`${styles.root} ${card ? styles.card : \"\"} ${className}`.trim()}\n      style={\n        {\n          \"--mf-sk-speed\": `${Math.max(0.4, speed)}s`,\n          \"--mf-sk-shine\": shimmerColor,\n          \"--mf-sk-radius\": `${radius}px`,\n          \"--mf-sk-width\": `${width}px`,\n          ...(baseColor ? { \"--mf-sk-base\": baseColor } : null),\n          ...style,\n        } as React.CSSProperties\n      }\n    >\n      {avatar && (\n        <div className={styles.head} aria-hidden=\"true\">\n          <span className={`${styles.bar} ${styles.avatar} ${avatarShape === \"circle\" ? styles.circle : \"\"}`.trim()} />\n          <span className={styles.titles}>\n            <span className={styles.bar} style={{ width: \"72%\" }} />\n            <span className={styles.bar} style={{ width: \"44%\" }} />\n          </span>\n        </div>\n      )}\n      {count > 0 && (\n        <div className={styles.body} aria-hidden=\"true\">\n          {widths.map((w, i) => (\n            <span key={i} className={styles.bar} style={{ width: w }} />\n          ))}\n        </div>\n      )}\n    </div>\n  );\n}\n"
+        },
+        {
+          "path": "components/styles/skeleton-shimmer.module.css",
+          "type": "registry:style",
+          "content": ".root {\n  display: flex;\n  flex-direction: column;\n  gap: 1.125rem;\n  width: var(--mf-sk-width, 360px);\n  max-width: 100%;\n  color: var(--mf-fg, #f4f4f6);\n}\n\n.card {\n  padding: 1.5rem;\n  border: 1px solid var(--mf-border, #2e2e38);\n  border-radius: 1.125rem;\n  background-color: var(--mf-surface, #141419);\n}\n\n.head {\n  display: flex;\n  align-items: center;\n  gap: 1rem;\n}\n\n.titles {\n  display: flex;\n  flex: 1;\n  flex-direction: column;\n  gap: 0.625rem;\n}\n\n.body {\n  display: flex;\n  flex-direction: column;\n  gap: 0.625rem;\n}\n\n/* Every bar runs the same sweep on the same clock, so the shimmer reads as one band across the card. */\n.bar {\n  display: block;\n  height: 0.75rem;\n  border-radius: var(--mf-sk-radius, 6px);\n  background-color: var(--mf-sk-base, var(--mf-surface-raised, #1b1b22));\n  background-image: linear-gradient(100deg, transparent 20%, var(--mf-sk-shine, rgba(255, 255, 255, 0.09)) 40%, transparent 60%);\n  background-size: 200% 100%;\n  background-repeat: no-repeat;\n  animation: mf-sk-sweep var(--mf-sk-speed, 1.6s) ease-in-out infinite;\n}\n\n.avatar {\n  flex-shrink: 0;\n  width: 3rem;\n  height: 3rem;\n  border-radius: calc(var(--mf-sk-radius, 6px) * 2);\n}\n\n.circle {\n  border-radius: 999px;\n}\n\n@keyframes mf-sk-sweep {\n  from {\n    background-position: 150% 0;\n  }\n  to {\n    background-position: -50% 0;\n  }\n}\n\n@media (prefers-reduced-motion: reduce) {\n  .bar {\n    animation: none;\n    background-image: none;\n  }\n}\n"
+        }
+      ],
+      "requiresMotion": false,
+      "dependencies": [
+        "react"
+      ],
+      "description": "Content placeholder blocks — an avatar, title lines, and body lines — with a soft shimmer band sweeping across every bar in sync.",
+      "tags": [
+        "skeleton",
+        "shimmer",
+        "placeholder",
+        "loading",
+        "ui"
+      ],
+      "a11yNotes": "The wrapper is role=\"status\" with aria-busy and a label (default \"Loading content\"); every bar is aria-hidden. Widths are deterministic so SSR markup matches the client. Under prefers-reduced-motion the shimmer stops and plain blocks remain.",
+      "defaultProps": {
+        "lines": 3,
+        "avatar": true,
+        "avatarShape": "rounded",
+        "card": true,
+        "speed": 1.6,
+        "radius": 6,
+        "width": 360
+      },
+      "controls": [
+        {
+          "prop": "lines",
+          "label": "Body lines",
+          "type": "range",
+          "min": 0,
+          "max": 7,
+          "step": 1
+        },
+        {
+          "prop": "avatar",
+          "label": "Avatar block",
+          "type": "boolean"
+        },
+        {
+          "prop": "avatarShape",
+          "label": "Avatar shape",
+          "type": "select",
+          "options": [
+            "rounded",
+            "circle"
+          ]
+        },
+        {
+          "prop": "card",
+          "label": "Card frame",
+          "type": "boolean"
+        },
+        {
+          "prop": "speed",
+          "label": "Sweep (s)",
+          "type": "range",
+          "min": 0.6,
+          "max": 4,
+          "step": 0.1
+        },
+        {
+          "prop": "radius",
+          "label": "Bar radius (px)",
+          "type": "range",
+          "min": 0,
+          "max": 12,
+          "step": 1
+        },
+        {
+          "prop": "width",
+          "label": "Width (px)",
+          "type": "range",
+          "min": 220,
+          "max": 520,
+          "step": 10
+        }
+      ],
+      "propsApi": [
+        {
+          "name": "lines",
+          "type": "number",
+          "default": "3",
+          "description": "Number of body lines (0–7)."
+        },
+        {
+          "name": "avatar",
+          "type": "boolean",
+          "default": "true",
+          "description": "Show the avatar and title block."
+        },
+        {
+          "name": "avatarShape",
+          "type": "'rounded' | 'circle'",
+          "default": "'rounded'",
+          "description": "Avatar shape."
+        },
+        {
+          "name": "card",
+          "type": "boolean",
+          "default": "true",
+          "description": "Wrap in a bordered card."
+        },
+        {
+          "name": "speed",
+          "type": "number",
+          "default": "1.6",
+          "description": "Seconds per shimmer sweep."
+        },
+        {
+          "name": "baseColor",
+          "type": "string",
+          "default": "theme raised surface",
+          "description": "Placeholder block color."
+        },
+        {
+          "name": "shimmerColor",
+          "type": "string",
+          "default": "'rgba(255, 255, 255, 0.09)'",
+          "description": "Shimmer highlight color."
+        },
+        {
+          "name": "radius",
+          "type": "number",
+          "default": "6",
+          "description": "Bar corner radius in pixels."
+        },
+        {
+          "name": "width",
+          "type": "number",
+          "default": "360",
+          "description": "Width in pixels."
+        },
+        {
+          "name": "label",
+          "type": "string",
+          "default": "'Loading content'",
+          "description": "Accessible loading label."
+        },
+        {
+          "name": "className",
+          "type": "string",
+          "default": "''",
+          "description": "Merged onto the root."
+        },
+        {
+          "name": "style",
+          "type": "React.CSSProperties",
+          "default": "undefined",
+          "description": "Merged onto the root."
+        }
+      ],
+      "tailwindExample": "export function SkeletonShimmerTailwind() {\n  const bar = \"block h-3 rounded-md bg-zinc-800 bg-[linear-gradient(100deg,transparent_20%,rgba(255,255,255,0.09)_40%,transparent_60%)] bg-[length:200%_100%] animate-[shimmer_1.6s_ease-in-out_infinite]\";\n  return (\n    <div role=\"status\" aria-busy=\"true\" aria-label=\"Loading content\" className=\"flex w-80 flex-col gap-4 rounded-2xl border border-zinc-800 bg-zinc-950 p-6\">\n      <div className=\"flex items-center gap-4\">\n        <span className={`${bar} h-12 w-12 rounded-xl`} />\n        <span className=\"flex flex-1 flex-col gap-2.5\">\n          <span className={`${bar} w-3/4`} />\n          <span className={`${bar} w-1/2`} />\n        </span>\n      </div>\n      <span className={bar} />\n      <span className={bar} />\n      <span className={`${bar} w-3/5`} />\n      <style>{\"@keyframes shimmer{from{background-position:150% 0}to{background-position:-50% 0}}\"}</style>\n    </div>\n  );\n}"
     }
   ]
 }

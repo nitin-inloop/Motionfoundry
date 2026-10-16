@@ -1,0 +1,189 @@
+{
+  "slug": "accordion-cards",
+  "name": "AccordionCards",
+  "category": "High-End Animated Cards",
+  "collection": "ui",
+  "featured": true,
+  "addedAt": "2026-10-16",
+  "version": "2.4.0",
+  "files": [
+    {
+      "path": "components/ui/accordion-cards.tsx",
+      "type": "registry:component",
+      "content": "\"use client\";\n\nimport * as React from \"react\";\nimport styles from \"../styles/accordion-cards.module.css\";\n\nexport interface AccordionCardsProps {\n  /** Panel titles, left to right */\n  items?: string[];\n  /** One-line description per panel (shown when expanded) */\n  descriptions?: string[];\n  /** Initially expanded panel index */\n  defaultIndex?: number;\n  /** Controlled expanded panel index */\n  index?: number;\n  /** Called when the expanded panel changes */\n  onIndexChange?: (index: number) => void;\n  /** Expand on hover/focus, or only on click/Enter */\n  expandOn?: \"hover\" | \"click\";\n  /** Fill color of the expanded panel */\n  accentColor?: string;\n  /** Text color on the expanded panel */\n  activeTextColor?: string;\n  /** Height in pixels */\n  height?: number;\n  /** Gap between panels in pixels */\n  gap?: number;\n  /** How much wider the expanded panel grows */\n  expandRatio?: number;\n  /** Optional className merged onto the root */\n  className?: string;\n  /** Optional inline styles merged onto the root */\n  style?: React.CSSProperties;\n}\n\nconst DEFAULT_ITEMS = [\"Design\", \"Develop\", \"Deploy\", \"Scale\"];\nconst DEFAULT_DESCRIPTIONS = [\"Shape the idea into flows and screens.\", \"Build it with typed, tested components.\", \"Ship to the edge in one command.\", \"Grow without rewriting the foundation.\"];\n\nexport function AccordionCards({\n  items = DEFAULT_ITEMS,\n  descriptions = DEFAULT_DESCRIPTIONS,\n  defaultIndex = 0,\n  index,\n  onIndexChange,\n  expandOn = \"hover\",\n  accentColor = \"#ff8a1f\",\n  activeTextColor = \"#140b02\",\n  height = 260,\n  gap = 10,\n  expandRatio = 3.2,\n  className = \"\",\n  style,\n}: AccordionCardsProps) {\n  const list = items.length ? items : DEFAULT_ITEMS;\n  const [indexState, setIndexState] = React.useState(Math.min(Math.max(defaultIndex, 0), list.length - 1));\n  const active = index ?? indexState;\n  const buttons = React.useRef<(HTMLButtonElement | null)[]>([]);\n  const baseId = React.useId();\n\n  const activate = (i: number) => {\n    if (i === active) return;\n    if (index === undefined) setIndexState(i);\n    onIndexChange?.(i);\n  };\n\n  const onKeyDown = (e: React.KeyboardEvent, i: number) => {\n    const map: Record<string, number> = { ArrowRight: i + 1, ArrowDown: i + 1, ArrowLeft: i - 1, ArrowUp: i - 1, Home: 0, End: list.length - 1 };\n    if (!(e.key in map)) return;\n    e.preventDefault();\n    const next = (map[e.key] + list.length) % list.length;\n    buttons.current[next]?.focus();\n    activate(next);\n  };\n\n  return (\n    <div\n      role=\"group\"\n      aria-label=\"Expandable panels\"\n      className={`${styles.root} ${className}`.trim()}\n      style={\n        {\n          \"--mf-ac-height\": `${height}px`,\n          \"--mf-ac-gap\": `${gap}px`,\n          \"--mf-ac-accent\": accentColor,\n          \"--mf-ac-on\": activeTextColor,\n          \"--mf-ac-grow\": expandRatio,\n          ...style,\n        } as React.CSSProperties\n      }\n    >\n      {list.map((title, i) => {\n        const isActive = i === active;\n        const panelId = `${baseId}-panel-${i}`;\n        return (\n          <button\n            key={`${title}-${i}`}\n            ref={(el) => {\n              buttons.current[i] = el;\n            }}\n            type=\"button\"\n            className={styles.panel}\n            data-active={isActive || undefined}\n            aria-expanded={isActive}\n            aria-controls={panelId}\n            onPointerEnter={() => expandOn === \"hover\" && activate(i)}\n            onFocus={() => expandOn === \"hover\" && activate(i)}\n            onClick={() => activate(i)}\n            onKeyDown={(e) => onKeyDown(e, i)}\n          >\n            <span className={styles.index}>{String(i + 1).padStart(2, \"0\")}</span>\n            <span id={panelId} className={styles.content} aria-hidden={!isActive}>\n              <span className={styles.title}>{title}</span>\n              {descriptions[i] && <span className={styles.description}>{descriptions[i]}</span>}\n            </span>\n            {!isActive && <span className={styles.srOnly}>{title}</span>}\n          </button>\n        );\n      })}\n    </div>\n  );\n}\n"
+    },
+    {
+      "path": "components/styles/accordion-cards.module.css",
+      "type": "registry:style",
+      "content": ".root {\n  display: flex;\n  gap: var(--mf-ac-gap, 10px);\n  width: 100%;\n  max-width: 44rem;\n  height: var(--mf-ac-height, 260px);\n  color: var(--mf-fg, #f4f4f6);\n}\n\n.panel {\n  position: relative;\n  display: flex;\n  flex: 1 1 0;\n  flex-direction: column;\n  justify-content: space-between;\n  min-width: 0;\n  padding: 1.25rem;\n  overflow: hidden;\n  border: 1px solid var(--mf-border, #2e2e38);\n  border-radius: 1rem;\n  background-color: var(--mf-surface, #141419);\n  color: var(--mf-fg, #f4f4f6);\n  font: inherit;\n  text-align: left;\n  cursor: pointer;\n  transition:\n    flex-grow 520ms cubic-bezier(0.22, 1, 0.36, 1),\n    background-color 320ms ease,\n    border-color 320ms ease,\n    color 320ms ease;\n}\n\n.panel:hover {\n  border-color: var(--mf-border-strong, #52525b);\n}\n\n.panel[data-active] {\n  flex-grow: var(--mf-ac-grow, 3.2);\n  border-color: var(--mf-ac-accent, #ff8a1f);\n  background-color: var(--mf-ac-accent, #ff8a1f);\n  color: var(--mf-ac-on, #140b02);\n}\n\n.panel:focus-visible {\n  outline: 2px solid var(--mf-fg, #e4e4e7);\n  outline-offset: 3px;\n}\n\n.index {\n  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;\n  font-size: 0.875rem;\n  opacity: 0.85;\n}\n\n.content {\n  display: flex;\n  flex-direction: column;\n  gap: 0.375rem;\n  /* Fixed minimum so text doesn't reflow while the panel grows; the description wraps within it. */\n  min-width: min(13rem, 100%);\n  opacity: 0;\n  transform: translateY(10px);\n  transition: opacity 260ms ease, transform 420ms cubic-bezier(0.22, 1, 0.36, 1);\n}\n\n.panel[data-active] .content {\n  opacity: 1;\n  transform: none;\n  transition-delay: 140ms;\n}\n\n.title {\n  white-space: nowrap;\n  font-size: 1.625rem;\n  font-weight: 700;\n  letter-spacing: -0.02em;\n  line-height: 1.1;\n}\n\n.description {\n  max-width: 16rem;\n  font-size: 0.875rem;\n  line-height: 1.4;\n  opacity: 0.8;\n  white-space: normal;\n}\n\n.srOnly {\n  position: absolute;\n  width: 1px;\n  height: 1px;\n  margin: -1px;\n  overflow: hidden;\n  clip: rect(0, 0, 0, 0);\n  white-space: nowrap;\n}\n\n@media (prefers-reduced-motion: reduce) {\n  .panel,\n  .content {\n    transition: none;\n  }\n}\n"
+    }
+  ],
+  "requiresMotion": false,
+  "dependencies": [
+    "react"
+  ],
+  "description": "A row of numbered panels where the hovered or focused one expands, fills with the accent color, and reveals its title and description while the others narrow.",
+  "tags": [
+    "accordion",
+    "cards",
+    "panels",
+    "expand",
+    "hover",
+    "ui"
+  ],
+  "a11yNotes": "Each panel is a native button with aria-expanded and aria-controls pointing at its content; collapsed panels keep their title as visually hidden text. Focus expands a panel just like hover (or use expandOn=\"click\"), and Arrow keys, Home and End move between panels. Reduced motion removes the width and fade transitions.",
+  "defaultProps": {
+    "items": [
+      "Design",
+      "Develop",
+      "Deploy",
+      "Scale"
+    ],
+    "defaultIndex": 0,
+    "expandOn": "hover",
+    "accentColor": "#ff8a1f",
+    "activeTextColor": "#140b02",
+    "height": 260,
+    "gap": 10,
+    "expandRatio": 3.2
+  },
+  "controls": [
+    {
+      "prop": "items",
+      "label": "Panels (comma separated)",
+      "type": "list"
+    },
+    {
+      "prop": "defaultIndex",
+      "label": "Initially expanded",
+      "type": "range",
+      "min": 0,
+      "max": 5,
+      "step": 1
+    },
+    {
+      "prop": "expandOn",
+      "label": "Expand on",
+      "type": "select",
+      "options": [
+        "hover",
+        "click"
+      ]
+    },
+    {
+      "prop": "accentColor",
+      "label": "Accent",
+      "type": "color"
+    },
+    {
+      "prop": "activeTextColor",
+      "label": "Active text",
+      "type": "color"
+    },
+    {
+      "prop": "height",
+      "label": "Height (px)",
+      "type": "range",
+      "min": 160,
+      "max": 420,
+      "step": 10
+    },
+    {
+      "prop": "gap",
+      "label": "Gap (px)",
+      "type": "range",
+      "min": 0,
+      "max": 24,
+      "step": 2
+    },
+    {
+      "prop": "expandRatio",
+      "label": "Expand ratio",
+      "type": "range",
+      "min": 1.5,
+      "max": 6,
+      "step": 0.1
+    }
+  ],
+  "propsApi": [
+    {
+      "name": "items",
+      "type": "string[]",
+      "default": "['Design', 'Develop', 'Deploy', 'Scale']",
+      "description": "Panel titles, left to right."
+    },
+    {
+      "name": "descriptions",
+      "type": "string[]",
+      "default": "four sample lines",
+      "description": "One-line description per panel, shown when expanded."
+    },
+    {
+      "name": "defaultIndex",
+      "type": "number",
+      "default": "0",
+      "description": "Initially expanded panel (uncontrolled)."
+    },
+    {
+      "name": "index",
+      "type": "number",
+      "default": "undefined",
+      "description": "Controlled expanded panel."
+    },
+    {
+      "name": "onIndexChange",
+      "type": "(index: number) => void",
+      "default": "undefined",
+      "description": "Called when the expanded panel changes."
+    },
+    {
+      "name": "expandOn",
+      "type": "'hover' | 'click'",
+      "default": "'hover'",
+      "description": "Expand on hover/focus, or only on click/Enter."
+    },
+    {
+      "name": "accentColor",
+      "type": "string",
+      "default": "'#ff8a1f'",
+      "description": "Fill color of the expanded panel."
+    },
+    {
+      "name": "activeTextColor",
+      "type": "string",
+      "default": "'#140b02'",
+      "description": "Text color on the expanded panel."
+    },
+    {
+      "name": "height",
+      "type": "number",
+      "default": "260",
+      "description": "Height in pixels."
+    },
+    {
+      "name": "gap",
+      "type": "number",
+      "default": "10",
+      "description": "Gap between panels in pixels."
+    },
+    {
+      "name": "expandRatio",
+      "type": "number",
+      "default": "3.2",
+      "description": "How much wider the expanded panel grows."
+    },
+    {
+      "name": "className",
+      "type": "string",
+      "default": "''",
+      "description": "Merged onto the root."
+    },
+    {
+      "name": "style",
+      "type": "React.CSSProperties",
+      "default": "undefined",
+      "description": "Merged onto the root."
+    }
+  ],
+  "tailwindExample": "\"use client\";\n\nimport { useState } from \"react\";\n\nconst items = [\"Design\", \"Develop\", \"Deploy\", \"Scale\"];\n\nexport function AccordionCardsTailwind() {\n  const [active, setActive] = useState(0);\n  return (\n    <div className=\"flex h-64 w-full max-w-2xl gap-2.5\">\n      {items.map((title, i) => (\n        <button\n          key={title}\n          onPointerEnter={() => setActive(i)}\n          onFocus={() => setActive(i)}\n          aria-expanded={active === i}\n          className={`flex min-w-0 flex-col justify-between overflow-hidden rounded-2xl border p-5 text-left transition-all duration-500 ${active === i ? \"flex-[3.2] border-orange-500 bg-orange-500 text-orange-950\" : \"flex-1 border-zinc-800 bg-zinc-900 text-zinc-100\"}`}\n        >\n          <span className=\"font-mono text-sm\">{String(i + 1).padStart(2, \"0\")}</span>\n          <span className={`text-2xl font-bold transition-opacity ${active === i ? \"opacity-100\" : \"opacity-0\"}`}>{title}</span>\n        </button>\n      ))}\n    </div>\n  );\n}"
+}

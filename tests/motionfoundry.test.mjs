@@ -125,6 +125,8 @@ const UI_SLUGS = [
   "contribution-heatmap", "image-compare", "carousel",
 ];
 
+const UI_V24_SLUGS = ["rotating-icons", "moon-phase-loader", "credit-card", "accordion-cards", "progress-bar", "skeleton-shimmer"];
+
 // Registry order follows packages/ui/src/index.ts export order (grouped by collection).
 const COLLECTION_SLUGS = {
   core: CORE_SLUGS,
@@ -132,7 +134,7 @@ const COLLECTION_SLUGS = {
   shaders: [...GRADIENT_SLUGS, ...SHADER_V23_SLUGS],
   "text-fx": TEXT_FX_SLUGS,
   scroll: [...SCROLL_SLUGS, ...SCROLL_V23_SLUGS],
-  ui: UI_SLUGS,
+  ui: [...UI_SLUGS, ...UI_V24_SLUGS],
 };
 const LISTED_ORDER = ["scroll", "shaders", "ui"];
 
@@ -166,8 +168,8 @@ const RETIRED_SLUGS = [
   "bento-grid-card",
 ];
 
-test("1. Registry contains all 137 components across 6 collections and 13 categories", () => {
-  assert.equal(TOTAL, 137);
+test("1. Registry contains all 143 components across 6 collections and 13 categories", () => {
+  assert.equal(TOTAL, 143);
   assert.equal(registry.components.length, TOTAL, `Expected exactly ${TOTAL} components in registry`);
   assert.equal(registry.totalComponents, TOTAL);
   assert.equal(registry.categories.length, 13, "Expected 13 categories");
@@ -210,7 +212,7 @@ test("2. Registry source code matches actual packages/ui/src implementation file
   }
 });
 
-test("3. Accessibility & Reduced Motion support verified for all 137 components", () => {
+test("3. Accessibility & Reduced Motion support verified for all 143 components", () => {
   for (const comp of registry.components) {
     const tsx = comp.files[0].content;
     const css = comp.files[1].content;
@@ -339,7 +341,7 @@ test("7. All 18 documentation pages exist, including the Studio Kit, Design Syst
 
 test("8. Registry JSON is in sync with packages/ui source (scripts/build-registry.mjs --check)", () => {
   const out = execFileSync(process.execPath, [path.join(rootDir, "scripts/build-registry.mjs"), "--check"], { encoding: "utf8" });
-  assert.match(out, /Verified 137 components/);
+  assert.match(out, /Verified 143 components/);
 });
 
 const EXPECTED_DESIGNS = ["vercel", "cursor", "claude", "framer", "apple", "airbnb", "expo", "elevenlabs", "runwayml", "resend", "spotify"];
@@ -406,4 +408,18 @@ test("13. CLI keeps the renamed 'gradients' collection working as an alias for '
   const res = runCli(["list", "--collection", "gradients"]);
   assert.equal(res.code, 0);
   assert.equal(res.count, COLLECTION_SLUGS.shaders.length);
+});
+
+test("14. v2.4 additions: card, loader, and rotating-icon components with full metadata", () => {
+  for (const slug of UI_V24_SLUGS) {
+    const comp = registry.components.find((c) => c.slug === slug);
+    assert.ok(comp, `${slug} missing from registry`);
+    assert.equal(comp.version, "2.4.0", `${slug} must be versioned 2.4.0`);
+    assert.equal(comp.collection, "ui");
+    assert.ok(comp.controls.length >= 4, `${slug} must be customizable`);
+    assert.ok(comp.dependencies.every((d) => d === "react" || d === "motion"));
+  }
+  const landing = fs.readFileSync(path.join(rootDir, "apps/docs/app/page.tsx"), "utf8");
+  assert.ok(landing.includes("<RotatingIcons"), "Landing hero uses rotating icons instead of rotating words");
+  assert.ok(!landing.includes("<CubeFlipWords"), "Rotating text was replaced on the landing hero");
 });

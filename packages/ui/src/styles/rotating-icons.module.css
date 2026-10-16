@@ -1,0 +1,73 @@
+.root {
+  margin: 0;
+  color: var(--mf-fg, #f4f4f6);
+  font-size: var(--mf-ri-size, 56px);
+  font-weight: 650;
+  letter-spacing: -0.04em;
+  line-height: 1.05;
+}
+
+.visual {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.28em;
+}
+
+.prefix {
+  white-space: nowrap;
+}
+
+.slot {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.05em;
+  height: 1.05em;
+  overflow: hidden;
+  perspective: 600px;
+  color: var(--mf-ri-icon, #fafafa);
+  vertical-align: middle;
+}
+
+.tile {
+  width: 1.15em;
+  height: 1.15em;
+  border-radius: 0.26em;
+  border: 1px solid color-mix(in srgb, var(--mf-ri-icon, #fafafa) 16%, transparent);
+  background-color: var(--mf-ri-tile, #1c1c1f);
+  box-shadow: inset 0 1px 0 color-mix(in srgb, var(--mf-ri-icon, #fafafa) 10%, transparent), 0 0.08em 0.3em rgba(0, 0, 0, 0.35);
+}
+
+.face {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transform-origin: 50% 50% -0.5em;
+  backface-visibility: hidden;
+}
+
+.glyph {
+  width: 0.7em;
+  height: 0.7em;
+}
+
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .face {
+    transform: none !important;
+  }
+}

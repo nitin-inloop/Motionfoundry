@@ -3,13 +3,22 @@
  * (URL sync). Deliberately free of registry.json imports so client bundles stay small.
  */
 
-/** The release whose components get the "New" badge and the "New in v2.3" filter. */
-export const NEW_VERSION = "2.3.0";
-/** Short label for NEW_VERSION, e.g. "v2.3". */
+/** The current release; its label is used for the "New in vX.Y" filter. */
+export const NEW_VERSION = "2.4.0";
+/** Short label for NEW_VERSION, e.g. "v2.4". */
 export const NEW_VERSION_LABEL = `v${NEW_VERSION.split(".").slice(0, 2).join(".")}`;
+/** Last version published to npm — anything added after it counts as new. */
+export const LAST_PUBLISHED_VERSION = "2.1.0";
+
+function compareVersions(a: string, b: string): number {
+  const pa = a.split(".").map(Number);
+  const pb = b.split(".").map(Number);
+  for (let i = 0; i < 3; i++) if ((pa[i] ?? 0) !== (pb[i] ?? 0)) return (pa[i] ?? 0) - (pb[i] ?? 0);
+  return 0;
+}
 
 export function isNewComponent(component: { version: string }): boolean {
-  return component.version === NEW_VERSION;
+  return compareVersions(component.version, LAST_PUBLISHED_VERSION) > 0;
 }
 
 export const ALL = "All";

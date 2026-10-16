@@ -1,12 +1,12 @@
 /**
  * @motionfoundry/ui — Production-Ready Open-Source Animated React Component Library
- * Version: 2.3.0 (Scroll, Shaders, UI, Text FX, Studio Kit, Core)
+ * Version: 2.4.0 (Scroll, Shaders, UI, Text FX, Studio Kit, Core)
  * License: MIT
  *
  * Export order defines the registry order (see scripts/build-registry.mjs).
  */
 
-export const MOTIONFOUNDRY_VERSION = "2.3.0";
+export const MOTIONFOUNDRY_VERSION = "2.4.0";
 
 export const MOTIONFOUNDRY_BRAND = "MotionFoundry";
 
@@ -162,3 +162,11 @@ export { Carousel, type CarouselProps } from "./components/carousel";
 export { SidebarNav, type SidebarNavProps } from "./components/sidebar-nav";
 export { Menubar, type MenubarProps } from "./components/menubar";
 export { Toast, type ToastProps } from "./components/toast";
+
+// UI (v2.4)
+export { RotatingIcons, type RotatingIconsProps } from "./components/rotating-icons";
+export { MoonPhaseLoader, type MoonPhaseLoaderProps } from "./components/moon-phase-loader";
+export { CreditCard, type CreditCardProps } from "./components/credit-card";
+export { AccordionCards, type AccordionCardsProps } from "./components/accordion-cards";
+export { ProgressBar, type ProgressBarProps } from "./components/progress-bar";
+export { SkeletonShimmer, type SkeletonShimmerProps } from "./components/skeleton-shimmer";

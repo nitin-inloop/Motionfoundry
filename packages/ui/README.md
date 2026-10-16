@@ -1,11 +1,11 @@
 # @motionfoundry/ui
 
-Production-ready animated React components — **137 components** in six collections:
+Production-ready animated React components — **143 components** in six collections:
 
 - **Core** (24): kinetic typography, spatial cards, canvas networks, and developer-interface choreography.
 - **Studio Kit** (24): everyday product motion — text reveals, feedback buttons, interactive cards, ambient backgrounds, loaders, and list interactions.
 - **Shaders** (13): animated backgrounds — including 5 dark WebGL shaders — with every color and speed exposed (formerly "Gradients").
-- **UI** (50): animated, accessible UI primitives (buttons, inputs, selects, dialogs, menus, tabs, toasts, tables, charts…) with no Radix/shadcn dependency.
+- **UI** (56): animated, accessible UI primitives (buttons, inputs, selects, dialogs, menus, tabs, toasts, tables, charts…) with no Radix/shadcn dependency.
 - **Text FX** (8): GSAP-style split-text, mask wipes, elastic letters, text on a path, rolling hovers, marker highlights, scatter, and cube-flip words — no GSAP dependency.
 - **Scroll** (18): Lenis-style smooth scrolling, parallax, scroll-filled text, horizontal tracks, stacking cards, velocity marquees, zoom reveals, and timelines — no Lenis dependency.
 
@@ -101,7 +101,7 @@ npx motionfoundry add rotating-words confetti-button flip-card
 | `EclipseGradient` | `eclipse-gradient` | no |
 
 
-### UI (50)
+### UI (56)
 
 **Interactive Buttons and Controls**
 
@@ -115,6 +115,27 @@ npx motionfoundry add rotating-words confetti-button flip-card
 | `LikeButton` | `like-button` | yes |
 | `SplitButton` | `split-button` | yes |
 | `HoldToConfirm` | `hold-to-confirm` | no |
+
+**High-End Animated Cards**
+
+| Component | Slug | Needs `motion` |
+| --- | --- | --- |
+| `CreditCard` | `credit-card` | no |
+| `AccordionCards` | `accordion-cards` | no |
+
+**Reveals and Continuous Motion**
+
+| Component | Slug | Needs `motion` |
+| --- | --- | --- |
+| `RotatingIcons` | `rotating-icons` | yes |
+
+**Loaders and Feedback**
+
+| Component | Slug | Needs `motion` |
+| --- | --- | --- |
+| `MoonPhaseLoader` | `moon-phase-loader` | no |
+| `ProgressBar` | `progress-bar` | yes |
+| `SkeletonShimmer` | `skeleton-shimmer` | no |
 
 **Forms and Inputs**
 

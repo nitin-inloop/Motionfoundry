@@ -1,0 +1,57 @@
+.root {
+  width: var(--mf-pb-width, 360px);
+  max-width: 100%;
+  color: var(--mf-fg, #f4f4f6);
+}
+
+.header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 0.625rem;
+  color: var(--mf-muted, #a1a1aa);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.8125rem;
+}
+
+.value {
+  color: var(--mf-fg, #f4f4f6);
+  font-variant-numeric: tabular-nums;
+}
+
+.track {
+  position: relative;
+  height: var(--mf-pb-height, 10px);
+  overflow: hidden;
+  border-radius: 999px;
+  background-color: var(--mf-pb-track, var(--mf-surface-raised, #1b1b22));
+}
+
+/* Solid fill that fades toward its leading edge, like a glowing tip. */
+.fill {
+  position: relative;
+  height: 100%;
+  overflow: hidden;
+  border-radius: inherit;
+  background: linear-gradient(90deg, var(--mf-pb-color, #ff8a1f) 0%, var(--mf-pb-color, #ff8a1f) 82%, color-mix(in srgb, var(--mf-pb-color, #ff8a1f) 45%, transparent) 100%);
+}
+
+.sheen {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(100deg, transparent 0%, rgba(255, 255, 255, 0.45) 45%, transparent 70%);
+  transform: translateX(-120%);
+  animation: mf-pb-sheen 1.8s ease-in-out infinite;
+}
+
+@keyframes mf-pb-sheen {
+  to {
+    transform: translateX(160%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sheen {
+    animation: none;
+  }
+}

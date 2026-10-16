@@ -1,6 +1,6 @@
 {
   "name": "@motionfoundry/ui",
-  "version": "2.3.0",
+  "version": "2.4.0",
   "description": "Production-ready animated React components — 137 across Scroll, Shaders, UI primitives, Text FX, Studio Kit, and Core — built with Motion, WebGL, Canvas, SVG, and scoped CSS Modules.",
   "license": "MIT",
   "sideEffects": [

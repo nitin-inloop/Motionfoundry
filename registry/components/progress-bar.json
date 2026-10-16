@@ -1,0 +1,196 @@
+{
+  "slug": "progress-bar",
+  "name": "ProgressBar",
+  "category": "Loaders and Feedback",
+  "collection": "ui",
+  "featured": false,
+  "addedAt": "2026-10-16",
+  "version": "2.4.0",
+  "files": [
+    {
+      "path": "components/ui/progress-bar.tsx",
+      "type": "registry:component",
+      "content": "\"use client\";\n\nimport * as React from \"react\";\nimport { animate, motion, useMotionValue, useReducedMotion, useSpring, useTransform } from \"motion/react\";\nimport styles from \"../styles/progress-bar.module.css\";\n\nexport interface ProgressBarProps {\n  /** Current value */\n  value?: number;\n  /** Maximum value */\n  max?: number;\n  /** Label shown above the bar (empty hides the header) */\n  label?: string;\n  /** Show the percentage readout */\n  showValue?: boolean;\n  /** Fill color */\n  color?: string;\n  /** Track color */\n  trackColor?: string;\n  /** Bar thickness in pixels */\n  height?: number;\n  /** Moving sheen across the fill */\n  sheen?: boolean;\n  /** Spring stiffness — lower is bouncier and slower */\n  stiffness?: number;\n  /** Demo mode: keep moving between sample values to show the spring */\n  autoPlay?: boolean;\n  /** Width in pixels */\n  width?: number;\n  /** Optional className merged onto the root */\n  className?: string;\n  /** Optional inline styles merged onto the root */\n  style?: React.CSSProperties;\n}\n\nconst DEMO_VALUES = [65, 28, 92, 46];\n\nexport function ProgressBar({\n  value = 65,\n  max = 100,\n  label = \"Progress\",\n  showValue = true,\n  color = \"#ff8a1f\",\n  trackColor,\n  height = 10,\n  sheen = true,\n  stiffness = 120,\n  autoPlay = false,\n  width = 360,\n  className = \"\",\n  style,\n}: ProgressBarProps) {\n  const reduceMotion = useReducedMotion();\n  const labelId = React.useId();\n  const [demoIndex, setDemoIndex] = React.useState(-1);\n  const shown = autoPlay && demoIndex >= 0 ? (DEMO_VALUES[demoIndex] / 100) * max : value;\n  const pct = max > 0 ? Math.min(100, Math.max(0, (shown / max) * 100)) : 0;\n\n  const raw = useMotionValue(0);\n  const spring = useSpring(raw, { stiffness, damping: Math.max(8, stiffness / 9), mass: 0.9 });\n  const widthPct = useTransform(spring, (v) => `${Math.min(100, Math.max(0, v))}%`);\n  const readout = React.useRef<HTMLSpanElement>(null);\n\n  React.useEffect(() => {\n    if (reduceMotion) {\n      raw.jump(pct);\n      spring.jump(pct);\n    } else raw.set(pct);\n    // Count the readout along with the spring.\n    const controls = animate(Number(readout.current?.dataset.value ?? 0), pct, {\n      duration: reduceMotion ? 0 : 0.8,\n      ease: [0.22, 1, 0.36, 1],\n      onUpdate: (v) => {\n        if (readout.current) {\n          readout.current.textContent = `${Math.round(v)}%`;\n          readout.current.dataset.value = String(v);\n        }\n      },\n    });\n    return () => controls.stop();\n  }, [pct, reduceMotion, raw, spring]);\n\n  React.useEffect(() => {\n    if (!autoPlay || reduceMotion) return;\n    setDemoIndex(0);\n    const id = window.setInterval(() => setDemoIndex((i) => (i + 1) % DEMO_VALUES.length), 1800);\n    return () => window.clearInterval(id);\n  }, [autoPlay, reduceMotion]);\n\n  return (\n    <div\n      className={`${styles.root} ${className}`.trim()}\n      style={\n        {\n          \"--mf-pb-color\": color,\n          \"--mf-pb-height\": `${height}px`,\n          \"--mf-pb-width\": `${width}px`,\n          ...(trackColor ? { \"--mf-pb-track\": trackColor } : null),\n          ...style,\n        } as React.CSSProperties\n      }\n    >\n      {(label || showValue) && (\n        <div className={styles.header}>\n          <span id={labelId}>{label}</span>\n          {showValue && (\n            <span ref={readout} className={styles.value} aria-hidden=\"true\" data-value=\"0\">\n              0%\n            </span>\n          )}\n        </div>\n      )}\n      <div\n        role=\"progressbar\"\n        aria-labelledby={label ? labelId : undefined}\n        aria-label={label ? undefined : \"Progress\"}\n        aria-valuemin={0}\n        aria-valuemax={max}\n        aria-valuenow={Math.round(shown)}\n        aria-valuetext={`${Math.round(pct)}%`}\n        className={styles.track}\n      >\n        <motion.div className={styles.fill} style={{ width: widthPct }}>\n          {sheen && !reduceMotion && <span className={styles.sheen} aria-hidden=\"true\" />}\n        </motion.div>\n      </div>\n    </div>\n  );\n}\n"
+    },
+    {
+      "path": "components/styles/progress-bar.module.css",
+      "type": "registry:style",
+      "content": ".root {\n  width: var(--mf-pb-width, 360px);\n  max-width: 100%;\n  color: var(--mf-fg, #f4f4f6);\n}\n\n.header {\n  display: flex;\n  align-items: baseline;\n  justify-content: space-between;\n  margin-bottom: 0.625rem;\n  color: var(--mf-muted, #a1a1aa);\n  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;\n  font-size: 0.8125rem;\n}\n\n.value {\n  color: var(--mf-fg, #f4f4f6);\n  font-variant-numeric: tabular-nums;\n}\n\n.track {\n  position: relative;\n  height: var(--mf-pb-height, 10px);\n  overflow: hidden;\n  border-radius: 999px;\n  background-color: var(--mf-pb-track, var(--mf-surface-raised, #1b1b22));\n}\n\n/* Solid fill that fades toward its leading edge, like a glowing tip. */\n.fill {\n  position: relative;\n  height: 100%;\n  overflow: hidden;\n  border-radius: inherit;\n  background: linear-gradient(90deg, var(--mf-pb-color, #ff8a1f) 0%, var(--mf-pb-color, #ff8a1f) 82%, color-mix(in srgb, var(--mf-pb-color, #ff8a1f) 45%, transparent) 100%);\n}\n\n.sheen {\n  position: absolute;\n  inset: 0;\n  background: linear-gradient(100deg, transparent 0%, rgba(255, 255, 255, 0.45) 45%, transparent 70%);\n  transform: translateX(-120%);\n  animation: mf-pb-sheen 1.8s ease-in-out infinite;\n}\n\n@keyframes mf-pb-sheen {\n  to {\n    transform: translateX(160%);\n  }\n}\n\n@media (prefers-reduced-motion: reduce) {\n  .sheen {\n    animation: none;\n  }\n}\n"
+    }
+  ],
+  "requiresMotion": true,
+  "dependencies": [
+    "motion",
+    "react"
+  ],
+  "description": "A labelled progress bar whose fill springs to each new value with a glowing leading edge, a sheen sweeping along it, and a percentage that counts with it.",
+  "tags": [
+    "progress",
+    "bar",
+    "spring",
+    "loading",
+    "meter",
+    "ui"
+  ],
+  "a11yNotes": "Uses role=\"progressbar\" with aria-valuemin/max/now and an aria-valuetext percentage, labelled by its visible label. The animated readout is aria-hidden so values aren't announced mid-animation. Reduced motion jumps straight to the value and removes the sheen.",
+  "defaultProps": {
+    "value": 65,
+    "max": 100,
+    "label": "Progress",
+    "showValue": true,
+    "color": "#ff8a1f",
+    "height": 10,
+    "sheen": true,
+    "stiffness": 120,
+    "autoPlay": false,
+    "width": 360
+  },
+  "controls": [
+    {
+      "prop": "value",
+      "label": "Value",
+      "type": "range",
+      "min": 0,
+      "max": 100,
+      "step": 1
+    },
+    {
+      "prop": "label",
+      "label": "Label",
+      "type": "text"
+    },
+    {
+      "prop": "showValue",
+      "label": "Show percentage",
+      "type": "boolean"
+    },
+    {
+      "prop": "color",
+      "label": "Fill color",
+      "type": "color"
+    },
+    {
+      "prop": "height",
+      "label": "Thickness (px)",
+      "type": "range",
+      "min": 4,
+      "max": 24,
+      "step": 1
+    },
+    {
+      "prop": "sheen",
+      "label": "Sheen",
+      "type": "boolean"
+    },
+    {
+      "prop": "stiffness",
+      "label": "Spring stiffness",
+      "type": "range",
+      "min": 40,
+      "max": 400,
+      "step": 10
+    },
+    {
+      "prop": "autoPlay",
+      "label": "Demo autoplay",
+      "type": "boolean"
+    },
+    {
+      "prop": "max",
+      "label": "Max",
+      "type": "range",
+      "min": 10,
+      "max": 1000,
+      "step": 10
+    },
+    {
+      "prop": "width",
+      "label": "Width (px)",
+      "type": "range",
+      "min": 200,
+      "max": 560,
+      "step": 10
+    }
+  ],
+  "propsApi": [
+    {
+      "name": "value",
+      "type": "number",
+      "default": "65",
+      "description": "Current value."
+    },
+    {
+      "name": "max",
+      "type": "number",
+      "default": "100",
+      "description": "Maximum value."
+    },
+    {
+      "name": "label",
+      "type": "string",
+      "default": "'Progress'",
+      "description": "Label above the bar; empty hides the header label."
+    },
+    {
+      "name": "showValue",
+      "type": "boolean",
+      "default": "true",
+      "description": "Show the percentage readout."
+    },
+    {
+      "name": "color",
+      "type": "string",
+      "default": "'#ff8a1f'",
+      "description": "Fill color."
+    },
+    {
+      "name": "trackColor",
+      "type": "string",
+      "default": "theme raised surface",
+      "description": "Track color."
+    },
+    {
+      "name": "height",
+      "type": "number",
+      "default": "10",
+      "description": "Bar thickness in pixels."
+    },
+    {
+      "name": "sheen",
+      "type": "boolean",
+      "default": "true",
+      "description": "Moving sheen across the fill."
+    },
+    {
+      "name": "stiffness",
+      "type": "number",
+      "default": "120",
+      "description": "Spring stiffness; lower is bouncier and slower."
+    },
+    {
+      "name": "autoPlay",
+      "type": "boolean",
+      "default": "false",
+      "description": "Demo mode: cycle through sample values."
+    },
+    {
+      "name": "width",
+      "type": "number",
+      "default": "360",
+      "description": "Width in pixels."
+    },
+    {
+      "name": "className",
+      "type": "string",
+      "default": "''",
+      "description": "Merged onto the root."
+    },
+    {
+      "name": "style",
+      "type": "React.CSSProperties",
+      "default": "undefined",
+      "description": "Merged onto the root."
+    }
+  ],
+  "tailwindExample": "\"use client\";\n\nimport { motion } from \"motion/react\";\n\nexport function ProgressBarTailwind({ value = 65 }: { value?: number }) {\n  return (\n    <div className=\"w-80\">\n      <div className=\"mb-2.5 flex justify-between font-mono text-xs text-zinc-400\">\n        <span>Progress</span>\n        <span className=\"text-zinc-100\">{value}%</span>\n      </div>\n      <div role=\"progressbar\" aria-valuenow={value} aria-valuemin={0} aria-valuemax={100} className=\"h-2.5 overflow-hidden rounded-full bg-zinc-800\">\n        <motion.div\n          className=\"h-full rounded-full bg-gradient-to-r from-orange-500 via-orange-500 to-orange-500/40\"\n          initial={{ width: 0 }}\n          animate={{ width: `${value}%` }}\n          transition={{ type: \"spring\", stiffness: 120, damping: 14 }}\n        />\n      </div>\n    </div>\n  );\n}"
+}

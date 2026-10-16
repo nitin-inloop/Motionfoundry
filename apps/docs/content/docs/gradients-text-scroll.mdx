@@ -1,7 +1,7 @@
 ---
 title: "Scroll, Shaders & UI"
 category: "Overview"
-summary: "The three headline collections — 18 Lenis-style scroll effects, 13 shader backgrounds, and 50 animated UI primitives — plus the Text FX animations, all built from scratch."
+summary: "The three headline collections — 18 Lenis-style scroll effects, 13 shader backgrounds, and 56 animated UI primitives — plus the Text FX animations, all built from scratch."
 ---
 
 # Scroll, Shaders & UI
@@ -49,7 +49,7 @@ Animated backgrounds that render your `children` centered on top. All accept `he
 - [`EmberGradient`](/components/ember-gradient) (`ember-gradient`) — a raw WebGL fire shader: an fbm-turbulent heat glow climbs from the bottom edge through two heat colors into a dark top, while three parallax layers of flickering, swaying ember particles drift upward and burn out.
 - [`EclipseGradient`](/components/eclipse-gradient) (`eclipse-gradient`) — a raw WebGL eclipse shader: a pure black disk ringed by a slowly turning corona of noise-driven rays, a hot inner glow and an RGB-split chromatic rim, with optional pointer tilt that parallaxes the disk against its corona.
 
-### UI (50)
+### UI (56)
 
 Animated primitives in the spirit of shadcn/ui, built from scratch on React and Motion. Each follows its WAI-ARIA Authoring Practices pattern (roles, roving focus or `aria-activedescendant`, full keyboard support, focus trapping for modal overlays) and supports controlled and uncontrolled use where it makes sense (`value` / `defaultValue` / `onValueChange`, `open` / `defaultOpen` / `onOpenChange`). Overlays portal to `document.body` after mount and position themselves with measured, viewport-aware placement.
 
@@ -117,6 +117,21 @@ Animated primitives in the spirit of shadcn/ui, built from scratch on React and 
 - [`ContributionHeatmap`](/components/contribution-heatmap) (`contribution-heatmap`) — a GitHub-style calendar heatmap whose cells pop in along a diagonal wave, shaded in five intensity levels mixed from a single accent color.
 - [`ImageCompare`](/components/image-compare) (`image-compare`) — a before/after comparison slider with a draggable divider and round grab handle that clips one image over the other, split left/right or top/bottom.
 - [`Carousel`](/components/carousel) (`carousel`) — a spring-driven slide carousel with drag/swipe, previous/next arrows and pill dots whose active pill fills as the autoplay timer runs.
+
+#### Reveals and Continuous Motion
+
+- [`RotatingIcons`](/components/rotating-icons) (`rotating-icons`) — a headline accent that rolls through icons on a 3D cube flip instead of words — a static prefix followed by a tiled icon that turns over on an interval.
+
+#### Loaders and Feedback
+
+- [`MoonPhaseLoader`](/components/moon-phase-loader) (`moon-phase-loader`) — a loader where a shadow disc sweeps across a glowing moon, cycling crescent → new → crescent; optionally clipped to the moon for a crisp phase silhouette.
+- [`ProgressBar`](/components/progress-bar) (`progress-bar`) — a labelled progress bar whose fill springs to each new value with a glowing leading edge, a sheen sweeping along it, and a percentage that counts with it.
+- [`SkeletonShimmer`](/components/skeleton-shimmer) (`skeleton-shimmer`) — Content placeholder blocks — an avatar, title lines, and body lines — with a soft shimmer band sweeping across every bar in sync.
+
+#### High-End Animated Cards
+
+- [`CreditCard`](/components/credit-card) (`credit-card`) — a dark payment card with chip, number, holder and expiry, whose warm glow follows the pointer with smoothing and an optional 3D tilt, settling back to a soft rest glow when the pointer leaves.
+- [`AccordionCards`](/components/accordion-cards) (`accordion-cards`) — a row of numbered panels where the hovered or focused one expands, fills with the accent color, and reveals its title and description while the others narrow.
 
 ### Text FX (8)
 

@@ -1,0 +1,70 @@
+.root {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: calc(var(--mf-mp-size, 72px) * 0.4);
+  color: var(--mf-fg, #f4f4f6);
+}
+
+.moon {
+  position: relative;
+  display: block;
+  width: var(--mf-mp-size, 72px);
+  height: var(--mf-mp-size, 72px);
+  border-radius: 999px;
+  background: radial-gradient(circle at 38% 34%, color-mix(in srgb, var(--mf-mp-color, #ff8a1f) 70%, #fff) 0%, var(--mf-mp-color, #ff8a1f) 46%, color-mix(in srgb, var(--mf-mp-color, #ff8a1f) 82%, #000) 100%);
+}
+
+.glow .moon {
+  box-shadow: 0 0 calc(var(--mf-mp-size, 72px) * 0.45) color-mix(in srgb, var(--mf-mp-color, #ff8a1f) 35%, transparent);
+}
+
+.clip .moon {
+  overflow: hidden;
+}
+
+/* The shadow disc sweeps across the lit disc: waxing to full, then waning back to new. */
+.shadow {
+  position: absolute;
+  inset: 0;
+  border-radius: 999px;
+  background-color: var(--mf-mp-shadow, #0b0a09);
+  /* Ping-pong so the sweep never jumps: crescent → new moon → opposite crescent → back. */
+  animation: mf-moon-phase calc(var(--mf-mp-duration, 2.4s) / 2) cubic-bezier(0.45, 0, 0.55, 1) infinite alternate;
+}
+
+@keyframes mf-moon-phase {
+  from {
+    transform: translateX(-62%);
+  }
+  to {
+    transform: translateX(62%);
+  }
+}
+
+/* Clipped: one-directional cycle; the jump happens while the shadow is fully outside the disc. */
+.clip .shadow {
+  animation: mf-moon-phase-clip var(--mf-mp-duration, 2.4s) linear infinite;
+}
+
+@keyframes mf-moon-phase-clip {
+  0% {
+    transform: translateX(0%);
+  }
+  49.99% {
+    transform: translateX(105%);
+  }
+  50% {
+    transform: translateX(-105%);
+  }
+  100% {
+    transform: translateX(0%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .shadow {
+    animation: none;
+    transform: translateX(-38%);
+  }
+}

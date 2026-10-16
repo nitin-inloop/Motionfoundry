@@ -1,0 +1,144 @@
+{
+  "slug": "moon-phase-loader",
+  "name": "MoonPhaseLoader",
+  "category": "Loaders and Feedback",
+  "collection": "ui",
+  "featured": false,
+  "addedAt": "2026-10-16",
+  "version": "2.4.0",
+  "files": [
+    {
+      "path": "components/ui/moon-phase-loader.tsx",
+      "type": "registry:component",
+      "content": "\"use client\";\n\nimport * as React from \"react\";\nimport styles from \"../styles/moon-phase-loader.module.css\";\n\nexport interface MoonPhaseLoaderProps {\n  /** Moon diameter in pixels */\n  size?: number;\n  /** Seconds for one full cycle of phases */\n  duration?: number;\n  /** Lit moon color */\n  color?: string;\n  /** Shadow disc color (match your background) */\n  shadowColor?: string;\n  /** Soft glow around the lit moon */\n  glow?: boolean;\n  /** Clip the shadow to the moon so only the lit shape shows */\n  clip?: boolean;\n  /** Accessible loading label */\n  label?: string;\n  /** Optional className merged onto the root */\n  className?: string;\n  /** Optional inline styles merged onto the root */\n  style?: React.CSSProperties;\n}\n\nexport function MoonPhaseLoader({\n  size = 72,\n  duration = 2.4,\n  color = \"#ff8a1f\",\n  shadowColor = \"#0b0a09\",\n  glow = true,\n  clip = false,\n  label = \"Loading\",\n  className = \"\",\n  style,\n}: MoonPhaseLoaderProps) {\n  return (\n    <div\n      role=\"status\"\n      aria-label={label}\n      className={`${styles.root} ${clip ? styles.clip : \"\"} ${glow ? styles.glow : \"\"} ${className}`.trim()}\n      style={\n        {\n          \"--mf-mp-size\": `${size}px`,\n          \"--mf-mp-duration\": `${Math.max(0.4, duration)}s`,\n          \"--mf-mp-color\": color,\n          \"--mf-mp-shadow\": shadowColor,\n          ...style,\n        } as React.CSSProperties\n      }\n    >\n      <span className={styles.moon} aria-hidden=\"true\">\n        <span className={styles.shadow} />\n      </span>\n    </div>\n  );\n}\n"
+    },
+    {
+      "path": "components/styles/moon-phase-loader.module.css",
+      "type": "registry:style",
+      "content": ".root {\n  display: inline-flex;\n  align-items: center;\n  justify-content: center;\n  padding: calc(var(--mf-mp-size, 72px) * 0.4);\n  color: var(--mf-fg, #f4f4f6);\n}\n\n.moon {\n  position: relative;\n  display: block;\n  width: var(--mf-mp-size, 72px);\n  height: var(--mf-mp-size, 72px);\n  border-radius: 999px;\n  background: radial-gradient(circle at 38% 34%, color-mix(in srgb, var(--mf-mp-color, #ff8a1f) 70%, #fff) 0%, var(--mf-mp-color, #ff8a1f) 46%, color-mix(in srgb, var(--mf-mp-color, #ff8a1f) 82%, #000) 100%);\n}\n\n.glow .moon {\n  box-shadow: 0 0 calc(var(--mf-mp-size, 72px) * 0.45) color-mix(in srgb, var(--mf-mp-color, #ff8a1f) 35%, transparent);\n}\n\n.clip .moon {\n  overflow: hidden;\n}\n\n/* The shadow disc sweeps across the lit disc: waxing to full, then waning back to new. */\n.shadow {\n  position: absolute;\n  inset: 0;\n  border-radius: 999px;\n  background-color: var(--mf-mp-shadow, #0b0a09);\n  /* Ping-pong so the sweep never jumps: crescent → new moon → opposite crescent → back. */\n  animation: mf-moon-phase calc(var(--mf-mp-duration, 2.4s) / 2) cubic-bezier(0.45, 0, 0.55, 1) infinite alternate;\n}\n\n@keyframes mf-moon-phase {\n  from {\n    transform: translateX(-62%);\n  }\n  to {\n    transform: translateX(62%);\n  }\n}\n\n/* Clipped: one-directional cycle; the jump happens while the shadow is fully outside the disc. */\n.clip .shadow {\n  animation: mf-moon-phase-clip var(--mf-mp-duration, 2.4s) linear infinite;\n}\n\n@keyframes mf-moon-phase-clip {\n  0% {\n    transform: translateX(0%);\n  }\n  49.99% {\n    transform: translateX(105%);\n  }\n  50% {\n    transform: translateX(-105%);\n  }\n  100% {\n    transform: translateX(0%);\n  }\n}\n\n@media (prefers-reduced-motion: reduce) {\n  .shadow {\n    animation: none;\n    transform: translateX(-38%);\n  }\n}\n"
+    }
+  ],
+  "requiresMotion": false,
+  "dependencies": [
+    "react"
+  ],
+  "description": "A loader where a shadow disc sweeps across a glowing moon, cycling crescent → new → crescent; optionally clipped to the moon for a crisp phase silhouette.",
+  "tags": [
+    "loader",
+    "moon",
+    "phase",
+    "spinner",
+    "loading",
+    "ui"
+  ],
+  "a11yNotes": "Renders role=\"status\" with an aria-label (default \"Loading\"); the moon itself is decorative and aria-hidden. Pure CSS animation that stops under prefers-reduced-motion, leaving a static crescent.",
+  "defaultProps": {
+    "size": 72,
+    "duration": 2.4,
+    "color": "#ff8a1f",
+    "shadowColor": "#0b0a09",
+    "glow": true,
+    "clip": false,
+    "label": "Loading"
+  },
+  "controls": [
+    {
+      "prop": "size",
+      "label": "Size (px)",
+      "type": "range",
+      "min": 24,
+      "max": 160,
+      "step": 4
+    },
+    {
+      "prop": "duration",
+      "label": "Cycle (s)",
+      "type": "range",
+      "min": 0.6,
+      "max": 6,
+      "step": 0.2
+    },
+    {
+      "prop": "color",
+      "label": "Moon color",
+      "type": "color"
+    },
+    {
+      "prop": "shadowColor",
+      "label": "Shadow color",
+      "type": "color"
+    },
+    {
+      "prop": "glow",
+      "label": "Glow",
+      "type": "boolean"
+    },
+    {
+      "prop": "clip",
+      "label": "Clip shadow to moon",
+      "type": "boolean"
+    },
+    {
+      "prop": "label",
+      "label": "Accessible label",
+      "type": "text"
+    }
+  ],
+  "propsApi": [
+    {
+      "name": "size",
+      "type": "number",
+      "default": "72",
+      "description": "Moon diameter in pixels."
+    },
+    {
+      "name": "duration",
+      "type": "number",
+      "default": "2.4",
+      "description": "Seconds for one full cycle of phases."
+    },
+    {
+      "name": "color",
+      "type": "string",
+      "default": "'#ff8a1f'",
+      "description": "Lit moon color."
+    },
+    {
+      "name": "shadowColor",
+      "type": "string",
+      "default": "'#0b0a09'",
+      "description": "Shadow disc color — match your background."
+    },
+    {
+      "name": "glow",
+      "type": "boolean",
+      "default": "true",
+      "description": "Soft glow around the moon."
+    },
+    {
+      "name": "clip",
+      "type": "boolean",
+      "default": "false",
+      "description": "Clip the shadow to the moon so only the lit shape shows."
+    },
+    {
+      "name": "label",
+      "type": "string",
+      "default": "'Loading'",
+      "description": "Accessible loading label."
+    },
+    {
+      "name": "className",
+      "type": "string",
+      "default": "''",
+      "description": "Merged onto the root."
+    },
+    {
+      "name": "style",
+      "type": "React.CSSProperties",
+      "default": "undefined",
+      "description": "Merged onto the root."
+    }
+  ],
+  "tailwindExample": "export function MoonPhaseLoaderTailwind() {\n  return (\n    <div role=\"status\" aria-label=\"Loading\" className=\"p-8\">\n      <span className=\"relative block h-16 w-16 rounded-full bg-orange-500 shadow-[0_0_32px_rgba(255,138,31,0.35)]\">\n        <span className=\"absolute inset-0 animate-[moon_1.2s_ease-in-out_infinite_alternate] rounded-full bg-zinc-950\" />\n      </span>\n      <style>{\"@keyframes moon{from{transform:translateX(-62%)}to{transform:translateX(62%)}}\"}</style>\n    </div>\n  );\n}"
+}

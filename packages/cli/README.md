@@ -5,7 +5,7 @@ CLI for installing [MotionFoundry](https://github.com/motionfoundry/motionfoundr
 ## Usage
 
 ```bash
-# list all 137 components, or one collection
+# list all 143 components, or one collection
 npx motionfoundry list
 npx motionfoundry list --collection studio-kit
 npx motionfoundry list --collection shaders   # 'gradients' still works
