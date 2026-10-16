@@ -27,3 +27,6 @@ image.png
 
 # local agent tooling
 .claude/
+
+# local reference screenshots
+/image*.png
