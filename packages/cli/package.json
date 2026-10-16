@@ -5,7 +5,7 @@
   "license": "MIT",
   "type": "module",
   "bin": {
-    "motionfoundry": "./dist/index.mjs"
+    "motionfoundry": "dist/index.mjs"
   },
   "files": [
     "dist",
