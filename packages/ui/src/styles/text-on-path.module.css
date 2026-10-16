@@ -1,0 +1,64 @@
+.root {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  color: var(--mf-tp-color, var(--mf-fg, #f4f4f6));
+}
+
+.svg {
+  display: block;
+  width: 100%;
+  height: var(--mf-tp-height, 340px);
+  overflow: visible;
+}
+
+.guide {
+  fill: none;
+  stroke: var(--mf-tp-path, var(--mf-border-strong, #3f3f46));
+  stroke-width: 1.5;
+  stroke-dasharray: 2 8;
+  stroke-linecap: round;
+}
+
+.text,
+.measure {
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.text {
+  fill: currentColor;
+}
+
+.measure {
+  visibility: hidden;
+}
+
+.stopA {
+  stop-color: var(--mf-tp-color, var(--mf-fg, #f4f4f6));
+}
+
+.stopB {
+  stop-color: var(--mf-tp-accent, #a78bfa);
+}
+
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .text {
+    transition: none;
+  }
+}

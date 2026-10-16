@@ -1,0 +1,185 @@
+.root {
+  --mf-szr-k: 0.42;
+  --mf-szr-e: 0;
+  --mf-szr-t: 0;
+  --mf-szr-cap: 1;
+  position: relative;
+  width: 100%;
+  height: var(--mf-szr-h, 380px);
+  border-radius: var(--mf-szr-r, 20px);
+  overflow: hidden;
+  border: 1px solid var(--mf-border, #2e2e38);
+  background: var(--mf-surface, #141419);
+  color: var(--mf-fg, #f4f4f6);
+  container-type: inline-size;
+  isolation: isolate;
+}
+
+.root *,
+.root *::before,
+.root *::after {
+  box-sizing: border-box;
+}
+
+.viewport {
+  position: relative;
+  height: 100%;
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior: auto;
+  scroll-behavior: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--mf-border, #2e2e38) transparent;
+}
+
+.viewport:focus-visible {
+  outline: 2px solid var(--mf-fg, #e4e4e7);
+  outline-offset: -2px;
+}
+
+.track {
+  position: relative;
+}
+
+.stage {
+  position: sticky;
+  top: 0;
+  height: var(--mf-szr-h, 380px);
+  overflow: hidden;
+}
+
+.caption {
+  position: absolute;
+  top: calc((1 - var(--mf-szr-k)) * 25% - 0.6rem);
+  left: 0;
+  right: 0;
+  text-align: center;
+  font-size: 0.72rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--mf-muted, #a1a1aa);
+  opacity: var(--mf-szr-cap, 1);
+  transform: translateY(-50%);
+}
+
+.panel {
+  position: absolute;
+  inset: 0;
+  clip-path: inset(calc((1 - var(--mf-szr-k)) * 50%) round calc((1 - var(--mf-szr-e)) * 22px));
+  will-change: clip-path;
+}
+
+.art {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 20% 15%, color-mix(in srgb, var(--mf-szr-c1, #7c3aed) 85%, transparent), transparent 55%),
+    radial-gradient(circle at 85% 30%, color-mix(in srgb, var(--mf-szr-c2, #fb7185) 70%, transparent), transparent 50%),
+    linear-gradient(180deg, color-mix(in srgb, var(--mf-szr-c1, #7c3aed) 60%, #050507) 0%, var(--mf-szr-c2, #fb7185) 62%, color-mix(in srgb, var(--mf-szr-c2, #fb7185) 40%, #050507) 100%);
+  transform: scale(calc(var(--mf-szr-k) + (1 - var(--mf-szr-k)) * 0.4));
+  transform-origin: 50% 55%;
+  will-change: transform;
+}
+
+.sun {
+  position: absolute;
+  left: 50%;
+  top: 58%;
+  width: 34%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: linear-gradient(180deg, #fff7ed 0%, color-mix(in srgb, var(--mf-szr-c2, #fb7185) 50%, #fde68a) 100%);
+  box-shadow: 0 0 80px 20px color-mix(in srgb, var(--mf-szr-c2, #fb7185) 55%, transparent);
+  transform: translate(-50%, -50%);
+  -webkit-mask: repeating-linear-gradient(180deg, #000 0 14px, transparent 14px 18px);
+  mask: repeating-linear-gradient(180deg, #000 0 14px, transparent 14px 18px);
+}
+
+.grid {
+  position: absolute;
+  left: -20%;
+  right: -20%;
+  bottom: 0;
+  height: 40%;
+  background:
+    repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.22) 0 1px, transparent 1px 48px),
+    repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.22) 0 1px, transparent 1px 22px),
+    linear-gradient(180deg, color-mix(in srgb, var(--mf-szr-c1, #7c3aed) 55%, #050507), #050507);
+  transform: perspective(240px) rotateX(55deg);
+  transform-origin: 50% 100%;
+}
+
+.ridge {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 36%;
+  height: 26%;
+}
+
+.ridgeBack {
+  background: color-mix(in srgb, var(--mf-szr-c1, #7c3aed) 55%, #050507);
+  clip-path: polygon(0 100%, 0 55%, 12% 30%, 24% 60%, 38% 20%, 52% 65%, 66% 25%, 80% 55%, 92% 35%, 100% 50%, 100% 100%);
+  opacity: 0.8;
+}
+
+.ridgeFront {
+  bottom: 35%;
+  height: 18%;
+  background: color-mix(in srgb, var(--mf-szr-c1, #7c3aed) 35%, #050507);
+  clip-path: polygon(0 100%, 0 70%, 9% 45%, 20% 75%, 33% 40%, 46% 80%, 60% 50%, 74% 85%, 87% 45%, 100% 70%, 100% 100%);
+}
+
+.copy {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 0.6rem;
+  padding: clamp(1.5rem, 8%, 3rem) 1.5rem 0;
+  text-align: center;
+  color: #ffffff;
+  opacity: var(--mf-szr-t, 0);
+  transform: translateY(calc((1 - var(--mf-szr-t, 0)) * 24px));
+}
+
+.title {
+  margin: 0;
+  font-size: clamp(2rem, 7.5cqi, 4rem);
+  font-weight: 750;
+  line-height: 1;
+  letter-spacing: -0.04em;
+  text-shadow: 0 8px 40px rgba(0, 0, 0, 0.45);
+}
+
+.subtitle {
+  margin: 0;
+  max-width: 28rem;
+  font-size: 0.98rem;
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.82);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .panel {
+    clip-path: none;
+    will-change: auto;
+  }
+
+  .art {
+    transform: none;
+    will-change: auto;
+  }
+
+  .copy {
+    opacity: 1;
+    transform: none;
+  }
+
+  .caption {
+    display: none;
+  }
+}

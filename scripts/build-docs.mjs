@@ -24,6 +24,7 @@ const ORDER = [
   "using-components",
   "studio-kit",
   "design-systems",
+  "gradients-text-scroll",
   "tailwind-setup",
   "css-setup",
   "nextjs-integration",

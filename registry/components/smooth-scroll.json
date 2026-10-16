@@ -1,0 +1,172 @@
+{
+  "slug": "smooth-scroll",
+  "name": "SmoothScroll",
+  "category": "Scroll Animations",
+  "collection": "scroll",
+  "featured": true,
+  "addedAt": "2026-10-16",
+  "version": "2.2.0",
+  "requiresMotion": false,
+  "dependencies": [
+    "react"
+  ],
+  "description": "A Lenis-style smooth scroll viewport built from scratch: wheel input drives a target position that a frame-rate independent lerp chases each frame, with an optional progress bar and live velocity readout that make the inertia visible.",
+  "tags": [
+    "scroll",
+    "smooth-scroll",
+    "inertia",
+    "wheel",
+    "lerp",
+    "progress",
+    "velocity"
+  ],
+  "a11yNotes": "The viewport is a focusable role=\"region\" with an aria-label, so keyboard users can Tab to it and scroll with arrows/Page keys/Space (native, unsmoothed) and see a 2px :focus-visible outline. Wheel input is smoothed only while the viewport can still move; at the top/bottom edge wheel events are released so the page keeps scrolling. Touch and scrollbar dragging stay native. Under prefers-reduced-motion (or smooth=false) the wheel is not intercepted at all. The progress bar and velocity badge are aria-hidden decorations.",
+  "defaultProps": {
+    "height": 380,
+    "lerp": 0.1,
+    "wheelMultiplier": 1,
+    "smooth": true,
+    "showProgress": true,
+    "progressColor": "#a78bfa",
+    "showVelocity": true
+  },
+  "controls": [
+    {
+      "prop": "lerp",
+      "label": "Lerp (smoothness)",
+      "type": "range",
+      "min": 0.05,
+      "max": 0.3,
+      "step": 0.01
+    },
+    {
+      "prop": "wheelMultiplier",
+      "label": "Wheel multiplier",
+      "type": "range",
+      "min": 0.5,
+      "max": 2,
+      "step": 0.1
+    },
+    {
+      "prop": "smooth",
+      "label": "Smooth scrolling",
+      "type": "boolean"
+    },
+    {
+      "prop": "showProgress",
+      "label": "Progress bar",
+      "type": "boolean"
+    },
+    {
+      "prop": "progressColor",
+      "label": "Accent",
+      "type": "color"
+    },
+    {
+      "prop": "showVelocity",
+      "label": "Velocity badge",
+      "type": "boolean"
+    },
+    {
+      "prop": "height",
+      "label": "Height (px)",
+      "type": "range",
+      "min": 280,
+      "max": 560,
+      "step": 10
+    }
+  ],
+  "propsApi": [
+    {
+      "name": "children",
+      "type": "React.ReactNode",
+      "default": "undefined",
+      "description": "Scrollable content; defaults to a hero plus four editorial sections."
+    },
+    {
+      "name": "height",
+      "type": "number",
+      "default": "380",
+      "description": "Height of the component's own scroll viewport in px (width is always 100%)."
+    },
+    {
+      "name": "borderRadius",
+      "type": "number",
+      "default": "20",
+      "description": "Corner radius of the viewport in px."
+    },
+    {
+      "name": "lerp",
+      "type": "number",
+      "default": "0.1",
+      "description": "Interpolation factor per 60fps frame for wheel smoothing (0.05 floaty, 0.3 snappy)."
+    },
+    {
+      "name": "wheelMultiplier",
+      "type": "number",
+      "default": "1",
+      "description": "Multiplier applied to wheel and trackpad deltas."
+    },
+    {
+      "name": "smooth",
+      "type": "boolean",
+      "default": "true",
+      "description": "Enable smooth wheel scrolling; false (or prefers-reduced-motion) uses native scrolling."
+    },
+    {
+      "name": "showProgress",
+      "type": "boolean",
+      "default": "true",
+      "description": "Show a scroll progress bar along the top edge."
+    },
+    {
+      "name": "progressColor",
+      "type": "string",
+      "default": "'#a78bfa'",
+      "description": "Progress bar and accent color."
+    },
+    {
+      "name": "showVelocity",
+      "type": "boolean",
+      "default": "true",
+      "description": "Show a live velocity readout badge (px per frame)."
+    },
+    {
+      "name": "ariaLabel",
+      "type": "string",
+      "default": "'Smooth scrolling content'",
+      "description": "Accessible label for the scroll region."
+    },
+    {
+      "name": "onScroll",
+      "type": "(state: { scroll: number; limit: number; progress: number; velocity: number }) => void",
+      "default": "undefined",
+      "description": "Called every scroll frame with scroll position, limit, progress (0..1) and signed velocity."
+    },
+    {
+      "name": "className",
+      "type": "string",
+      "default": "''",
+      "description": "Additional class merged onto the root element."
+    },
+    {
+      "name": "style",
+      "type": "React.CSSProperties",
+      "default": "undefined",
+      "description": "Inline styles merged onto the root element."
+    }
+  ],
+  "files": [
+    {
+      "path": "components/ui/smooth-scroll.tsx",
+      "type": "registry:component",
+      "content": "\"use client\";\n\nimport * as React from \"react\";\nimport styles from \"../styles/smooth-scroll.module.css\";\n\ninterface SmoothScrollState {\n  /** Current scrollTop of the viewport in px */\n  scroll: number;\n  /** Maximum scrollTop in px */\n  limit: number;\n  /** scroll / limit, 0..1 */\n  progress: number;\n  /** Signed scroll velocity in px per 60fps frame */\n  velocity: number;\n}\n\ninterface SmoothScrollOptions {\n  lerp: number;\n  wheelMultiplier: number;\n  smooth: boolean;\n  onScroll?: (state: SmoothScrollState) => void;\n}\n\nconst clamp = (v: number, min: number, max: number) => Math.min(max, Math.max(min, v));\n\nfunction usePrefersReducedMotion(): boolean {\n  const [reduced, setReduced] = React.useState(false);\n  React.useEffect(() => {\n    const mq = window.matchMedia(\"(prefers-reduced-motion: reduce)\");\n    const update = () => setReduced(mq.matches);\n    update();\n    mq.addEventListener(\"change\", update);\n    return () => mq.removeEventListener(\"change\", update);\n  }, []);\n  return reduced;\n}\n\n/** True when a nested scrollable element under the pointer can still scroll in the wheel direction. */\nfunction nestedCanScroll(node: EventTarget | null, root: HTMLElement, dy: number): boolean {\n  let el: Element | null = node instanceof Element ? node : null;\n  while (el && el !== root) {\n    if (el instanceof HTMLElement) {\n      if (el.dataset.mfScrollPrevent !== undefined) return true;\n      const overflowY = window.getComputedStyle(el).overflowY;\n      if ((overflowY === \"auto\" || overflowY === \"scroll\") && el.scrollHeight > el.clientHeight + 1) {\n        const canMove = dy < 0 ? el.scrollTop > 0 : el.scrollTop + el.clientHeight < el.scrollHeight - 1;\n        if (canMove) return true;\n      }\n    }\n    el = el.parentElement;\n  }\n  return false;\n}\n\n/**\n * Self-contained smooth scroller for an overflow container. Wheel input updates a target\n * position; a rAF loop eases the real scrollTop toward it (frame-rate independent lerp) and\n * stops once settled. Touch, keyboard and scrollbar drags stay native. At the top/bottom edge\n * wheel events are released so the page keeps scrolling.\n */\nfunction useSmoothScroll(\n  containerRef: React.RefObject<HTMLElement | null>,\n  { lerp, wheelMultiplier, smooth, onScroll }: SmoothScrollOptions,\n): React.RefObject<SmoothScrollState> {\n  const stateRef = React.useRef<SmoothScrollState>({ scroll: 0, limit: 0, progress: 0, velocity: 0 });\n  const callbackRef = React.useRef(onScroll);\n  React.useEffect(() => {\n    callbackRef.current = onScroll;\n  }, [onScroll]);\n\n  React.useEffect(() => {\n    const el = containerRef.current;\n    if (!el) return;\n    const ease = clamp(Number.isFinite(lerp) ? lerp : 0.1, 0.01, 1);\n    const multiplier = Number.isFinite(wheelMultiplier) ? wheelMultiplier : 1;\n    let target = el.scrollTop;\n    let current = target;\n    let raf = 0;\n    let lastTime = 0;\n    let lastNative = el.scrollTop;\n    let lastNativeTime = 0;\n    let settleTimer: ReturnType<typeof setTimeout> | undefined;\n\n    const getLimit = () => Math.max(0, el.scrollHeight - el.clientHeight);\n\n    const emit = (velocity: number) => {\n      const limit = getLimit();\n      const scroll = clamp(el.scrollTop, 0, limit);\n      lastNative = el.scrollTop;\n      const s = stateRef.current;\n      s.scroll = scroll;\n      s.limit = limit;\n      s.progress = limit > 0 ? scroll / limit : 0;\n      s.velocity = velocity;\n      callbackRef.current?.(s);\n    };\n\n    const tick = (time: number) => {\n      const dt = lastTime ? Math.min(64, Math.max(1, time - lastTime)) : 16.667;\n      lastTime = time;\n      const limit = getLimit();\n      target = clamp(target, 0, limit);\n      if (Math.abs(el.scrollTop - current) > 2) {\n        // Something else moved the viewport (scrollbar drag, keyboard, touch): hand control back.\n        current = target = el.scrollTop;\n        raf = 0;\n        lastTime = 0;\n        emit(0);\n        return;\n      }\n      const prev = current;\n      const frames = dt / 16.667;\n      current += (target - current) * (1 - Math.pow(1 - ease, frames));\n      if (Math.abs(target - current) < 0.35) current = target;\n      el.scrollTop = current;\n      emit((current - prev) / frames);\n      if (current === target) {\n        raf = 0;\n        lastTime = 0;\n        emit(0);\n        return;\n      }\n      raf = requestAnimationFrame(tick);\n    };\n\n    const onWheel = (event: WheelEvent) => {\n      if (event.ctrlKey || event.defaultPrevented) return;\n      if (Math.abs(event.deltaX) > Math.abs(event.deltaY)) return;\n      let dy = event.deltaY;\n      if (event.deltaMode === 1) dy *= 16;\n      else if (event.deltaMode === 2) dy *= el.clientHeight;\n      dy *= multiplier;\n      if (dy === 0 || nestedCanScroll(event.target, el, dy)) return;\n      const limit = getLimit();\n      if (!raf) current = target = el.scrollTop;\n      // Release to native scrolling at the edges so the page is never trapped.\n      if ((dy < 0 && target <= 0) || (dy > 0 && target >= limit - 0.5)) return;\n      event.preventDefault();\n      target = clamp(target + dy, 0, limit);\n      if (!raf) {\n        lastTime = 0;\n        raf = requestAnimationFrame(tick);\n      }\n    };\n\n    const onNativeScroll = () => {\n      if (raf) return;\n      const top = el.scrollTop;\n      const delta = top - lastNative;\n      if (delta === 0) return;\n      const now = performance.now();\n      const dt = lastNativeTime ? clamp(now - lastNativeTime, 8, 100) : 16.667;\n      lastNativeTime = now;\n      current = target = top;\n      emit(delta / (dt / 16.667));\n      if (settleTimer) clearTimeout(settleTimer);\n      settleTimer = setTimeout(() => {\n        lastNativeTime = 0;\n        emit(0);\n      }, 90);\n    };\n\n    if (smooth) el.addEventListener(\"wheel\", onWheel, { passive: false });\n    el.addEventListener(\"scroll\", onNativeScroll, { passive: true });\n    const ro = new ResizeObserver(() => emit(stateRef.current.velocity));\n    ro.observe(el);\n    if (el.firstElementChild) ro.observe(el.firstElementChild);\n    emit(0);\n\n    return () => {\n      if (smooth) el.removeEventListener(\"wheel\", onWheel);\n      el.removeEventListener(\"scroll\", onNativeScroll);\n      ro.disconnect();\n      if (raf) cancelAnimationFrame(raf);\n      if (settleTimer) clearTimeout(settleTimer);\n    };\n  }, [containerRef, lerp, wheelMultiplier, smooth]);\n\n  return stateRef;\n}\n\nexport interface SmoothScrollProps {\n  /** Scrollable content (defaults to a set of editorial demo sections) */\n  children?: React.ReactNode;\n  /** Viewport height in px */\n  height?: number;\n  /** Viewport corner radius in px */\n  borderRadius?: number;\n  /** Interpolation factor per 60fps frame (0.05 = floaty, 0.3 = snappy) */\n  lerp?: number;\n  /** Multiplier applied to wheel / trackpad deltas */\n  wheelMultiplier?: number;\n  /** Enable smooth wheel scrolling (native scrolling when false or under reduced motion) */\n  smooth?: boolean;\n  /** Show a scroll progress bar along the top edge */\n  showProgress?: boolean;\n  /** Progress bar and accent color */\n  progressColor?: string;\n  /** Show a live velocity readout badge */\n  showVelocity?: boolean;\n  /** Accessible label for the scroll region */\n  ariaLabel?: string;\n  /** Called on every scroll frame with scroll, limit, progress (0..1) and velocity (px/frame) */\n  onScroll?: (state: { scroll: number; limit: number; progress: number; velocity: number }) => void;\n  /** Optional className merged onto the root */\n  className?: string;\n  /** Inline styles merged onto the root */\n  style?: React.CSSProperties;\n}\n\nconst SECTIONS = [\n  {\n    eyebrow: \"01 / Inertia\",\n    title: \"Scrolling that glides.\",\n    body: \"Every wheel tick moves a target, not the page. Each frame the viewport eases a fraction of the remaining distance toward it, so motion starts crisp and settles softly.\",\n  },\n  {\n    eyebrow: \"02 / Interpolation\",\n    title: \"One number, endless feel.\",\n    body: \"Lerp controls the personality. Small values float like a magazine on ice; larger values feel tight and precise. Velocity and progress fall out of the same loop for free.\",\n  },\n  {\n    eyebrow: \"03 / Respect\",\n    title: \"Native where it matters.\",\n    body: \"Touch keeps its own physics, keyboard and scrollbar stay instant, and at the edges the wheel is released so the surrounding page carries on scrolling.\",\n  },\n  {\n    eyebrow: \"04 / Restraint\",\n    title: \"Idle when settled.\",\n    body: \"The animation loop only runs while there is distance left to cover. Once the viewport arrives, nothing ticks until the next gesture.\",\n  },\n];\n\nexport function SmoothScroll({\n  children,\n  height = 380,\n  borderRadius = 20,\n  lerp = 0.1,\n  wheelMultiplier = 1,\n  smooth = true,\n  showProgress = true,\n  progressColor = \"#a78bfa\",\n  showVelocity = true,\n  ariaLabel = \"Smooth scrolling content\",\n  onScroll,\n  className = \"\",\n  style,\n}: SmoothScrollProps) {\n  const reduced = usePrefersReducedMotion();\n  const rootRef = React.useRef<HTMLDivElement>(null);\n  const viewportRef = React.useRef<HTMLDivElement>(null);\n  const readoutRef = React.useRef<HTMLSpanElement>(null);\n\n  const handleScroll = React.useCallback(\n    (state: SmoothScrollState) => {\n      const root = rootRef.current;\n      if (root) {\n        root.style.setProperty(\"--mf-ss-p\", state.progress.toFixed(4));\n        root.style.setProperty(\"--mf-ss-v\", Math.min(1, Math.abs(state.velocity) / 40).toFixed(3));\n      }\n      const readout = readoutRef.current;\n      if (readout) {\n        const v = Math.abs(state.velocity);\n        const arrow = v < 0.05 ? \"·\" : state.velocity > 0 ? \"↓\" : \"↑\";\n        readout.textContent = `${arrow} ${v.toFixed(1)} px/f`;\n      }\n      onScroll?.({ scroll: state.scroll, limit: state.limit, progress: state.progress, velocity: state.velocity });\n    },\n    [onScroll],\n  );\n\n  useSmoothScroll(viewportRef, { lerp, wheelMultiplier, smooth: smooth && !reduced, onScroll: handleScroll });\n\n  const vars = {\n    \"--mf-ss-h\": `${height}px`,\n    \"--mf-ss-r\": `${borderRadius}px`,\n    \"--mf-ss-accent\": progressColor,\n    ...style,\n  } as React.CSSProperties;\n\n  return (\n    <div ref={rootRef} style={vars} className={`${styles.root} ${className}`.trim()}>\n      <div ref={viewportRef} className={styles.viewport} tabIndex={0} role=\"region\" aria-label={ariaLabel}>\n        <div className={styles.content}>\n          {children ?? (\n            <>\n              <header className={styles.hero}>\n                <span className={styles.kicker}>Smooth Scroll</span>\n                <h3 className={styles.heroTitle}>Weightless, not floaty.</h3>\n                <p className={styles.heroText}>Scroll inside this panel with a wheel or trackpad.</p>\n              </header>\n              {SECTIONS.map((section, i) => (\n                <section key={section.title} className={styles.section}>\n                  <div className={styles.sectionText}>\n                    <span className={styles.eyebrow}>{section.eyebrow}</span>\n                    <h4 className={styles.sectionTitle}>{section.title}</h4>\n                    <p className={styles.sectionBody}>{section.body}</p>\n                  </div>\n                  <div\n                    aria-hidden=\"true\"\n                    className={styles.art}\n                    style={{ \"--mf-ss-i\": i } as React.CSSProperties}\n                  />\n                </section>\n              ))}\n              <footer className={styles.footer}>\n                <span className={styles.footerLine} aria-hidden=\"true\" />\n                <p>End of the line. Keep scrolling to hand off to the page.</p>\n              </footer>\n            </>\n          )}\n        </div>\n      </div>\n      {showProgress && (\n        <div aria-hidden=\"true\" className={styles.progress}>\n          <span className={styles.progressFill} />\n        </div>\n      )}\n      {showVelocity && (\n        <div aria-hidden=\"true\" className={styles.badge}>\n          <span className={styles.badgeLabel}>Velocity</span>\n          <span ref={readoutRef} className={styles.badgeValue}>\n            {\"· 0.0 px/f\"}\n          </span>\n          <span className={styles.meter}>\n            <span className={styles.meterFill} />\n          </span>\n        </div>\n      )}\n    </div>\n  );\n}\n"
+    },
+    {
+      "path": "components/styles/smooth-scroll.module.css",
+      "type": "registry:style",
+      "content": ".root {\n  --mf-ss-p: 0;\n  --mf-ss-v: 0;\n  position: relative;\n  width: 100%;\n  height: var(--mf-ss-h, 380px);\n  border-radius: var(--mf-ss-r, 20px);\n  overflow: hidden;\n  border: 1px solid var(--mf-border, #2e2e38);\n  background: var(--mf-surface, #141419);\n  color: var(--mf-fg, #f4f4f6);\n  container-type: inline-size;\n  isolation: isolate;\n}\n\n.root *,\n.root *::before,\n.root *::after {\n  box-sizing: border-box;\n}\n\n.viewport {\n  position: relative;\n  height: 100%;\n  overflow-x: hidden;\n  overflow-y: auto;\n  overscroll-behavior: auto;\n  scroll-behavior: auto;\n  scrollbar-width: thin;\n  scrollbar-color: var(--mf-border, #2e2e38) transparent;\n}\n\n.viewport:focus-visible {\n  outline: 2px solid var(--mf-fg, #e4e4e7);\n  outline-offset: -2px;\n}\n\n.content {\n  position: relative;\n  padding: 0 clamp(1.25rem, 6cqi, 3.5rem);\n}\n\n.hero {\n  display: flex;\n  flex-direction: column;\n  justify-content: center;\n  gap: 0.6rem;\n  min-height: calc(var(--mf-ss-h, 380px) - 2px);\n}\n\n.kicker {\n  align-self: flex-start;\n  padding: 0.3rem 0.7rem;\n  border: 1px solid var(--mf-border, #2e2e38);\n  border-radius: 999px;\n  font-size: 0.72rem;\n  letter-spacing: 0.08em;\n  text-transform: uppercase;\n  color: var(--mf-ss-accent, #a78bfa);\n}\n\n.heroTitle {\n  margin: 0;\n  font-size: clamp(2rem, 7cqi, 3.6rem);\n  font-weight: 650;\n  line-height: 1.02;\n  letter-spacing: -0.035em;\n}\n\n.heroText {\n  margin: 0;\n  color: var(--mf-muted, #a1a1aa);\n  font-size: 0.95rem;\n}\n\n.section {\n  display: grid;\n  grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);\n  align-items: center;\n  gap: clamp(1rem, 5cqi, 3rem);\n  padding: 2.5rem 0;\n  border-top: 1px solid var(--mf-border, #2e2e38);\n}\n\n.sectionText {\n  display: flex;\n  flex-direction: column;\n  gap: 0.55rem;\n}\n\n.eyebrow {\n  font-size: 0.72rem;\n  letter-spacing: 0.1em;\n  text-transform: uppercase;\n  color: var(--mf-ss-accent, #a78bfa);\n}\n\n.sectionTitle {\n  margin: 0;\n  font-size: clamp(1.35rem, 4cqi, 2rem);\n  font-weight: 600;\n  letter-spacing: -0.025em;\n  line-height: 1.1;\n}\n\n.sectionBody {\n  margin: 0;\n  max-width: 34rem;\n  color: var(--mf-muted, #a1a1aa);\n  font-size: 0.92rem;\n  line-height: 1.6;\n}\n\n.art {\n  position: relative;\n  aspect-ratio: 4 / 3;\n  border-radius: 16px;\n  border: 1px solid var(--mf-border, #2e2e38);\n  background:\n    radial-gradient(circle at calc(20% + var(--mf-ss-i, 0) * 20%) 30%, color-mix(in srgb, var(--mf-ss-accent, #a78bfa) 70%, transparent), transparent 55%),\n    radial-gradient(circle at 80% 85%, color-mix(in srgb, var(--mf-ss-accent, #a78bfa) 35%, #38bdf8), transparent 60%),\n    var(--mf-surface-raised, #1b1b22);\n  filter: hue-rotate(calc(var(--mf-ss-i, 0) * 28deg));\n  overflow: hidden;\n}\n\n.art::after {\n  content: \"\";\n  position: absolute;\n  inset: 0;\n  background: repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.05) 0 1px, transparent 1px 24px);\n}\n\n.footer {\n  display: flex;\n  flex-direction: column;\n  align-items: flex-start;\n  gap: 1rem;\n  padding: 3rem 0 4rem;\n  color: var(--mf-muted, #a1a1aa);\n  font-size: 0.9rem;\n}\n\n.footer p {\n  margin: 0;\n}\n\n.footerLine {\n  width: 3rem;\n  height: 2px;\n  border-radius: 2px;\n  background: var(--mf-ss-accent, #a78bfa);\n}\n\n.progress {\n  position: absolute;\n  top: 0;\n  left: 0;\n  right: 0;\n  height: 3px;\n  background: color-mix(in srgb, var(--mf-border, #2e2e38) 60%, transparent);\n  pointer-events: none;\n  z-index: 2;\n}\n\n.progressFill {\n  display: block;\n  height: 100%;\n  background: var(--mf-ss-accent, #a78bfa);\n  box-shadow: 0 0 12px var(--mf-ss-accent, #a78bfa);\n  transform: scaleX(var(--mf-ss-p, 0));\n  transform-origin: left center;\n  will-change: transform;\n}\n\n.badge {\n  position: absolute;\n  right: 0.85rem;\n  bottom: 0.85rem;\n  z-index: 2;\n  display: grid;\n  grid-template-columns: auto auto;\n  align-items: center;\n  column-gap: 0.6rem;\n  row-gap: 0.4rem;\n  padding: 0.55rem 0.75rem;\n  border: 1px solid var(--mf-border, #2e2e38);\n  border-radius: 12px;\n  background: color-mix(in srgb, var(--mf-bg, #09090b) 72%, transparent);\n  backdrop-filter: blur(10px);\n  -webkit-backdrop-filter: blur(10px);\n  font-size: 0.7rem;\n  pointer-events: none;\n}\n\n.badgeLabel {\n  color: var(--mf-muted, #a1a1aa);\n  letter-spacing: 0.08em;\n  text-transform: uppercase;\n}\n\n.badgeValue {\n  min-width: 6.5ch;\n  text-align: right;\n  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;\n  font-variant-numeric: tabular-nums;\n  color: var(--mf-fg, #f4f4f6);\n}\n\n.meter {\n  grid-column: 1 / -1;\n  height: 3px;\n  border-radius: 3px;\n  background: var(--mf-border, #2e2e38);\n  overflow: hidden;\n}\n\n.meterFill {\n  display: block;\n  height: 100%;\n  background: var(--mf-ss-accent, #a78bfa);\n  transform: scaleX(var(--mf-ss-v, 0));\n  transform-origin: left center;\n}\n\n@container (max-width: 560px) {\n  .section {\n    grid-template-columns: 1fr;\n  }\n\n  .art {\n    aspect-ratio: 16 / 7;\n  }\n}\n\n@media (prefers-reduced-motion: reduce) {\n  .progressFill,\n  .meterFill {\n    will-change: auto;\n  }\n}\n"
+    }
+  ],
+  "tailwindExample": "\"use client\";\n\nimport { useEffect, useRef } from \"react\";\n\nfunction useSmooth(ref, onFrame, lerp = 0.1) {\n  useEffect(() => {\n    const el = ref.current;\n    let target = el.scrollTop, raf = 0;\n    const emit = () => { const max = el.scrollHeight - el.clientHeight; onFrame(el.scrollTop, max > 0 ? el.scrollTop / max : 0); };\n    const tick = () => {\n      const d = target - el.scrollTop;\n      el.scrollTop += Math.abs(d) < 0.5 ? d : d * lerp;\n      emit();\n      raf = Math.abs(target - el.scrollTop) < 0.5 ? 0 : requestAnimationFrame(tick);\n    };\n    const onWheel = (e) => {\n      const max = el.scrollHeight - el.clientHeight;\n      if (!raf) target = el.scrollTop;\n      if ((e.deltaY < 0 && target <= 0) || (e.deltaY > 0 && target >= max)) return;\n      e.preventDefault();\n      target = Math.min(max, Math.max(0, target + e.deltaY));\n      if (!raf) raf = requestAnimationFrame(tick);\n    };\n    el.addEventListener(\"wheel\", onWheel, { passive: false });\n    el.addEventListener(\"scroll\", () => { if (!raf) emit(); }, { passive: true });\n    return () => { el.removeEventListener(\"wheel\", onWheel); cancelAnimationFrame(raf); };\n  }, []);\n}\n\nexport function SmoothScrollTailwind() {\n  const ref = useRef(null);\n  const bar = useRef(null);\n  useSmooth(ref, (_, p) => { bar.current.style.transform = `scaleX(${p})`; });\n  return (\n    <div className=\"relative h-[380px] w-full overflow-hidden rounded-[20px] border border-zinc-800 bg-zinc-900 text-zinc-100\">\n      <div ref={ref} tabIndex={0} className=\"h-full overflow-y-auto px-10\">\n        {[\"Scrolling that glides.\", \"One number, endless feel.\", \"Native where it matters.\", \"Idle when settled.\"].map((t) => (\n          <section key={t} className=\"flex min-h-[300px] flex-col justify-center gap-2 border-b border-zinc-800\">\n            <h3 className=\"text-3xl font-semibold tracking-tight\">{t}</h3>\n            <p className=\"max-w-md text-sm text-zinc-400\">Wheel input moves a target; each frame the viewport eases toward it.</p>\n          </section>\n        ))}\n      </div>\n      <div className=\"absolute inset-x-0 top-0 h-[3px] bg-zinc-800\"><div ref={bar} className=\"h-full origin-left scale-x-0 bg-violet-400\" /></div>\n    </div>\n  );\n}"
+}

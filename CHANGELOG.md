@@ -1,5 +1,14 @@
 # Changelog
 
+## [2.2.0] - 2026-10-16
+
+### Added
+- Gradients collection (8, all props customizable): `MeshGradient`, `AuroraRibbons`, `ConicGradient`, `LiquidGradient`, `WaveGradient`, `GradientOrbs`, `GrainGradient`, `SpotlightGradient`.
+- Text FX collection (8, GSAP-style, built from scratch with no GSAP dependency): `SplitText`, `MaskWipeText`, `ElasticLetters`, `TextOnPath`, `RollingText`, `MarkerHighlight`, `ScatterText`, `CubeFlipWords`.
+- Scroll collection (8, Lenis-style smooth scrolling built from scratch with no Lenis dependency): `SmoothScroll`, `ParallaxLayers`, `ScrollFillText`, `HorizontalScroll`, `StickyStackCards`, `VelocityMarquee`, `ScrollZoomReveal`, `ScrollTimeline`.
+- "Gradient Backgrounds" and "Scroll Animations" categories; Components page filters (collection, category, engine, new in v2.2, sort) synced to the URL; live v2.2 showcases on the landing page.
+- Docs guide `Gradients, Text FX & Scroll`; sidebar and search list every collection.
+
 ## [2.1.0] - 2026-10-16
 
 ### Added

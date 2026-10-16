@@ -1,0 +1,50 @@
+.root {
+  position: relative;
+  max-width: 100%;
+  margin: 0;
+  padding: 0.1em 0.25em;
+  color: var(--mf-st-color, var(--mf-fg, #f4f4f6));
+  font-size: var(--mf-st-size, 56px);
+  font-weight: 800;
+  letter-spacing: -0.045em;
+  line-height: 1.08;
+  text-align: center;
+  text-wrap: balance;
+}
+
+.pieces {
+  display: inline;
+}
+
+.word {
+  display: inline-block;
+  white-space: nowrap;
+}
+
+.char {
+  display: inline-block;
+  transform-origin: 50% 100%;
+  backface-visibility: hidden;
+  will-change: transform, opacity, filter;
+}
+
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .char {
+    transform: none !important;
+    opacity: 1 !important;
+    filter: none !important;
+    will-change: auto;
+  }
+}

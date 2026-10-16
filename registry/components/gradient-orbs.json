@@ -1,0 +1,196 @@
+{
+  "slug": "gradient-orbs",
+  "name": "GradientOrbs",
+  "category": "Gradient Backgrounds",
+  "collection": "gradients",
+  "featured": false,
+  "addedAt": "2026-10-16",
+  "version": "2.2.0",
+  "requiresMotion": false,
+  "dependencies": [
+    "react"
+  ],
+  "description": "Glowing radial-gradient orbs float on seeded CSS loops and lean toward the pointer with lerped parallax, where nearer (larger, sharper) orbs move further than distant, softer ones.",
+  "tags": [
+    "orbs",
+    "gradient",
+    "background",
+    "parallax",
+    "pointer",
+    "glow",
+    "interactive"
+  ],
+  "a11yNotes": "The orb field and vignette are aria-hidden with pointer-events: none, so children stay fully interactive. Floating pauses off-screen or at speed 0; prefers-reduced-motion stops floating and disables pointer parallax. Orb layout uses a seeded random so SSR markup is stable.",
+  "defaultProps": {
+    "color1": "#fb7185",
+    "color2": "#818cf8",
+    "color3": "#2dd4bf",
+    "backgroundColor": "#07070d",
+    "orbCount": 6,
+    "speed": 1,
+    "blur": 28,
+    "followPointer": true,
+    "height": 360,
+    "borderRadius": 20
+  },
+  "controls": [
+    {
+      "prop": "color1",
+      "label": "Color 1",
+      "type": "color"
+    },
+    {
+      "prop": "color2",
+      "label": "Color 2",
+      "type": "color"
+    },
+    {
+      "prop": "color3",
+      "label": "Color 3",
+      "type": "color"
+    },
+    {
+      "prop": "backgroundColor",
+      "label": "Background",
+      "type": "color"
+    },
+    {
+      "prop": "orbCount",
+      "label": "Orbs",
+      "type": "range",
+      "min": 2,
+      "max": 12,
+      "step": 1
+    },
+    {
+      "prop": "speed",
+      "label": "Speed",
+      "type": "range",
+      "min": 0,
+      "max": 3,
+      "step": 0.1
+    },
+    {
+      "prop": "blur",
+      "label": "Blur (px)",
+      "type": "range",
+      "min": 0,
+      "max": 80,
+      "step": 1
+    },
+    {
+      "prop": "followPointer",
+      "label": "Follow pointer",
+      "type": "boolean"
+    },
+    {
+      "prop": "height",
+      "label": "Height (px)",
+      "type": "range",
+      "min": 200,
+      "max": 600,
+      "step": 10
+    },
+    {
+      "prop": "borderRadius",
+      "label": "Corner radius (px)",
+      "type": "range",
+      "min": 0,
+      "max": 48,
+      "step": 1
+    }
+  ],
+  "propsApi": [
+    {
+      "name": "color1",
+      "type": "string",
+      "default": "'#fb7185'",
+      "description": "First orb color."
+    },
+    {
+      "name": "color2",
+      "type": "string",
+      "default": "'#818cf8'",
+      "description": "Second orb color."
+    },
+    {
+      "name": "color3",
+      "type": "string",
+      "default": "'#2dd4bf'",
+      "description": "Third orb color."
+    },
+    {
+      "name": "backgroundColor",
+      "type": "string",
+      "default": "'#07070d'",
+      "description": "Surface color behind the orbs."
+    },
+    {
+      "name": "orbCount",
+      "type": "number",
+      "default": "6",
+      "description": "Number of orbs, clamped to 2–12."
+    },
+    {
+      "name": "speed",
+      "type": "number",
+      "default": "1",
+      "description": "Float speed multiplier (0 pauses)."
+    },
+    {
+      "name": "blur",
+      "type": "number",
+      "default": "28",
+      "description": "Base blur radius in px; distant orbs are blurred more."
+    },
+    {
+      "name": "followPointer",
+      "type": "boolean",
+      "default": "true",
+      "description": "Orbs drift toward the pointer with depth-based parallax."
+    },
+    {
+      "name": "height",
+      "type": "number",
+      "default": "360",
+      "description": "Height of the background in px."
+    },
+    {
+      "name": "borderRadius",
+      "type": "number",
+      "default": "20",
+      "description": "Corner radius in px."
+    },
+    {
+      "name": "children",
+      "type": "React.ReactNode",
+      "default": "undefined",
+      "description": "Content rendered centered on top; defaults to a heading and subline."
+    },
+    {
+      "name": "className",
+      "type": "string",
+      "default": "''",
+      "description": "Additional class merged onto the root element."
+    },
+    {
+      "name": "style",
+      "type": "React.CSSProperties",
+      "default": "undefined",
+      "description": "Inline styles merged onto the root element."
+    }
+  ],
+  "files": [
+    {
+      "path": "components/ui/gradient-orbs.tsx",
+      "type": "registry:component",
+      "content": "\"use client\";\n\nimport * as React from \"react\";\nimport styles from \"../styles/gradient-orbs.module.css\";\n\nexport interface GradientOrbsProps {\n  /** First orb color */\n  color1?: string;\n  /** Second orb color */\n  color2?: string;\n  /** Third orb color */\n  color3?: string;\n  /** Surface color behind the orbs */\n  backgroundColor?: string;\n  /** Number of orbs (2–12) */\n  orbCount?: number;\n  /** Float speed multiplier (1 = default, 0 = paused) */\n  speed?: number;\n  /** Blur radius applied to the orbs, in px */\n  blur?: number;\n  /** Orbs drift toward the pointer with depth-based parallax */\n  followPointer?: boolean;\n  /** Height of the background in px */\n  height?: number;\n  /** Corner radius in px */\n  borderRadius?: number;\n  /** Foreground content rendered centered on top */\n  children?: React.ReactNode;\n  /** Optional className merged onto the root */\n  className?: string;\n  /** Inline styles merged onto the root */\n  style?: React.CSSProperties;\n}\n\nconst rand = (n: number) => {\n  const x = Math.sin(n * 9301 + 49297) * 233280;\n  return x - Math.floor(x);\n};\n\nconst MAX_SHIFT_PX = 70;\n\nfunction useReducedMotionPref() {\n  const [reduced, setReduced] = React.useState(false);\n  React.useEffect(() => {\n    if (typeof window === \"undefined\" || !window.matchMedia) return;\n    const mq = window.matchMedia(\"(prefers-reduced-motion: reduce)\");\n    const update = () => setReduced(mq.matches);\n    update();\n    mq.addEventListener(\"change\", update);\n    return () => mq.removeEventListener(\"change\", update);\n  }, []);\n  return reduced;\n}\n\nfunction useInView(ref: React.RefObject<HTMLElement | null>) {\n  const [inView, setInView] = React.useState(true);\n  React.useEffect(() => {\n    const el = ref.current;\n    if (!el || typeof IntersectionObserver === \"undefined\") return;\n    const io = new IntersectionObserver((entries) => {\n      const entry = entries[entries.length - 1];\n      if (entry) setInView(entry.isIntersecting);\n    }, { rootMargin: \"80px\" });\n    io.observe(el);\n    return () => io.disconnect();\n  }, [ref]);\n  return inView;\n}\n\nexport function GradientOrbs({\n  color1 = \"#fb7185\",\n  color2 = \"#818cf8\",\n  color3 = \"#2dd4bf\",\n  backgroundColor = \"#07070d\",\n  orbCount = 6,\n  speed = 1,\n  blur = 28,\n  followPointer = true,\n  height = 360,\n  borderRadius = 20,\n  children,\n  className = \"\",\n  style,\n}: GradientOrbsProps) {\n  const rootRef = React.useRef<HTMLDivElement>(null);\n  const orbRefs = React.useRef<Array<HTMLSpanElement | null>>([]);\n  const reduced = useReducedMotionPref();\n  const inView = useInView(rootRef);\n  const count = Math.max(2, Math.min(12, Math.round(orbCount)));\n  const safeSpeed = Math.max(0, speed);\n  const running = !reduced && safeSpeed > 0 && inView;\n\n  const orbs = React.useMemo(\n    () =>\n      Array.from({ length: count }, (_, i) => {\n        const depth = 0.25 + rand(i + 11) * 0.75;\n        return {\n          x: 10 + rand(i + 1) * 80,\n          y: 12 + rand(i + 2) * 76,\n          size: 80 + depth * 150,\n          depth,\n          color: [color1, color2, color3][i % 3],\n          dur: 9 + rand(i + 3) * 9,\n          delay: rand(i + 4) * 10,\n          dx: (rand(i + 5) - 0.5) * 90,\n          dy: (rand(i + 6) - 0.5) * 70,\n        };\n      }),\n    [count, color1, color2, color3],\n  );\n\n  React.useEffect(() => {\n    const el = rootRef.current;\n    if (!el || !followPointer || reduced) return;\n    const target = { x: 0, y: 0 };\n    const cur = { x: 0, y: 0 };\n    let raf = 0;\n    const apply = () => {\n      for (let i = 0; i < orbs.length; i++) {\n        const node = orbRefs.current[i];\n        if (!node) continue;\n        const d = orbs[i].depth;\n        node.style.transform = `translate3d(${(cur.x * d * MAX_SHIFT_PX).toFixed(2)}px, ${(cur.y * d * MAX_SHIFT_PX).toFixed(2)}px, 0)`;\n      }\n    };\n    const step = () => {\n      // critically-damped-style lerp toward the pointer target\n      cur.x += (target.x - cur.x) * 0.07;\n      cur.y += (target.y - cur.y) * 0.07;\n      apply();\n      if (Math.abs(target.x - cur.x) > 0.001 || Math.abs(target.y - cur.y) > 0.001) {\n        raf = requestAnimationFrame(step);\n      } else {\n        raf = 0;\n      }\n    };\n    const kick = () => {\n      if (!raf) raf = requestAnimationFrame(step);\n    };\n    const onMove = (e: PointerEvent) => {\n      const rect = el.getBoundingClientRect();\n      target.x = Math.max(-1, Math.min(1, ((e.clientX - rect.left) / rect.width) * 2 - 1));\n      target.y = Math.max(-1, Math.min(1, ((e.clientY - rect.top) / rect.height) * 2 - 1));\n      kick();\n    };\n    const onLeave = () => {\n      target.x = 0;\n      target.y = 0;\n      kick();\n    };\n    el.addEventListener(\"pointermove\", onMove);\n    el.addEventListener(\"pointerleave\", onLeave);\n    return () => {\n      el.removeEventListener(\"pointermove\", onMove);\n      el.removeEventListener(\"pointerleave\", onLeave);\n      cancelAnimationFrame(raf);\n    };\n  }, [followPointer, reduced, orbs]);\n\n  const styleVars = {\n    \"--mf-go-bg\": backgroundColor,\n    \"--mf-go-blur\": `${Math.max(0, blur)}px`,\n    \"--mf-go-state\": running ? \"running\" : \"paused\",\n    height: `${height}px`,\n    borderRadius: `${borderRadius}px`,\n    ...style,\n  } as React.CSSProperties;\n\n  return (\n    <div ref={rootRef} style={styleVars} className={`${styles.root} ${className}`.trim()}>\n      <div aria-hidden=\"true\" className={styles.field}>\n        {orbs.map((o, i) => (\n          <span\n            key={i}\n            ref={(node) => {\n              orbRefs.current[i] = node;\n            }}\n            className={styles.anchor}\n            style={{ left: `${o.x.toFixed(2)}%`, top: `${o.y.toFixed(2)}%` }}\n          >\n            <span\n              className={styles.orb}\n              style={\n                {\n                  width: `${o.size.toFixed(0)}px`,\n                  height: `${o.size.toFixed(0)}px`,\n                  background: `radial-gradient(circle at 35% 30%, color-mix(in srgb, ${o.color} 55%, #ffffff) 0%, ${o.color} 28%, color-mix(in srgb, ${o.color} 70%, transparent) 50%, transparent 72%)`,\n                  opacity: Number((0.45 + o.depth * 0.45).toFixed(2)),\n                  filter: `blur(calc(var(--mf-go-blur, 28px) * ${(1.25 - o.depth * 0.6).toFixed(2)}))`,\n                  animationDuration: `${(o.dur / (safeSpeed > 0 ? safeSpeed : 1)).toFixed(2)}s`,\n                  animationDelay: `-${o.delay.toFixed(2)}s`,\n                  \"--mf-go-dx\": `${o.dx.toFixed(1)}px`,\n                  \"--mf-go-dy\": `${o.dy.toFixed(1)}px`,\n                } as React.CSSProperties\n              }\n            />\n          </span>\n        ))}\n      </div>\n      <div aria-hidden=\"true\" className={styles.vignette} />\n      <div className={styles.content}>\n        {children ?? (\n          <div className={styles.copy}>\n            <h3 className={styles.title}>Gradient Orbs</h3>\n            <p className={styles.subtitle}>Glowing spheres that float and lean toward your cursor.</p>\n          </div>\n        )}\n      </div>\n    </div>\n  );\n}\n"
+    },
+    {
+      "path": "components/styles/gradient-orbs.module.css",
+      "type": "registry:style",
+      "content": ".root {\n  position: relative;\n  isolation: isolate;\n  overflow: hidden;\n  display: flex;\n  width: 100%;\n  border: 1px solid var(--mf-border, #2e2e38);\n  background-color: var(--mf-go-bg, #07070d);\n  background-image: radial-gradient(100% 80% at 50% 0%, rgba(255, 255, 255, 0.05), transparent 60%);\n  color: var(--mf-fg, #f4f4f6);\n}\n\n.field {\n  position: absolute;\n  inset: 0;\n  pointer-events: none;\n}\n\n.anchor {\n  position: absolute;\n  width: 0;\n  height: 0;\n  mix-blend-mode: screen;\n  will-change: transform;\n}\n\n.orb {\n  position: absolute;\n  left: 0;\n  top: 0;\n  border-radius: 50%;\n  transform: translate(-50%, -50%);\n  animation-name: mfGoFloat;\n  animation-timing-function: ease-in-out;\n  animation-iteration-count: infinite;\n  animation-direction: alternate;\n  animation-play-state: var(--mf-go-state, running);\n  will-change: transform;\n}\n\n.vignette {\n  position: absolute;\n  inset: 0;\n  pointer-events: none;\n  background: radial-gradient(120% 100% at 50% 50%, transparent 50%, rgba(0, 0, 0, 0.5) 100%);\n}\n\n.content {\n  position: relative;\n  z-index: 20;\n  display: flex;\n  flex: 1;\n  align-items: center;\n  justify-content: center;\n  padding: 2rem;\n}\n\n.copy {\n  text-align: center;\n  text-shadow: 0 1px 24px rgba(0, 0, 0, 0.45);\n}\n\n.title {\n  margin: 0;\n  font-size: 2rem;\n  font-weight: 700;\n  letter-spacing: -0.035em;\n  color: var(--mf-fg, #f4f4f6);\n}\n\n.subtitle {\n  margin: 0.5rem 0 0;\n  font-size: 0.9375rem;\n  color: var(--mf-fg, #f4f4f6);\n  opacity: 0.78;\n}\n\n@keyframes mfGoFloat {\n  0% { transform: translate(-50%, -50%) translate(0, 0) scale(1); }\n  50% { transform: translate(-50%, -50%) translate(calc(var(--mf-go-dx, 40px) * 0.6), calc(var(--mf-go-dy, 30px) * -0.4)) scale(1.06); }\n  100% { transform: translate(-50%, -50%) translate(var(--mf-go-dx, 40px), var(--mf-go-dy, 30px)) scale(0.96); }\n}\n\n@media (prefers-reduced-motion: reduce) {\n  .orb {\n    animation: none;\n  }\n\n  .anchor {\n    transform: none !important;\n  }\n}\n"
+    }
+  ],
+  "tailwindExample": "\"use client\";\n\nexport function GradientOrbsTailwind({ children }: { children?: React.ReactNode }) {\n  const orbs = [\n    \"left-[15%] top-[20%] h-56 w-56 bg-rose-400 [animation-duration:9s]\",\n    \"right-[12%] top-[10%] h-72 w-72 bg-indigo-400 [animation-duration:12s]\",\n    \"left-[40%] bottom-[-10%] h-64 w-64 bg-teal-400 [animation-duration:15s]\",\n  ];\n  return (\n    <div className=\"relative isolate flex h-[360px] w-full items-center justify-center overflow-hidden rounded-[20px] border border-zinc-800 bg-[#07070d]\">\n      {orbs.map((o, i) => (\n        <div key={i} aria-hidden className={\"absolute animate-bounce rounded-full opacity-70 mix-blend-screen blur-[28px] motion-reduce:animate-none \" + o} />\n      ))}\n      <div className=\"relative text-center\">\n        {children ?? (\n          <>\n            <h3 className=\"text-3xl font-bold tracking-tight text-zinc-50\">Gradient Orbs</h3>\n            <p className=\"mt-2 text-sm text-zinc-400\">Glowing spheres that float and lean toward your cursor.</p>\n          </>\n        )}\n      </div>\n    </div>\n  );\n}"
+}

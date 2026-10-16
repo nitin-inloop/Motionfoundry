@@ -1,0 +1,65 @@
+.root {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  display: flex;
+  width: 100%;
+  border: 1px solid var(--mf-border, #2e2e38);
+  background-color: var(--mf-wg-bg, #0b0a1a);
+  color: var(--mf-fg, #f4f4f6);
+}
+
+.canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  pointer-events: none;
+  filter: blur(var(--mf-wg-blur, 0px)) saturate(1.08);
+}
+
+.shade {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(180deg, var(--mf-wg-bg, #0b0a1a) 0%, transparent 38%),
+    radial-gradient(90% 70% at 50% 45%, rgba(0, 0, 0, 0.28), transparent 70%);
+  opacity: 0.85;
+}
+
+.content {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex: 1;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+}
+
+.copy {
+  text-align: center;
+  text-shadow: 0 2px 24px rgba(0, 0, 0, 0.45);
+}
+
+.title {
+  margin: 0;
+  font-size: 2rem;
+  font-weight: 700;
+  letter-spacing: -0.035em;
+  color: var(--mf-fg, #f4f4f6);
+}
+
+.subtitle {
+  margin: 0.5rem 0 0;
+  font-size: 0.9375rem;
+  color: var(--mf-fg, #f4f4f6);
+  opacity: 0.8;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .canvas {
+    transition: none;
+  }
+}

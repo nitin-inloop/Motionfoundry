@@ -1,0 +1,198 @@
+{
+  "slug": "scatter-text",
+  "name": "ScatterText",
+  "category": "Advanced Text Animations",
+  "collection": "text-fx",
+  "featured": false,
+  "addedAt": "2026-10-16",
+  "version": "2.2.0",
+  "requiresMotion": false,
+  "dependencies": [
+    "react"
+  ],
+  "description": "Letters start scattered at seeded random positions, rotations, and scales and fly together into the headline with eased, staggered motion; on hover they burst apart again and reassemble when the pointer leaves.",
+  "tags": [
+    "text",
+    "scatter",
+    "assemble",
+    "letters",
+    "hover",
+    "stagger",
+    "explode"
+  ],
+  "a11yNotes": "The text is read once from a visually hidden span; the scattered letters are aria-hidden. Scatter positions come from a seeded PRNG so server and client markup match. The hover scatter is decorative only. Under prefers-reduced-motion the letters render assembled with no transitions and hover does nothing.",
+  "defaultProps": {
+    "text": "Pieces fall into place",
+    "spread": 240,
+    "duration": 1.1,
+    "ease": "expo.out",
+    "stagger": 0.025,
+    "staggerFrom": "center",
+    "scatterOnHover": true,
+    "fontSize": 56
+  },
+  "controls": [
+    {
+      "prop": "text",
+      "label": "Text",
+      "type": "text"
+    },
+    {
+      "prop": "spread",
+      "label": "Spread (px)",
+      "type": "range",
+      "min": 20,
+      "max": 600,
+      "step": 10
+    },
+    {
+      "prop": "duration",
+      "label": "Duration (s)",
+      "type": "range",
+      "min": 0.2,
+      "max": 3,
+      "step": 0.05
+    },
+    {
+      "prop": "ease",
+      "label": "Ease",
+      "type": "select",
+      "options": [
+        "power2.out",
+        "power3.out",
+        "power4.out",
+        "expo.out",
+        "back.out",
+        "elastic.out",
+        "sine.inOut",
+        "circ.out"
+      ]
+    },
+    {
+      "prop": "stagger",
+      "label": "Stagger (s)",
+      "type": "range",
+      "min": 0,
+      "max": 0.15,
+      "step": 0.005
+    },
+    {
+      "prop": "staggerFrom",
+      "label": "Stagger from",
+      "type": "select",
+      "options": [
+        "start",
+        "center",
+        "end",
+        "edges",
+        "random"
+      ]
+    },
+    {
+      "prop": "scatterOnHover",
+      "label": "Scatter on hover",
+      "type": "boolean"
+    },
+    {
+      "prop": "fontSize",
+      "label": "Font size",
+      "type": "range",
+      "min": 20,
+      "max": 120,
+      "step": 2
+    }
+  ],
+  "propsApi": [
+    {
+      "name": "text",
+      "type": "string",
+      "default": "'Pieces fall into place'",
+      "description": "Text whose letters assemble from scattered positions."
+    },
+    {
+      "name": "spread",
+      "type": "number",
+      "default": "240",
+      "description": "Maximum scatter distance in pixels."
+    },
+    {
+      "name": "duration",
+      "type": "number",
+      "default": "1.1",
+      "description": "Duration of each letter's flight in seconds."
+    },
+    {
+      "name": "ease",
+      "type": "\"power2.out\" | \"power3.out\" | \"power4.out\" | \"expo.out\" | \"back.out\" | \"elastic.out\" | \"sine.inOut\" | \"circ.out\"",
+      "default": "'expo.out'",
+      "description": "GSAP-style ease name (sampled into a CSS linear() easing)."
+    },
+    {
+      "name": "stagger",
+      "type": "number",
+      "default": "0.025",
+      "description": "Delay between consecutive letters in seconds."
+    },
+    {
+      "name": "staggerFrom",
+      "type": "\"start\" | \"center\" | \"end\" | \"edges\" | \"random\"",
+      "default": "'center'",
+      "description": "Where the stagger wave starts from."
+    },
+    {
+      "name": "scatterOnHover",
+      "type": "boolean",
+      "default": "true",
+      "description": "Scatter the letters again while hovered and reassemble on leave."
+    },
+    {
+      "name": "seed",
+      "type": "number",
+      "default": "7",
+      "description": "Seed for the deterministic scatter layout."
+    },
+    {
+      "name": "color",
+      "type": "string",
+      "default": "undefined",
+      "description": "Text color (defaults to the theme foreground)."
+    },
+    {
+      "name": "fontSize",
+      "type": "number",
+      "default": "56",
+      "description": "Font size in pixels."
+    },
+    {
+      "name": "as",
+      "type": "\"h1\" | \"h2\" | \"h3\" | \"h4\" | \"p\" | \"div\"",
+      "default": "'h2'",
+      "description": "Element rendered as the root."
+    },
+    {
+      "name": "className",
+      "type": "string",
+      "default": "''",
+      "description": "Additional class merged onto the root element."
+    },
+    {
+      "name": "style",
+      "type": "React.CSSProperties",
+      "default": "undefined",
+      "description": "Inline styles merged onto the root element (CSS variables included)."
+    }
+  ],
+  "files": [
+    {
+      "path": "components/ui/scatter-text.tsx",
+      "type": "registry:component",
+      "content": "\"use client\";\n\nimport * as React from \"react\";\nimport styles from \"../styles/scatter-text.module.css\";\n\nexport type ScatterTextEase =\n  \"power2.out\" | \"power3.out\" | \"power4.out\" | \"expo.out\" | \"back.out\" | \"elastic.out\" | \"sine.inOut\" | \"circ.out\";\n\nexport type ScatterTextStaggerFrom = \"start\" | \"center\" | \"end\" | \"edges\" | \"random\";\n\nexport interface ScatterTextProps {\n  /** Text whose letters assemble from scattered positions */\n  text?: string;\n  /** Maximum scatter distance in pixels */\n  spread?: number;\n  /** Duration of each letter's flight in seconds */\n  duration?: number;\n  /** GSAP-style ease name */\n  ease?: ScatterTextEase;\n  /** Delay between consecutive letters in seconds */\n  stagger?: number;\n  /** Where the stagger wave starts from */\n  staggerFrom?: ScatterTextStaggerFrom;\n  /** Scatter the letters again while hovered and reassemble on leave */\n  scatterOnHover?: boolean;\n  /** Seed for the deterministic scatter layout */\n  seed?: number;\n  /** Text color (defaults to the theme foreground) */\n  color?: string;\n  /** Font size in pixels */\n  fontSize?: number;\n  /** Element rendered as the root */\n  as?: \"h1\" | \"h2\" | \"h3\" | \"h4\" | \"p\" | \"div\";\n  /** Optional className merged onto the root */\n  className?: string;\n  /** Optional inline styles merged onto the root */\n  style?: React.CSSProperties;\n}\n\nconst EASES: Record<ScatterTextEase, (t: number) => number> = {\n  \"power2.out\": (t) => 1 - Math.pow(1 - t, 3),\n  \"power3.out\": (t) => 1 - Math.pow(1 - t, 4),\n  \"power4.out\": (t) => 1 - Math.pow(1 - t, 5),\n  \"expo.out\": (t) => (t >= 1 ? 1 : 1 - Math.pow(2, -10 * t)),\n  \"back.out\": (t) => {\n    const c = 1.70158;\n    const u = t - 1;\n    return 1 + (c + 1) * u * u * u + c * u * u;\n  },\n  \"elastic.out\": (t) =>\n    t <= 0 ? 0 : t >= 1 ? 1 : Math.pow(2, -10 * t) * Math.sin((t * 10 - 0.75) * ((2 * Math.PI) / 3)) + 1,\n  \"sine.inOut\": (t) => -(Math.cos(Math.PI * t) - 1) / 2,\n  \"circ.out\": (t) => Math.sqrt(1 - Math.pow(t - 1, 2)),\n};\n\n/** Samples an ease into a CSS linear() timing function (falls back to the CSS default where unsupported). */\nconst toCssEasing = (name: ScatterTextEase) => {\n  const fn = EASES[name] ?? EASES[\"expo.out\"];\n  const pts: string[] = [];\n  for (let i = 0; i <= 48; i++) pts.push(String(Math.round(fn(i / 48) * 10000) / 10000));\n  return `linear(${pts.join(\", \")})`;\n};\n\nconst rand = (n: number) => {\n  const x = Math.sin(n * 9301 + 49297) * 233280;\n  return x - Math.floor(x);\n};\n\nfunction staggerRanks(count: number, from: ScatterTextStaggerFrom): number[] {\n  if (count <= 0) return [];\n  const mid = (count - 1) / 2;\n  if (from === \"random\") {\n    const ranks = new Array<number>(count).fill(0);\n    Array.from({ length: count }, (_, i) => i)\n      .sort((a, b) => rand(a + 1) - rand(b + 1))\n      .forEach((idx, r) => {\n        ranks[idx] = r;\n      });\n    return ranks;\n  }\n  const raw = Array.from({ length: count }, (_, i) => {\n    if (from === \"end\") return count - 1 - i;\n    if (from === \"center\") return Math.abs(i - mid);\n    if (from === \"edges\") return mid - Math.abs(i - mid);\n    return i;\n  });\n  const min = Math.min(...raw);\n  return raw.map((v) => v - min);\n}\n\ntype Phase = \"intro\" | \"assembled\" | \"scattered\";\n\nexport function ScatterText({\n  text = \"Pieces fall into place\",\n  spread = 240,\n  duration = 1.1,\n  ease = \"expo.out\",\n  stagger = 0.025,\n  staggerFrom = \"center\",\n  scatterOnHover = true,\n  seed = 7,\n  color,\n  fontSize = 56,\n  as = \"h2\",\n  className = \"\",\n  style,\n}: ScatterTextProps) {\n  const [phase, setPhase] = React.useState<Phase>(\"intro\");\n  const reducedRef = React.useRef(false);\n  const words = React.useMemo(() => text.split(\" \"), [text]);\n  const charCount = Array.from(text).length;\n  const ranks = React.useMemo(() => staggerRanks(charCount, staggerFrom), [charCount, staggerFrom]);\n  const wordStarts = React.useMemo(() => {\n    let acc = 0;\n    return words.map((w) => {\n      const start = acc;\n      acc += Array.from(w).length + 1;\n      return start;\n    });\n  }, [words]);\n\n  React.useEffect(() => {\n    setPhase(\"intro\");\n    reducedRef.current = window.matchMedia(\"(prefers-reduced-motion: reduce)\").matches;\n    if (reducedRef.current) {\n      setPhase(\"assembled\");\n      return;\n    }\n    let raf = requestAnimationFrame(() => {\n      raf = requestAnimationFrame(() => setPhase(\"assembled\"));\n    });\n    return () => cancelAnimationFrame(raf);\n  }, [text, spread, seed, duration, ease, stagger, staggerFrom]);\n\n  const onEnter = () => {\n    if (scatterOnHover && !reducedRef.current && phase === \"assembled\") setPhase(\"scattered\");\n  };\n  const onLeave = () => {\n    if (phase === \"scattered\") setPhase(\"assembled\");\n  };\n\n  const Tag = as;\n  const vars = {\n    \"--mf-sc-size\": `${fontSize}px`,\n    \"--mf-sc-duration\": `${Math.max(0, duration)}s`,\n    \"--mf-sc-ease\": toCssEasing(ease),\n    ...(color ? { \"--mf-sc-color\": color } : {}),\n    ...style,\n  } as React.CSSProperties;\n\n  return (\n    <Tag\n      className={`${styles.root} ${className}`.trim()}\n      data-phase={phase}\n      style={vars}\n      onPointerEnter={onEnter}\n      onPointerLeave={onLeave}\n    >\n      <span className={styles.srOnly}>{text}</span>\n      <span aria-hidden=\"true\" className={styles.letters}>\n        {words.map((word, wi) => (\n          <React.Fragment key={`${word}-${wi}`}>\n            <span className={styles.word}>\n              {Array.from(word).map((ch, ci) => {\n                const i = wordStarts[wi] + ci;\n                const s = seed * 131 + i * 7;\n                const angle = rand(s) * Math.PI * 2;\n                const dist = spread * (0.35 + rand(s + 1) * 0.65);\n                return (\n                  <span\n                    key={i}\n                    className={styles.char}\n                    style={\n                      {\n                        \"--mf-sc-x\": `${(Math.cos(angle) * dist).toFixed(1)}px`,\n                        \"--mf-sc-y\": `${(Math.sin(angle) * dist * 0.6).toFixed(1)}px`,\n                        \"--mf-sc-r\": `${((rand(s + 2) - 0.5) * 300).toFixed(1)}deg`,\n                        \"--mf-sc-s\": (0.4 + rand(s + 3) * 1.1).toFixed(2),\n                        \"--mf-sc-delay\": `${((ranks[i] ?? 0) * stagger).toFixed(3)}s`,\n                      } as React.CSSProperties\n                    }\n                  >\n                    {ch}\n                  </span>\n                );\n              })}\n            </span>\n            {wi < words.length - 1 ? \" \" : null}\n          </React.Fragment>\n        ))}\n      </span>\n    </Tag>\n  );\n}\n"
+    },
+    {
+      "path": "components/styles/scatter-text.module.css",
+      "type": "registry:style",
+      "content": ".root {\n  position: relative;\n  max-width: 100%;\n  margin: 0;\n  padding: 0.3em 0.5em;\n  color: var(--mf-sc-color, var(--mf-fg, #f4f4f6));\n  font-size: var(--mf-sc-size, 56px);\n  font-weight: 800;\n  letter-spacing: -0.04em;\n  line-height: 1.08;\n  text-align: center;\n  user-select: none;\n}\n\n.letters {\n  display: inline;\n}\n\n.word {\n  display: inline-block;\n  white-space: nowrap;\n}\n\n.char {\n  display: inline-block;\n  opacity: 0;\n  transform: translate3d(var(--mf-sc-x, 0px), var(--mf-sc-y, 0px), 0) rotate(var(--mf-sc-r, 0deg))\n    scale(var(--mf-sc-s, 1));\n  transition:\n    transform var(--mf-sc-duration, 1.1s) var(--mf-sc-ease, cubic-bezier(0.16, 1, 0.3, 1)) var(--mf-sc-delay, 0s),\n    opacity calc(var(--mf-sc-duration, 1.1s) * 0.45) ease-out var(--mf-sc-delay, 0s);\n  will-change: transform, opacity;\n}\n\n.root[data-phase=\"assembled\"] .char {\n  opacity: 1;\n  transform: none;\n}\n\n.root[data-phase=\"scattered\"] .char {\n  opacity: 0.85;\n  transform: translate3d(calc(var(--mf-sc-x, 0px) * 0.45), calc(var(--mf-sc-y, 0px) * 0.45), 0)\n    rotate(calc(var(--mf-sc-r, 0deg) * 0.5)) scale(var(--mf-sc-s, 1));\n  transition-duration: calc(var(--mf-sc-duration, 1.1s) * 0.6), calc(var(--mf-sc-duration, 1.1s) * 0.3);\n  transition-delay: calc(var(--mf-sc-delay, 0s) * 0.35), calc(var(--mf-sc-delay, 0s) * 0.35);\n}\n\n.srOnly {\n  position: absolute;\n  width: 1px;\n  height: 1px;\n  padding: 0;\n  margin: -1px;\n  overflow: hidden;\n  clip: rect(0, 0, 0, 0);\n  white-space: nowrap;\n  border: 0;\n}\n\n@media (prefers-reduced-motion: reduce) {\n  .char,\n  .root[data-phase] .char {\n    opacity: 1;\n    transform: none;\n    transition: none;\n  }\n}\n"
+    }
+  ],
+  "tailwindExample": "\"use client\";\n\nimport { useEffect, useState } from \"react\";\n\nconst rand = (n: number) => {\n  const x = Math.sin(n * 9301 + 49297) * 233280;\n  return x - Math.floor(x);\n};\n\nexport function ScatterTextTailwind({ text = \"Pieces fall into place\", spread = 240 }) {\n  const [together, setTogether] = useState(false);\n  useEffect(() => {\n    const id = requestAnimationFrame(() => requestAnimationFrame(() => setTogether(true)));\n    return () => cancelAnimationFrame(id);\n  }, []);\n  return (\n    <h2\n      onPointerEnter={() => setTogether(false)}\n      onPointerLeave={() => setTogether(true)}\n      className=\"select-none px-8 py-4 text-center text-[56px] font-extrabold tracking-tighter text-zinc-100\"\n    >\n      <span className=\"sr-only\">{text}</span>\n      {Array.from(text).map((ch, i) => {\n        const a = rand(i) * Math.PI * 2;\n        const d = spread * (0.35 + rand(i + 1) * 0.65);\n        const scattered = \"translate(\" + Math.cos(a) * d + \"px,\" + Math.sin(a) * d * 0.6 + \"px) rotate(\" + (rand(i + 2) - 0.5) * 300 + \"deg)\";\n        return (\n          <span\n            key={i}\n            aria-hidden\n            className={\"inline-block transition-all duration-1000 ease-[cubic-bezier(0.16,1,0.3,1)] \" + (together ? \"opacity-100\" : \"opacity-60\")}\n            style={{ transform: together ? \"none\" : scattered, transitionDelay: i * 0.025 + \"s\" }}\n          >\n            {ch === \" \" ? \"\\u00a0\" : ch}\n          </span>\n        );\n      })}\n    </h2>\n  );\n}"
+}

@@ -24,3 +24,6 @@ Thumbs.db
 # local source material (not part of the published project)
 swirl-studio-kit/
 image.png
+
+# local agent tooling
+.claude/

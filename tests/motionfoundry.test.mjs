@@ -66,7 +66,49 @@ const STUDIO_KIT_SLUGS = [
   "expandable-search",
 ];
 
-const EXPECTED_SLUGS = [...CORE_SLUGS, ...STUDIO_KIT_SLUGS];
+const GRADIENT_SLUGS = [
+  "mesh-gradient",
+  "aurora-ribbons",
+  "conic-gradient",
+  "liquid-gradient",
+  "wave-gradient",
+  "gradient-orbs",
+  "grain-gradient",
+  "spotlight-gradient",
+];
+
+const TEXT_FX_SLUGS = [
+  "split-text",
+  "mask-wipe-text",
+  "elastic-letters",
+  "text-on-path",
+  "rolling-text",
+  "marker-highlight",
+  "scatter-text",
+  "cube-flip-words",
+];
+
+const SCROLL_SLUGS = [
+  "smooth-scroll",
+  "parallax-layers",
+  "scroll-fill-text",
+  "horizontal-scroll",
+  "sticky-stack-cards",
+  "velocity-marquee",
+  "scroll-zoom-reveal",
+  "scroll-timeline",
+];
+
+const COLLECTION_SLUGS = {
+  core: CORE_SLUGS,
+  "studio-kit": STUDIO_KIT_SLUGS,
+  gradients: GRADIENT_SLUGS,
+  "text-fx": TEXT_FX_SLUGS,
+  scroll: SCROLL_SLUGS,
+};
+
+const EXPECTED_SLUGS = Object.values(COLLECTION_SLUGS).flat();
+const TOTAL = EXPECTED_SLUGS.length;
 const CONTROL_TYPES = new Set(["text", "range", "select", "boolean", "color", "list"]);
 
 const RETIRED_SLUGS = [
@@ -95,18 +137,19 @@ const RETIRED_SLUGS = [
   "bento-grid-card",
 ];
 
-test("1. Registry contains 24 Core + 24 Studio Kit components across 7 categories", () => {
-  assert.equal(registry.components.length, 48, "Expected exactly 48 components in registry");
-  assert.equal(registry.totalComponents, 48);
-  assert.equal(registry.categories.length, 7, "Expected 7 architectural categories");
+test("1. Registry contains all 72 components across 5 collections and 9 categories", () => {
+  assert.equal(TOTAL, 72);
+  assert.equal(registry.components.length, TOTAL, `Expected exactly ${TOTAL} components in registry`);
+  assert.equal(registry.totalComponents, TOTAL);
+  assert.equal(registry.categories.length, 9, "Expected 9 categories");
   const actualSlugs = registry.components.map((c) => c.slug);
-  assert.deepEqual(actualSlugs, EXPECTED_SLUGS, "Registry component slugs must match the 48 specified components");
+  assert.deepEqual(actualSlugs, EXPECTED_SLUGS, "Registry component slugs must match the specified components");
   assert.deepEqual(
     registry.collections.map((c) => [c.id, c.count]),
-    [["core", 24], ["studio-kit", 24]]
+    Object.entries(COLLECTION_SLUGS).map(([id, slugs]) => [id, slugs.length])
   );
   for (const comp of registry.components) {
-    const expectedCollection = STUDIO_KIT_SLUGS.includes(comp.slug) ? "studio-kit" : "core";
+    const expectedCollection = Object.keys(COLLECTION_SLUGS).find((id) => COLLECTION_SLUGS[id].includes(comp.slug));
     assert.equal(comp.collection, expectedCollection, `${comp.slug} must belong to ${expectedCollection}`);
     assert.ok(registry.categories.includes(comp.category), `${comp.slug} has unknown category ${comp.category}`);
     assert.ok(comp.files.length === 2, `${comp.slug} must include both .tsx and .module.css files`);
@@ -136,7 +179,7 @@ test("2. Registry source code matches actual packages/ui/src implementation file
   }
 });
 
-test("3. Accessibility & Reduced Motion support verified for all 48 components", () => {
+test("3. Accessibility & Reduced Motion support verified for all 72 components", () => {
   for (const comp of registry.components) {
     const tsx = comp.files[0].content;
     const css = comp.files[1].content;
@@ -232,9 +275,9 @@ test("6. Zero stale component files or retired slugs remain in packages/ui, regi
   const compFiles = fs.readdirSync(path.join(rootDir, "packages/ui/src/components"));
   const styleFiles = fs.readdirSync(path.join(rootDir, "packages/ui/src/styles"));
   const regFiles = fs.readdirSync(path.join(rootDir, "registry/components"));
-  assert.equal(compFiles.length, 48);
-  assert.equal(styleFiles.length, 48);
-  assert.equal(regFiles.length, 48);
+  assert.equal(compFiles.length, TOTAL);
+  assert.equal(styleFiles.length, TOTAL);
+  assert.equal(regFiles.length, TOTAL);
 
   const indexTs = fs.readFileSync(path.join(rootDir, "packages/ui/src/index.ts"), "utf8");
   const regJson = fs.readFileSync(path.join(rootDir, "registry/registry.json"), "utf8");
@@ -249,10 +292,10 @@ test("6. Zero stale component files or retired slugs remain in packages/ui, regi
   }
 });
 
-test("7. All 17 documentation pages exist, including the Studio Kit and Design Systems guides", () => {
+test("7. All 18 documentation pages exist, including the Studio Kit, Design Systems, and v2.2 guides", () => {
   const docsContentDir = path.join(rootDir, "apps/docs/content/docs");
   const mdxFiles = fs.readdirSync(docsContentDir).filter((f) => f.endsWith(".mdx"));
-  assert.equal(mdxFiles.length, 17, "Expected all 17 documentation pages");
+  assert.equal(mdxFiles.length, 18, "Expected all 18 documentation pages");
   const docsTs = fs.readFileSync(path.join(rootDir, "apps/docs/lib/docs.ts"), "utf8");
   for (const file of mdxFiles) {
     assert.ok(docsTs.includes(`"slug": "${file.replace(".mdx", "")}"`), `${file} must be registered in apps/docs/lib/docs.ts`);
@@ -265,7 +308,7 @@ test("7. All 17 documentation pages exist, including the Studio Kit and Design S
 
 test("8. Registry JSON is in sync with packages/ui source (scripts/build-registry.mjs --check)", () => {
   const out = execFileSync(process.execPath, [path.join(rootDir, "scripts/build-registry.mjs"), "--check"], { encoding: "utf8" });
-  assert.match(out, /Verified 48 components/);
+  assert.match(out, /Verified 72 components/);
 });
 
 const EXPECTED_DESIGNS = ["vercel", "cursor", "claude", "framer", "apple", "airbnb", "expo", "elevenlabs", "runwayml", "resend", "spotify"];
@@ -295,4 +338,19 @@ test("10. Component CSS Modules read theme variables with their original values 
     }
   }
   assert.ok(themed > 250, "Expected component palettes to be themeable");
+});
+
+test("11. v2.2 collections: complete metadata, rich controls, and no third-party animation engines", () => {
+  for (const slug of [...GRADIENT_SLUGS, ...TEXT_FX_SLUGS, ...SCROLL_SLUGS]) {
+    const comp = registry.components.find((c) => c.slug === slug);
+    assert.ok(comp, `${slug} missing from registry`);
+    assert.equal(comp.version, "2.2.0", `${slug} must be versioned 2.2.0`);
+    assert.ok(comp.controls.length >= 4, `${slug} must be customizable (>= 4 controls)`);
+    const tsx = comp.files[0].content;
+    assert.ok(!/from ["'](gsap|lenis|@studio-freight\/lenis|framer-motion)/.test(tsx), `${slug} must be built from scratch`);
+    assert.ok(comp.dependencies.every((d) => d === "react" || d === "motion"), `${slug} may only depend on react/motion`);
+    if (GRADIENT_SLUGS.includes(slug)) {
+      assert.ok(comp.controls.filter((c) => c.type === "color").length >= 2, `${slug} must expose its gradient colors`);
+    }
+  }
 });

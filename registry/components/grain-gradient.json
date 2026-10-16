@@ -1,0 +1,200 @@
+{
+  "slug": "grain-gradient",
+  "name": "GrainGradient",
+  "category": "Gradient Backgrounds",
+  "collection": "gradients",
+  "featured": false,
+  "addedAt": "2026-10-16",
+  "version": "2.2.0",
+  "requiresMotion": false,
+  "dependencies": [
+    "react"
+  ],
+  "description": "A four-stop linear or radial repeating gradient whose color stops travel continuously along the gradient line, finished with an SVG feTurbulence film-grain overlay and soft depth lighting.",
+  "tags": [
+    "gradient",
+    "grain",
+    "noise",
+    "background",
+    "linear",
+    "radial",
+    "texture"
+  ],
+  "a11yNotes": "The gradient, lighting and SVG grain (focusable=false) layers are aria-hidden with pointer-events: none. The stop animation runs only while visible and speed > 0; prefers-reduced-motion shows the static starting gradient.",
+  "defaultProps": {
+    "color1": "#f97316",
+    "color2": "#db2777",
+    "color3": "#7c3aed",
+    "color4": "#0ea5e9",
+    "type": "linear",
+    "angle": 135,
+    "speed": 1,
+    "grainOpacity": 0.35,
+    "height": 360,
+    "borderRadius": 20
+  },
+  "controls": [
+    {
+      "prop": "color1",
+      "label": "Color 1",
+      "type": "color"
+    },
+    {
+      "prop": "color2",
+      "label": "Color 2",
+      "type": "color"
+    },
+    {
+      "prop": "color3",
+      "label": "Color 3",
+      "type": "color"
+    },
+    {
+      "prop": "color4",
+      "label": "Color 4",
+      "type": "color"
+    },
+    {
+      "prop": "type",
+      "label": "Type",
+      "type": "select",
+      "options": [
+        "linear",
+        "radial"
+      ]
+    },
+    {
+      "prop": "angle",
+      "label": "Angle (deg)",
+      "type": "range",
+      "min": 0,
+      "max": 360,
+      "step": 1
+    },
+    {
+      "prop": "speed",
+      "label": "Speed",
+      "type": "range",
+      "min": 0,
+      "max": 3,
+      "step": 0.1
+    },
+    {
+      "prop": "grainOpacity",
+      "label": "Grain opacity",
+      "type": "range",
+      "min": 0,
+      "max": 1,
+      "step": 0.05
+    },
+    {
+      "prop": "height",
+      "label": "Height (px)",
+      "type": "range",
+      "min": 200,
+      "max": 600,
+      "step": 10
+    },
+    {
+      "prop": "borderRadius",
+      "label": "Corner radius (px)",
+      "type": "range",
+      "min": 0,
+      "max": 48,
+      "step": 1
+    }
+  ],
+  "propsApi": [
+    {
+      "name": "color1",
+      "type": "string",
+      "default": "'#f97316'",
+      "description": "First gradient stop color."
+    },
+    {
+      "name": "color2",
+      "type": "string",
+      "default": "'#db2777'",
+      "description": "Second gradient stop color (also tints the depth glow)."
+    },
+    {
+      "name": "color3",
+      "type": "string",
+      "default": "'#7c3aed'",
+      "description": "Third gradient stop color."
+    },
+    {
+      "name": "color4",
+      "type": "string",
+      "default": "'#0ea5e9'",
+      "description": "Fourth gradient stop color."
+    },
+    {
+      "name": "type",
+      "type": "\"linear\" | \"radial\"",
+      "default": "'linear'",
+      "description": "Gradient shape."
+    },
+    {
+      "name": "angle",
+      "type": "number",
+      "default": "135",
+      "description": "Direction of the linear gradient in degrees (ignored for radial)."
+    },
+    {
+      "name": "speed",
+      "type": "number",
+      "default": "1",
+      "description": "Speed at which stops travel along the gradient; 1 = one cycle per 16s, 0 pauses."
+    },
+    {
+      "name": "grainOpacity",
+      "type": "number",
+      "default": "0.35",
+      "description": "Opacity of the film-grain overlay (0–1)."
+    },
+    {
+      "name": "height",
+      "type": "number",
+      "default": "360",
+      "description": "Height of the background in px."
+    },
+    {
+      "name": "borderRadius",
+      "type": "number",
+      "default": "20",
+      "description": "Corner radius in px."
+    },
+    {
+      "name": "children",
+      "type": "React.ReactNode",
+      "default": "undefined",
+      "description": "Content rendered centered on top; defaults to a heading and subline."
+    },
+    {
+      "name": "className",
+      "type": "string",
+      "default": "''",
+      "description": "Additional class merged onto the root element."
+    },
+    {
+      "name": "style",
+      "type": "React.CSSProperties",
+      "default": "undefined",
+      "description": "Inline styles merged onto the root element."
+    }
+  ],
+  "files": [
+    {
+      "path": "components/ui/grain-gradient.tsx",
+      "type": "registry:component",
+      "content": "\"use client\";\n\nimport * as React from \"react\";\nimport styles from \"../styles/grain-gradient.module.css\";\n\nexport interface GrainGradientProps {\n  /** First gradient stop color */\n  color1?: string;\n  /** Second gradient stop color */\n  color2?: string;\n  /** Third gradient stop color */\n  color3?: string;\n  /** Fourth gradient stop color */\n  color4?: string;\n  /** Gradient shape */\n  type?: \"linear\" | \"radial\";\n  /** Direction of the linear gradient in degrees (ignored for radial) */\n  angle?: number;\n  /** Speed at which the stops travel along the gradient (1 = default, 0 = paused) */\n  speed?: number;\n  /** Opacity of the film-grain overlay (0–1) */\n  grainOpacity?: number;\n  /** Height of the background in px */\n  height?: number;\n  /** Corner radius in px */\n  borderRadius?: number;\n  /** Foreground content rendered centered on top */\n  children?: React.ReactNode;\n  /** Optional className merged onto the root */\n  className?: string;\n  /** Inline styles merged onto the root */\n  style?: React.CSSProperties;\n}\n\n/** Length of one full color cycle, as a percentage of the gradient line */\nconst PERIOD = 180;\n/** Seconds per full cycle at speed 1 */\nconst CYCLE_S = 16;\n\nfunction buildGradient(\n  type: \"linear\" | \"radial\",\n  angle: number,\n  colors: string[],\n  phase: number,\n): string {\n  const n = colors.length;\n  const stops: string[] = [];\n  for (let i = 0; i <= n; i++) {\n    const pos = ((i / n - phase) * PERIOD).toFixed(2);\n    stops.push(`${colors[i % n]} ${pos}%`);\n  }\n  const list = stops.join(\", \");\n  return type === \"radial\"\n    ? `repeating-radial-gradient(circle at 28% 22%, ${list})`\n    : `repeating-linear-gradient(${angle}deg, ${list})`;\n}\n\nfunction useReducedMotionPref() {\n  const [reduced, setReduced] = React.useState(false);\n  React.useEffect(() => {\n    if (typeof window === \"undefined\" || !window.matchMedia) return;\n    const mq = window.matchMedia(\"(prefers-reduced-motion: reduce)\");\n    const update = () => setReduced(mq.matches);\n    update();\n    mq.addEventListener(\"change\", update);\n    return () => mq.removeEventListener(\"change\", update);\n  }, []);\n  return reduced;\n}\n\nfunction useInView(ref: React.RefObject<HTMLElement | null>) {\n  const [inView, setInView] = React.useState(true);\n  React.useEffect(() => {\n    const el = ref.current;\n    if (!el || typeof IntersectionObserver === \"undefined\") return;\n    const io = new IntersectionObserver((entries) => {\n      const entry = entries[entries.length - 1];\n      if (entry) setInView(entry.isIntersecting);\n    }, { rootMargin: \"80px\" });\n    io.observe(el);\n    return () => io.disconnect();\n  }, [ref]);\n  return inView;\n}\n\nexport function GrainGradient({\n  color1 = \"#f97316\",\n  color2 = \"#db2777\",\n  color3 = \"#7c3aed\",\n  color4 = \"#0ea5e9\",\n  type = \"linear\",\n  angle = 135,\n  speed = 1,\n  grainOpacity = 0.35,\n  height = 360,\n  borderRadius = 20,\n  children,\n  className = \"\",\n  style,\n}: GrainGradientProps) {\n  const rootRef = React.useRef<HTMLDivElement>(null);\n  const layerRef = React.useRef<HTMLDivElement>(null);\n  const phaseRef = React.useRef(0);\n  const reduced = useReducedMotionPref();\n  const inView = useInView(rootRef);\n  const filterId = `mf-gg-${React.useId().replace(/[^a-zA-Z0-9_-]/g, \"\")}`;\n  const safeSpeed = Math.max(0, speed);\n  const running = !reduced && safeSpeed > 0 && inView;\n  const colors = React.useMemo(() => [color1, color2, color3, color4], [color1, color2, color3, color4]);\n\n  React.useEffect(() => {\n    const layer = layerRef.current;\n    if (!layer || !running) return;\n    let raf = 0;\n    let last = performance.now();\n    let acc = 0;\n    const tick = (now: number) => {\n      const dt = Math.min(0.05, (now - last) / 1000);\n      last = now;\n      phaseRef.current = (phaseRef.current + (dt * safeSpeed) / CYCLE_S) % 1;\n      acc += dt;\n      // ~40fps is plenty for a slow gradient drift and halves style recalcs\n      if (acc >= 0.025) {\n        acc = 0;\n        layer.style.backgroundImage = buildGradient(type, angle, colors, phaseRef.current);\n      }\n      raf = requestAnimationFrame(tick);\n    };\n    raf = requestAnimationFrame(tick);\n    return () => cancelAnimationFrame(raf);\n  }, [running, safeSpeed, type, angle, colors]);\n\n  const styleVars = {\n    \"--mf-gg-grain\": String(Math.max(0, Math.min(1, grainOpacity))),\n    \"--mf-gg-glow\": color2,\n    height: `${height}px`,\n    borderRadius: `${borderRadius}px`,\n    ...style,\n  } as React.CSSProperties;\n\n  return (\n    <div ref={rootRef} style={styleVars} className={`${styles.root} ${className}`.trim()}>\n      <div\n        ref={layerRef}\n        aria-hidden=\"true\"\n        className={styles.gradient}\n        style={{ backgroundImage: buildGradient(type, angle, colors, 0) }}\n      />\n      <div aria-hidden=\"true\" className={styles.depth} />\n      <svg aria-hidden=\"true\" focusable=\"false\" className={styles.grain} preserveAspectRatio=\"none\">\n        <filter id={filterId} x=\"0\" y=\"0\" width=\"100%\" height=\"100%\">\n          <feTurbulence type=\"fractalNoise\" baseFrequency=\"0.8\" numOctaves=\"3\" stitchTiles=\"stitch\" />\n          <feColorMatrix type=\"saturate\" values=\"0\" />\n          <feComponentTransfer>\n            <feFuncA type=\"linear\" slope=\"1.6\" intercept=\"-0.25\" />\n          </feComponentTransfer>\n        </filter>\n        <rect width=\"100%\" height=\"100%\" filter={`url(#${filterId})`} />\n      </svg>\n      <div className={styles.content}>\n        {children ?? (\n          <div className={styles.copy}>\n            <h3 className={styles.title}>Grain Gradient</h3>\n            <p className={styles.subtitle}>Shifting color with a tactile film-grain finish.</p>\n          </div>\n        )}\n      </div>\n    </div>\n  );\n}\n"
+    },
+    {
+      "path": "components/styles/grain-gradient.module.css",
+      "type": "registry:style",
+      "content": ".root {\n  position: relative;\n  isolation: isolate;\n  overflow: hidden;\n  display: flex;\n  width: 100%;\n  border: 1px solid var(--mf-border, #2e2e38);\n  background-color: var(--mf-surface, #141419);\n  color: var(--mf-fg, #f4f4f6);\n}\n\n.gradient {\n  position: absolute;\n  inset: 0;\n  pointer-events: none;\n  filter: saturate(1.1);\n}\n\n.depth {\n  position: absolute;\n  inset: 0;\n  pointer-events: none;\n  background: radial-gradient(80% 70% at 75% 85%, var(--mf-gg-glow, #db2777), transparent 70%),\n    radial-gradient(120% 90% at 50% 120%, rgba(0, 0, 0, 0.35), transparent 60%),\n    radial-gradient(90% 70% at 20% -10%, rgba(255, 255, 255, 0.18), transparent 60%);\n  mix-blend-mode: soft-light;\n}\n\n.grain {\n  position: absolute;\n  inset: 0;\n  width: 100%;\n  height: 100%;\n  pointer-events: none;\n  opacity: var(--mf-gg-grain, 0.35);\n  mix-blend-mode: overlay;\n}\n\n.content {\n  position: relative;\n  z-index: 1;\n  display: flex;\n  flex: 1;\n  align-items: center;\n  justify-content: center;\n  padding: 2rem;\n}\n\n.copy {\n  text-align: center;\n  text-shadow: 0 2px 24px rgba(0, 0, 0, 0.3);\n}\n\n.title {\n  margin: 0;\n  font-size: 2rem;\n  font-weight: 700;\n  letter-spacing: -0.035em;\n  color: var(--mf-fg, #f4f4f6);\n}\n\n.subtitle {\n  margin: 0.5rem 0 0;\n  font-size: 0.9375rem;\n  color: var(--mf-fg, #f4f4f6);\n  opacity: 0.82;\n}\n\n@media (prefers-reduced-motion: reduce) {\n  .gradient {\n    transition: none;\n  }\n}\n"
+    }
+  ],
+  "tailwindExample": "\"use client\";\n\nexport function GrainGradientTailwind({ children }: { children?: React.ReactNode }) {\n  return (\n    <div className=\"relative isolate flex h-[360px] w-full items-center justify-center overflow-hidden rounded-[20px] border border-zinc-800\">\n      <style>{\"@keyframes ggShift{to{background-position:100% 100%}}\"}</style>\n      <div aria-hidden className=\"absolute inset-0 bg-[length:300%_300%] bg-[linear-gradient(135deg,#f97316,#db2777,#7c3aed,#0ea5e9,#f97316)] motion-safe:[animation:ggShift_16s_linear_infinite_alternate]\" />\n      <svg aria-hidden className=\"absolute inset-0 h-full w-full opacity-35 mix-blend-overlay\">\n        <filter id=\"gg-noise\"><feTurbulence type=\"fractalNoise\" baseFrequency=\"0.8\" numOctaves=\"3\" /><feColorMatrix type=\"saturate\" values=\"0\" /></filter>\n        <rect width=\"100%\" height=\"100%\" filter=\"url(#gg-noise)\" />\n      </svg>\n      <div className=\"relative text-center\">\n        {children ?? (\n          <>\n            <h3 className=\"text-3xl font-bold tracking-tight text-white\">Grain Gradient</h3>\n            <p className=\"mt-2 text-sm text-white/80\">Shifting color with a tactile film-grain finish.</p>\n          </>\n        )}\n      </div>\n    </div>\n  );\n}"
+}

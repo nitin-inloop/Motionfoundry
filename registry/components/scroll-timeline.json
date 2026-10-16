@@ -1,0 +1,157 @@
+{
+  "slug": "scroll-timeline",
+  "name": "ScrollTimeline",
+  "category": "Scroll Animations",
+  "collection": "scroll",
+  "featured": false,
+  "addedAt": "2026-10-16",
+  "version": "2.2.0",
+  "requiresMotion": false,
+  "dependencies": [
+    "react"
+  ],
+  "description": "A vertical milestone timeline inside a smooth-scroll viewport: the line draws with scroll, and each dot lights up with a springy scale while its card slides in the moment the line tip reaches it.",
+  "tags": [
+    "scroll",
+    "timeline",
+    "milestones",
+    "history",
+    "progress",
+    "smooth-scroll"
+  ],
+  "a11yNotes": "The viewport is a focusable role=\"region\" with an aria-label, so keyboard users can Tab to it and scroll with arrows/Page keys/Space (native, unsmoothed) and see a 2px :focus-visible outline. Wheel input is smoothed only while the viewport can still move; at the top/bottom edge wheel events are released so the page keeps scrolling. Touch and scrollbar dragging stay native. Under prefers-reduced-motion (or smooth=false) the wheel is not intercepted at all. Milestones are an ordered list with real headings text and descriptions that stay readable (dimmed, never hidden) before activation; the line and dots are aria-hidden. Under prefers-reduced-motion cards and dots change state without sliding or scaling.",
+  "defaultProps": {
+    "items": [
+      "Idea on a napkin",
+      "First prototype",
+      "Private beta",
+      "Public launch",
+      "10k teams onboard",
+      "What comes next"
+    ],
+    "title": "How we got here",
+    "accentColor": "#34d399",
+    "lerp": 0.1,
+    "wheelMultiplier": 1,
+    "smooth": true
+  },
+  "controls": [
+    {
+      "prop": "items",
+      "label": "Milestones (comma separated)",
+      "type": "list"
+    },
+    {
+      "prop": "title",
+      "label": "Title",
+      "type": "text"
+    },
+    {
+      "prop": "accentColor",
+      "label": "Accent",
+      "type": "color"
+    },
+    {
+      "prop": "lerp",
+      "label": "Lerp (smoothness)",
+      "type": "range",
+      "min": 0.05,
+      "max": 0.3,
+      "step": 0.01
+    },
+    {
+      "prop": "wheelMultiplier",
+      "label": "Wheel multiplier",
+      "type": "range",
+      "min": 0.5,
+      "max": 2,
+      "step": 0.1
+    },
+    {
+      "prop": "smooth",
+      "label": "Smooth scrolling",
+      "type": "boolean"
+    }
+  ],
+  "propsApi": [
+    {
+      "name": "items",
+      "type": "string[]",
+      "default": "['Idea on a napkin', 'First prototype', 'Private beta', 'Public launch', '10k teams onboard', 'What comes next']",
+      "description": "Milestone titles, one per timeline entry."
+    },
+    {
+      "name": "descriptions",
+      "type": "string[]",
+      "default": "[…six default descriptions]",
+      "description": "Optional description per milestone, matched by index (missing entries are omitted)."
+    },
+    {
+      "name": "title",
+      "type": "string",
+      "default": "'How we got here'",
+      "description": "Heading shown above the timeline."
+    },
+    {
+      "name": "accentColor",
+      "type": "string",
+      "default": "'#34d399'",
+      "description": "Accent color for the drawn line, active dots and labels."
+    },
+    {
+      "name": "height",
+      "type": "number",
+      "default": "380",
+      "description": "Height of the component's own scroll viewport in px (width is always 100%)."
+    },
+    {
+      "name": "borderRadius",
+      "type": "number",
+      "default": "20",
+      "description": "Corner radius of the viewport in px."
+    },
+    {
+      "name": "lerp",
+      "type": "number",
+      "default": "0.1",
+      "description": "Interpolation factor per 60fps frame for wheel smoothing (0.05 floaty, 0.3 snappy)."
+    },
+    {
+      "name": "wheelMultiplier",
+      "type": "number",
+      "default": "1",
+      "description": "Multiplier applied to wheel and trackpad deltas."
+    },
+    {
+      "name": "smooth",
+      "type": "boolean",
+      "default": "true",
+      "description": "Enable smooth wheel scrolling; false (or prefers-reduced-motion) uses native scrolling."
+    },
+    {
+      "name": "className",
+      "type": "string",
+      "default": "''",
+      "description": "Additional class merged onto the root element."
+    },
+    {
+      "name": "style",
+      "type": "React.CSSProperties",
+      "default": "undefined",
+      "description": "Inline styles merged onto the root element."
+    }
+  ],
+  "files": [
+    {
+      "path": "components/ui/scroll-timeline.tsx",
+      "type": "registry:component",
+      "content": "\"use client\";\n\nimport * as React from \"react\";\nimport styles from \"../styles/scroll-timeline.module.css\";\n\ninterface SmoothScrollState {\n  /** Current scrollTop of the viewport in px */\n  scroll: number;\n  /** Maximum scrollTop in px */\n  limit: number;\n  /** scroll / limit, 0..1 */\n  progress: number;\n  /** Signed scroll velocity in px per 60fps frame */\n  velocity: number;\n}\n\ninterface SmoothScrollOptions {\n  lerp: number;\n  wheelMultiplier: number;\n  smooth: boolean;\n  onScroll?: (state: SmoothScrollState) => void;\n}\n\nconst clamp = (v: number, min: number, max: number) => Math.min(max, Math.max(min, v));\n\nfunction usePrefersReducedMotion(): boolean {\n  const [reduced, setReduced] = React.useState(false);\n  React.useEffect(() => {\n    const mq = window.matchMedia(\"(prefers-reduced-motion: reduce)\");\n    const update = () => setReduced(mq.matches);\n    update();\n    mq.addEventListener(\"change\", update);\n    return () => mq.removeEventListener(\"change\", update);\n  }, []);\n  return reduced;\n}\n\n/** True when a nested scrollable element under the pointer can still scroll in the wheel direction. */\nfunction nestedCanScroll(node: EventTarget | null, root: HTMLElement, dy: number): boolean {\n  let el: Element | null = node instanceof Element ? node : null;\n  while (el && el !== root) {\n    if (el instanceof HTMLElement) {\n      if (el.dataset.mfScrollPrevent !== undefined) return true;\n      const overflowY = window.getComputedStyle(el).overflowY;\n      if ((overflowY === \"auto\" || overflowY === \"scroll\") && el.scrollHeight > el.clientHeight + 1) {\n        const canMove = dy < 0 ? el.scrollTop > 0 : el.scrollTop + el.clientHeight < el.scrollHeight - 1;\n        if (canMove) return true;\n      }\n    }\n    el = el.parentElement;\n  }\n  return false;\n}\n\n/**\n * Self-contained smooth scroller for an overflow container. Wheel input updates a target\n * position; a rAF loop eases the real scrollTop toward it (frame-rate independent lerp) and\n * stops once settled. Touch, keyboard and scrollbar drags stay native. At the top/bottom edge\n * wheel events are released so the page keeps scrolling.\n */\nfunction useSmoothScroll(\n  containerRef: React.RefObject<HTMLElement | null>,\n  { lerp, wheelMultiplier, smooth, onScroll }: SmoothScrollOptions,\n): React.RefObject<SmoothScrollState> {\n  const stateRef = React.useRef<SmoothScrollState>({ scroll: 0, limit: 0, progress: 0, velocity: 0 });\n  const callbackRef = React.useRef(onScroll);\n  React.useEffect(() => {\n    callbackRef.current = onScroll;\n  }, [onScroll]);\n\n  React.useEffect(() => {\n    const el = containerRef.current;\n    if (!el) return;\n    const ease = clamp(Number.isFinite(lerp) ? lerp : 0.1, 0.01, 1);\n    const multiplier = Number.isFinite(wheelMultiplier) ? wheelMultiplier : 1;\n    let target = el.scrollTop;\n    let current = target;\n    let raf = 0;\n    let lastTime = 0;\n    let lastNative = el.scrollTop;\n    let lastNativeTime = 0;\n    let settleTimer: ReturnType<typeof setTimeout> | undefined;\n\n    const getLimit = () => Math.max(0, el.scrollHeight - el.clientHeight);\n\n    const emit = (velocity: number) => {\n      const limit = getLimit();\n      const scroll = clamp(el.scrollTop, 0, limit);\n      lastNative = el.scrollTop;\n      const s = stateRef.current;\n      s.scroll = scroll;\n      s.limit = limit;\n      s.progress = limit > 0 ? scroll / limit : 0;\n      s.velocity = velocity;\n      callbackRef.current?.(s);\n    };\n\n    const tick = (time: number) => {\n      const dt = lastTime ? Math.min(64, Math.max(1, time - lastTime)) : 16.667;\n      lastTime = time;\n      const limit = getLimit();\n      target = clamp(target, 0, limit);\n      if (Math.abs(el.scrollTop - current) > 2) {\n        // Something else moved the viewport (scrollbar drag, keyboard, touch): hand control back.\n        current = target = el.scrollTop;\n        raf = 0;\n        lastTime = 0;\n        emit(0);\n        return;\n      }\n      const prev = current;\n      const frames = dt / 16.667;\n      current += (target - current) * (1 - Math.pow(1 - ease, frames));\n      if (Math.abs(target - current) < 0.35) current = target;\n      el.scrollTop = current;\n      emit((current - prev) / frames);\n      if (current === target) {\n        raf = 0;\n        lastTime = 0;\n        emit(0);\n        return;\n      }\n      raf = requestAnimationFrame(tick);\n    };\n\n    const onWheel = (event: WheelEvent) => {\n      if (event.ctrlKey || event.defaultPrevented) return;\n      if (Math.abs(event.deltaX) > Math.abs(event.deltaY)) return;\n      let dy = event.deltaY;\n      if (event.deltaMode === 1) dy *= 16;\n      else if (event.deltaMode === 2) dy *= el.clientHeight;\n      dy *= multiplier;\n      if (dy === 0 || nestedCanScroll(event.target, el, dy)) return;\n      const limit = getLimit();\n      if (!raf) current = target = el.scrollTop;\n      // Release to native scrolling at the edges so the page is never trapped.\n      if ((dy < 0 && target <= 0) || (dy > 0 && target >= limit - 0.5)) return;\n      event.preventDefault();\n      target = clamp(target + dy, 0, limit);\n      if (!raf) {\n        lastTime = 0;\n        raf = requestAnimationFrame(tick);\n      }\n    };\n\n    const onNativeScroll = () => {\n      if (raf) return;\n      const top = el.scrollTop;\n      const delta = top - lastNative;\n      if (delta === 0) return;\n      const now = performance.now();\n      const dt = lastNativeTime ? clamp(now - lastNativeTime, 8, 100) : 16.667;\n      lastNativeTime = now;\n      current = target = top;\n      emit(delta / (dt / 16.667));\n      if (settleTimer) clearTimeout(settleTimer);\n      settleTimer = setTimeout(() => {\n        lastNativeTime = 0;\n        emit(0);\n      }, 90);\n    };\n\n    if (smooth) el.addEventListener(\"wheel\", onWheel, { passive: false });\n    el.addEventListener(\"scroll\", onNativeScroll, { passive: true });\n    const ro = new ResizeObserver(() => emit(stateRef.current.velocity));\n    ro.observe(el);\n    if (el.firstElementChild) ro.observe(el.firstElementChild);\n    emit(0);\n\n    return () => {\n      if (smooth) el.removeEventListener(\"wheel\", onWheel);\n      el.removeEventListener(\"scroll\", onNativeScroll);\n      ro.disconnect();\n      if (raf) cancelAnimationFrame(raf);\n      if (settleTimer) clearTimeout(settleTimer);\n    };\n  }, [containerRef, lerp, wheelMultiplier, smooth]);\n\n  return stateRef;\n}\n\nexport interface ScrollTimelineProps {\n  /** Milestone titles, one per timeline entry */\n  items?: string[];\n  /** Optional description per milestone (matched by index) */\n  descriptions?: string[];\n  /** Heading shown above the timeline */\n  title?: string;\n  /** Accent color for the drawn line and active dots */\n  accentColor?: string;\n  /** Viewport height in px */\n  height?: number;\n  /** Viewport corner radius in px */\n  borderRadius?: number;\n  /** Interpolation factor per 60fps frame (0.05 = floaty, 0.3 = snappy) */\n  lerp?: number;\n  /** Multiplier applied to wheel / trackpad deltas */\n  wheelMultiplier?: number;\n  /** Enable smooth wheel scrolling (native scrolling when false or under reduced motion) */\n  smooth?: boolean;\n  /** Optional className merged onto the root */\n  className?: string;\n  /** Inline styles merged onto the root */\n  style?: React.CSSProperties;\n}\n\nconst DEFAULT_ITEMS = [\n  \"Idea on a napkin\",\n  \"First prototype\",\n  \"Private beta\",\n  \"Public launch\",\n  \"10k teams onboard\",\n  \"What comes next\",\n];\n\nconst DEFAULT_DESCRIPTIONS = [\n  \"A late-night sketch of a motion library that stays out of the way.\",\n  \"Twelve components, one rAF loop, zero dependencies beyond React.\",\n  \"Forty studios stress-test every easing curve and edge case.\",\n  \"Docs, playground and CLI ship the same afternoon.\",\n  \"Teams across product, marketing and games build with it daily.\",\n  \"Scroll-driven scenes, physics and a visual timeline editor.\",\n];\n\n/** Fraction of the viewport height where the line tip sits. */\nconst ANCHOR = 0.6;\n\nexport function ScrollTimeline({\n  items = DEFAULT_ITEMS,\n  descriptions = DEFAULT_DESCRIPTIONS,\n  title = \"How we got here\",\n  accentColor = \"#34d399\",\n  height = 380,\n  borderRadius = 20,\n  lerp = 0.1,\n  wheelMultiplier = 1,\n  smooth = true,\n  className = \"\",\n  style,\n}: ScrollTimelineProps) {\n  const reduced = usePrefersReducedMotion();\n  const rootRef = React.useRef<HTMLDivElement>(null);\n  const viewportRef = React.useRef<HTMLDivElement>(null);\n  const listRef = React.useRef<HTMLDivElement>(null);\n  const itemRefs = React.useRef<(HTMLLIElement | null)[]>([]);\n  const geometryRef = React.useRef({ listTop: 0, listHeight: 1, dots: [] as number[] });\n  const stateRef = React.useRef({ scroll: 0, progress: 0, viewport: 0 });\n  const total = items.length;\n\n  const apply = React.useCallback(() => {\n    const root = rootRef.current;\n    if (!root) return;\n    const { listTop, listHeight, dots } = geometryRef.current;\n    const { scroll, progress, viewport } = stateRef.current;\n    const anchor = progress >= 0.999 ? Number.POSITIVE_INFINITY : scroll + viewport * ANCHOR - listTop;\n    const fill = clamp(anchor / listHeight, 0, 1);\n    root.style.setProperty(\"--mf-st-fill\", fill.toFixed(4));\n    for (let i = 0; i < total; i++) {\n      const item = itemRefs.current[i];\n      if (!item) continue;\n      const active = anchor >= (dots[i] ?? 0);\n      if ((item.dataset.active === \"true\") !== active) item.dataset.active = active ? \"true\" : \"false\";\n    }\n  }, [total]);\n\n  const handleScroll = React.useCallback(\n    (state: SmoothScrollState) => {\n      stateRef.current.scroll = state.scroll;\n      stateRef.current.progress = state.progress;\n      apply();\n    },\n    [apply],\n  );\n\n  useSmoothScroll(viewportRef, { lerp, wheelMultiplier, smooth: smooth && !reduced, onScroll: handleScroll });\n\n  React.useEffect(() => {\n    const list = listRef.current;\n    const viewport = viewportRef.current;\n    if (!list || !viewport) return;\n    const measure = () => {\n      geometryRef.current = {\n        listTop: list.offsetTop,\n        listHeight: Math.max(1, list.offsetHeight),\n        dots: itemRefs.current.slice(0, total).map((node) => (node ? node.offsetTop + 22 : 0)),\n      };\n      stateRef.current.viewport = viewport.clientHeight;\n      apply();\n    };\n    measure();\n    const ro = new ResizeObserver(measure);\n    ro.observe(list);\n    ro.observe(viewport);\n    return () => ro.disconnect();\n  }, [total, apply]);\n\n  const vars = {\n    \"--mf-st-h\": `${height}px`,\n    \"--mf-st-r\": `${borderRadius}px`,\n    \"--mf-st-accent\": accentColor,\n    ...style,\n  } as React.CSSProperties;\n\n  return (\n    <div ref={rootRef} style={vars} className={`${styles.root} ${className}`.trim()}>\n      <div ref={viewportRef} className={styles.viewport} tabIndex={0} role=\"region\" aria-label={title}>\n        <div className={styles.content}>\n          <header className={styles.header}>\n            <span className={styles.kicker}>Timeline</span>\n            <h3 className={styles.title}>{title}</h3>\n          </header>\n          <div ref={listRef} className={styles.timeline}>\n            <span aria-hidden=\"true\" className={styles.line}>\n              <span className={styles.lineFill} />\n            </span>\n            <ol className={styles.list}>\n              {items.map((item, i) => (\n                <li\n                  key={`${item}-${i}`}\n                  ref={(node) => {\n                    itemRefs.current[i] = node;\n                  }}\n                  className={styles.item}\n                >\n                  <span aria-hidden=\"true\" className={styles.dot} />\n                  <div className={styles.card}>\n                    <span className={styles.step}>{`Milestone ${String(i + 1).padStart(2, \"0\")}`}</span>\n                    <span className={styles.itemTitle}>{item}</span>\n                    {descriptions[i] && <p className={styles.description}>{descriptions[i]}</p>}\n                  </div>\n                </li>\n              ))}\n            </ol>\n          </div>\n        </div>\n      </div>\n    </div>\n  );\n}\n"
+    },
+    {
+      "path": "components/styles/scroll-timeline.module.css",
+      "type": "registry:style",
+      "content": ".root {\n  --mf-st-fill: 0;\n  position: relative;\n  width: 100%;\n  height: var(--mf-st-h, 380px);\n  border-radius: var(--mf-st-r, 20px);\n  overflow: hidden;\n  border: 1px solid var(--mf-border, #2e2e38);\n  background: var(--mf-surface, #141419);\n  color: var(--mf-fg, #f4f4f6);\n  container-type: inline-size;\n  isolation: isolate;\n}\n\n.root *,\n.root *::before,\n.root *::after {\n  box-sizing: border-box;\n}\n\n.viewport {\n  position: relative;\n  height: 100%;\n  overflow-x: hidden;\n  overflow-y: auto;\n  overscroll-behavior: auto;\n  scroll-behavior: auto;\n  scrollbar-width: thin;\n  scrollbar-color: var(--mf-border, #2e2e38) transparent;\n}\n\n.viewport:focus-visible {\n  outline: 2px solid var(--mf-fg, #e4e4e7);\n  outline-offset: -2px;\n}\n\n.content {\n  position: relative;\n  max-width: 40rem;\n  margin: 0 auto;\n  padding: 0 clamp(1.25rem, 6cqi, 2.5rem) calc(var(--mf-st-h, 380px) * 0.45);\n}\n\n.header {\n  display: flex;\n  flex-direction: column;\n  justify-content: flex-end;\n  gap: 0.55rem;\n  min-height: calc(var(--mf-st-h, 380px) * 0.5);\n  padding-bottom: 2rem;\n}\n\n.kicker {\n  align-self: flex-start;\n  padding: 0.3rem 0.75rem;\n  border: 1px solid var(--mf-border, #2e2e38);\n  border-radius: 999px;\n  font-size: 0.72rem;\n  letter-spacing: 0.08em;\n  text-transform: uppercase;\n  color: var(--mf-st-accent, #34d399);\n}\n\n.title {\n  margin: 0;\n  font-size: clamp(1.8rem, 6cqi, 2.8rem);\n  font-weight: 700;\n  line-height: 1.05;\n  letter-spacing: -0.035em;\n}\n\n.timeline {\n  position: relative;\n}\n\n.line {\n  position: absolute;\n  top: 0;\n  bottom: 0;\n  left: 15px;\n  width: 2px;\n  border-radius: 2px;\n  background: var(--mf-border, #2e2e38);\n  overflow: hidden;\n}\n\n.lineFill {\n  display: block;\n  width: 100%;\n  height: 100%;\n  background: linear-gradient(180deg, color-mix(in srgb, var(--mf-st-accent, #34d399) 30%, transparent), var(--mf-st-accent, #34d399));\n  transform: scaleY(var(--mf-st-fill, 0));\n  transform-origin: 50% 0%;\n  will-change: transform;\n}\n\n.list {\n  margin: 0;\n  padding: 0;\n  list-style: none;\n}\n\n.item {\n  position: relative;\n  padding: 0 0 2.25rem 3rem;\n}\n\n.item:last-child {\n  padding-bottom: 0;\n}\n\n.dot {\n  position: absolute;\n  left: 9px;\n  top: 15px;\n  width: 14px;\n  height: 14px;\n  border-radius: 50%;\n  border: 2px solid var(--mf-border-strong, #3f3f4a);\n  background: var(--mf-surface, #141419);\n  transition:\n    transform 420ms cubic-bezier(0.34, 1.56, 0.64, 1),\n    background-color 300ms ease,\n    border-color 300ms ease,\n    box-shadow 300ms ease;\n}\n\n.card {\n  display: flex;\n  flex-direction: column;\n  gap: 0.3rem;\n  padding: 0.9rem 1.1rem;\n  border: 1px solid var(--mf-border, #2e2e38);\n  border-radius: 14px;\n  background: var(--mf-surface-raised, #1b1b22);\n  opacity: 0.25;\n  transform: translateX(28px);\n  transition:\n    opacity 500ms ease,\n    transform 600ms cubic-bezier(0.16, 1, 0.3, 1),\n    border-color 500ms ease;\n}\n\n.step {\n  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;\n  font-size: 0.7rem;\n  letter-spacing: 0.04em;\n  color: var(--mf-muted, #a1a1aa);\n}\n\n.itemTitle {\n  font-size: 1.1rem;\n  font-weight: 600;\n  letter-spacing: -0.02em;\n}\n\n.description {\n  margin: 0;\n  color: var(--mf-muted, #a1a1aa);\n  font-size: 0.86rem;\n  line-height: 1.55;\n}\n\n.item[data-active=\"true\"] .dot {\n  transform: scale(1.3);\n  border-color: var(--mf-st-accent, #34d399);\n  background: var(--mf-st-accent, #34d399);\n  box-shadow: 0 0 0 5px color-mix(in srgb, var(--mf-st-accent, #34d399) 20%, transparent), 0 0 18px var(--mf-st-accent, #34d399);\n}\n\n.item[data-active=\"true\"] .card {\n  opacity: 1;\n  transform: none;\n  border-color: color-mix(in srgb, var(--mf-st-accent, #34d399) 40%, var(--mf-border, #2e2e38));\n}\n\n.item[data-active=\"true\"] .step {\n  color: var(--mf-st-accent, #34d399);\n}\n\n@media (prefers-reduced-motion: reduce) {\n  .dot,\n  .card {\n    transition: none;\n  }\n\n  .card {\n    transform: none;\n  }\n\n  .item[data-active=\"true\"] .dot {\n    transform: none;\n  }\n\n  .lineFill {\n    will-change: auto;\n  }\n}\n"
+    }
+  ],
+  "tailwindExample": "\"use client\";\n\nimport { useEffect, useRef } from \"react\";\n\nfunction useSmooth(ref, onFrame, lerp = 0.1) {\n  useEffect(() => {\n    const el = ref.current;\n    let target = el.scrollTop, raf = 0;\n    const emit = () => { const max = el.scrollHeight - el.clientHeight; onFrame(el.scrollTop, max > 0 ? el.scrollTop / max : 0); };\n    const tick = () => {\n      const d = target - el.scrollTop;\n      el.scrollTop += Math.abs(d) < 0.5 ? d : d * lerp;\n      emit();\n      raf = Math.abs(target - el.scrollTop) < 0.5 ? 0 : requestAnimationFrame(tick);\n    };\n    const onWheel = (e) => {\n      const max = el.scrollHeight - el.clientHeight;\n      if (!raf) target = el.scrollTop;\n      if ((e.deltaY < 0 && target <= 0) || (e.deltaY > 0 && target >= max)) return;\n      e.preventDefault();\n      target = Math.min(max, Math.max(0, target + e.deltaY));\n      if (!raf) raf = requestAnimationFrame(tick);\n    };\n    el.addEventListener(\"wheel\", onWheel, { passive: false });\n    el.addEventListener(\"scroll\", () => { if (!raf) emit(); }, { passive: true });\n    return () => { el.removeEventListener(\"wheel\", onWheel); cancelAnimationFrame(raf); };\n  }, []);\n}\n\nexport function ScrollTimelineTailwind() {\n  const ref = useRef(null);\n  const fill = useRef(null);\n  const dots = useRef([]);\n  const items = [\"Idea on a napkin\", \"First prototype\", \"Private beta\", \"Public launch\", \"10k teams onboard\"];\n  useSmooth(ref, (_, p) => {\n    fill.current.style.transform = `scaleY(${p})`;\n    dots.current.forEach((d, i) => d.classList.toggle(\"is-on\", p >= i / (items.length - 1) - 0.02));\n  });\n  return (\n    <div className=\"relative h-[380px] w-full overflow-hidden rounded-[20px] border border-zinc-800 bg-zinc-900 text-zinc-100\">\n      <div ref={ref} tabIndex={0} className=\"h-full overflow-y-auto px-10 py-[150px]\">\n        <div className=\"relative\">\n          <span className=\"absolute inset-y-0 left-[15px] w-0.5 bg-zinc-800\"><span ref={fill} className=\"block h-full origin-top scale-y-0 bg-emerald-400\" /></span>\n          <ol>\n            {items.map((t, i) => (\n              <li key={t} ref={(n) => (dots.current[i] = n)} className=\"group relative pb-10 pl-12 opacity-30 transition-opacity duration-500 [&.is-on]:opacity-100\">\n                <span className=\"absolute left-[9px] top-1.5 h-3.5 w-3.5 rounded-full border-2 border-zinc-600 bg-zinc-900 transition group-[.is-on]:scale-125 group-[.is-on]:border-emerald-400 group-[.is-on]:bg-emerald-400\" />\n                <p className=\"text-lg font-semibold\">{t}</p>\n              </li>\n            ))}\n          </ol>\n        </div>\n      </div>\n    </div>\n  );\n}"
+}

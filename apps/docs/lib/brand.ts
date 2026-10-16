@@ -1,9 +1,9 @@
 export const BRAND_CONFIG = {
   name: "MotionFoundry",
-  tagline: "48 Precision Animated UI Primitives for React & Next.js",
+  tagline: "Animated UI primitives, gradients, text effects & smooth scroll for React",
   packageScope: "@motionfoundry/ui",
   cliName: "motionfoundry",
-  version: "2.1.0",
+  version: "2.2.0",
   license: "MIT",
   repoUrl: "https://github.com/nitin-inloop/Motionfoundry",
   packageStatus: "Local Workspace Package (pnpm workspace — ready for npm publish)",

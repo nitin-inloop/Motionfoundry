@@ -1,0 +1,89 @@
+.root {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  display: flex;
+  width: 100%;
+  border: 1px solid var(--mf-border, #2e2e38);
+  background-color: var(--mf-sg-bg, #09090f);
+  color: var(--mf-fg, #f4f4f6);
+  --mf-sg-x: 50%;
+  --mf-sg-y: 45%;
+}
+
+.grid {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: var(--mf-sg-grid, 0.14);
+}
+
+.dots {
+  background-image: radial-gradient(circle at center, var(--mf-fg, #f4f4f6) 1px, transparent 1.6px);
+  background-size: 22px 22px;
+  background-position: center;
+}
+
+.lines {
+  background-image: linear-gradient(to right, var(--mf-fg, #f4f4f6) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--mf-fg, #f4f4f6) 1px, transparent 1px);
+  background-size: 40px 40px;
+  background-position: center;
+}
+
+.lit {
+  opacity: calc(var(--mf-sg-grid, 0.14) * 3.2);
+  -webkit-mask-image: radial-gradient(circle calc(var(--mf-sg-r, 320px) * 0.75) at var(--mf-sg-x) var(--mf-sg-y), #000 0%, transparent 100%);
+  mask-image: radial-gradient(circle calc(var(--mf-sg-r, 320px) * 0.75) at var(--mf-sg-x) var(--mf-sg-y), #000 0%, transparent 100%);
+}
+
+.spot {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(circle calc(var(--mf-sg-r, 320px) * 0.45) at var(--mf-sg-x) var(--mf-sg-y), color-mix(in srgb, var(--mf-sg-c1, #22d3ee) 75%, transparent) 0%, transparent 100%),
+    radial-gradient(circle var(--mf-sg-r, 320px) at var(--mf-sg-x) var(--mf-sg-y), color-mix(in srgb, var(--mf-sg-c2, #8b5cf6) 55%, transparent) 0%, color-mix(in srgb, var(--mf-sg-c2, #8b5cf6) 20%, transparent) 55%, transparent 100%);
+}
+
+.vignette {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(130% 110% at 50% 50%, transparent 55%, rgba(0, 0, 0, 0.55) 100%);
+}
+
+.content {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex: 1;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+}
+
+.copy {
+  text-align: center;
+}
+
+.title {
+  margin: 0;
+  font-size: 2rem;
+  font-weight: 700;
+  letter-spacing: -0.035em;
+  color: var(--mf-fg, #f4f4f6);
+}
+
+.subtitle {
+  margin: 0.5rem 0 0;
+  font-size: 0.9375rem;
+  color: var(--mf-muted, #a1a1aa);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .spot,
+  .lit {
+    transition: none;
+  }
+}

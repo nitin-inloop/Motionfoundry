@@ -1,0 +1,220 @@
+{
+  "slug": "mask-wipe-text",
+  "name": "MaskWipeText",
+  "category": "Advanced Text Animations",
+  "collection": "text-fx",
+  "featured": false,
+  "addedAt": "2026-10-16",
+  "version": "2.2.0",
+  "requiresMotion": false,
+  "dependencies": [
+    "react"
+  ],
+  "description": "Multi-line headline where a colored bar sweeps across each line, then the line slides out from behind its mask (up/down) or is wiped open with a clip-path (left/right), staggered line by line with GSAP-style eases.",
+  "tags": [
+    "text",
+    "mask",
+    "wipe",
+    "reveal",
+    "headline",
+    "lines",
+    "clip-path"
+  ],
+  "a11yNotes": "All lines are exposed once as a single visually hidden sentence; the animated lines and wipe bars are aria-hidden. Under prefers-reduced-motion the lines render settled and the bars are not drawn. The rAF timeline is cancelled on unmount and replays on remount.",
+  "defaultProps": {
+    "lines": [
+      "Design in motion,",
+      "built to be felt,",
+      "not just seen."
+    ],
+    "direction": "up",
+    "showBar": true,
+    "wipeColor": "#a78bfa",
+    "ease": "power4.out",
+    "duration": 0.8,
+    "stagger": 0.18,
+    "trigger": "mount",
+    "fontSize": 56
+  },
+  "controls": [
+    {
+      "prop": "lines",
+      "label": "Lines (comma separated)",
+      "type": "list"
+    },
+    {
+      "prop": "direction",
+      "label": "Direction",
+      "type": "select",
+      "options": [
+        "up",
+        "down",
+        "left",
+        "right"
+      ]
+    },
+    {
+      "prop": "showBar",
+      "label": "Wipe bar",
+      "type": "boolean"
+    },
+    {
+      "prop": "wipeColor",
+      "label": "Wipe color",
+      "type": "color"
+    },
+    {
+      "prop": "ease",
+      "label": "Ease",
+      "type": "select",
+      "options": [
+        "power2.out",
+        "power3.out",
+        "power4.out",
+        "expo.out",
+        "back.out",
+        "elastic.out",
+        "sine.inOut",
+        "circ.out"
+      ]
+    },
+    {
+      "prop": "duration",
+      "label": "Duration (s)",
+      "type": "range",
+      "min": 0.2,
+      "max": 2.5,
+      "step": 0.05
+    },
+    {
+      "prop": "stagger",
+      "label": "Line stagger (s)",
+      "type": "range",
+      "min": 0,
+      "max": 0.8,
+      "step": 0.02
+    },
+    {
+      "prop": "trigger",
+      "label": "Trigger",
+      "type": "select",
+      "options": [
+        "mount",
+        "inView"
+      ]
+    },
+    {
+      "prop": "fontSize",
+      "label": "Font size",
+      "type": "range",
+      "min": 20,
+      "max": 120,
+      "step": 2
+    }
+  ],
+  "propsApi": [
+    {
+      "name": "lines",
+      "type": "string[]",
+      "default": "['Design in motion,', 'built to be felt,', 'not just seen.']",
+      "description": "Headline lines, each wiped in from behind its own mask."
+    },
+    {
+      "name": "direction",
+      "type": "\"up\" | \"down\" | \"left\" | \"right\"",
+      "default": "'up'",
+      "description": "Direction the text travels as it is revealed."
+    },
+    {
+      "name": "showBar",
+      "type": "boolean",
+      "default": "true",
+      "description": "Show a colored bar that sweeps across each line before the text appears."
+    },
+    {
+      "name": "wipeColor",
+      "type": "string",
+      "default": "'#a78bfa'",
+      "description": "Color of the sweeping wipe bar."
+    },
+    {
+      "name": "ease",
+      "type": "\"power2.out\" | \"power3.out\" | \"power4.out\" | \"expo.out\" | \"back.out\" | \"elastic.out\" | \"sine.inOut\" | \"circ.out\"",
+      "default": "'power4.out'",
+      "description": "GSAP-style ease name."
+    },
+    {
+      "name": "duration",
+      "type": "number",
+      "default": "0.8",
+      "description": "Duration of each line's reveal in seconds."
+    },
+    {
+      "name": "stagger",
+      "type": "number",
+      "default": "0.18",
+      "description": "Delay between consecutive lines in seconds."
+    },
+    {
+      "name": "delay",
+      "type": "number",
+      "default": "0.1",
+      "description": "Delay before the first line starts, in seconds."
+    },
+    {
+      "name": "trigger",
+      "type": "\"mount\" | \"inView\"",
+      "default": "'mount'",
+      "description": "When the animation plays."
+    },
+    {
+      "name": "align",
+      "type": "\"left\" | \"center\"",
+      "default": "'center'",
+      "description": "Horizontal alignment of the lines."
+    },
+    {
+      "name": "as",
+      "type": "\"h1\" | \"h2\" | \"h3\" | \"h4\" | \"p\" | \"div\"",
+      "default": "'h2'",
+      "description": "Element rendered as the root."
+    },
+    {
+      "name": "fontSize",
+      "type": "number",
+      "default": "56",
+      "description": "Font size in pixels."
+    },
+    {
+      "name": "color",
+      "type": "string",
+      "default": "undefined",
+      "description": "Text color (defaults to the theme foreground)."
+    },
+    {
+      "name": "className",
+      "type": "string",
+      "default": "''",
+      "description": "Additional class merged onto the root element."
+    },
+    {
+      "name": "style",
+      "type": "React.CSSProperties",
+      "default": "undefined",
+      "description": "Inline styles merged onto the root element (CSS variables included)."
+    }
+  ],
+  "files": [
+    {
+      "path": "components/ui/mask-wipe-text.tsx",
+      "type": "registry:component",
+      "content": "\"use client\";\n\nimport * as React from \"react\";\nimport styles from \"../styles/mask-wipe-text.module.css\";\n\nexport type MaskWipeTextEase =\n  \"power2.out\" | \"power3.out\" | \"power4.out\" | \"expo.out\" | \"back.out\" | \"elastic.out\" | \"sine.inOut\" | \"circ.out\";\n\nexport interface MaskWipeTextProps {\n  /** Headline lines, each wiped in from behind its own mask */\n  lines?: string[];\n  /** Direction the text travels as it is revealed */\n  direction?: \"up\" | \"down\" | \"left\" | \"right\";\n  /** Show a colored bar that sweeps across each line before the text appears */\n  showBar?: boolean;\n  /** Color of the sweeping wipe bar */\n  wipeColor?: string;\n  /** GSAP-style ease name */\n  ease?: MaskWipeTextEase;\n  /** Duration of each line's reveal in seconds */\n  duration?: number;\n  /** Delay between consecutive lines in seconds */\n  stagger?: number;\n  /** Delay before the first line starts, in seconds */\n  delay?: number;\n  /** When the animation plays */\n  trigger?: \"mount\" | \"inView\";\n  /** Horizontal alignment of the lines */\n  align?: \"left\" | \"center\";\n  /** Element rendered as the root */\n  as?: \"h1\" | \"h2\" | \"h3\" | \"h4\" | \"p\" | \"div\";\n  /** Font size in pixels */\n  fontSize?: number;\n  /** Text color (defaults to the theme foreground) */\n  color?: string;\n  /** Optional className merged onto the root */\n  className?: string;\n  /** Optional inline styles merged onto the root */\n  style?: React.CSSProperties;\n}\n\nconst EASES: Record<MaskWipeTextEase, (t: number) => number> = {\n  \"power2.out\": (t) => 1 - Math.pow(1 - t, 3),\n  \"power3.out\": (t) => 1 - Math.pow(1 - t, 4),\n  \"power4.out\": (t) => 1 - Math.pow(1 - t, 5),\n  \"expo.out\": (t) => (t >= 1 ? 1 : 1 - Math.pow(2, -10 * t)),\n  \"back.out\": (t) => {\n    const c = 1.70158;\n    const u = t - 1;\n    return 1 + (c + 1) * u * u * u + c * u * u;\n  },\n  \"elastic.out\": (t) =>\n    t <= 0 ? 0 : t >= 1 ? 1 : Math.pow(2, -10 * t) * Math.sin((t * 10 - 0.75) * ((2 * Math.PI) / 3)) + 1,\n  \"sine.inOut\": (t) => -(Math.cos(Math.PI * t) - 1) / 2,\n  \"circ.out\": (t) => Math.sqrt(1 - Math.pow(t - 1, 2)),\n};\n\n/** Smooth in-out used for the bar sweep so it reads as one deliberate stroke. */\nconst barEase = (t: number) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);\n\nconst clamp01 = (v: number) => Math.min(1, Math.max(0, v));\n\nconst useIsoLayoutEffect = typeof window !== \"undefined\" ? React.useLayoutEffect : React.useEffect;\n\nconst DEFAULT_LINES = [\"Design in motion,\", \"built to be felt,\", \"not just seen.\"];\n\nexport function MaskWipeText({\n  lines = DEFAULT_LINES,\n  direction = \"up\",\n  showBar = true,\n  wipeColor = \"#a78bfa\",\n  ease = \"power4.out\",\n  duration = 0.8,\n  stagger = 0.18,\n  delay = 0.1,\n  trigger = \"mount\",\n  align = \"center\",\n  as = \"h2\",\n  fontSize = 56,\n  color,\n  className = \"\",\n  style,\n}: MaskWipeTextProps) {\n  const rootRef = React.useRef<HTMLElement | null>(null);\n  const cleanLines = lines.map((l) => l.trim()).filter(Boolean);\n  const linesKey = cleanLines.join(\"\\n\");\n  const horizontal = direction === \"left\" || direction === \"right\";\n  const barFromRight = direction === \"left\";\n\n  useIsoLayoutEffect(() => {\n    const root = rootRef.current;\n    if (!root) return;\n    const texts = Array.from(root.querySelectorAll<HTMLElement>(\"[data-mf-mw-text]\"));\n    const bars = Array.from(root.querySelectorAll<HTMLElement>(\"[data-mf-mw-bar]\"));\n    const easeFn = EASES[ease] ?? EASES[\"power4.out\"];\n    const dur = Math.max(0.05, duration);\n    const barDur = dur * 0.55;\n\n    const setText = (el: HTMLElement, p: number | null) => {\n      if (p === null) {\n        el.style.transform = \"\";\n        el.style.clipPath = \"\";\n        el.style.opacity = \"\";\n        return;\n      }\n      const inv = 1 - p;\n      if (direction === \"up\") el.style.transform = `translate3d(0, ${(inv * 110).toFixed(2)}%, 0)`;\n      else if (direction === \"down\") el.style.transform = `translate3d(0, ${(-inv * 110).toFixed(2)}%, 0)`;\n      else {\n        const shift = (direction === \"right\" ? -1 : 1) * inv * 0.4;\n        const hidden = (clamp01(inv) * 100).toFixed(2);\n        el.style.transform = `translate3d(${shift.toFixed(3)}em, 0, 0)`;\n        el.style.clipPath = direction === \"right\" ? `inset(-10% ${hidden}% -10% 0)` : `inset(-10% 0 -10% ${hidden}%)`;\n      }\n      el.style.opacity = horizontal ? \"1\" : String(0.2 + 0.8 * clamp01(p * 1.5));\n    };\n\n    const setBar = (el: HTMLElement, phase: \"idle\" | \"in\" | \"out\", p: number) => {\n      if (phase === \"idle\") {\n        el.style.transform = \"scaleX(0)\";\n        return;\n      }\n      el.style.transformOrigin =\n        phase === \"in\" ? (barFromRight ? \"100% 50%\" : \"0% 50%\") : barFromRight ? \"0% 50%\" : \"100% 50%\";\n      el.style.transform = `scaleX(${(phase === \"in\" ? p : 1 - p).toFixed(4)})`;\n    };\n\n    const reduced = window.matchMedia(\"(prefers-reduced-motion: reduce)\").matches;\n    if (reduced) {\n      texts.forEach((el) => setText(el, null));\n      bars.forEach((el) => setBar(el, \"idle\", 0));\n      return;\n    }\n\n    texts.forEach((el) => setText(el, 0));\n    bars.forEach((el) => setBar(el, \"idle\", 0));\n\n    let raf = 0;\n    const play = () => {\n      const start = performance.now();\n      const done = texts.map(() => false);\n      const tick = (now: number) => {\n        const t = (now - start) / 1000;\n        let active = false;\n        texts.forEach((el, i) => {\n          if (done[i]) return;\n          const lineStart = delay + i * stagger;\n          const textStart = lineStart + (showBar ? barDur : 0);\n          const bar = bars[i];\n          if (showBar && bar) {\n            const b = (t - lineStart) / barDur;\n            if (b < 0) setBar(bar, \"idle\", 0);\n            else if (b < 1) setBar(bar, \"in\", barEase(b));\n            else if (b < 2) setBar(bar, \"out\", barEase(b - 1));\n            else setBar(bar, \"idle\", 0);\n          }\n          const local = (t - textStart) / dur;\n          if (local >= 1 && (!showBar || t - lineStart >= barDur * 2)) {\n            done[i] = true;\n            setText(el, null);\n            if (bar) setBar(bar, \"idle\", 0);\n            return;\n          }\n          active = true;\n          setText(el, local <= 0 ? 0 : local >= 1 ? 1 : easeFn(local));\n        });\n        if (active) raf = requestAnimationFrame(tick);\n      };\n      raf = requestAnimationFrame(tick);\n    };\n\n    let io: IntersectionObserver | null = null;\n    if (trigger === \"inView\" && typeof IntersectionObserver !== \"undefined\") {\n      io = new IntersectionObserver(\n        (entries) => {\n          if (entries.some((e) => e.isIntersecting)) {\n            io?.disconnect();\n            play();\n          }\n        },\n        { threshold: 0.25 },\n      );\n      io.observe(root);\n    } else {\n      play();\n    }\n\n    return () => {\n      cancelAnimationFrame(raf);\n      io?.disconnect();\n      texts.forEach((el) => setText(el, null));\n      bars.forEach((el) => setBar(el, \"idle\", 0));\n    };\n  }, [linesKey, direction, showBar, ease, duration, stagger, delay, trigger, horizontal, barFromRight]);\n\n  const Tag = as;\n  const vars = {\n    \"--mf-mw-size\": `${fontSize}px`,\n    \"--mf-mw-wipe\": wipeColor,\n    ...(color ? { \"--mf-mw-color\": color } : {}),\n    ...style,\n  } as React.CSSProperties;\n\n  return (\n    <Tag\n      ref={(el: HTMLElement | null) => {\n        rootRef.current = el;\n      }}\n      className={`${styles.root} ${className}`.trim()}\n      data-align={align}\n      style={vars}\n    >\n      <span className={styles.srOnly}>{cleanLines.join(\" \")}</span>\n      {cleanLines.map((line, i) => (\n        <span key={`${line}-${i}`} aria-hidden=\"true\" className={styles.line}>\n          <span className={styles.text} data-mf-mw-text=\"\">\n            {line}\n          </span>\n          {showBar ? <span className={styles.bar} data-mf-mw-bar=\"\" /> : null}\n        </span>\n      ))}\n    </Tag>\n  );\n}\n"
+    },
+    {
+      "path": "components/styles/mask-wipe-text.module.css",
+      "type": "registry:style",
+      "content": ".root {\n  position: relative;\n  display: flex;\n  flex-direction: column;\n  align-items: flex-start;\n  max-width: 100%;\n  margin: 0;\n  color: var(--mf-mw-color, var(--mf-fg, #f4f4f6));\n  font-size: var(--mf-mw-size, 56px);\n  font-weight: 800;\n  letter-spacing: -0.045em;\n  line-height: 1.04;\n}\n\n.root[data-align=\"center\"] {\n  align-items: center;\n  text-align: center;\n}\n\n.line {\n  position: relative;\n  display: block;\n  max-width: 100%;\n  padding: 0.04em 0.06em 0.1em;\n  overflow: hidden;\n}\n\n.text {\n  display: block;\n  will-change: transform, clip-path;\n}\n\n.bar {\n  position: absolute;\n  inset: 0.08em 0 0.06em;\n  border-radius: 0.06em;\n  background: var(--mf-mw-wipe, #a78bfa);\n  transform: scaleX(0);\n  transform-origin: 0% 50%;\n  pointer-events: none;\n  will-change: transform;\n}\n\n.srOnly {\n  position: absolute;\n  width: 1px;\n  height: 1px;\n  padding: 0;\n  margin: -1px;\n  overflow: hidden;\n  clip: rect(0, 0, 0, 0);\n  white-space: nowrap;\n  border: 0;\n}\n\n@media (prefers-reduced-motion: reduce) {\n  .text {\n    transform: none !important;\n    clip-path: none !important;\n    opacity: 1 !important;\n  }\n\n  .bar {\n    display: none;\n  }\n}\n"
+    }
+  ],
+  "tailwindExample": "\"use client\";\n\nimport { useEffect, useState } from \"react\";\n\nexport function MaskWipeTextTailwind({ lines = [\"Design in motion,\", \"built to be felt,\", \"not just seen.\"] }) {\n  const [on, setOn] = useState(false);\n  useEffect(() => {\n    const id = requestAnimationFrame(() => requestAnimationFrame(() => setOn(true)));\n    return () => cancelAnimationFrame(id);\n  }, []);\n  return (\n    <h2 className=\"flex flex-col items-center text-[56px] font-extrabold leading-[1.04] tracking-tighter text-zinc-100\">\n      <span className=\"sr-only\">{lines.join(\" \")}</span>\n      {lines.map((line, i) => (\n        <span key={i} aria-hidden className=\"block overflow-hidden pb-[0.1em]\">\n          <span\n            className={\"block transition-transform duration-[800ms] ease-[cubic-bezier(0.23,1,0.32,1)] \" + (on ? \"translate-y-0\" : \"translate-y-[110%]\")}\n            style={{ transitionDelay: 0.1 + i * 0.18 + \"s\" }}\n          >\n            {line}\n          </span>\n        </span>\n      ))}\n    </h2>\n  );\n}"
+}

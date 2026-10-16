@@ -1,0 +1,184 @@
+{
+  "slug": "liquid-gradient",
+  "name": "LiquidGradient",
+  "category": "Gradient Backgrounds",
+  "collection": "gradients",
+  "featured": false,
+  "addedAt": "2026-10-16",
+  "version": "2.2.0",
+  "requiresMotion": false,
+  "dependencies": [
+    "react"
+  ],
+  "description": "A Canvas 2D fluid color field: eight Lissajous attractors blended by inverse-distance weighting through a domain-warped coordinate space, rendered at low resolution and smoothly upscaled for a liquid look.",
+  "tags": [
+    "liquid",
+    "gradient",
+    "canvas",
+    "fluid",
+    "background",
+    "metaball",
+    "hero"
+  ],
+  "a11yNotes": "The canvas and sheen are aria-hidden decorative layers; text sits above in normal flow. The render loop stops off-screen or at speed 0, and prefers-reduced-motion draws a single static frame. Resizes via ResizeObserver with devicePixelRatio capped at 2.",
+  "defaultProps": {
+    "color1": "#ff4d6d",
+    "color2": "#ffb703",
+    "color3": "#3a86ff",
+    "color4": "#8338ec",
+    "speed": 1,
+    "scale": 1,
+    "softness": 0.6,
+    "height": 360,
+    "borderRadius": 20
+  },
+  "controls": [
+    {
+      "prop": "color1",
+      "label": "Color 1",
+      "type": "color"
+    },
+    {
+      "prop": "color2",
+      "label": "Color 2",
+      "type": "color"
+    },
+    {
+      "prop": "color3",
+      "label": "Color 3",
+      "type": "color"
+    },
+    {
+      "prop": "color4",
+      "label": "Color 4",
+      "type": "color"
+    },
+    {
+      "prop": "speed",
+      "label": "Speed",
+      "type": "range",
+      "min": 0,
+      "max": 3,
+      "step": 0.1
+    },
+    {
+      "prop": "scale",
+      "label": "Scale",
+      "type": "range",
+      "min": 0.3,
+      "max": 3,
+      "step": 0.1
+    },
+    {
+      "prop": "softness",
+      "label": "Softness",
+      "type": "range",
+      "min": 0,
+      "max": 1,
+      "step": 0.05
+    },
+    {
+      "prop": "height",
+      "label": "Height (px)",
+      "type": "range",
+      "min": 200,
+      "max": 600,
+      "step": 10
+    },
+    {
+      "prop": "borderRadius",
+      "label": "Corner radius (px)",
+      "type": "range",
+      "min": 0,
+      "max": 48,
+      "step": 1
+    }
+  ],
+  "propsApi": [
+    {
+      "name": "color1",
+      "type": "string",
+      "default": "'#ff4d6d'",
+      "description": "First fluid color (hex)."
+    },
+    {
+      "name": "color2",
+      "type": "string",
+      "default": "'#ffb703'",
+      "description": "Second fluid color (hex)."
+    },
+    {
+      "name": "color3",
+      "type": "string",
+      "default": "'#3a86ff'",
+      "description": "Third fluid color (hex)."
+    },
+    {
+      "name": "color4",
+      "type": "string",
+      "default": "'#8338ec'",
+      "description": "Fourth fluid color (hex)."
+    },
+    {
+      "name": "speed",
+      "type": "number",
+      "default": "1",
+      "description": "Flow speed multiplier (0 pauses)."
+    },
+    {
+      "name": "scale",
+      "type": "number",
+      "default": "1",
+      "description": "Size of the fluid features; higher = larger, calmer pools (0.3–3)."
+    },
+    {
+      "name": "softness",
+      "type": "number",
+      "default": "0.6",
+      "description": "Edge softness between colors; 0 = sharp cells, 1 = fully blended."
+    },
+    {
+      "name": "height",
+      "type": "number",
+      "default": "360",
+      "description": "Height of the background in px."
+    },
+    {
+      "name": "borderRadius",
+      "type": "number",
+      "default": "20",
+      "description": "Corner radius in px."
+    },
+    {
+      "name": "children",
+      "type": "React.ReactNode",
+      "default": "undefined",
+      "description": "Content rendered centered on top; defaults to a heading and subline."
+    },
+    {
+      "name": "className",
+      "type": "string",
+      "default": "''",
+      "description": "Additional class merged onto the root element."
+    },
+    {
+      "name": "style",
+      "type": "React.CSSProperties",
+      "default": "undefined",
+      "description": "Inline styles merged onto the root element."
+    }
+  ],
+  "files": [
+    {
+      "path": "components/ui/liquid-gradient.tsx",
+      "type": "registry:component",
+      "content": "\"use client\";\n\nimport * as React from \"react\";\nimport styles from \"../styles/liquid-gradient.module.css\";\n\nexport interface LiquidGradientProps {\n  /** First fluid color */\n  color1?: string;\n  /** Second fluid color */\n  color2?: string;\n  /** Third fluid color */\n  color3?: string;\n  /** Fourth fluid color */\n  color4?: string;\n  /** Flow speed multiplier (1 = default, 0 = paused) */\n  speed?: number;\n  /** Size of the fluid features (higher = larger, calmer pools) */\n  scale?: number;\n  /** Edge softness between colors (0 = sharp cells, 1 = fully blended) */\n  softness?: number;\n  /** Height of the background in px */\n  height?: number;\n  /** Corner radius in px */\n  borderRadius?: number;\n  /** Foreground content rendered centered on top */\n  children?: React.ReactNode;\n  /** Optional className merged onto the root */\n  className?: string;\n  /** Inline styles merged onto the root */\n  style?: React.CSSProperties;\n}\n\ntype RGB = [number, number, number];\n\n/** Two attractors per color, each on its own Lissajous loop */\nconst BLOBS = [\n  { c: 0, ax: 0.32, ay: 0.3, fx: 0.21, fy: 0.17, px: 0.0, py: 1.2 },\n  { c: 1, ax: 0.36, ay: 0.32, fx: 0.15, fy: 0.23, px: 2.1, py: 0.4 },\n  { c: 2, ax: 0.3, ay: 0.36, fx: 0.19, fy: 0.13, px: 4.0, py: 2.9 },\n  { c: 3, ax: 0.34, ay: 0.28, fx: 0.12, fy: 0.2, px: 5.3, py: 4.4 },\n  { c: 0, ax: 0.28, ay: 0.34, fx: 0.17, fy: 0.11, px: 3.3, py: 5.6 },\n  { c: 1, ax: 0.38, ay: 0.3, fx: 0.11, fy: 0.19, px: 1.0, py: 3.7 },\n  { c: 2, ax: 0.26, ay: 0.38, fx: 0.23, fy: 0.15, px: 5.9, py: 0.9 },\n  { c: 3, ax: 0.36, ay: 0.26, fx: 0.14, fy: 0.24, px: 2.7, py: 2.2 },\n];\n\nfunction hexToRgb(hex: string, fallback: RGB): RGB {\n  const m = hex.trim().replace(/^#/, \"\");\n  const full = m.length === 3 ? m.split(\"\").map((ch) => ch + ch).join(\"\") : m;\n  if (!/^[0-9a-fA-F]{6}$/.test(full)) return fallback;\n  const n = parseInt(full, 16);\n  return [(n >> 16) & 255, (n >> 8) & 255, n & 255];\n}\n\nfunction useReducedMotionPref() {\n  const [reduced, setReduced] = React.useState(false);\n  React.useEffect(() => {\n    if (typeof window === \"undefined\" || !window.matchMedia) return;\n    const mq = window.matchMedia(\"(prefers-reduced-motion: reduce)\");\n    const update = () => setReduced(mq.matches);\n    update();\n    mq.addEventListener(\"change\", update);\n    return () => mq.removeEventListener(\"change\", update);\n  }, []);\n  return reduced;\n}\n\nfunction useInView(ref: React.RefObject<HTMLElement | null>) {\n  const [inView, setInView] = React.useState(true);\n  React.useEffect(() => {\n    const el = ref.current;\n    if (!el || typeof IntersectionObserver === \"undefined\") return;\n    const io = new IntersectionObserver((entries) => {\n      const entry = entries[entries.length - 1];\n      if (entry) setInView(entry.isIntersecting);\n    }, { rootMargin: \"80px\" });\n    io.observe(el);\n    return () => io.disconnect();\n  }, [ref]);\n  return inView;\n}\n\nexport function LiquidGradient({\n  color1 = \"#ff4d6d\",\n  color2 = \"#ffb703\",\n  color3 = \"#3a86ff\",\n  color4 = \"#8338ec\",\n  speed = 1,\n  scale = 1,\n  softness = 0.6,\n  height = 360,\n  borderRadius = 20,\n  children,\n  className = \"\",\n  style,\n}: LiquidGradientProps) {\n  const rootRef = React.useRef<HTMLDivElement>(null);\n  const canvasRef = React.useRef<HTMLCanvasElement>(null);\n  const timeRef = React.useRef(0);\n  const reduced = useReducedMotionPref();\n  const inView = useInView(rootRef);\n  const safeSpeed = Math.max(0, speed);\n  const safeScale = Math.max(0.3, Math.min(3, scale));\n  const safeSoft = Math.max(0, Math.min(1, softness));\n\n  React.useEffect(() => {\n    const root = rootRef.current;\n    const canvas = canvasRef.current;\n    if (!root || !canvas) return;\n    const ctx = canvas.getContext(\"2d\");\n    if (!ctx) return;\n    const buffer = document.createElement(\"canvas\");\n    const bctx = buffer.getContext(\"2d\");\n    if (!bctx) return;\n\n    const palette: RGB[] = [\n      hexToRgb(color1, [255, 77, 109]),\n      hexToRgb(color2, [255, 183, 3]),\n      hexToRgb(color3, [58, 134, 255]),\n      hexToRgb(color4, [131, 56, 236]),\n    ];\n    // softness maps to the inverse-distance exponent: low exponent = wide blends, high = crisp cells\n    const power = 4.2 - safeSoft * 3;\n    const warp = 0.09 / safeScale;\n    const freq = 3.2 / safeScale;\n\n    let cssW = 0;\n    let cssH = 0;\n    let bw = 0;\n    let bh = 0;\n    let image: ImageData | null = null;\n\n    const resize = () => {\n      const rect = root.getBoundingClientRect();\n      // the canvas bleeds 12px past each edge to hide the blur fringe\n      cssW = Math.max(1, rect.width + 24);\n      cssH = Math.max(1, rect.height + 24);\n      const dpr = Math.min(2, window.devicePixelRatio || 1);\n      canvas.width = Math.round(cssW * dpr);\n      canvas.height = Math.round(cssH * dpr);\n      // low-resolution field (~1 sample per 7 css px), upscaled with smoothing for a liquid look\n      bw = Math.max(16, Math.round(cssW / 7));\n      bh = Math.max(10, Math.round(cssH / 7));\n      buffer.width = bw;\n      buffer.height = bh;\n      image = bctx.createImageData(bw, bh);\n    };\n\n    const render = (t: number) => {\n      if (!image) return;\n      const data = image.data;\n      const aspect = cssW / cssH;\n      const pos = BLOBS.map((b) => [\n        0.5 + Math.sin(t * b.fx + b.px) * b.ax * Math.max(1, aspect * 0.8),\n        0.5 + Math.cos(t * b.fy + b.py) * b.ay,\n      ]);\n      let o = 0;\n      for (let y = 0; y < bh; y++) {\n        const v = y / (bh - 1);\n        for (let x = 0; x < bw; x++) {\n          const u = (x / (bw - 1)) * aspect;\n          // domain warp for the liquid swirl\n          const wu = u + Math.sin(v * freq + t * 0.6) * warp + Math.sin((u + v) * freq * 0.7 - t * 0.4) * warp * 0.6;\n          const wv = v + Math.cos(u * freq * 0.9 - t * 0.5) * warp + Math.cos((u - v) * freq * 0.6 + t * 0.3) * warp * 0.6;\n          let r = 0;\n          let g = 0;\n          let bl = 0;\n          let wsum = 0;\n          for (let i = 0; i < BLOBS.length; i++) {\n            const dx = wu - pos[i][0];\n            const dy = wv - pos[i][1];\n            const w = 1 / Math.pow(dx * dx + dy * dy + 0.004, power * 0.5);\n            const c = palette[BLOBS[i].c];\n            r += c[0] * w;\n            g += c[1] * w;\n            bl += c[2] * w;\n            wsum += w;\n          }\n          data[o] = r / wsum;\n          data[o + 1] = g / wsum;\n          data[o + 2] = bl / wsum;\n          data[o + 3] = 255;\n          o += 4;\n        }\n      }\n      bctx.putImageData(image, 0, 0);\n      ctx.imageSmoothingEnabled = true;\n      ctx.imageSmoothingQuality = \"high\";\n      ctx.drawImage(buffer, 0, 0, canvas.width, canvas.height);\n    };\n\n    resize();\n    render(timeRef.current);\n\n    const ro = new ResizeObserver(() => {\n      resize();\n      render(timeRef.current);\n    });\n    ro.observe(root);\n\n    let raf = 0;\n    if (!reduced && safeSpeed > 0 && inView) {\n      let last = performance.now();\n      const tick = (now: number) => {\n        const dt = Math.min(0.05, (now - last) / 1000);\n        last = now;\n        timeRef.current += dt * safeSpeed;\n        render(timeRef.current);\n        raf = requestAnimationFrame(tick);\n      };\n      raf = requestAnimationFrame(tick);\n    }\n\n    return () => {\n      ro.disconnect();\n      cancelAnimationFrame(raf);\n    };\n  }, [color1, color2, color3, color4, safeSpeed, safeScale, safeSoft, reduced, inView]);\n\n  const styleVars = {\n    \"--mf-lg-soft\": `${(safeSoft * 10).toFixed(1)}px`,\n    \"--mf-lg-fallback\": `linear-gradient(120deg, ${color1}, ${color2}, ${color3}, ${color4})`,\n    height: `${height}px`,\n    borderRadius: `${borderRadius}px`,\n    ...style,\n  } as React.CSSProperties;\n\n  return (\n    <div ref={rootRef} style={styleVars} className={`${styles.root} ${className}`.trim()}>\n      <canvas ref={canvasRef} aria-hidden=\"true\" className={styles.canvas} />\n      <div aria-hidden=\"true\" className={styles.sheen} />\n      <div className={styles.content}>\n        {children ?? (\n          <div className={styles.copy}>\n            <h3 className={styles.title}>Liquid Gradient</h3>\n            <p className={styles.subtitle}>A warped color field that pours and pools in real time.</p>\n          </div>\n        )}\n      </div>\n    </div>\n  );\n}\n"
+    },
+    {
+      "path": "components/styles/liquid-gradient.module.css",
+      "type": "registry:style",
+      "content": ".root {\n  position: relative;\n  isolation: isolate;\n  overflow: hidden;\n  display: flex;\n  width: 100%;\n  border: 1px solid var(--mf-border, #2e2e38);\n  background: var(--mf-lg-fallback, var(--mf-surface, #141419));\n  color: var(--mf-fg, #f4f4f6);\n}\n\n.canvas {\n  position: absolute;\n  inset: -12px;\n  width: calc(100% + 24px);\n  height: calc(100% + 24px);\n  display: block;\n  pointer-events: none;\n  filter: blur(var(--mf-lg-soft, 6px)) saturate(1.1);\n}\n\n.sheen {\n  position: absolute;\n  inset: 0;\n  pointer-events: none;\n  background: radial-gradient(120% 80% at 30% 0%, rgba(255, 255, 255, 0.14), transparent 55%),\n    linear-gradient(180deg, transparent 50%, rgba(0, 0, 0, 0.28) 100%);\n}\n\n.content {\n  position: relative;\n  z-index: 1;\n  display: flex;\n  flex: 1;\n  align-items: center;\n  justify-content: center;\n  padding: 2rem;\n}\n\n.copy {\n  text-align: center;\n  text-shadow: 0 2px 24px rgba(0, 0, 0, 0.35);\n}\n\n.title {\n  margin: 0;\n  font-size: 2rem;\n  font-weight: 700;\n  letter-spacing: -0.035em;\n  color: var(--mf-fg, #f4f4f6);\n}\n\n.subtitle {\n  margin: 0.5rem 0 0;\n  font-size: 0.9375rem;\n  color: var(--mf-fg, #f4f4f6);\n  opacity: 0.82;\n}\n\n@media (prefers-reduced-motion: reduce) {\n  .canvas {\n    filter: blur(var(--mf-lg-soft, 6px));\n  }\n}\n"
+    }
+  ],
+  "tailwindExample": "\"use client\";\n\nexport function LiquidGradientTailwind({ children }: { children?: React.ReactNode }) {\n  return (\n    <div className=\"relative isolate flex h-[360px] w-full items-center justify-center overflow-hidden rounded-[20px] border border-zinc-800 bg-[#8338ec]\">\n      <div aria-hidden className=\"absolute -inset-1/4 blur-3xl\">\n        <div className=\"absolute left-[10%] top-[10%] aspect-square h-3/5 origin-bottom-right animate-[spin_18s_linear_infinite] rounded-full bg-[#ff4d6d]\" />\n        <div className=\"absolute right-[10%] top-[15%] aspect-square h-3/5 origin-bottom-left animate-[spin_23s_linear_infinite_reverse] rounded-full bg-[#ffb703]\" />\n        <div className=\"absolute bottom-[5%] left-[30%] aspect-square h-3/5 origin-top animate-[spin_20s_linear_infinite] rounded-full bg-[#3a86ff]\" />\n      </div>\n      <div className=\"relative text-center\">\n        {children ?? (\n          <>\n            <h3 className=\"text-3xl font-bold tracking-tight text-white\">Liquid Gradient</h3>\n            <p className=\"mt-2 text-sm text-white/80\">A warped color field that pours and pools in real time.</p>\n          </>\n        )}\n      </div>\n    </div>\n  );\n}"
+}

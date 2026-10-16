@@ -1,0 +1,60 @@
+---
+title: "Gradients, Text FX & Scroll"
+category: "Overview"
+summary: "The three v2.2 collections: 8 animated gradient backgrounds, 8 GSAP-style text animations, and 8 Lenis-style smooth-scroll effects — all built from scratch."
+---
+
+# Gradients, Text FX & Scroll
+
+MotionFoundry v2.2 adds three collections, 24 components in total. They are written from scratch: no GSAP, no Lenis, and no WebGL dependency. Every component renders a complete demo with zero props, exposes its knobs as typed props (and as live controls on its component page), pauses its animation loop when off-screen, and respects `prefers-reduced-motion`.
+
+### Gradients
+
+Animated backgrounds that render your `children` centered on top. All of them accept `height`, `borderRadius`, `speed` (`0` pauses), and individual color props such as `color1`–`color4` and `backgroundColor`.
+
+- [`MeshGradient`](/components/mesh-gradient) (`mesh-gradient`) — drifting blurred color blobs with optional film grain.
+- [`AuroraRibbons`](/components/aurora-ribbons) (`aurora-ribbons`) — flowing aurora curtains over a starry sky.
+- [`ConicGradient`](/components/conic-gradient) (`conic-gradient`) — a rotating conic core with a glow ring and pointer tilt.
+- [`LiquidGradient`](/components/liquid-gradient) (`liquid-gradient`) — a Canvas 2D warped color field that looks like liquid.
+- [`WaveGradient`](/components/wave-gradient) (`wave-gradient`) — Stripe-style layered gradient waves.
+- [`GradientOrbs`](/components/gradient-orbs) (`gradient-orbs`) — glowing orbs with depth-based pointer parallax.
+- [`GrainGradient`](/components/grain-gradient) (`grain-gradient`) — shifting linear or radial gradient under SVG film grain.
+- [`SpotlightGradient`](/components/spotlight-gradient) (`spotlight-gradient`) — a pointer-following spotlight over a dot or line grid.
+
+### Text FX
+
+GSAP-style text animation, implemented in each file with its own small easing and stagger helpers. Most accept `ease` (`power2.out`, `power3.out`, `power4.out`, `expo.out`, `back.out`, `elastic.out`, `sine.inOut`, `circ.out`), `duration`, `stagger`, `staggerFrom` (`start`, `center`, `end`, `edges`, `random`), and `trigger` (`mount`, `inView`, `hover`). Screen readers always receive the full, unsplit text.
+
+- [`SplitText`](/components/split-text) (`split-text`) — split by chars, words, or measured lines and animate from offset, rotation, opacity, and blur.
+- [`MaskWipeText`](/components/mask-wipe-text) (`mask-wipe-text`) — lines wipe in from behind a mask, optionally led by a color bar.
+- [`ElasticLetters`](/components/elastic-letters) (`elastic-letters`) — letters spring toward the pointer and settle elastically.
+- [`TextOnPath`](/components/text-on-path) (`text-on-path`) — text looping along a wave, circle, or arc path.
+- [`RollingText`](/components/rolling-text) (`rolling-text`) — characters roll up on hover or focus; renders a link or button when given `href` or `onClick`.
+- [`MarkerHighlight`](/components/marker-highlight) (`marker-highlight`) — hand-drawn marker sweeps behind chosen words.
+- [`ScatterText`](/components/scatter-text) (`scatter-text`) — letters assemble from a scatter and burst apart on hover.
+- [`CubeFlipWords`](/components/cube-flip-words) (`cube-flip-words`) — a word that rotates through a list on a 3D cube.
+
+### Scroll
+
+Lenis-style smooth scrolling: each component contains a small `useSmoothScroll` hook that catches wheel input, eases the scroll position toward a target every frame, and reports progress and velocity. Each component renders its own scroll viewport (`height`, default 380), so it works anywhere — including inside a card or a docs preview — and it releases the page at the top and bottom edges instead of trapping it. Shared props: `lerp` (smoothing, 0.05–0.3), `wheelMultiplier`, and `smooth` (set `false` for native scrolling). Touch, keyboard, and scrollbar dragging stay native.
+
+- [`SmoothScroll`](/components/smooth-scroll) (`smooth-scroll`) — the base smooth scroller with optional progress bar and velocity readout.
+- [`ParallaxLayers`](/components/parallax-layers) (`parallax-layers`) — layered planes moving at different depths.
+- [`ScrollFillText`](/components/scroll-fill-text) (`scroll-fill-text`) — a pinned paragraph that fills word by word with scroll.
+- [`HorizontalScroll`](/components/horizontal-scroll) (`horizontal-scroll`) — vertical scrolling drives a horizontal card track.
+- [`StickyStackCards`](/components/sticky-stack-cards) (`sticky-stack-cards`) — cards stack while covered cards scale down and dim.
+- [`VelocityMarquee`](/components/velocity-marquee) (`velocity-marquee`) — marquee rows that speed up, skew, and flip with scroll velocity.
+- [`ScrollZoomReveal`](/components/scroll-zoom-reveal) (`scroll-zoom-reveal`) — an inset panel expands to full-bleed as you scroll.
+- [`ScrollTimeline`](/components/scroll-timeline) (`scroll-timeline`) — a timeline line draws with progress and milestones activate.
+
+### Installing
+
+Use the CLI to copy any of them into your project, or import from the package. Apart from React, these 24 components have no dependencies — not even `motion`.
+
+```bash
+npx motionfoundry list --collection gradients
+npx motionfoundry add mesh-gradient split-text smooth-scroll
+
+# or import them from the package
+pnpm add @motionfoundry/ui motion
+```

@@ -1,13 +1,13 @@
 <p align="center"><img src="apps/docs/public/logo.png" width="96" height="96" alt="MotionFoundry logo" /></p>
 
-# MotionFoundry (`@motionfoundry/ui` v2.1.0)
+# MotionFoundry (`@motionfoundry/ui` v2.2.0)
 
 > **Get started:** see [SETUP.md](./SETUP.md) for prerequisites, running the docs site, builds, tests, and deployment.
 > Repository: https://github.com/nitin-inloop/Motionfoundry
 
 Precision-engineered, open-source animated React component library, CLI source installer, and interactive documentation platform built with **Next.js App Router**, **TypeScript**, **Motion (`motion/react`)**, **SVG**, **HTML5 Canvas**, and **scoped CSS Modules**.
 
-## 48 Animated Components in Two Collections
+## 72 Animated Components in Five Collections
 
 ### Core (24)
 
@@ -28,6 +28,18 @@ Hand-picked from the Swirl Studio Kit prototypes and rebuilt on MotionFoundry co
 4. **Animated Backgrounds and Visual Effects**: `Meteors`, `BeamLines`, `GridPulse`
 5. **Loaders and Feedback**: `OrbitLoader`, `PulseLoader`, `NotificationStack`
 6. **Developer-Interface Animations**: `ReorderList`, `ExpandableSearch`
+
+### Gradients (8) — new in v2.2
+
+`MeshGradient`, `AuroraRibbons`, `ConicGradient`, `LiquidGradient`, `WaveGradient`, `GradientOrbs`, `GrainGradient`, `SpotlightGradient` — animated backgrounds with every color, speed, and texture exposed as props.
+
+### Text FX (8) — new in v2.2
+
+`SplitText`, `MaskWipeText`, `ElasticLetters`, `TextOnPath`, `RollingText`, `MarkerHighlight`, `ScatterText`, `CubeFlipWords` — GSAP-style eases and staggers, built from scratch (no GSAP dependency).
+
+### Scroll (8) — new in v2.2
+
+`SmoothScroll`, `ParallaxLayers`, `ScrollFillText`, `HorizontalScroll`, `StickyStackCards`, `VelocityMarquee`, `ScrollZoomReveal`, `ScrollTimeline` — Lenis-style smooth scrolling, built from scratch (no Lenis dependency); each renders its own scroll viewport.
 
 ## 11 Brand Design Systems
 

@@ -1,0 +1,180 @@
+{
+  "slug": "sticky-stack-cards",
+  "name": "StickyStackCards",
+  "category": "Scroll Animations",
+  "collection": "scroll",
+  "featured": false,
+  "addedAt": "2026-10-16",
+  "version": "2.2.0",
+  "requiresMotion": false,
+  "dependencies": [
+    "react"
+  ],
+  "description": "Cards pin one after another inside a smooth-scroll viewport, each settling a few pixels below the last, while the cards underneath scale down and dim in proportion to how many cards cover them.",
+  "tags": [
+    "scroll",
+    "sticky",
+    "stack",
+    "cards",
+    "pinned",
+    "smooth-scroll"
+  ],
+  "a11yNotes": "The viewport is a focusable role=\"region\" with an aria-label, so keyboard users can Tab to it and scroll with arrows/Page keys/Space (native, unsmoothed) and see a 2px :focus-visible outline. Wheel input is smoothed only while the viewport can still move; at the top/bottom edge wheel events are released so the page keeps scrolling. Touch and scrollbar dragging stay native. Under prefers-reduced-motion (or smooth=false) the wheel is not intercepted at all. Cards are an ordered list with real text titles; glow and chart decorations are aria-hidden. Under prefers-reduced-motion the stack still pins but covered cards are not scaled.",
+  "defaultProps": {
+    "items": [
+      "Research",
+      "Wireframes",
+      "Visual design",
+      "Motion pass",
+      "Launch"
+    ],
+    "title": "Stacked, not stashed",
+    "offset": 14,
+    "scaleStep": 0.05,
+    "accentColor": "#f472b6",
+    "lerp": 0.1,
+    "wheelMultiplier": 1,
+    "smooth": true
+  },
+  "controls": [
+    {
+      "prop": "items",
+      "label": "Cards (comma separated)",
+      "type": "list"
+    },
+    {
+      "prop": "title",
+      "label": "Title",
+      "type": "text"
+    },
+    {
+      "prop": "offset",
+      "label": "Stack offset (px)",
+      "type": "range",
+      "min": 0,
+      "max": 32,
+      "step": 1
+    },
+    {
+      "prop": "scaleStep",
+      "label": "Scale step",
+      "type": "range",
+      "min": 0,
+      "max": 0.12,
+      "step": 0.01
+    },
+    {
+      "prop": "accentColor",
+      "label": "Accent",
+      "type": "color"
+    },
+    {
+      "prop": "lerp",
+      "label": "Lerp (smoothness)",
+      "type": "range",
+      "min": 0.05,
+      "max": 0.3,
+      "step": 0.01
+    },
+    {
+      "prop": "wheelMultiplier",
+      "label": "Wheel multiplier",
+      "type": "range",
+      "min": 0.5,
+      "max": 2,
+      "step": 0.1
+    },
+    {
+      "prop": "smooth",
+      "label": "Smooth scrolling",
+      "type": "boolean"
+    }
+  ],
+  "propsApi": [
+    {
+      "name": "items",
+      "type": "string[]",
+      "default": "['Research', 'Wireframes', 'Visual design', 'Motion pass', 'Launch']",
+      "description": "Card titles, one stacked card per item."
+    },
+    {
+      "name": "title",
+      "type": "string",
+      "default": "'Stacked, not stashed'",
+      "description": "Heading shown before the stack."
+    },
+    {
+      "name": "offset",
+      "type": "number",
+      "default": "14",
+      "description": "Vertical step in px between stacked cards."
+    },
+    {
+      "name": "scaleStep",
+      "type": "number",
+      "default": "0.05",
+      "description": "Scale reduction applied per card covering an earlier card."
+    },
+    {
+      "name": "accentColor",
+      "type": "string",
+      "default": "'#f472b6'",
+      "description": "Accent color for card glow, chip and chart bars."
+    },
+    {
+      "name": "height",
+      "type": "number",
+      "default": "380",
+      "description": "Height of the component's own scroll viewport in px (width is always 100%)."
+    },
+    {
+      "name": "borderRadius",
+      "type": "number",
+      "default": "20",
+      "description": "Corner radius of the viewport in px."
+    },
+    {
+      "name": "lerp",
+      "type": "number",
+      "default": "0.1",
+      "description": "Interpolation factor per 60fps frame for wheel smoothing (0.05 floaty, 0.3 snappy)."
+    },
+    {
+      "name": "wheelMultiplier",
+      "type": "number",
+      "default": "1",
+      "description": "Multiplier applied to wheel and trackpad deltas."
+    },
+    {
+      "name": "smooth",
+      "type": "boolean",
+      "default": "true",
+      "description": "Enable smooth wheel scrolling; false (or prefers-reduced-motion) uses native scrolling."
+    },
+    {
+      "name": "className",
+      "type": "string",
+      "default": "''",
+      "description": "Additional class merged onto the root element."
+    },
+    {
+      "name": "style",
+      "type": "React.CSSProperties",
+      "default": "undefined",
+      "description": "Inline styles merged onto the root element."
+    }
+  ],
+  "files": [
+    {
+      "path": "components/ui/sticky-stack-cards.tsx",
+      "type": "registry:component",
+      "content": "\"use client\";\n\nimport * as React from \"react\";\nimport styles from \"../styles/sticky-stack-cards.module.css\";\n\ninterface SmoothScrollState {\n  /** Current scrollTop of the viewport in px */\n  scroll: number;\n  /** Maximum scrollTop in px */\n  limit: number;\n  /** scroll / limit, 0..1 */\n  progress: number;\n  /** Signed scroll velocity in px per 60fps frame */\n  velocity: number;\n}\n\ninterface SmoothScrollOptions {\n  lerp: number;\n  wheelMultiplier: number;\n  smooth: boolean;\n  onScroll?: (state: SmoothScrollState) => void;\n}\n\nconst clamp = (v: number, min: number, max: number) => Math.min(max, Math.max(min, v));\n\nfunction usePrefersReducedMotion(): boolean {\n  const [reduced, setReduced] = React.useState(false);\n  React.useEffect(() => {\n    const mq = window.matchMedia(\"(prefers-reduced-motion: reduce)\");\n    const update = () => setReduced(mq.matches);\n    update();\n    mq.addEventListener(\"change\", update);\n    return () => mq.removeEventListener(\"change\", update);\n  }, []);\n  return reduced;\n}\n\n/** True when a nested scrollable element under the pointer can still scroll in the wheel direction. */\nfunction nestedCanScroll(node: EventTarget | null, root: HTMLElement, dy: number): boolean {\n  let el: Element | null = node instanceof Element ? node : null;\n  while (el && el !== root) {\n    if (el instanceof HTMLElement) {\n      if (el.dataset.mfScrollPrevent !== undefined) return true;\n      const overflowY = window.getComputedStyle(el).overflowY;\n      if ((overflowY === \"auto\" || overflowY === \"scroll\") && el.scrollHeight > el.clientHeight + 1) {\n        const canMove = dy < 0 ? el.scrollTop > 0 : el.scrollTop + el.clientHeight < el.scrollHeight - 1;\n        if (canMove) return true;\n      }\n    }\n    el = el.parentElement;\n  }\n  return false;\n}\n\n/**\n * Self-contained smooth scroller for an overflow container. Wheel input updates a target\n * position; a rAF loop eases the real scrollTop toward it (frame-rate independent lerp) and\n * stops once settled. Touch, keyboard and scrollbar drags stay native. At the top/bottom edge\n * wheel events are released so the page keeps scrolling.\n */\nfunction useSmoothScroll(\n  containerRef: React.RefObject<HTMLElement | null>,\n  { lerp, wheelMultiplier, smooth, onScroll }: SmoothScrollOptions,\n): React.RefObject<SmoothScrollState> {\n  const stateRef = React.useRef<SmoothScrollState>({ scroll: 0, limit: 0, progress: 0, velocity: 0 });\n  const callbackRef = React.useRef(onScroll);\n  React.useEffect(() => {\n    callbackRef.current = onScroll;\n  }, [onScroll]);\n\n  React.useEffect(() => {\n    const el = containerRef.current;\n    if (!el) return;\n    const ease = clamp(Number.isFinite(lerp) ? lerp : 0.1, 0.01, 1);\n    const multiplier = Number.isFinite(wheelMultiplier) ? wheelMultiplier : 1;\n    let target = el.scrollTop;\n    let current = target;\n    let raf = 0;\n    let lastTime = 0;\n    let lastNative = el.scrollTop;\n    let lastNativeTime = 0;\n    let settleTimer: ReturnType<typeof setTimeout> | undefined;\n\n    const getLimit = () => Math.max(0, el.scrollHeight - el.clientHeight);\n\n    const emit = (velocity: number) => {\n      const limit = getLimit();\n      const scroll = clamp(el.scrollTop, 0, limit);\n      lastNative = el.scrollTop;\n      const s = stateRef.current;\n      s.scroll = scroll;\n      s.limit = limit;\n      s.progress = limit > 0 ? scroll / limit : 0;\n      s.velocity = velocity;\n      callbackRef.current?.(s);\n    };\n\n    const tick = (time: number) => {\n      const dt = lastTime ? Math.min(64, Math.max(1, time - lastTime)) : 16.667;\n      lastTime = time;\n      const limit = getLimit();\n      target = clamp(target, 0, limit);\n      if (Math.abs(el.scrollTop - current) > 2) {\n        // Something else moved the viewport (scrollbar drag, keyboard, touch): hand control back.\n        current = target = el.scrollTop;\n        raf = 0;\n        lastTime = 0;\n        emit(0);\n        return;\n      }\n      const prev = current;\n      const frames = dt / 16.667;\n      current += (target - current) * (1 - Math.pow(1 - ease, frames));\n      if (Math.abs(target - current) < 0.35) current = target;\n      el.scrollTop = current;\n      emit((current - prev) / frames);\n      if (current === target) {\n        raf = 0;\n        lastTime = 0;\n        emit(0);\n        return;\n      }\n      raf = requestAnimationFrame(tick);\n    };\n\n    const onWheel = (event: WheelEvent) => {\n      if (event.ctrlKey || event.defaultPrevented) return;\n      if (Math.abs(event.deltaX) > Math.abs(event.deltaY)) return;\n      let dy = event.deltaY;\n      if (event.deltaMode === 1) dy *= 16;\n      else if (event.deltaMode === 2) dy *= el.clientHeight;\n      dy *= multiplier;\n      if (dy === 0 || nestedCanScroll(event.target, el, dy)) return;\n      const limit = getLimit();\n      if (!raf) current = target = el.scrollTop;\n      // Release to native scrolling at the edges so the page is never trapped.\n      if ((dy < 0 && target <= 0) || (dy > 0 && target >= limit - 0.5)) return;\n      event.preventDefault();\n      target = clamp(target + dy, 0, limit);\n      if (!raf) {\n        lastTime = 0;\n        raf = requestAnimationFrame(tick);\n      }\n    };\n\n    const onNativeScroll = () => {\n      if (raf) return;\n      const top = el.scrollTop;\n      const delta = top - lastNative;\n      if (delta === 0) return;\n      const now = performance.now();\n      const dt = lastNativeTime ? clamp(now - lastNativeTime, 8, 100) : 16.667;\n      lastNativeTime = now;\n      current = target = top;\n      emit(delta / (dt / 16.667));\n      if (settleTimer) clearTimeout(settleTimer);\n      settleTimer = setTimeout(() => {\n        lastNativeTime = 0;\n        emit(0);\n      }, 90);\n    };\n\n    if (smooth) el.addEventListener(\"wheel\", onWheel, { passive: false });\n    el.addEventListener(\"scroll\", onNativeScroll, { passive: true });\n    const ro = new ResizeObserver(() => emit(stateRef.current.velocity));\n    ro.observe(el);\n    if (el.firstElementChild) ro.observe(el.firstElementChild);\n    emit(0);\n\n    return () => {\n      if (smooth) el.removeEventListener(\"wheel\", onWheel);\n      el.removeEventListener(\"scroll\", onNativeScroll);\n      ro.disconnect();\n      if (raf) cancelAnimationFrame(raf);\n      if (settleTimer) clearTimeout(settleTimer);\n    };\n  }, [containerRef, lerp, wheelMultiplier, smooth]);\n\n  return stateRef;\n}\n\nexport interface StickyStackCardsProps {\n  /** Card titles, one stacked card per item */\n  items?: string[];\n  /** Heading shown before the stack */\n  title?: string;\n  /** Vertical step in px between stacked cards */\n  offset?: number;\n  /** Scale reduction applied per card covering an earlier card */\n  scaleStep?: number;\n  /** Accent color for card glow and charts */\n  accentColor?: string;\n  /** Viewport height in px */\n  height?: number;\n  /** Viewport corner radius in px */\n  borderRadius?: number;\n  /** Interpolation factor per 60fps frame (0.05 = floaty, 0.3 = snappy) */\n  lerp?: number;\n  /** Multiplier applied to wheel / trackpad deltas */\n  wheelMultiplier?: number;\n  /** Enable smooth wheel scrolling (native scrolling when false or under reduced motion) */\n  smooth?: boolean;\n  /** Optional className merged onto the root */\n  className?: string;\n  /** Inline styles merged onto the root */\n  style?: React.CSSProperties;\n}\n\nconst DEFAULT_ITEMS = [\"Research\", \"Wireframes\", \"Visual design\", \"Motion pass\", \"Launch\"];\n\nconst rand = (n: number) => {\n  const x = Math.sin(n * 9301 + 49297) * 233280;\n  return x - Math.floor(x);\n};\n\nconst STICKY_TOP = 22;\n\nexport function StickyStackCards({\n  items = DEFAULT_ITEMS,\n  title = \"Stacked, not stashed\",\n  offset = 14,\n  scaleStep = 0.05,\n  accentColor = \"#f472b6\",\n  height = 380,\n  borderRadius = 20,\n  lerp = 0.1,\n  wheelMultiplier = 1,\n  smooth = true,\n  className = \"\",\n  style,\n}: StickyStackCardsProps) {\n  const reduced = usePrefersReducedMotion();\n  const viewportRef = React.useRef<HTMLDivElement>(null);\n  const listRef = React.useRef<HTMLOListElement>(null);\n  const cardRefs = React.useRef<(HTMLLIElement | null)[]>([]);\n  const listTopRef = React.useRef(0);\n  const lastScrollRef = React.useRef(0);\n\n  const total = items.length;\n  const cardHeight = Math.round(height * 0.6);\n  const spacing = Math.round(height * 0.42);\n  const slot = cardHeight + spacing;\n  const distance = Math.max(1, slot - offset);\n\n  const apply = React.useCallback(() => {\n    const scroll = lastScrollRef.current;\n    for (let i = 0; i < total; i++) {\n      const card = cardRefs.current[i];\n      if (!card) continue;\n      const stickAt = listTopRef.current + i * slot - (STICKY_TOP + i * offset);\n      const covered = clamp((scroll - stickAt) / distance, 0, total - 1 - i);\n      card.style.setProperty(\"--mf-ssc-c\", covered.toFixed(4));\n    }\n  }, [total, slot, offset, distance]);\n\n  const handleScroll = React.useCallback(\n    (state: SmoothScrollState) => {\n      lastScrollRef.current = state.scroll;\n      apply();\n    },\n    [apply],\n  );\n\n  useSmoothScroll(viewportRef, { lerp, wheelMultiplier, smooth: smooth && !reduced, onScroll: handleScroll });\n\n  React.useEffect(() => {\n    const list = listRef.current;\n    if (!list) return;\n    const measure = () => {\n      listTopRef.current = list.offsetTop;\n      apply();\n    };\n    measure();\n    const ro = new ResizeObserver(measure);\n    ro.observe(list);\n    return () => ro.disconnect();\n  }, [apply]);\n\n  const vars = {\n    \"--mf-ssc-h\": `${height}px`,\n    \"--mf-ssc-r\": `${borderRadius}px`,\n    \"--mf-ssc-accent\": accentColor,\n    \"--mf-ssc-step\": scaleStep,\n    \"--mf-ssc-card-h\": `${cardHeight}px`,\n    \"--mf-ssc-spacing\": `${spacing}px`,\n    \"--mf-ssc-top\": `${STICKY_TOP}px`,\n    \"--mf-ssc-offset\": `${offset}px`,\n    ...style,\n  } as React.CSSProperties;\n\n  return (\n    <div style={vars} className={`${styles.root} ${className}`.trim()}>\n      <div ref={viewportRef} className={styles.viewport} tabIndex={0} role=\"region\" aria-label={title}>\n        <div className={styles.content}>\n          <header className={styles.intro}>\n            <span className={styles.kicker}>Sticky Stack</span>\n            <h3 className={styles.title}>{title}</h3>\n            <p className={styles.subtitle}>Scroll and each card settles on top of the last.</p>\n          </header>\n          <ol ref={listRef} className={styles.list}>\n            {items.map((item, i) => (\n              <li\n                key={`${item}-${i}`}\n                ref={(node) => {\n                  cardRefs.current[i] = node;\n                }}\n                className={styles.card}\n                style={{ \"--mf-ssc-i\": i } as React.CSSProperties}\n              >\n                <span aria-hidden=\"true\" className={styles.glow} />\n                <div className={styles.cardHead}>\n                  <span className={styles.index}>{String(i + 1).padStart(2, \"0\")}</span>\n                  <span className={styles.chip}>{`Stage ${i + 1} of ${total}`}</span>\n                </div>\n                <span className={styles.cardTitle}>{item}</span>\n                <span aria-hidden=\"true\" className={styles.chart}>\n                  {Array.from({ length: 12 }, (_, b) => (\n                    <span\n                      key={b}\n                      className={styles.bar}\n                      style={{ height: `${Math.round(22 + rand(i * 31 + b) * 78)}%` }}\n                    />\n                  ))}\n                </span>\n              </li>\n            ))}\n          </ol>\n          <p className={styles.outro}>That is the whole stack.</p>\n        </div>\n      </div>\n    </div>\n  );\n}\n"
+    },
+    {
+      "path": "components/styles/sticky-stack-cards.module.css",
+      "type": "registry:style",
+      "content": ".root {\n  position: relative;\n  width: 100%;\n  height: var(--mf-ssc-h, 380px);\n  border-radius: var(--mf-ssc-r, 20px);\n  overflow: hidden;\n  border: 1px solid var(--mf-border, #2e2e38);\n  background: var(--mf-surface, #141419);\n  color: var(--mf-fg, #f4f4f6);\n  container-type: inline-size;\n  isolation: isolate;\n}\n\n.root *,\n.root *::before,\n.root *::after {\n  box-sizing: border-box;\n}\n\n.viewport {\n  position: relative;\n  height: 100%;\n  overflow-x: hidden;\n  overflow-y: auto;\n  overscroll-behavior: auto;\n  scroll-behavior: auto;\n  scrollbar-width: thin;\n  scrollbar-color: var(--mf-border, #2e2e38) transparent;\n}\n\n.viewport:focus-visible {\n  outline: 2px solid var(--mf-fg, #e4e4e7);\n  outline-offset: -2px;\n}\n\n.content {\n  position: relative;\n  padding: 0 clamp(1rem, 8cqi, 5rem);\n}\n\n.intro {\n  display: flex;\n  flex-direction: column;\n  align-items: center;\n  justify-content: center;\n  gap: 0.6rem;\n  min-height: calc(var(--mf-ssc-h, 380px) * 0.62);\n  text-align: center;\n}\n\n.kicker {\n  padding: 0.3rem 0.75rem;\n  border: 1px solid var(--mf-border, #2e2e38);\n  border-radius: 999px;\n  font-size: 0.72rem;\n  letter-spacing: 0.08em;\n  text-transform: uppercase;\n  color: var(--mf-ssc-accent, #f472b6);\n}\n\n.title {\n  margin: 0;\n  font-size: clamp(1.8rem, 6cqi, 3rem);\n  font-weight: 700;\n  line-height: 1.05;\n  letter-spacing: -0.035em;\n}\n\n.subtitle {\n  margin: 0;\n  color: var(--mf-muted, #a1a1aa);\n  font-size: 0.92rem;\n}\n\n.list {\n  position: relative;\n  margin: 0 auto;\n  padding: 0 0 calc(var(--mf-ssc-h, 380px) * 0.35);\n  max-width: 36rem;\n  list-style: none;\n}\n\n.card {\n  --mf-ssc-c: 0;\n  position: sticky;\n  top: calc(var(--mf-ssc-top, 22px) + var(--mf-ssc-i, 0) * var(--mf-ssc-offset, 14px));\n  display: flex;\n  flex-direction: column;\n  gap: 0.5rem;\n  height: var(--mf-ssc-card-h, 228px);\n  margin-bottom: var(--mf-ssc-spacing, 160px);\n  padding: 1.15rem 1.3rem;\n  border: 1px solid var(--mf-border-strong, #3f3f4a);\n  border-radius: 20px;\n  background: var(--mf-surface-raised, #1b1b22);\n  box-shadow: 0 -12px 40px -18px rgba(0, 0, 0, 0.7);\n  overflow: hidden;\n  transform: scale(calc(1 - var(--mf-ssc-c) * var(--mf-ssc-step, 0.05)));\n  transform-origin: 50% 0%;\n  filter: brightness(calc(1 - min(var(--mf-ssc-c), 3) * 0.16));\n  will-change: transform, filter;\n}\n\n.card:last-child {\n  margin-bottom: 0;\n}\n\n.glow {\n  position: absolute;\n  top: -40%;\n  right: calc(-30% + var(--mf-ssc-i, 0) * 9%);\n  width: 70%;\n  aspect-ratio: 1;\n  border-radius: 50%;\n  background: radial-gradient(circle, color-mix(in srgb, var(--mf-ssc-accent, #f472b6) 55%, transparent), transparent 65%);\n  pointer-events: none;\n}\n\n.cardHead {\n  position: relative;\n  display: flex;\n  align-items: center;\n  justify-content: space-between;\n}\n\n.index {\n  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;\n  font-size: 0.78rem;\n  color: var(--mf-muted, #a1a1aa);\n}\n\n.chip {\n  padding: 0.2rem 0.6rem;\n  border-radius: 999px;\n  background: color-mix(in srgb, var(--mf-ssc-accent, #f472b6) 16%, transparent);\n  color: var(--mf-ssc-accent, #f472b6);\n  font-size: 0.7rem;\n}\n\n.cardTitle {\n  position: relative;\n  font-size: clamp(1.4rem, 4.5cqi, 2rem);\n  font-weight: 650;\n  letter-spacing: -0.03em;\n}\n\n.chart {\n  position: relative;\n  display: flex;\n  align-items: flex-end;\n  gap: 6px;\n  flex: 1;\n  min-height: 0;\n  padding-top: 0.4rem;\n}\n\n.bar {\n  flex: 1;\n  border-radius: 4px 4px 2px 2px;\n  background: linear-gradient(180deg, var(--mf-ssc-accent, #f472b6), color-mix(in srgb, var(--mf-ssc-accent, #f472b6) 15%, transparent));\n  opacity: 0.75;\n}\n\n.outro {\n  margin: 0;\n  padding: 2rem 0 3rem;\n  text-align: center;\n  color: var(--mf-muted, #a1a1aa);\n  font-size: 0.9rem;\n}\n\n@media (prefers-reduced-motion: reduce) {\n  .card {\n    transform: none;\n    will-change: auto;\n  }\n}\n"
+    }
+  ],
+  "tailwindExample": "\"use client\";\n\nimport { useEffect, useRef } from \"react\";\n\nfunction useSmooth(ref, onFrame, lerp = 0.1) {\n  useEffect(() => {\n    const el = ref.current;\n    let target = el.scrollTop, raf = 0;\n    const emit = () => { const max = el.scrollHeight - el.clientHeight; onFrame(el.scrollTop, max > 0 ? el.scrollTop / max : 0); };\n    const tick = () => {\n      const d = target - el.scrollTop;\n      el.scrollTop += Math.abs(d) < 0.5 ? d : d * lerp;\n      emit();\n      raf = Math.abs(target - el.scrollTop) < 0.5 ? 0 : requestAnimationFrame(tick);\n    };\n    const onWheel = (e) => {\n      const max = el.scrollHeight - el.clientHeight;\n      if (!raf) target = el.scrollTop;\n      if ((e.deltaY < 0 && target <= 0) || (e.deltaY > 0 && target >= max)) return;\n      e.preventDefault();\n      target = Math.min(max, Math.max(0, target + e.deltaY));\n      if (!raf) raf = requestAnimationFrame(tick);\n    };\n    el.addEventListener(\"wheel\", onWheel, { passive: false });\n    el.addEventListener(\"scroll\", () => { if (!raf) emit(); }, { passive: true });\n    return () => { el.removeEventListener(\"wheel\", onWheel); cancelAnimationFrame(raf); };\n  }, []);\n}\n\nexport function StickyStackCardsTailwind() {\n  const ref = useRef(null);\n  const cards = useRef([]);\n  const items = [\"Research\", \"Wireframes\", \"Visual design\", \"Motion pass\", \"Launch\"];\n  useSmooth(ref, (s) => cards.current.forEach((c, i) => {\n    const covered = Math.min(items.length - 1 - i, Math.max(0, (s - 120 - i * 360) / 346));\n    c.style.transform = `scale(${1 - covered * 0.05})`;\n    c.style.filter = `brightness(${1 - Math.min(covered, 3) * 0.15})`;\n  }));\n  return (\n    <div className=\"relative h-[380px] w-full overflow-hidden rounded-[20px] border border-zinc-800 bg-zinc-900 text-zinc-100\">\n      <div ref={ref} tabIndex={0} className=\"h-full overflow-y-auto px-16\">\n        <h3 className=\"flex h-40 items-center justify-center text-3xl font-bold\">Stacked, not stashed</h3>\n        <ol className=\"mx-auto max-w-xl pb-32\">\n          {items.map((t, i) => (\n            <li key={t} ref={(n) => (cards.current[i] = n)} style={{ top: 22 + i * 14 }} className=\"sticky mb-[132px] h-[228px] origin-top rounded-2xl border border-zinc-700 bg-zinc-800 p-5 last:mb-0\">\n              <span className=\"text-xs text-pink-400\">0{i + 1}</span>\n              <p className=\"text-2xl font-semibold\">{t}</p>\n            </li>\n          ))}\n        </ol>\n      </div>\n    </div>\n  );\n}"
+}

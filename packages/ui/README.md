@@ -1,9 +1,12 @@
 # @motionfoundry/ui
 
-Production-ready animated React components — **48 components** in two collections:
+Production-ready animated React components — **72 components** in five collections:
 
 - **Core** (24): kinetic typography, spatial cards, canvas networks, and developer-interface choreography.
 - **Studio Kit** (24): everyday product motion — text reveals, feedback buttons, interactive cards, ambient backgrounds, loaders, and list interactions.
+- **Gradients** (8): animated mesh, aurora, conic, liquid, wave, orb, grain, and spotlight backgrounds with every color and speed exposed.
+- **Text FX** (8): GSAP-style split-text, mask wipes, elastic letters, text on a path, rolling hovers, marker highlights, scatter, and cube-flip words — no GSAP dependency.
+- **Scroll** (8): Lenis-style smooth scrolling, parallax, scroll-filled text, horizontal tracks, stacking cards, velocity marquees, zoom reveals, and timelines — no Lenis dependency.
 
 Every component is written in TypeScript with a scoped CSS Module, ships with sensible defaults (`<FlipCard />` renders a full demo), works in React Server Component trees, and respects `prefers-reduced-motion`.
 
@@ -162,6 +165,55 @@ npx motionfoundry add rotating-words confetti-button flip-card
 | `OrbitLoader` | `orbit-loader` | no |
 | `PulseLoader` | `pulse-loader` | no |
 | `NotificationStack` | `notification-stack` | yes |
+
+
+### Gradients (8)
+
+**Gradient Backgrounds**
+
+| Component | Slug | Needs `motion` |
+| --- | --- | --- |
+| `MeshGradient` | `mesh-gradient` | no |
+| `AuroraRibbons` | `aurora-ribbons` | no |
+| `ConicGradient` | `conic-gradient` | no |
+| `LiquidGradient` | `liquid-gradient` | no |
+| `WaveGradient` | `wave-gradient` | no |
+| `GradientOrbs` | `gradient-orbs` | no |
+| `GrainGradient` | `grain-gradient` | no |
+| `SpotlightGradient` | `spotlight-gradient` | no |
+
+
+### Text FX (8)
+
+**Advanced Text Animations**
+
+| Component | Slug | Needs `motion` |
+| --- | --- | --- |
+| `SplitText` | `split-text` | no |
+| `MaskWipeText` | `mask-wipe-text` | no |
+| `ElasticLetters` | `elastic-letters` | no |
+| `TextOnPath` | `text-on-path` | no |
+| `RollingText` | `rolling-text` | no |
+| `MarkerHighlight` | `marker-highlight` | no |
+| `ScatterText` | `scatter-text` | no |
+| `CubeFlipWords` | `cube-flip-words` | no |
+
+
+### Scroll (8)
+
+**Scroll Animations**
+
+| Component | Slug | Needs `motion` |
+| --- | --- | --- |
+| `SmoothScroll` | `smooth-scroll` | no |
+| `ParallaxLayers` | `parallax-layers` | no |
+| `ScrollFillText` | `scroll-fill-text` | no |
+| `HorizontalScroll` | `horizontal-scroll` | no |
+| `StickyStackCards` | `sticky-stack-cards` | no |
+| `VelocityMarquee` | `velocity-marquee` | no |
+| `ScrollZoomReveal` | `scroll-zoom-reveal` | no |
+| `ScrollTimeline` | `scroll-timeline` | no |
+
 Full prop tables, live playgrounds, and accessibility notes for every component are in the documentation site (`apps/docs`, run `pnpm dev` from the repository root).
 
 ## Accessibility

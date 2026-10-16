@@ -1,0 +1,63 @@
+.root {
+  position: relative;
+  max-width: 22em;
+  margin: 0;
+  color: var(--mf-mh-text, var(--mf-fg, #f4f4f6));
+  font-size: var(--mf-mh-size, 44px);
+  font-weight: 700;
+  letter-spacing: -0.035em;
+  line-height: 1.25;
+  text-align: center;
+  text-wrap: balance;
+}
+
+.nowrap {
+  white-space: nowrap;
+}
+
+.mark {
+  position: relative;
+  display: inline-block;
+  isolation: isolate;
+  padding: 0 0.06em;
+  background: none;
+  color: inherit;
+}
+
+.ink {
+  position: absolute;
+  z-index: -1;
+  top: 0.14em;
+  right: -0.1em;
+  bottom: 0.06em;
+  left: -0.1em;
+  border-radius: 0.5em 0.22em 0.42em 0.26em / 0.62em 0.38em 0.5em 0.42em;
+  background:
+    linear-gradient(100deg, transparent 0%, rgba(255, 255, 255, 0.12) 18%, transparent 40%), var(--mf-mh-color, #7c3aed);
+  opacity: 0.88;
+  transform: rotate(var(--mf-mh-rot, -1deg)) skewX(var(--mf-mh-skew, -6deg)) scaleX(0);
+  transform-origin: 0% 50%;
+  transition: transform var(--mf-mh-duration, 0.7s) var(--mf-mh-ease, cubic-bezier(0.22, 1, 0.36, 1))
+    var(--mf-mh-delay, 0s);
+  will-change: transform;
+}
+
+.root[data-thickness="underline"] .ink {
+  top: 0.66em;
+  bottom: 0.02em;
+}
+
+.root[data-active="true"] .ink {
+  transform: rotate(var(--mf-mh-rot, -1deg)) skewX(var(--mf-mh-skew, -6deg)) scaleX(1);
+}
+
+.label {
+  position: relative;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ink {
+    transition: none;
+    transform: rotate(var(--mf-mh-rot, -1deg)) skewX(var(--mf-mh-skew, -6deg)) scaleX(1);
+  }
+}

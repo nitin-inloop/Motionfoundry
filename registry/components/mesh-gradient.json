@@ -1,0 +1,208 @@
+{
+  "slug": "mesh-gradient",
+  "name": "MeshGradient",
+  "category": "Gradient Backgrounds",
+  "collection": "gradients",
+  "featured": true,
+  "addedAt": "2026-10-16",
+  "version": "2.2.0",
+  "requiresMotion": false,
+  "dependencies": [
+    "react"
+  ],
+  "description": "Five large, heavily blurred color blobs drift on independent CSS keyframe loops over a deep base color, with an optional animated film-grain overlay for a Stripe-style mesh hero.",
+  "tags": [
+    "gradient",
+    "mesh",
+    "background",
+    "blur",
+    "grain",
+    "hero",
+    "blobs"
+  ],
+  "a11yNotes": "All blob, sheen and grain layers are aria-hidden and pointer-events: none; children stay in normal reading order. Animations pause when the element is off-screen or speed is 0, and prefers-reduced-motion renders a static mesh (honored in both CSS and JS).",
+  "defaultProps": {
+    "color1": "#ff5c9a",
+    "color2": "#7c5cff",
+    "color3": "#00c2ff",
+    "color4": "#ffb36b",
+    "backgroundColor": "#0c0a1f",
+    "speed": 1,
+    "blur": 70,
+    "grain": true,
+    "grainOpacity": 0.18,
+    "height": 360,
+    "borderRadius": 20
+  },
+  "controls": [
+    {
+      "prop": "color1",
+      "label": "Color 1",
+      "type": "color"
+    },
+    {
+      "prop": "color2",
+      "label": "Color 2",
+      "type": "color"
+    },
+    {
+      "prop": "color3",
+      "label": "Color 3",
+      "type": "color"
+    },
+    {
+      "prop": "color4",
+      "label": "Color 4",
+      "type": "color"
+    },
+    {
+      "prop": "backgroundColor",
+      "label": "Background",
+      "type": "color"
+    },
+    {
+      "prop": "speed",
+      "label": "Speed",
+      "type": "range",
+      "min": 0,
+      "max": 3,
+      "step": 0.1
+    },
+    {
+      "prop": "blur",
+      "label": "Blur (px)",
+      "type": "range",
+      "min": 0,
+      "max": 140,
+      "step": 2
+    },
+    {
+      "prop": "grain",
+      "label": "Film grain",
+      "type": "boolean"
+    },
+    {
+      "prop": "grainOpacity",
+      "label": "Grain opacity",
+      "type": "range",
+      "min": 0,
+      "max": 0.6,
+      "step": 0.02
+    },
+    {
+      "prop": "height",
+      "label": "Height (px)",
+      "type": "range",
+      "min": 200,
+      "max": 600,
+      "step": 10
+    },
+    {
+      "prop": "borderRadius",
+      "label": "Corner radius (px)",
+      "type": "range",
+      "min": 0,
+      "max": 48,
+      "step": 1
+    }
+  ],
+  "propsApi": [
+    {
+      "name": "color1",
+      "type": "string",
+      "default": "'#ff5c9a'",
+      "description": "First blob color."
+    },
+    {
+      "name": "color2",
+      "type": "string",
+      "default": "'#7c5cff'",
+      "description": "Second blob color."
+    },
+    {
+      "name": "color3",
+      "type": "string",
+      "default": "'#00c2ff'",
+      "description": "Third blob color."
+    },
+    {
+      "name": "color4",
+      "type": "string",
+      "default": "'#ffb36b'",
+      "description": "Fourth blob color."
+    },
+    {
+      "name": "backgroundColor",
+      "type": "string",
+      "default": "'#0c0a1f'",
+      "description": "Base surface color behind the blobs."
+    },
+    {
+      "name": "speed",
+      "type": "number",
+      "default": "1",
+      "description": "Animation speed multiplier (0 pauses)."
+    },
+    {
+      "name": "blur",
+      "type": "number",
+      "default": "70",
+      "description": "Blur radius of the blob layer in px."
+    },
+    {
+      "name": "grain",
+      "type": "boolean",
+      "default": "true",
+      "description": "Overlay an animated film-grain texture."
+    },
+    {
+      "name": "grainOpacity",
+      "type": "number",
+      "default": "0.18",
+      "description": "Opacity of the grain overlay (0–1)."
+    },
+    {
+      "name": "height",
+      "type": "number",
+      "default": "360",
+      "description": "Height of the background in px."
+    },
+    {
+      "name": "borderRadius",
+      "type": "number",
+      "default": "20",
+      "description": "Corner radius in px."
+    },
+    {
+      "name": "children",
+      "type": "React.ReactNode",
+      "default": "undefined",
+      "description": "Content rendered centered on top; defaults to a heading and subline."
+    },
+    {
+      "name": "className",
+      "type": "string",
+      "default": "''",
+      "description": "Additional class merged onto the root element."
+    },
+    {
+      "name": "style",
+      "type": "React.CSSProperties",
+      "default": "undefined",
+      "description": "Inline styles merged onto the root element."
+    }
+  ],
+  "files": [
+    {
+      "path": "components/ui/mesh-gradient.tsx",
+      "type": "registry:component",
+      "content": "\"use client\";\n\nimport * as React from \"react\";\nimport styles from \"../styles/mesh-gradient.module.css\";\n\nexport interface MeshGradientProps {\n  /** First blob color */\n  color1?: string;\n  /** Second blob color */\n  color2?: string;\n  /** Third blob color */\n  color3?: string;\n  /** Fourth blob color */\n  color4?: string;\n  /** Base surface color behind the blobs */\n  backgroundColor?: string;\n  /** Animation speed multiplier (1 = default drift, 0 = paused) */\n  speed?: number;\n  /** Blur radius applied to the blob layer, in px */\n  blur?: number;\n  /** Overlay an animated film grain texture */\n  grain?: boolean;\n  /** Opacity of the film grain overlay (0–1) */\n  grainOpacity?: number;\n  /** Height of the background in px */\n  height?: number;\n  /** Corner radius in px */\n  borderRadius?: number;\n  /** Foreground content rendered centered on top */\n  children?: React.ReactNode;\n  /** Optional className merged onto the root */\n  className?: string;\n  /** Inline styles merged onto the root */\n  style?: React.CSSProperties;\n}\n\n/** Blob layout: position (%), size (% of the larger side), base loop duration (s), keyframe path index */\nconst BLOBS = [\n  { x: 18, y: 22, size: 62, dur: 22, path: 0, color: 0 },\n  { x: 78, y: 18, size: 58, dur: 27, path: 1, color: 1 },\n  { x: 72, y: 82, size: 66, dur: 31, path: 2, color: 2 },\n  { x: 22, y: 80, size: 56, dur: 25, path: 3, color: 3 },\n  { x: 50, y: 50, size: 44, dur: 19, path: 4, color: 0 },\n];\n\nfunction useReducedMotionPref() {\n  const [reduced, setReduced] = React.useState(false);\n  React.useEffect(() => {\n    if (typeof window === \"undefined\" || !window.matchMedia) return;\n    const mq = window.matchMedia(\"(prefers-reduced-motion: reduce)\");\n    const update = () => setReduced(mq.matches);\n    update();\n    mq.addEventListener(\"change\", update);\n    return () => mq.removeEventListener(\"change\", update);\n  }, []);\n  return reduced;\n}\n\nfunction useInView(ref: React.RefObject<HTMLElement | null>) {\n  const [inView, setInView] = React.useState(true);\n  React.useEffect(() => {\n    const el = ref.current;\n    if (!el || typeof IntersectionObserver === \"undefined\") return;\n    const io = new IntersectionObserver((entries) => {\n      const entry = entries[entries.length - 1];\n      if (entry) setInView(entry.isIntersecting);\n    }, { rootMargin: \"80px\" });\n    io.observe(el);\n    return () => io.disconnect();\n  }, [ref]);\n  return inView;\n}\n\nexport function MeshGradient({\n  color1 = \"#ff5c9a\",\n  color2 = \"#7c5cff\",\n  color3 = \"#00c2ff\",\n  color4 = \"#ffb36b\",\n  backgroundColor = \"#0c0a1f\",\n  speed = 1,\n  blur = 70,\n  grain = true,\n  grainOpacity = 0.18,\n  height = 360,\n  borderRadius = 20,\n  children,\n  className = \"\",\n  style,\n}: MeshGradientProps) {\n  const rootRef = React.useRef<HTMLDivElement>(null);\n  const reduced = useReducedMotionPref();\n  const inView = useInView(rootRef);\n  const colors = [color1, color2, color3, color4];\n  const safeSpeed = Math.max(0, speed);\n  const running = !reduced && safeSpeed > 0 && inView;\n\n  const styleVars = {\n    \"--mf-mg-bg\": backgroundColor,\n    \"--mf-mg-blur\": `${Math.max(0, blur)}px`,\n    \"--mf-mg-grain\": String(Math.min(1, Math.max(0, grainOpacity))),\n    \"--mf-mg-state\": running ? \"running\" : \"paused\",\n    height: `${height}px`,\n    borderRadius: `${borderRadius}px`,\n    ...style,\n  } as React.CSSProperties;\n\n  return (\n    <div ref={rootRef} style={styleVars} className={`${styles.root} ${className}`.trim()}>\n      <div aria-hidden=\"true\" className={styles.blobs}>\n        {BLOBS.map((b, i) => (\n          <span\n            key={i}\n            className={`${styles.blob} ${styles[`path${b.path}`]}`}\n            style={{\n              left: `${b.x}%`,\n              top: `${b.y}%`,\n              width: `${b.size}%`,\n              background: `radial-gradient(circle at 50% 50%, ${colors[b.color]} 0%, ${colors[b.color]} 30%, transparent 68%)`,\n              animationDuration: `${(b.dur / (safeSpeed > 0 ? safeSpeed : 1)).toFixed(2)}s`,\n              animationDelay: `-${(b.dur * (i * 0.17)).toFixed(2)}s`,\n              opacity: i === 4 ? 0.7 : 0.9,\n            }}\n          />\n        ))}\n      </div>\n      <div aria-hidden=\"true\" className={styles.sheen} />\n      {grain ? <div aria-hidden=\"true\" className={styles.grain} /> : null}\n      <div className={styles.content}>\n        {children ?? (\n          <div className={styles.copy}>\n            <h3 className={styles.title}>Mesh Gradient</h3>\n            <p className={styles.subtitle}>Soft color fields drifting on independent loops.</p>\n          </div>\n        )}\n      </div>\n    </div>\n  );\n}\n"
+    },
+    {
+      "path": "components/styles/mesh-gradient.module.css",
+      "type": "registry:style",
+      "content": ".root {\n  position: relative;\n  isolation: isolate;\n  overflow: hidden;\n  display: flex;\n  width: 100%;\n  border: 1px solid var(--mf-border, #2e2e38);\n  background-color: var(--mf-mg-bg, #0c0a1f);\n  color: var(--mf-fg, #f4f4f6);\n}\n\n.blobs {\n  position: absolute;\n  inset: -12%;\n  filter: blur(var(--mf-mg-blur, 70px)) saturate(1.25);\n  pointer-events: none;\n}\n\n.blob {\n  position: absolute;\n  aspect-ratio: 1 / 1;\n  border-radius: 50%;\n  transform: translate(-50%, -50%);\n  animation-timing-function: ease-in-out;\n  animation-iteration-count: infinite;\n  animation-play-state: var(--mf-mg-state, running);\n  will-change: transform;\n}\n\n.path0 { animation-name: mfMgPath0; }\n.path1 { animation-name: mfMgPath1; }\n.path2 { animation-name: mfMgPath2; }\n.path3 { animation-name: mfMgPath3; }\n.path4 { animation-name: mfMgPath4; }\n\n.sheen {\n  position: absolute;\n  inset: 0;\n  pointer-events: none;\n  background: radial-gradient(120% 90% at 50% 0%, rgba(255, 255, 255, 0.08), transparent 55%),\n    radial-gradient(140% 100% at 50% 110%, rgba(0, 0, 0, 0.35), transparent 60%);\n}\n\n.grain {\n  position: absolute;\n  inset: -50%;\n  pointer-events: none;\n  opacity: var(--mf-mg-grain, 0.18);\n  mix-blend-mode: overlay;\n  background-image: url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 1.4 -0.2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E\");\n  background-size: 180px 180px;\n  animation: mfMgGrain 0.9s steps(6) infinite;\n  animation-play-state: var(--mf-mg-state, running);\n}\n\n.content {\n  position: relative;\n  z-index: 1;\n  display: flex;\n  flex: 1;\n  align-items: center;\n  justify-content: center;\n  padding: 2rem;\n}\n\n.copy {\n  text-align: center;\n  text-shadow: 0 1px 24px rgba(0, 0, 0, 0.25);\n}\n\n.title {\n  margin: 0;\n  font-size: 2rem;\n  font-weight: 700;\n  letter-spacing: -0.035em;\n  color: var(--mf-fg, #f4f4f6);\n}\n\n.subtitle {\n  margin: 0.5rem 0 0;\n  font-size: 0.9375rem;\n  color: var(--mf-fg, #f4f4f6);\n  opacity: 0.78;\n}\n\n@keyframes mfMgPath0 {\n  0%, 100% { transform: translate(-50%, -50%) translate(0, 0) scale(1); }\n  33% { transform: translate(-50%, -50%) translate(28%, 18%) scale(1.12); }\n  66% { transform: translate(-50%, -50%) translate(8%, 38%) scale(0.92); }\n}\n\n@keyframes mfMgPath1 {\n  0%, 100% { transform: translate(-50%, -50%) translate(0, 0) scale(1); }\n  30% { transform: translate(-50%, -50%) translate(-34%, 22%) scale(0.9); }\n  70% { transform: translate(-50%, -50%) translate(-12%, 46%) scale(1.15); }\n}\n\n@keyframes mfMgPath2 {\n  0%, 100% { transform: translate(-50%, -50%) translate(0, 0) scale(1.05); }\n  40% { transform: translate(-50%, -50%) translate(-30%, -32%) scale(0.88); }\n  75% { transform: translate(-50%, -50%) translate(10%, -18%) scale(1.1); }\n}\n\n@keyframes mfMgPath3 {\n  0%, 100% { transform: translate(-50%, -50%) translate(0, 0) scale(0.95); }\n  35% { transform: translate(-50%, -50%) translate(32%, -26%) scale(1.12); }\n  65% { transform: translate(-50%, -50%) translate(40%, 8%) scale(0.9); }\n}\n\n@keyframes mfMgPath4 {\n  0%, 100% { transform: translate(-50%, -50%) translate(0, 0) scale(1); }\n  25% { transform: translate(-50%, -50%) translate(-40%, -20%) scale(1.25); }\n  50% { transform: translate(-50%, -50%) translate(10%, 30%) scale(0.85); }\n  75% { transform: translate(-50%, -50%) translate(36%, -24%) scale(1.1); }\n}\n\n@keyframes mfMgGrain {\n  0% { transform: translate(0, 0); }\n  20% { transform: translate(-6%, 4%); }\n  40% { transform: translate(5%, -7%); }\n  60% { transform: translate(-3%, 8%); }\n  80% { transform: translate(7%, 2%); }\n  100% { transform: translate(0, 0); }\n}\n\n@media (prefers-reduced-motion: reduce) {\n  .blob,\n  .grain {\n    animation: none;\n  }\n}\n"
+    }
+  ],
+  "tailwindExample": "\"use client\";\n\nexport function MeshGradientTailwind({ children }: { children?: React.ReactNode }) {\n  const blobs = [\n    \"left-[5%] top-[0%] bg-[#ff5c9a] animate-[spin_22s_linear_infinite]\",\n    \"right-[0%] top-[-5%] bg-[#7c5cff] animate-[spin_27s_linear_infinite_reverse]\",\n    \"right-[15%] bottom-[-15%] bg-[#00c2ff] animate-[spin_31s_linear_infinite]\",\n    \"left-[5%] bottom-[-20%] bg-[#ffb36b] animate-[spin_25s_linear_infinite_reverse]\",\n  ];\n  return (\n    <div className=\"relative isolate flex h-[360px] w-full items-center justify-center overflow-hidden rounded-[20px] border border-zinc-800 bg-[#0c0a1f]\">\n      <div aria-hidden className=\"absolute -inset-[12%] blur-[70px]\">\n        {blobs.map((b, i) => (\n          <div key={i} className={\"absolute aspect-square h-[65%] origin-[65%_35%] rounded-full mix-blend-screen motion-reduce:animate-none \" + b} />\n        ))}\n      </div>\n      <div className=\"relative text-center\">\n        {children ?? (\n          <>\n            <h3 className=\"text-3xl font-bold tracking-tight text-zinc-50\">Mesh Gradient</h3>\n            <p className=\"mt-2 text-sm text-zinc-400\">Soft color fields drifting on independent loops.</p>\n          </>\n        )}\n      </div>\n    </div>\n  );\n}"
+}

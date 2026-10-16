@@ -1,0 +1,189 @@
+{
+  "slug": "spotlight-gradient",
+  "name": "SpotlightGradient",
+  "category": "Gradient Backgrounds",
+  "collection": "gradients",
+  "featured": false,
+  "addedAt": "2026-10-16",
+  "version": "2.2.0",
+  "requiresMotion": false,
+  "dependencies": [
+    "react"
+  ],
+  "description": "A dark dot or line grid lit by a two-tone radial spotlight that follows the pointer with frame-rate-independent easing, brightening the grid beneath it, and drifts along a slow Lissajous path when the pointer leaves.",
+  "tags": [
+    "spotlight",
+    "gradient",
+    "grid",
+    "pointer",
+    "background",
+    "interactive",
+    "dots"
+  ],
+  "a11yNotes": "Grid, spotlight and vignette layers are aria-hidden with pointer-events: none, so content remains interactive. The loop stops off-screen; speed 0 freezes the idle drift (pointer following still works); prefers-reduced-motion renders a static spotlight with no tracking or drift.",
+  "defaultProps": {
+    "color1": "#22d3ee",
+    "color2": "#8b5cf6",
+    "backgroundColor": "#09090f",
+    "radius": 320,
+    "gridType": "dots",
+    "gridOpacity": 0.14,
+    "speed": 1,
+    "height": 360,
+    "borderRadius": 20
+  },
+  "controls": [
+    {
+      "prop": "color1",
+      "label": "Spotlight",
+      "type": "color"
+    },
+    {
+      "prop": "color2",
+      "label": "Halo",
+      "type": "color"
+    },
+    {
+      "prop": "backgroundColor",
+      "label": "Background",
+      "type": "color"
+    },
+    {
+      "prop": "radius",
+      "label": "Spotlight radius (px)",
+      "type": "range",
+      "min": 80,
+      "max": 700,
+      "step": 10
+    },
+    {
+      "prop": "gridType",
+      "label": "Grid",
+      "type": "select",
+      "options": [
+        "dots",
+        "lines",
+        "none"
+      ]
+    },
+    {
+      "prop": "gridOpacity",
+      "label": "Grid opacity",
+      "type": "range",
+      "min": 0,
+      "max": 0.5,
+      "step": 0.01
+    },
+    {
+      "prop": "speed",
+      "label": "Drift speed",
+      "type": "range",
+      "min": 0,
+      "max": 3,
+      "step": 0.1
+    },
+    {
+      "prop": "height",
+      "label": "Height (px)",
+      "type": "range",
+      "min": 200,
+      "max": 600,
+      "step": 10
+    },
+    {
+      "prop": "borderRadius",
+      "label": "Corner radius (px)",
+      "type": "range",
+      "min": 0,
+      "max": 48,
+      "step": 1
+    }
+  ],
+  "propsApi": [
+    {
+      "name": "color1",
+      "type": "string",
+      "default": "'#22d3ee'",
+      "description": "Inner spotlight color."
+    },
+    {
+      "name": "color2",
+      "type": "string",
+      "default": "'#8b5cf6'",
+      "description": "Outer spotlight halo color."
+    },
+    {
+      "name": "backgroundColor",
+      "type": "string",
+      "default": "'#09090f'",
+      "description": "Dark surface color."
+    },
+    {
+      "name": "radius",
+      "type": "number",
+      "default": "320",
+      "description": "Spotlight radius in px."
+    },
+    {
+      "name": "gridType",
+      "type": "\"dots\" | \"lines\" | \"none\"",
+      "default": "'dots'",
+      "description": "Background grid pattern."
+    },
+    {
+      "name": "gridOpacity",
+      "type": "number",
+      "default": "0.14",
+      "description": "Base grid opacity (0–1); the grid brightens under the spotlight."
+    },
+    {
+      "name": "speed",
+      "type": "number",
+      "default": "1",
+      "description": "Idle auto-drift speed multiplier (0 freezes the drift)."
+    },
+    {
+      "name": "height",
+      "type": "number",
+      "default": "360",
+      "description": "Height of the background in px."
+    },
+    {
+      "name": "borderRadius",
+      "type": "number",
+      "default": "20",
+      "description": "Corner radius in px."
+    },
+    {
+      "name": "children",
+      "type": "React.ReactNode",
+      "default": "undefined",
+      "description": "Content rendered centered on top; defaults to a heading and subline."
+    },
+    {
+      "name": "className",
+      "type": "string",
+      "default": "''",
+      "description": "Additional class merged onto the root element."
+    },
+    {
+      "name": "style",
+      "type": "React.CSSProperties",
+      "default": "undefined",
+      "description": "Inline styles merged onto the root element."
+    }
+  ],
+  "files": [
+    {
+      "path": "components/ui/spotlight-gradient.tsx",
+      "type": "registry:component",
+      "content": "\"use client\";\n\nimport * as React from \"react\";\nimport styles from \"../styles/spotlight-gradient.module.css\";\n\nexport interface SpotlightGradientProps {\n  /** Inner spotlight color */\n  color1?: string;\n  /** Outer spotlight halo color */\n  color2?: string;\n  /** Dark surface color */\n  backgroundColor?: string;\n  /** Spotlight radius in px */\n  radius?: number;\n  /** Background grid pattern */\n  gridType?: \"dots\" | \"lines\" | \"none\";\n  /** Base opacity of the grid (0–1); the grid brightens under the spotlight */\n  gridOpacity?: number;\n  /** Idle auto-drift speed multiplier (1 = default, 0 = paused) */\n  speed?: number;\n  /** Height of the background in px */\n  height?: number;\n  /** Corner radius in px */\n  borderRadius?: number;\n  /** Foreground content rendered centered on top */\n  children?: React.ReactNode;\n  /** Optional className merged onto the root */\n  className?: string;\n  /** Inline styles merged onto the root */\n  style?: React.CSSProperties;\n}\n\nfunction useReducedMotionPref() {\n  const [reduced, setReduced] = React.useState(false);\n  React.useEffect(() => {\n    if (typeof window === \"undefined\" || !window.matchMedia) return;\n    const mq = window.matchMedia(\"(prefers-reduced-motion: reduce)\");\n    const update = () => setReduced(mq.matches);\n    update();\n    mq.addEventListener(\"change\", update);\n    return () => mq.removeEventListener(\"change\", update);\n  }, []);\n  return reduced;\n}\n\nfunction useInView(ref: React.RefObject<HTMLElement | null>) {\n  const [inView, setInView] = React.useState(true);\n  React.useEffect(() => {\n    const el = ref.current;\n    if (!el || typeof IntersectionObserver === \"undefined\") return;\n    const io = new IntersectionObserver((entries) => {\n      const entry = entries[entries.length - 1];\n      if (entry) setInView(entry.isIntersecting);\n    }, { rootMargin: \"80px\" });\n    io.observe(el);\n    return () => io.disconnect();\n  }, [ref]);\n  return inView;\n}\n\n/** Idle path: a slow Lissajous figure around the center, in 0–1 coordinates */\nfunction driftPoint(t: number): [number, number] {\n  return [0.5 + Math.sin(t * 0.5) * 0.3 + Math.sin(t * 0.23) * 0.06, 0.5 + Math.sin(t * 0.37 + 1.2) * 0.24];\n}\n\nexport function SpotlightGradient({\n  color1 = \"#22d3ee\",\n  color2 = \"#8b5cf6\",\n  backgroundColor = \"#09090f\",\n  radius = 320,\n  gridType = \"dots\",\n  gridOpacity = 0.14,\n  speed = 1,\n  height = 360,\n  borderRadius = 20,\n  children,\n  className = \"\",\n  style,\n}: SpotlightGradientProps) {\n  const rootRef = React.useRef<HTMLDivElement>(null);\n  const reduced = useReducedMotionPref();\n  const inView = useInView(rootRef);\n  const safeSpeed = Math.max(0, speed);\n\n  React.useEffect(() => {\n    const el = rootRef.current;\n    if (!el || reduced || !inView) return;\n    const start = driftPoint(0);\n    const cur = { x: start[0], y: start[1] };\n    const pointer = { x: 0.5, y: 0.5, active: false };\n    let t = 0;\n    let raf = 0;\n    let last = performance.now();\n    const tick = (now: number) => {\n      const dt = Math.min(0.05, (now - last) / 1000);\n      last = now;\n      t += dt * safeSpeed;\n      let tx: number;\n      let ty: number;\n      if (pointer.active) {\n        tx = pointer.x;\n        ty = pointer.y;\n      } else {\n        const p = driftPoint(t);\n        tx = p[0];\n        ty = p[1];\n      }\n      const ease = 1 - Math.pow(pointer.active ? 0.0008 : 0.04, dt);\n      cur.x += (tx - cur.x) * ease;\n      cur.y += (ty - cur.y) * ease;\n      el.style.setProperty(\"--mf-sg-x\", `${(cur.x * 100).toFixed(2)}%`);\n      el.style.setProperty(\"--mf-sg-y\", `${(cur.y * 100).toFixed(2)}%`);\n      raf = requestAnimationFrame(tick);\n    };\n    const onMove = (e: PointerEvent) => {\n      const rect = el.getBoundingClientRect();\n      pointer.x = (e.clientX - rect.left) / rect.width;\n      pointer.y = (e.clientY - rect.top) / rect.height;\n      pointer.active = true;\n    };\n    const onLeave = () => {\n      pointer.active = false;\n    };\n    el.addEventListener(\"pointermove\", onMove);\n    el.addEventListener(\"pointerleave\", onLeave);\n    raf = requestAnimationFrame(tick);\n    return () => {\n      el.removeEventListener(\"pointermove\", onMove);\n      el.removeEventListener(\"pointerleave\", onLeave);\n      cancelAnimationFrame(raf);\n    };\n  }, [reduced, inView, safeSpeed]);\n\n  const gridClass = gridType === \"lines\" ? styles.lines : gridType === \"dots\" ? styles.dots : \"\";\n  const styleVars = {\n    \"--mf-sg-bg\": backgroundColor,\n    \"--mf-sg-c1\": color1,\n    \"--mf-sg-c2\": color2,\n    \"--mf-sg-r\": `${Math.max(40, radius)}px`,\n    \"--mf-sg-grid\": String(Math.max(0, Math.min(1, gridOpacity))),\n    height: `${height}px`,\n    borderRadius: `${borderRadius}px`,\n    ...style,\n  } as React.CSSProperties;\n\n  return (\n    <div ref={rootRef} style={styleVars} className={`${styles.root} ${className}`.trim()}>\n      {gridClass ? <div aria-hidden=\"true\" className={`${styles.grid} ${gridClass}`} /> : null}\n      <div aria-hidden=\"true\" className={styles.spot} />\n      {gridClass ? <div aria-hidden=\"true\" className={`${styles.grid} ${styles.lit} ${gridClass}`} /> : null}\n      <div aria-hidden=\"true\" className={styles.vignette} />\n      <div className={styles.content}>\n        {children ?? (\n          <div className={styles.copy}>\n            <h3 className={styles.title}>Spotlight Gradient</h3>\n            <p className={styles.subtitle}>Move your cursor to steer the light across the grid.</p>\n          </div>\n        )}\n      </div>\n    </div>\n  );\n}\n"
+    },
+    {
+      "path": "components/styles/spotlight-gradient.module.css",
+      "type": "registry:style",
+      "content": ".root {\n  position: relative;\n  isolation: isolate;\n  overflow: hidden;\n  display: flex;\n  width: 100%;\n  border: 1px solid var(--mf-border, #2e2e38);\n  background-color: var(--mf-sg-bg, #09090f);\n  color: var(--mf-fg, #f4f4f6);\n  --mf-sg-x: 50%;\n  --mf-sg-y: 45%;\n}\n\n.grid {\n  position: absolute;\n  inset: 0;\n  pointer-events: none;\n  opacity: var(--mf-sg-grid, 0.14);\n}\n\n.dots {\n  background-image: radial-gradient(circle at center, var(--mf-fg, #f4f4f6) 1px, transparent 1.6px);\n  background-size: 22px 22px;\n  background-position: center;\n}\n\n.lines {\n  background-image: linear-gradient(to right, var(--mf-fg, #f4f4f6) 1px, transparent 1px),\n    linear-gradient(to bottom, var(--mf-fg, #f4f4f6) 1px, transparent 1px);\n  background-size: 40px 40px;\n  background-position: center;\n}\n\n.lit {\n  opacity: calc(var(--mf-sg-grid, 0.14) * 3.2);\n  -webkit-mask-image: radial-gradient(circle calc(var(--mf-sg-r, 320px) * 0.75) at var(--mf-sg-x) var(--mf-sg-y), #000 0%, transparent 100%);\n  mask-image: radial-gradient(circle calc(var(--mf-sg-r, 320px) * 0.75) at var(--mf-sg-x) var(--mf-sg-y), #000 0%, transparent 100%);\n}\n\n.spot {\n  position: absolute;\n  inset: 0;\n  pointer-events: none;\n  background:\n    radial-gradient(circle calc(var(--mf-sg-r, 320px) * 0.45) at var(--mf-sg-x) var(--mf-sg-y), color-mix(in srgb, var(--mf-sg-c1, #22d3ee) 75%, transparent) 0%, transparent 100%),\n    radial-gradient(circle var(--mf-sg-r, 320px) at var(--mf-sg-x) var(--mf-sg-y), color-mix(in srgb, var(--mf-sg-c2, #8b5cf6) 55%, transparent) 0%, color-mix(in srgb, var(--mf-sg-c2, #8b5cf6) 20%, transparent) 55%, transparent 100%);\n}\n\n.vignette {\n  position: absolute;\n  inset: 0;\n  pointer-events: none;\n  background: radial-gradient(130% 110% at 50% 50%, transparent 55%, rgba(0, 0, 0, 0.55) 100%);\n}\n\n.content {\n  position: relative;\n  z-index: 1;\n  display: flex;\n  flex: 1;\n  align-items: center;\n  justify-content: center;\n  padding: 2rem;\n}\n\n.copy {\n  text-align: center;\n}\n\n.title {\n  margin: 0;\n  font-size: 2rem;\n  font-weight: 700;\n  letter-spacing: -0.035em;\n  color: var(--mf-fg, #f4f4f6);\n}\n\n.subtitle {\n  margin: 0.5rem 0 0;\n  font-size: 0.9375rem;\n  color: var(--mf-muted, #a1a1aa);\n}\n\n@media (prefers-reduced-motion: reduce) {\n  .spot,\n  .lit {\n    transition: none;\n  }\n}\n"
+    }
+  ],
+  "tailwindExample": "\"use client\";\n\nimport { useState } from \"react\";\n\nexport function SpotlightGradientTailwind({ children }: { children?: React.ReactNode }) {\n  const [pos, setPos] = useState({ x: 50, y: 45 });\n  const at = pos.x + \"% \" + pos.y + \"%\";\n  return (\n    <div\n      onPointerMove={(e) => {\n        const r = e.currentTarget.getBoundingClientRect();\n        setPos({ x: ((e.clientX - r.left) / r.width) * 100, y: ((e.clientY - r.top) / r.height) * 100 });\n      }}\n      className=\"relative isolate flex h-[360px] w-full items-center justify-center overflow-hidden rounded-[20px] border border-zinc-800 bg-[#09090f]\"\n    >\n      <div aria-hidden className=\"absolute inset-0 opacity-15 [background-image:radial-gradient(circle,#fff_1px,transparent_1.6px)] [background-size:22px_22px]\" />\n      <div aria-hidden className=\"absolute inset-0\" style={{ background: \"radial-gradient(circle 140px at \" + at + \", rgba(34,211,238,0.5), transparent), radial-gradient(circle 320px at \" + at + \", rgba(139,92,246,0.4), transparent)\" }} />\n      <div className=\"relative text-center\">\n        {children ?? (\n          <>\n            <h3 className=\"text-3xl font-bold tracking-tight text-zinc-50\">Spotlight Gradient</h3>\n            <p className=\"mt-2 text-sm text-zinc-400\">Move your cursor to steer the light across the grid.</p>\n          </>\n        )}\n      </div>\n    </div>\n  );\n}"
+}

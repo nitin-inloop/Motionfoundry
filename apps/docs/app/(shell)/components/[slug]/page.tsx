@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { BRAND_CONFIG, repoFileUrl } from "../../../../lib/brand";
-import { getAllComponents, getComponentBySlug } from "../../../../lib/registry";
+import { getAllComponents, getCollection, getComponentBySlug } from "../../../../lib/registry";
 import { getDesignPresets } from "../../../../lib/designs";
 import { buildComponentMarkdown, COMPONENT_TOC } from "../../../../lib/component-doc";
 import { DocsPage } from "../../../../components/docs-page";
@@ -29,7 +29,8 @@ export default async function ComponentDetailPage({ params }: { params: Promise<
   const toLink = (c?: { slug: string; name: string }) => (c ? { href: `/components/${c.slug}`, title: c.name } : undefined);
   const previous = toLink(siblings[index - 1]);
   const next = toLink(siblings[index + 1]);
-  const isStudioKit = component.collection === "studio-kit";
+  const collectionName = getCollection(component.collection)?.name ?? component.collection;
+  const isCore = component.collection === "core";
   const badge = "rounded-md bg-card px-2 py-0.5 font-mono text-xs text-muted-foreground";
 
   return (
@@ -43,11 +44,11 @@ export default async function ComponentDetailPage({ params }: { params: Promise<
         next={next}
         eyebrow={
           <>
-            <Link href={`/collections/${component.collection}`} className={`rounded-md px-2 py-0.5 font-mono text-xs ${isStudioKit ? "bg-sky-500/10 text-sky-300" : "bg-card text-foreground/80"}`}>
-              {isStudioKit ? "Studio Kit" : "Core"}
+            <Link href={`/collections/${component.collection}`} className={`rounded-md px-2 py-0.5 font-mono text-xs ${isCore ? "bg-card text-foreground/80" : "bg-sky-500/10 text-sky-300"}`}>
+              {collectionName}
             </Link>
             <span className={badge}>{component.category}</span>
-            <span className={badge}>{component.requiresMotion ? "motion/react" : "zero-runtime CSS"}</span>
+            <span className={badge}>{component.requiresMotion ? "motion/react" : "no dependencies"}</span>
           </>
         }
       />

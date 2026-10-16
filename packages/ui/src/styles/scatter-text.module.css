@@ -1,0 +1,67 @@
+.root {
+  position: relative;
+  max-width: 100%;
+  margin: 0;
+  padding: 0.3em 0.5em;
+  color: var(--mf-sc-color, var(--mf-fg, #f4f4f6));
+  font-size: var(--mf-sc-size, 56px);
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  line-height: 1.08;
+  text-align: center;
+  user-select: none;
+}
+
+.letters {
+  display: inline;
+}
+
+.word {
+  display: inline-block;
+  white-space: nowrap;
+}
+
+.char {
+  display: inline-block;
+  opacity: 0;
+  transform: translate3d(var(--mf-sc-x, 0px), var(--mf-sc-y, 0px), 0) rotate(var(--mf-sc-r, 0deg))
+    scale(var(--mf-sc-s, 1));
+  transition:
+    transform var(--mf-sc-duration, 1.1s) var(--mf-sc-ease, cubic-bezier(0.16, 1, 0.3, 1)) var(--mf-sc-delay, 0s),
+    opacity calc(var(--mf-sc-duration, 1.1s) * 0.45) ease-out var(--mf-sc-delay, 0s);
+  will-change: transform, opacity;
+}
+
+.root[data-phase="assembled"] .char {
+  opacity: 1;
+  transform: none;
+}
+
+.root[data-phase="scattered"] .char {
+  opacity: 0.85;
+  transform: translate3d(calc(var(--mf-sc-x, 0px) * 0.45), calc(var(--mf-sc-y, 0px) * 0.45), 0)
+    rotate(calc(var(--mf-sc-r, 0deg) * 0.5)) scale(var(--mf-sc-s, 1));
+  transition-duration: calc(var(--mf-sc-duration, 1.1s) * 0.6), calc(var(--mf-sc-duration, 1.1s) * 0.3);
+  transition-delay: calc(var(--mf-sc-delay, 0s) * 0.35), calc(var(--mf-sc-delay, 0s) * 0.35);
+}
+
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .char,
+  .root[data-phase] .char {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}

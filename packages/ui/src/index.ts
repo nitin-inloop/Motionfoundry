@@ -1,12 +1,12 @@
 /**
  * @motionfoundry/ui — Production-Ready Open-Source Animated React Component Library
- * Version: 2.1.0 (24 Core + 24 Studio Kit components)
+ * Version: 2.2.0 (Core, Studio Kit, Gradients, Text FX, Scroll — 72 components)
  * License: MIT
  *
  * Export order defines the registry order (see scripts/build-registry.mjs).
  */
 
-export const MOTIONFOUNDRY_VERSION = "2.1.0";
+export const MOTIONFOUNDRY_VERSION = "2.2.0";
 
 export const MOTIONFOUNDRY_BRAND = "MotionFoundry";
 
@@ -61,3 +61,33 @@ export { PulseLoader, type PulseLoaderProps } from "./components/pulse-loader";
 export { NotificationStack, type NotificationStackProps } from "./components/notification-stack";
 export { ReorderList, type ReorderListProps } from "./components/reorder-list";
 export { ExpandableSearch, type ExpandableSearchProps } from "./components/expandable-search";
+
+// Gradients collection
+export { MeshGradient, type MeshGradientProps } from "./components/mesh-gradient";
+export { AuroraRibbons, type AuroraRibbonsProps } from "./components/aurora-ribbons";
+export { ConicGradient, type ConicGradientProps } from "./components/conic-gradient";
+export { LiquidGradient, type LiquidGradientProps } from "./components/liquid-gradient";
+export { WaveGradient, type WaveGradientProps } from "./components/wave-gradient";
+export { GradientOrbs, type GradientOrbsProps } from "./components/gradient-orbs";
+export { GrainGradient, type GrainGradientProps } from "./components/grain-gradient";
+export { SpotlightGradient, type SpotlightGradientProps } from "./components/spotlight-gradient";
+
+// Text FX collection
+export { SplitText, type SplitTextProps } from "./components/split-text";
+export { MaskWipeText, type MaskWipeTextProps } from "./components/mask-wipe-text";
+export { ElasticLetters, type ElasticLettersProps } from "./components/elastic-letters";
+export { TextOnPath, type TextOnPathProps } from "./components/text-on-path";
+export { RollingText, type RollingTextProps } from "./components/rolling-text";
+export { MarkerHighlight, type MarkerHighlightProps } from "./components/marker-highlight";
+export { ScatterText, type ScatterTextProps } from "./components/scatter-text";
+export { CubeFlipWords, type CubeFlipWordsProps } from "./components/cube-flip-words";
+
+// Scroll collection
+export { SmoothScroll, type SmoothScrollProps } from "./components/smooth-scroll";
+export { ParallaxLayers, type ParallaxLayersProps } from "./components/parallax-layers";
+export { ScrollFillText, type ScrollFillTextProps } from "./components/scroll-fill-text";
+export { HorizontalScroll, type HorizontalScrollProps } from "./components/horizontal-scroll";
+export { StickyStackCards, type StickyStackCardsProps } from "./components/sticky-stack-cards";
+export { VelocityMarquee, type VelocityMarqueeProps } from "./components/velocity-marquee";
+export { ScrollZoomReveal, type ScrollZoomRevealProps } from "./components/scroll-zoom-reveal";
+export { ScrollTimeline, type ScrollTimelineProps } from "./components/scroll-timeline";

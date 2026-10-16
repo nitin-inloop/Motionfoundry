@@ -1,0 +1,198 @@
+{
+  "slug": "parallax-layers",
+  "name": "ParallaxLayers",
+  "category": "Scroll Animations",
+  "collection": "scroll",
+  "featured": true,
+  "addedAt": "2026-10-16",
+  "version": "2.2.0",
+  "requiresMotion": false,
+  "dependencies": [
+    "react"
+  ],
+  "description": "A self-contained smooth-scroll scene where up to five decorative planes (glow orbs, rings, glass cards, dots and sparks) translate at different fractions of the scroll distance behind native-speed headlines, creating layered depth.",
+  "tags": [
+    "scroll",
+    "parallax",
+    "depth",
+    "layers",
+    "smooth-scroll",
+    "scene"
+  ],
+  "a11yNotes": "The viewport is a focusable role=\"region\" with an aria-label, so keyboard users can Tab to it and scroll with arrows/Page keys/Space (native, unsmoothed) and see a 2px :focus-visible outline. Wheel input is smoothed only while the viewport can still move; at the top/bottom edge wheel events are released so the page keeps scrolling. Touch and scrollbar dragging stay native. Under prefers-reduced-motion (or smooth=false) the wheel is not intercepted at all. All parallax shapes are aria-hidden; only the headline and statements are exposed. Under prefers-reduced-motion the layers stay static.",
+  "defaultProps": {
+    "title": "Depth in motion",
+    "subtitle": "Five planes drift at five speeds. Scroll inside to feel the space open up.",
+    "layers": 5,
+    "depth": 1,
+    "color1": "#a78bfa",
+    "color2": "#38bdf8",
+    "color3": "#f472b6",
+    "lerp": 0.1,
+    "wheelMultiplier": 1,
+    "smooth": true
+  },
+  "controls": [
+    {
+      "prop": "title",
+      "label": "Title",
+      "type": "text"
+    },
+    {
+      "prop": "subtitle",
+      "label": "Subtitle",
+      "type": "text"
+    },
+    {
+      "prop": "layers",
+      "label": "Layers",
+      "type": "range",
+      "min": 2,
+      "max": 5,
+      "step": 1
+    },
+    {
+      "prop": "depth",
+      "label": "Depth",
+      "type": "range",
+      "min": 0,
+      "max": 2,
+      "step": 0.1
+    },
+    {
+      "prop": "color1",
+      "label": "Color 1",
+      "type": "color"
+    },
+    {
+      "prop": "color2",
+      "label": "Color 2",
+      "type": "color"
+    },
+    {
+      "prop": "color3",
+      "label": "Color 3",
+      "type": "color"
+    },
+    {
+      "prop": "lerp",
+      "label": "Lerp (smoothness)",
+      "type": "range",
+      "min": 0.05,
+      "max": 0.3,
+      "step": 0.01
+    },
+    {
+      "prop": "wheelMultiplier",
+      "label": "Wheel multiplier",
+      "type": "range",
+      "min": 0.5,
+      "max": 2,
+      "step": 0.1
+    },
+    {
+      "prop": "smooth",
+      "label": "Smooth scrolling",
+      "type": "boolean"
+    }
+  ],
+  "propsApi": [
+    {
+      "name": "title",
+      "type": "string",
+      "default": "'Depth in motion'",
+      "description": "Headline shown on the first screen."
+    },
+    {
+      "name": "subtitle",
+      "type": "string",
+      "default": "'Five planes drift at five speeds. Scroll inside to feel the space open up.'",
+      "description": "Supporting line under the headline."
+    },
+    {
+      "name": "layers",
+      "type": "number",
+      "default": "5",
+      "description": "Number of depth layers (2–5), sampled from back to front."
+    },
+    {
+      "name": "depth",
+      "type": "number",
+      "default": "1",
+      "description": "Multiplier for the speed difference between layers (0 disables parallax)."
+    },
+    {
+      "name": "color1",
+      "type": "string",
+      "default": "'#a78bfa'",
+      "description": "Primary layer color."
+    },
+    {
+      "name": "color2",
+      "type": "string",
+      "default": "'#38bdf8'",
+      "description": "Secondary layer color."
+    },
+    {
+      "name": "color3",
+      "type": "string",
+      "default": "'#f472b6'",
+      "description": "Tertiary layer color."
+    },
+    {
+      "name": "height",
+      "type": "number",
+      "default": "380",
+      "description": "Height of the component's own scroll viewport in px (width is always 100%)."
+    },
+    {
+      "name": "borderRadius",
+      "type": "number",
+      "default": "20",
+      "description": "Corner radius of the viewport in px."
+    },
+    {
+      "name": "lerp",
+      "type": "number",
+      "default": "0.1",
+      "description": "Interpolation factor per 60fps frame for wheel smoothing (0.05 floaty, 0.3 snappy)."
+    },
+    {
+      "name": "wheelMultiplier",
+      "type": "number",
+      "default": "1",
+      "description": "Multiplier applied to wheel and trackpad deltas."
+    },
+    {
+      "name": "smooth",
+      "type": "boolean",
+      "default": "true",
+      "description": "Enable smooth wheel scrolling; false (or prefers-reduced-motion) uses native scrolling."
+    },
+    {
+      "name": "className",
+      "type": "string",
+      "default": "''",
+      "description": "Additional class merged onto the root element."
+    },
+    {
+      "name": "style",
+      "type": "React.CSSProperties",
+      "default": "undefined",
+      "description": "Inline styles merged onto the root element."
+    }
+  ],
+  "files": [
+    {
+      "path": "components/ui/parallax-layers.tsx",
+      "type": "registry:component",
+      "content": "\"use client\";\n\nimport * as React from \"react\";\nimport styles from \"../styles/parallax-layers.module.css\";\n\ninterface SmoothScrollState {\n  /** Current scrollTop of the viewport in px */\n  scroll: number;\n  /** Maximum scrollTop in px */\n  limit: number;\n  /** scroll / limit, 0..1 */\n  progress: number;\n  /** Signed scroll velocity in px per 60fps frame */\n  velocity: number;\n}\n\ninterface SmoothScrollOptions {\n  lerp: number;\n  wheelMultiplier: number;\n  smooth: boolean;\n  onScroll?: (state: SmoothScrollState) => void;\n}\n\nconst clamp = (v: number, min: number, max: number) => Math.min(max, Math.max(min, v));\n\nfunction usePrefersReducedMotion(): boolean {\n  const [reduced, setReduced] = React.useState(false);\n  React.useEffect(() => {\n    const mq = window.matchMedia(\"(prefers-reduced-motion: reduce)\");\n    const update = () => setReduced(mq.matches);\n    update();\n    mq.addEventListener(\"change\", update);\n    return () => mq.removeEventListener(\"change\", update);\n  }, []);\n  return reduced;\n}\n\n/** True when a nested scrollable element under the pointer can still scroll in the wheel direction. */\nfunction nestedCanScroll(node: EventTarget | null, root: HTMLElement, dy: number): boolean {\n  let el: Element | null = node instanceof Element ? node : null;\n  while (el && el !== root) {\n    if (el instanceof HTMLElement) {\n      if (el.dataset.mfScrollPrevent !== undefined) return true;\n      const overflowY = window.getComputedStyle(el).overflowY;\n      if ((overflowY === \"auto\" || overflowY === \"scroll\") && el.scrollHeight > el.clientHeight + 1) {\n        const canMove = dy < 0 ? el.scrollTop > 0 : el.scrollTop + el.clientHeight < el.scrollHeight - 1;\n        if (canMove) return true;\n      }\n    }\n    el = el.parentElement;\n  }\n  return false;\n}\n\n/**\n * Self-contained smooth scroller for an overflow container. Wheel input updates a target\n * position; a rAF loop eases the real scrollTop toward it (frame-rate independent lerp) and\n * stops once settled. Touch, keyboard and scrollbar drags stay native. At the top/bottom edge\n * wheel events are released so the page keeps scrolling.\n */\nfunction useSmoothScroll(\n  containerRef: React.RefObject<HTMLElement | null>,\n  { lerp, wheelMultiplier, smooth, onScroll }: SmoothScrollOptions,\n): React.RefObject<SmoothScrollState> {\n  const stateRef = React.useRef<SmoothScrollState>({ scroll: 0, limit: 0, progress: 0, velocity: 0 });\n  const callbackRef = React.useRef(onScroll);\n  React.useEffect(() => {\n    callbackRef.current = onScroll;\n  }, [onScroll]);\n\n  React.useEffect(() => {\n    const el = containerRef.current;\n    if (!el) return;\n    const ease = clamp(Number.isFinite(lerp) ? lerp : 0.1, 0.01, 1);\n    const multiplier = Number.isFinite(wheelMultiplier) ? wheelMultiplier : 1;\n    let target = el.scrollTop;\n    let current = target;\n    let raf = 0;\n    let lastTime = 0;\n    let lastNative = el.scrollTop;\n    let lastNativeTime = 0;\n    let settleTimer: ReturnType<typeof setTimeout> | undefined;\n\n    const getLimit = () => Math.max(0, el.scrollHeight - el.clientHeight);\n\n    const emit = (velocity: number) => {\n      const limit = getLimit();\n      const scroll = clamp(el.scrollTop, 0, limit);\n      lastNative = el.scrollTop;\n      const s = stateRef.current;\n      s.scroll = scroll;\n      s.limit = limit;\n      s.progress = limit > 0 ? scroll / limit : 0;\n      s.velocity = velocity;\n      callbackRef.current?.(s);\n    };\n\n    const tick = (time: number) => {\n      const dt = lastTime ? Math.min(64, Math.max(1, time - lastTime)) : 16.667;\n      lastTime = time;\n      const limit = getLimit();\n      target = clamp(target, 0, limit);\n      if (Math.abs(el.scrollTop - current) > 2) {\n        // Something else moved the viewport (scrollbar drag, keyboard, touch): hand control back.\n        current = target = el.scrollTop;\n        raf = 0;\n        lastTime = 0;\n        emit(0);\n        return;\n      }\n      const prev = current;\n      const frames = dt / 16.667;\n      current += (target - current) * (1 - Math.pow(1 - ease, frames));\n      if (Math.abs(target - current) < 0.35) current = target;\n      el.scrollTop = current;\n      emit((current - prev) / frames);\n      if (current === target) {\n        raf = 0;\n        lastTime = 0;\n        emit(0);\n        return;\n      }\n      raf = requestAnimationFrame(tick);\n    };\n\n    const onWheel = (event: WheelEvent) => {\n      if (event.ctrlKey || event.defaultPrevented) return;\n      if (Math.abs(event.deltaX) > Math.abs(event.deltaY)) return;\n      let dy = event.deltaY;\n      if (event.deltaMode === 1) dy *= 16;\n      else if (event.deltaMode === 2) dy *= el.clientHeight;\n      dy *= multiplier;\n      if (dy === 0 || nestedCanScroll(event.target, el, dy)) return;\n      const limit = getLimit();\n      if (!raf) current = target = el.scrollTop;\n      // Release to native scrolling at the edges so the page is never trapped.\n      if ((dy < 0 && target <= 0) || (dy > 0 && target >= limit - 0.5)) return;\n      event.preventDefault();\n      target = clamp(target + dy, 0, limit);\n      if (!raf) {\n        lastTime = 0;\n        raf = requestAnimationFrame(tick);\n      }\n    };\n\n    const onNativeScroll = () => {\n      if (raf) return;\n      const top = el.scrollTop;\n      const delta = top - lastNative;\n      if (delta === 0) return;\n      const now = performance.now();\n      const dt = lastNativeTime ? clamp(now - lastNativeTime, 8, 100) : 16.667;\n      lastNativeTime = now;\n      current = target = top;\n      emit(delta / (dt / 16.667));\n      if (settleTimer) clearTimeout(settleTimer);\n      settleTimer = setTimeout(() => {\n        lastNativeTime = 0;\n        emit(0);\n      }, 90);\n    };\n\n    if (smooth) el.addEventListener(\"wheel\", onWheel, { passive: false });\n    el.addEventListener(\"scroll\", onNativeScroll, { passive: true });\n    const ro = new ResizeObserver(() => emit(stateRef.current.velocity));\n    ro.observe(el);\n    if (el.firstElementChild) ro.observe(el.firstElementChild);\n    emit(0);\n\n    return () => {\n      if (smooth) el.removeEventListener(\"wheel\", onWheel);\n      el.removeEventListener(\"scroll\", onNativeScroll);\n      ro.disconnect();\n      if (raf) cancelAnimationFrame(raf);\n      if (settleTimer) clearTimeout(settleTimer);\n    };\n  }, [containerRef, lerp, wheelMultiplier, smooth]);\n\n  return stateRef;\n}\n\nexport interface ParallaxLayersProps {\n  /** Headline shown on the first screen */\n  title?: string;\n  /** Supporting line under the headline */\n  subtitle?: string;\n  /** Number of depth layers (2–5) */\n  layers?: number;\n  /** Multiplier for the speed difference between layers */\n  depth?: number;\n  /** Primary layer color */\n  color1?: string;\n  /** Secondary layer color */\n  color2?: string;\n  /** Tertiary layer color */\n  color3?: string;\n  /** Viewport height in px */\n  height?: number;\n  /** Viewport corner radius in px */\n  borderRadius?: number;\n  /** Interpolation factor per 60fps frame (0.05 = floaty, 0.3 = snappy) */\n  lerp?: number;\n  /** Multiplier applied to wheel / trackpad deltas */\n  wheelMultiplier?: number;\n  /** Enable smooth wheel scrolling (native scrolling when false or under reduced motion) */\n  smooth?: boolean;\n  /** Optional className merged onto the root */\n  className?: string;\n  /** Inline styles merged onto the root */\n  style?: React.CSSProperties;\n}\n\nconst rand = (n: number) => {\n  const x = Math.sin(n * 9301 + 49297) * 233280;\n  return x - Math.floor(x);\n};\n\ntype LayerKind = \"orb\" | \"ring\" | \"card\" | \"dot\" | \"spark\";\n\n/** Back-to-front layer recipes; speed is the fraction of the scroll distance a layer travels. */\nconst LAYERS: { kind: LayerKind; speed: number; count: number }[] = [\n  { kind: \"orb\", speed: 0.12, count: 4 },\n  { kind: \"ring\", speed: 0.32, count: 6 },\n  { kind: \"card\", speed: 0.58, count: 6 },\n  { kind: \"dot\", speed: 0.85, count: 14 },\n  { kind: \"spark\", speed: 1.4, count: 9 },\n];\n\nconst SCREENS = 3;\n\nexport function ParallaxLayers({\n  title = \"Depth in motion\",\n  subtitle = \"Five planes drift at five speeds. Scroll inside to feel the space open up.\",\n  layers = 5,\n  depth = 1,\n  color1 = \"#a78bfa\",\n  color2 = \"#38bdf8\",\n  color3 = \"#f472b6\",\n  height = 380,\n  borderRadius = 20,\n  lerp = 0.1,\n  wheelMultiplier = 1,\n  smooth = true,\n  className = \"\",\n  style,\n}: ParallaxLayersProps) {\n  const reduced = usePrefersReducedMotion();\n  const rootRef = React.useRef<HTMLDivElement>(null);\n  const viewportRef = React.useRef<HTMLDivElement>(null);\n\n  const handleScroll = React.useCallback((state: SmoothScrollState) => {\n    rootRef.current?.style.setProperty(\"--mf-pl-s\", state.scroll.toFixed(2));\n  }, []);\n\n  useSmoothScroll(viewportRef, { lerp, wheelMultiplier, smooth: smooth && !reduced, onScroll: handleScroll });\n\n  const count = clamp(Math.round(layers), 2, 5);\n  const picked = Array.from({ length: count }, (_, i) => Math.round((i * (LAYERS.length - 1)) / (count - 1)));\n  const colors = [color1, color2, color3];\n  const safeDepth = Math.max(0, depth);\n  const travel = height * (SCREENS - 1);\n\n  const vars = {\n    \"--mf-pl-h\": `${height}px`,\n    \"--mf-pl-r\": `${borderRadius}px`,\n    \"--mf-pl-c1\": color1,\n    \"--mf-pl-c2\": color2,\n    \"--mf-pl-c3\": color3,\n    ...style,\n  } as React.CSSProperties;\n\n  return (\n    <div ref={rootRef} style={vars} className={`${styles.root} ${className}`.trim()}>\n      <div ref={viewportRef} className={styles.viewport} tabIndex={0} role=\"region\" aria-label={title}>\n        <div className={styles.content}>\n          <div aria-hidden=\"true\" className={styles.stage}>\n            {picked.map((layerIndex, order) => {\n              const layer = LAYERS[layerIndex];\n              const speed = layer.speed * safeDepth;\n              const span = height + travel * speed;\n              return (\n                <div\n                  key={layer.kind}\n                  className={`${styles.layer} ${styles[layer.kind]}`}\n                  style={{ \"--mf-pl-f\": speed.toFixed(3), zIndex: order } as React.CSSProperties}\n                >\n                  {Array.from({ length: layer.count }, (_, i) => {\n                    const seed = layerIndex * 97 + i * 13;\n                    const top = ((i + rand(seed)) / layer.count) * span - height * 0.08;\n                    const left = rand(seed + 1) * 92;\n                    const size = 0.6 + rand(seed + 2) * 0.8;\n                    return (\n                      <span\n                        key={i}\n                        className={styles.item}\n                        style={\n                          {\n                            top: `${top.toFixed(1)}px`,\n                            left: `${left.toFixed(2)}%`,\n                            \"--mf-pl-size\": size.toFixed(3),\n                            \"--mf-pl-c\": colors[(i + layerIndex) % 3],\n                            \"--mf-pl-rot\": `${Math.round(rand(seed + 3) * 40 - 20)}deg`,\n                          } as React.CSSProperties\n                        }\n                      />\n                    );\n                  })}\n                </div>\n              );\n            })}\n          </div>\n          <section className={styles.screen}>\n            <span className={styles.kicker}>Parallax Layers</span>\n            <h3 className={styles.title}>{title}</h3>\n            <p className={styles.subtitle}>{subtitle}</p>\n          </section>\n          <section className={styles.screen}>\n            <p className={styles.statement}>\n              Back layers crawl.\n              <br />\n              <span className={styles.accentText}>Front layers race.</span>\n            </p>\n          </section>\n          <section className={styles.screen}>\n            <p className={styles.statement}>\n              Your eye reads the difference\n              <br />\n              as <span className={styles.accentText}>distance</span>.\n            </p>\n          </section>\n        </div>\n      </div>\n    </div>\n  );\n}\n"
+    },
+    {
+      "path": "components/styles/parallax-layers.module.css",
+      "type": "registry:style",
+      "content": ".root {\n  --mf-pl-s: 0;\n  position: relative;\n  width: 100%;\n  height: var(--mf-pl-h, 380px);\n  border-radius: var(--mf-pl-r, 20px);\n  overflow: hidden;\n  border: 1px solid var(--mf-border, #2e2e38);\n  background:\n    radial-gradient(ellipse at 50% 120%, color-mix(in srgb, var(--mf-pl-c1, #a78bfa) 18%, transparent), transparent 60%),\n    var(--mf-surface, #141419);\n  color: var(--mf-fg, #f4f4f6);\n  container-type: inline-size;\n  isolation: isolate;\n}\n\n.root *,\n.root *::before,\n.root *::after {\n  box-sizing: border-box;\n}\n\n.viewport {\n  position: relative;\n  height: 100%;\n  overflow-x: hidden;\n  overflow-y: auto;\n  overscroll-behavior: auto;\n  scroll-behavior: auto;\n  scrollbar-width: thin;\n  scrollbar-color: var(--mf-border, #2e2e38) transparent;\n}\n\n.viewport:focus-visible {\n  outline: 2px solid var(--mf-fg, #e4e4e7);\n  outline-offset: -2px;\n}\n\n.content {\n  position: relative;\n}\n\n.stage {\n  position: sticky;\n  top: 0;\n  z-index: 0;\n  height: var(--mf-pl-h, 380px);\n  margin-bottom: calc(var(--mf-pl-h, 380px) * -1);\n  overflow: hidden;\n  pointer-events: none;\n}\n\n.layer {\n  position: absolute;\n  inset: 0;\n  transform: translate3d(0, calc(var(--mf-pl-s, 0) * var(--mf-pl-f, 0) * -1px), 0);\n  will-change: transform;\n}\n\n.item {\n  position: absolute;\n  display: block;\n}\n\n.orb .item {\n  width: calc(260px * var(--mf-pl-size, 1));\n  height: calc(260px * var(--mf-pl-size, 1));\n  margin-left: calc(-130px * var(--mf-pl-size, 1));\n  border-radius: 50%;\n  background: radial-gradient(circle, color-mix(in srgb, var(--mf-pl-c, #a78bfa) 55%, transparent), transparent 68%);\n  filter: blur(8px);\n  opacity: 0.8;\n}\n\n.ring .item {\n  width: calc(110px * var(--mf-pl-size, 1));\n  height: calc(110px * var(--mf-pl-size, 1));\n  border-radius: 50%;\n  border: 1.5px solid color-mix(in srgb, var(--mf-pl-c, #38bdf8) 55%, transparent);\n  opacity: 0.7;\n}\n\n.card .item {\n  width: calc(150px * var(--mf-pl-size, 1));\n  height: calc(96px * var(--mf-pl-size, 1));\n  border-radius: 16px;\n  border: 1px solid color-mix(in srgb, var(--mf-pl-c, #a78bfa) 45%, transparent);\n  background:\n    linear-gradient(135deg, color-mix(in srgb, var(--mf-pl-c, #a78bfa) 30%, transparent), transparent 70%),\n    color-mix(in srgb, var(--mf-surface-raised, #1b1b22) 70%, transparent);\n  box-shadow: 0 18px 40px -20px color-mix(in srgb, var(--mf-pl-c, #a78bfa) 60%, transparent);\n  transform: rotate(var(--mf-pl-rot, 0deg));\n  backdrop-filter: blur(6px);\n  -webkit-backdrop-filter: blur(6px);\n}\n\n.card .item::before {\n  content: \"\";\n  position: absolute;\n  left: 14px;\n  right: 40%;\n  bottom: 16px;\n  height: 6px;\n  border-radius: 6px;\n  background: color-mix(in srgb, var(--mf-pl-c, #a78bfa) 70%, transparent);\n}\n\n.card .item::after {\n  content: \"\";\n  position: absolute;\n  left: 14px;\n  top: 14px;\n  width: 22px;\n  height: 22px;\n  border-radius: 7px;\n  background: color-mix(in srgb, var(--mf-fg, #f4f4f6) 14%, transparent);\n}\n\n.dot .item {\n  width: calc(9px * var(--mf-pl-size, 1));\n  height: calc(9px * var(--mf-pl-size, 1));\n  border-radius: 50%;\n  background: var(--mf-pl-c, #f472b6);\n  box-shadow: 0 0 12px var(--mf-pl-c, #f472b6);\n}\n\n.spark .item {\n  width: calc(22px * var(--mf-pl-size, 1));\n  height: calc(22px * var(--mf-pl-size, 1));\n  transform: rotate(var(--mf-pl-rot, 0deg));\n}\n\n.spark .item::before,\n.spark .item::after {\n  content: \"\";\n  position: absolute;\n  left: 50%;\n  top: 0;\n  width: 2px;\n  height: 100%;\n  margin-left: -1px;\n  border-radius: 2px;\n  background: var(--mf-pl-c, #f472b6);\n}\n\n.spark .item::after {\n  transform: rotate(90deg);\n}\n\n.screen {\n  position: relative;\n  z-index: 1;\n  display: flex;\n  flex-direction: column;\n  align-items: center;\n  justify-content: center;\n  gap: 0.75rem;\n  height: var(--mf-pl-h, 380px);\n  padding: 0 2rem;\n  text-align: center;\n}\n\n.kicker {\n  padding: 0.3rem 0.75rem;\n  border: 1px solid var(--mf-border, #2e2e38);\n  border-radius: 999px;\n  background: color-mix(in srgb, var(--mf-bg, #09090b) 55%, transparent);\n  font-size: 0.72rem;\n  letter-spacing: 0.08em;\n  text-transform: uppercase;\n  color: var(--mf-muted, #a1a1aa);\n}\n\n.title {\n  margin: 0;\n  font-size: clamp(2.2rem, 8cqi, 4.2rem);\n  font-weight: 700;\n  line-height: 1;\n  letter-spacing: -0.04em;\n  text-shadow: 0 6px 30px rgba(0, 0, 0, 0.45);\n}\n\n.subtitle {\n  margin: 0;\n  max-width: 30rem;\n  color: var(--mf-muted, #a1a1aa);\n  font-size: 0.98rem;\n  line-height: 1.55;\n}\n\n.statement {\n  margin: 0;\n  font-size: clamp(1.6rem, 5.5cqi, 2.8rem);\n  font-weight: 650;\n  line-height: 1.12;\n  letter-spacing: -0.03em;\n  text-shadow: 0 6px 30px rgba(0, 0, 0, 0.45);\n}\n\n.accentText {\n  background: linear-gradient(90deg, var(--mf-pl-c1, #a78bfa), var(--mf-pl-c2, #38bdf8), var(--mf-pl-c3, #f472b6));\n  -webkit-background-clip: text;\n  background-clip: text;\n  color: transparent;\n}\n\n@media (prefers-reduced-motion: reduce) {\n  .layer {\n    transform: none !important;\n    will-change: auto;\n  }\n}\n"
+    }
+  ],
+  "tailwindExample": "\"use client\";\n\nimport { useEffect, useRef } from \"react\";\n\nfunction useSmooth(ref, onFrame, lerp = 0.1) {\n  useEffect(() => {\n    const el = ref.current;\n    let target = el.scrollTop, raf = 0;\n    const emit = () => { const max = el.scrollHeight - el.clientHeight; onFrame(el.scrollTop, max > 0 ? el.scrollTop / max : 0); };\n    const tick = () => {\n      const d = target - el.scrollTop;\n      el.scrollTop += Math.abs(d) < 0.5 ? d : d * lerp;\n      emit();\n      raf = Math.abs(target - el.scrollTop) < 0.5 ? 0 : requestAnimationFrame(tick);\n    };\n    const onWheel = (e) => {\n      const max = el.scrollHeight - el.clientHeight;\n      if (!raf) target = el.scrollTop;\n      if ((e.deltaY < 0 && target <= 0) || (e.deltaY > 0 && target >= max)) return;\n      e.preventDefault();\n      target = Math.min(max, Math.max(0, target + e.deltaY));\n      if (!raf) raf = requestAnimationFrame(tick);\n    };\n    el.addEventListener(\"wheel\", onWheel, { passive: false });\n    el.addEventListener(\"scroll\", () => { if (!raf) emit(); }, { passive: true });\n    return () => { el.removeEventListener(\"wheel\", onWheel); cancelAnimationFrame(raf); };\n  }, []);\n}\n\nexport function ParallaxLayersTailwind() {\n  const ref = useRef(null);\n  const layers = useRef([]);\n  const speeds = [0.15, 0.4, 0.7, 1.3];\n  useSmooth(ref, (s) => layers.current.forEach((l, i) => { l.style.transform = `translateY(${-s * speeds[i]}px)`; }));\n  return (\n    <div className=\"relative h-[380px] w-full overflow-hidden rounded-[20px] border border-zinc-800 bg-zinc-900 text-zinc-100\">\n      <div ref={ref} tabIndex={0} className=\"h-full overflow-y-auto\">\n        <div aria-hidden className=\"pointer-events-none sticky top-0 -mb-[380px] h-[380px] overflow-hidden\">\n          {speeds.map((_, i) => (\n            <div key={i} ref={(n) => (layers.current[i] = n)} className=\"absolute inset-0\">\n              {[0, 1, 2, 3].map((j) => (\n                <span key={j} className=\"absolute block rounded-full bg-violet-400/30\" style={{ left: `${(j * 27 + i * 13) % 90}%`, top: `${j * 220 + i * 60}px`, width: 160 - i * 36, height: 160 - i * 36 }} />\n              ))}\n            </div>\n          ))}\n        </div>\n        {[\"Depth in motion\", \"Back layers crawl.\", \"Front layers race.\"].map((t) => (\n          <section key={t} className=\"relative flex h-[380px] items-center justify-center text-5xl font-bold tracking-tight\">{t}</section>\n        ))}\n      </div>\n    </div>\n  );\n}"
+}

@@ -11,7 +11,12 @@ function toItems(nav: NavIndex): Item[] {
   return [
     ...nav.docs.map((d) => ({ href: `/docs/${d.slug}`, label: d.title, group: "Docs", hint: d.category })),
     ...nav.designs.map((d) => ({ href: `/designs/${d.id}`, label: `${d.brand} design system`, group: "Designs", hint: d.category })),
-    ...nav.components.map((c) => ({ href: `/components/${c.slug}`, label: c.name, group: "Components", hint: c.collection === "studio-kit" ? "Studio Kit" : "Core" })),
+    ...nav.components.map((c) => ({
+      href: `/components/${c.slug}`,
+      label: c.name,
+      group: "Components",
+      hint: nav.collections.find((col) => col.id === c.collection)?.name ?? c.collection,
+    })),
   ];
 }
 

@@ -77,10 +77,30 @@ export function getComponentsByCollection(id: string): RegistryComponent[] {
   return registryData.components.filter((c) => c.collection === id);
 }
 
+export { NEW_VERSION, NEW_VERSION_LABEL, isNewComponent } from "./catalog-filters";
+
+export function getRegistryVersion(): string {
+  return registryData.version;
+}
 
 /** Registry entries without source code — small enough to hand to client-side catalog views. */
-export type CatalogComponent = Pick<RegistryComponent, "slug" | "name" | "category" | "collection" | "description" | "tags" | "defaultProps">;
+export type CatalogComponent = Pick<
+  RegistryComponent,
+  "slug" | "name" | "category" | "collection" | "description" | "tags" | "defaultProps" | "featured" | "version" | "requiresMotion" | "addedAt"
+>;
 
 export function toCatalog(components: RegistryComponent[]): CatalogComponent[] {
-  return components.map(({ slug, name, category, collection, description, tags, defaultProps }) => ({ slug, name, category, collection, description, tags, defaultProps }));
+  return components.map(({ slug, name, category, collection, description, tags, defaultProps, featured, version, requiresMotion, addedAt }) => ({
+    slug,
+    name,
+    category,
+    collection,
+    description,
+    tags,
+    defaultProps,
+    featured,
+    version,
+    requiresMotion,
+    addedAt,
+  }));
 }

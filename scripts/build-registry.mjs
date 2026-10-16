@@ -28,6 +28,8 @@ const CATEGORIES = [
   "Animated Backgrounds and Visual Effects",
   "Developer-Interface Animations",
   "Loaders and Feedback",
+  "Gradient Backgrounds",
+  "Scroll Animations",
 ];
 
 const COLLECTIONS = [
@@ -40,6 +42,21 @@ const COLLECTIONS = [
     id: "studio-kit",
     name: "Studio Kit",
     description: "24 hand-picked everyday motion patterns ported from Swirl Studio Kit: text reveals, feedback buttons, interactive cards, ambient backgrounds, loaders, and list interactions.",
+  },
+  {
+    id: "gradients",
+    name: "Gradients",
+    description: "8 living gradient backgrounds — mesh, aurora ribbons, conic spin, liquid, waves, orbs, grain, and pointer spotlight — with every color, speed, and texture exposed as a prop.",
+  },
+  {
+    id: "text-fx",
+    name: "Text FX",
+    description: "8 GSAP-style text animations built from scratch: split-text staggers, mask wipes, elastic letters, text on a path, rolling hovers, marker highlights, scatter, and cube-flip words.",
+  },
+  {
+    id: "scroll",
+    name: "Scroll",
+    description: "8 Lenis-style smooth-scroll animations built from scratch: lerped scrolling, parallax layers, scroll-linked text, horizontal tracks, stacking cards, velocity marquees, zoom reveals, and timelines.",
   },
 ];
 

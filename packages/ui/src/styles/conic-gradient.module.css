@@ -1,0 +1,131 @@
+.root {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  display: flex;
+  width: 100%;
+  border: 1px solid var(--mf-border, #2e2e38);
+  background-color: var(--mf-cg-bg, #07070b);
+  color: var(--mf-fg, #f4f4f6);
+}
+
+.stage {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  transform: translate3d(var(--mf-cg-tx, 0px), var(--mf-cg-ty, 0px), 0);
+}
+
+.glow,
+.core,
+.ring,
+.center {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  aspect-ratio: 1 / 1;
+  border-radius: 50%;
+  transform: translate(-50%, -50%) rotate(0deg);
+  will-change: transform;
+}
+
+.glow {
+  width: calc(var(--mf-cg-size, 55%) * 1.25);
+  background: var(--mf-cg-conic);
+  filter: blur(var(--mf-cg-blur, 60px)) saturate(1.2);
+  opacity: 0.55;
+  animation: mfCgSpin var(--mf-cg-dur, 14s) linear infinite;
+  animation-play-state: var(--mf-cg-state, running);
+}
+
+.core {
+  width: var(--mf-cg-size, 55%);
+  background: var(--mf-cg-conic);
+  filter: blur(calc(var(--mf-cg-blur, 60px) * 0.3));
+  opacity: 0.85;
+  -webkit-mask-image: radial-gradient(circle at 50% 50%, #000 30%, transparent 70%);
+  mask-image: radial-gradient(circle at 50% 50%, #000 30%, transparent 70%);
+  animation: mfCgSpin var(--mf-cg-dur, 14s) linear infinite;
+  animation-play-state: var(--mf-cg-state, running);
+}
+
+.ring {
+  width: calc(var(--mf-cg-size, 55%) * 0.8);
+  background: var(--mf-cg-conic);
+  opacity: 0.55;
+  -webkit-mask-image: radial-gradient(circle at 50% 50%, transparent 66%, #000 67.5%, #000 68.5%, transparent 70%);
+  mask-image: radial-gradient(circle at 50% 50%, transparent 66%, #000 67.5%, #000 68.5%, transparent 70%);
+  filter: blur(0.5px) drop-shadow(0 0 6px rgba(255, 255, 255, 0.35));
+  animation: mfCgSpin calc(var(--mf-cg-dur, 14s) * 0.6) linear infinite reverse;
+  animation-play-state: var(--mf-cg-state, running);
+}
+
+.center {
+  width: calc(var(--mf-cg-size, 55%) * 0.5);
+  background: radial-gradient(circle at 50% 50%, var(--mf-cg-bg, #07070b) 10%, transparent 70%);
+  opacity: 0.6;
+}
+
+.noise {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.14;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 1.4 -0.2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 160px 160px;
+}
+
+.vignette {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(120% 100% at 50% 50%, transparent 55%, rgba(0, 0, 0, 0.55) 100%);
+}
+
+.content {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex: 1;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+}
+
+.copy {
+  text-align: center;
+  text-shadow: 0 1px 24px rgba(0, 0, 0, 0.45);
+}
+
+.title {
+  margin: 0;
+  font-size: 2rem;
+  font-weight: 700;
+  letter-spacing: -0.035em;
+  color: var(--mf-fg, #f4f4f6);
+}
+
+.subtitle {
+  margin: 0.5rem 0 0;
+  font-size: 0.9375rem;
+  color: var(--mf-fg, #f4f4f6);
+  opacity: 0.78;
+}
+
+@keyframes mfCgSpin {
+  from { transform: translate(-50%, -50%) rotate(0deg); }
+  to { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .glow,
+  .core,
+  .ring {
+    animation: none;
+  }
+
+  .stage {
+    transform: none;
+  }
+}

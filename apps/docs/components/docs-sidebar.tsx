@@ -36,8 +36,6 @@ function Group({ title, children }: { title: string; children: React.ReactNode }
 
 export function DocsSidebar({ nav }: { nav: NavIndex }) {
   const pathname = usePathname() ?? "";
-  const core = nav.components.filter((c) => c.collection === "core");
-  const studio = nav.components.filter((c) => c.collection === "studio-kit");
 
   return (
     <aside
@@ -56,12 +54,12 @@ export function DocsSidebar({ nav }: { nav: NavIndex }) {
           <SidebarLink href="/components" active={pathname === "/components"}>
             All Components
           </SidebarLink>
-          <SidebarLink href="/collections/studio-kit" active={pathname === "/collections/studio-kit"}>
-            Studio Kit
-          </SidebarLink>
-          <SidebarLink href="/collections/core" active={pathname === "/collections/core"}>
-            Core
-          </SidebarLink>
+          {nav.collections.map((col) => (
+            <SidebarLink key={col.id} href={`/collections/${col.id}`} active={pathname === `/collections/${col.id}`}>
+              {col.name}
+              <span className="ml-auto font-mono text-[11px] font-normal text-muted-foreground">{col.count}</span>
+            </SidebarLink>
+          ))}
           <SidebarLink href="/designs" active={pathname === "/designs"}>
             Design Systems
           </SidebarLink>
@@ -74,20 +72,18 @@ export function DocsSidebar({ nav }: { nav: NavIndex }) {
             </SidebarLink>
           ))}
         </Group>
-        <Group title="Studio Kit">
-          {studio.map((c) => (
-            <SidebarLink key={c.slug} href={`/components/${c.slug}`} active={pathname === `/components/${c.slug}`}>
-              {c.name}
-            </SidebarLink>
-          ))}
-        </Group>
-        <Group title="Core Components">
-          {core.map((c) => (
-            <SidebarLink key={c.slug} href={`/components/${c.slug}`} active={pathname === `/components/${c.slug}`}>
-              {c.name}
-            </SidebarLink>
-          ))}
-        </Group>
+        {/* Newest collections first, so v2.2 additions are easy to find. */}
+        {[...nav.collections].reverse().map((col) => (
+          <Group key={col.id} title={col.name}>
+            {nav.components
+              .filter((c) => c.collection === col.id)
+              .map((c) => (
+                <SidebarLink key={c.slug} href={`/components/${c.slug}`} active={pathname === `/components/${c.slug}`}>
+                  {c.name}
+                </SidebarLink>
+              ))}
+          </Group>
+        ))}
       </div>
     </aside>
   );

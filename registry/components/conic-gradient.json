@@ -1,0 +1,232 @@
+{
+  "slug": "conic-gradient",
+  "name": "ConicGradient",
+  "category": "Gradient Backgrounds",
+  "collection": "gradients",
+  "featured": false,
+  "addedAt": "2026-10-16",
+  "version": "2.2.0",
+  "requiresMotion": false,
+  "dependencies": [
+    "react"
+  ],
+  "description": "A rotating conic-gradient core with a wide blurred halo, a crisp counter-rotating inner ring and fine noise; the whole origin leans slightly toward the pointer with a lerped tilt.",
+  "tags": [
+    "conic",
+    "gradient",
+    "background",
+    "glow",
+    "rotate",
+    "interactive",
+    "noise"
+  ],
+  "a11yNotes": "Glow, ring and noise layers are aria-hidden with pointer-events: none, so the pointer tilt never blocks interaction with children. Rotation pauses off-screen or at speed 0; prefers-reduced-motion stops rotation and disables the pointer tilt.",
+  "defaultProps": {
+    "color1": "#ff3d7f",
+    "color2": "#ffb020",
+    "color3": "#18d6a3",
+    "color4": "#5b6cff",
+    "backgroundColor": "#07070b",
+    "speed": 1,
+    "blur": 60,
+    "spread": 55,
+    "interactive": true,
+    "ring": true,
+    "noise": true,
+    "height": 360,
+    "borderRadius": 20
+  },
+  "controls": [
+    {
+      "prop": "color1",
+      "label": "Color 1",
+      "type": "color"
+    },
+    {
+      "prop": "color2",
+      "label": "Color 2",
+      "type": "color"
+    },
+    {
+      "prop": "color3",
+      "label": "Color 3",
+      "type": "color"
+    },
+    {
+      "prop": "color4",
+      "label": "Color 4",
+      "type": "color"
+    },
+    {
+      "prop": "backgroundColor",
+      "label": "Background",
+      "type": "color"
+    },
+    {
+      "prop": "speed",
+      "label": "Speed",
+      "type": "range",
+      "min": 0,
+      "max": 3,
+      "step": 0.1
+    },
+    {
+      "prop": "blur",
+      "label": "Blur (px)",
+      "type": "range",
+      "min": 0,
+      "max": 140,
+      "step": 2
+    },
+    {
+      "prop": "spread",
+      "label": "Size (% of width)",
+      "type": "range",
+      "min": 20,
+      "max": 100,
+      "step": 1
+    },
+    {
+      "prop": "interactive",
+      "label": "Pointer tilt",
+      "type": "boolean"
+    },
+    {
+      "prop": "ring",
+      "label": "Inner ring",
+      "type": "boolean"
+    },
+    {
+      "prop": "noise",
+      "label": "Noise",
+      "type": "boolean"
+    },
+    {
+      "prop": "height",
+      "label": "Height (px)",
+      "type": "range",
+      "min": 200,
+      "max": 600,
+      "step": 10
+    },
+    {
+      "prop": "borderRadius",
+      "label": "Corner radius (px)",
+      "type": "range",
+      "min": 0,
+      "max": 48,
+      "step": 1
+    }
+  ],
+  "propsApi": [
+    {
+      "name": "color1",
+      "type": "string",
+      "default": "'#ff3d7f'",
+      "description": "First conic stop color."
+    },
+    {
+      "name": "color2",
+      "type": "string",
+      "default": "'#ffb020'",
+      "description": "Second conic stop color."
+    },
+    {
+      "name": "color3",
+      "type": "string",
+      "default": "'#18d6a3'",
+      "description": "Third conic stop color."
+    },
+    {
+      "name": "color4",
+      "type": "string",
+      "default": "'#5b6cff'",
+      "description": "Fourth conic stop color."
+    },
+    {
+      "name": "backgroundColor",
+      "type": "string",
+      "default": "'#07070b'",
+      "description": "Surface color behind the glow."
+    },
+    {
+      "name": "speed",
+      "type": "number",
+      "default": "1",
+      "description": "Rotation speed multiplier; 1 = one turn per 14s, 0 pauses."
+    },
+    {
+      "name": "blur",
+      "type": "number",
+      "default": "60",
+      "description": "Blur radius of the outer glow in px."
+    },
+    {
+      "name": "spread",
+      "type": "number",
+      "default": "55",
+      "description": "Diameter of the conic core as a percentage of the component width."
+    },
+    {
+      "name": "interactive",
+      "type": "boolean",
+      "default": "true",
+      "description": "Tilt the gradient origin slightly toward the pointer."
+    },
+    {
+      "name": "ring",
+      "type": "boolean",
+      "default": "true",
+      "description": "Show the crisp counter-rotating inner ring."
+    },
+    {
+      "name": "noise",
+      "type": "boolean",
+      "default": "true",
+      "description": "Overlay a fine static noise texture."
+    },
+    {
+      "name": "height",
+      "type": "number",
+      "default": "360",
+      "description": "Height of the background in px."
+    },
+    {
+      "name": "borderRadius",
+      "type": "number",
+      "default": "20",
+      "description": "Corner radius in px."
+    },
+    {
+      "name": "children",
+      "type": "React.ReactNode",
+      "default": "undefined",
+      "description": "Content rendered centered on top; defaults to a heading and subline."
+    },
+    {
+      "name": "className",
+      "type": "string",
+      "default": "''",
+      "description": "Additional class merged onto the root element."
+    },
+    {
+      "name": "style",
+      "type": "React.CSSProperties",
+      "default": "undefined",
+      "description": "Inline styles merged onto the root element."
+    }
+  ],
+  "files": [
+    {
+      "path": "components/ui/conic-gradient.tsx",
+      "type": "registry:component",
+      "content": "\"use client\";\n\nimport * as React from \"react\";\nimport styles from \"../styles/conic-gradient.module.css\";\n\nexport interface ConicGradientProps {\n  /** First conic stop color */\n  color1?: string;\n  /** Second conic stop color */\n  color2?: string;\n  /** Third conic stop color */\n  color3?: string;\n  /** Fourth conic stop color */\n  color4?: string;\n  /** Surface color behind the glow */\n  backgroundColor?: string;\n  /** Rotation speed multiplier (1 = one turn per 14s, 0 = paused) */\n  speed?: number;\n  /** Blur radius of the outer glow, in px */\n  blur?: number;\n  /** Diameter of the conic core as a percentage of the component width */\n  spread?: number;\n  /** Tilt the gradient origin slightly toward the pointer */\n  interactive?: boolean;\n  /** Show the crisp counter-rotating inner ring */\n  ring?: boolean;\n  /** Overlay a fine static noise texture */\n  noise?: boolean;\n  /** Height of the background in px */\n  height?: number;\n  /** Corner radius in px */\n  borderRadius?: number;\n  /** Foreground content rendered centered on top */\n  children?: React.ReactNode;\n  /** Optional className merged onto the root */\n  className?: string;\n  /** Inline styles merged onto the root */\n  style?: React.CSSProperties;\n}\n\nconst BASE_TURN_S = 14;\nconst MAX_TILT_PX = 36;\n\nfunction useReducedMotionPref() {\n  const [reduced, setReduced] = React.useState(false);\n  React.useEffect(() => {\n    if (typeof window === \"undefined\" || !window.matchMedia) return;\n    const mq = window.matchMedia(\"(prefers-reduced-motion: reduce)\");\n    const update = () => setReduced(mq.matches);\n    update();\n    mq.addEventListener(\"change\", update);\n    return () => mq.removeEventListener(\"change\", update);\n  }, []);\n  return reduced;\n}\n\nfunction useInView(ref: React.RefObject<HTMLElement | null>) {\n  const [inView, setInView] = React.useState(true);\n  React.useEffect(() => {\n    const el = ref.current;\n    if (!el || typeof IntersectionObserver === \"undefined\") return;\n    const io = new IntersectionObserver((entries) => {\n      const entry = entries[entries.length - 1];\n      if (entry) setInView(entry.isIntersecting);\n    }, { rootMargin: \"80px\" });\n    io.observe(el);\n    return () => io.disconnect();\n  }, [ref]);\n  return inView;\n}\n\nexport function ConicGradient({\n  color1 = \"#ff3d7f\",\n  color2 = \"#ffb020\",\n  color3 = \"#18d6a3\",\n  color4 = \"#5b6cff\",\n  backgroundColor = \"#07070b\",\n  speed = 1,\n  blur = 60,\n  spread = 55,\n  interactive = true,\n  ring = true,\n  noise = true,\n  height = 360,\n  borderRadius = 20,\n  children,\n  className = \"\",\n  style,\n}: ConicGradientProps) {\n  const rootRef = React.useRef<HTMLDivElement>(null);\n  const reduced = useReducedMotionPref();\n  const inView = useInView(rootRef);\n  const safeSpeed = Math.max(0, speed);\n  const running = !reduced && safeSpeed > 0 && inView;\n\n  React.useEffect(() => {\n    const el = rootRef.current;\n    if (!el || !interactive || reduced) return;\n    const target = { x: 0, y: 0 };\n    const cur = { x: 0, y: 0 };\n    let raf = 0;\n    const step = () => {\n      cur.x += (target.x - cur.x) * 0.08;\n      cur.y += (target.y - cur.y) * 0.08;\n      el.style.setProperty(\"--mf-cg-tx\", `${cur.x.toFixed(2)}px`);\n      el.style.setProperty(\"--mf-cg-ty\", `${cur.y.toFixed(2)}px`);\n      if (Math.abs(target.x - cur.x) > 0.05 || Math.abs(target.y - cur.y) > 0.05) {\n        raf = requestAnimationFrame(step);\n      } else {\n        raf = 0;\n      }\n    };\n    const kick = () => {\n      if (!raf) raf = requestAnimationFrame(step);\n    };\n    const onMove = (e: PointerEvent) => {\n      const rect = el.getBoundingClientRect();\n      const nx = ((e.clientX - rect.left) / rect.width) * 2 - 1;\n      const ny = ((e.clientY - rect.top) / rect.height) * 2 - 1;\n      target.x = Math.max(-1, Math.min(1, nx)) * MAX_TILT_PX;\n      target.y = Math.max(-1, Math.min(1, ny)) * MAX_TILT_PX;\n      kick();\n    };\n    const onLeave = () => {\n      target.x = 0;\n      target.y = 0;\n      kick();\n    };\n    el.addEventListener(\"pointermove\", onMove);\n    el.addEventListener(\"pointerleave\", onLeave);\n    return () => {\n      el.removeEventListener(\"pointermove\", onMove);\n      el.removeEventListener(\"pointerleave\", onLeave);\n      cancelAnimationFrame(raf);\n    };\n  }, [interactive, reduced]);\n\n  const conic = `conic-gradient(from 0deg, ${color1}, ${color2}, ${color3}, ${color4}, ${color1})`;\n  const styleVars = {\n    \"--mf-cg-bg\": backgroundColor,\n    \"--mf-cg-blur\": `${Math.max(0, blur)}px`,\n    \"--mf-cg-size\": `${Math.max(5, spread)}%`,\n    \"--mf-cg-conic\": conic,\n    \"--mf-cg-dur\": `${(BASE_TURN_S / (safeSpeed > 0 ? safeSpeed : 1)).toFixed(2)}s`,\n    \"--mf-cg-state\": running ? \"running\" : \"paused\",\n    height: `${height}px`,\n    borderRadius: `${borderRadius}px`,\n    ...style,\n  } as React.CSSProperties;\n\n  return (\n    <div ref={rootRef} style={styleVars} className={`${styles.root} ${className}`.trim()}>\n      <div aria-hidden=\"true\" className={styles.stage}>\n        <div className={styles.glow} />\n        <div className={styles.core} />\n        {ring ? <div className={styles.ring} /> : null}\n        <div className={styles.center} />\n      </div>\n      {noise ? <div aria-hidden=\"true\" className={styles.noise} /> : null}\n      <div aria-hidden=\"true\" className={styles.vignette} />\n      <div className={styles.content}>\n        {children ?? (\n          <div className={styles.copy}>\n            <h3 className={styles.title}>Conic Gradient</h3>\n            <p className={styles.subtitle}>A slow-turning spectrum core with a soft halo.</p>\n          </div>\n        )}\n      </div>\n    </div>\n  );\n}\n"
+    },
+    {
+      "path": "components/styles/conic-gradient.module.css",
+      "type": "registry:style",
+      "content": ".root {\n  position: relative;\n  isolation: isolate;\n  overflow: hidden;\n  display: flex;\n  width: 100%;\n  border: 1px solid var(--mf-border, #2e2e38);\n  background-color: var(--mf-cg-bg, #07070b);\n  color: var(--mf-fg, #f4f4f6);\n}\n\n.stage {\n  position: absolute;\n  inset: 0;\n  pointer-events: none;\n  transform: translate3d(var(--mf-cg-tx, 0px), var(--mf-cg-ty, 0px), 0);\n}\n\n.glow,\n.core,\n.ring,\n.center {\n  position: absolute;\n  top: 50%;\n  left: 50%;\n  aspect-ratio: 1 / 1;\n  border-radius: 50%;\n  transform: translate(-50%, -50%) rotate(0deg);\n  will-change: transform;\n}\n\n.glow {\n  width: calc(var(--mf-cg-size, 55%) * 1.25);\n  background: var(--mf-cg-conic);\n  filter: blur(var(--mf-cg-blur, 60px)) saturate(1.2);\n  opacity: 0.55;\n  animation: mfCgSpin var(--mf-cg-dur, 14s) linear infinite;\n  animation-play-state: var(--mf-cg-state, running);\n}\n\n.core {\n  width: var(--mf-cg-size, 55%);\n  background: var(--mf-cg-conic);\n  filter: blur(calc(var(--mf-cg-blur, 60px) * 0.3));\n  opacity: 0.85;\n  -webkit-mask-image: radial-gradient(circle at 50% 50%, #000 30%, transparent 70%);\n  mask-image: radial-gradient(circle at 50% 50%, #000 30%, transparent 70%);\n  animation: mfCgSpin var(--mf-cg-dur, 14s) linear infinite;\n  animation-play-state: var(--mf-cg-state, running);\n}\n\n.ring {\n  width: calc(var(--mf-cg-size, 55%) * 0.8);\n  background: var(--mf-cg-conic);\n  opacity: 0.55;\n  -webkit-mask-image: radial-gradient(circle at 50% 50%, transparent 66%, #000 67.5%, #000 68.5%, transparent 70%);\n  mask-image: radial-gradient(circle at 50% 50%, transparent 66%, #000 67.5%, #000 68.5%, transparent 70%);\n  filter: blur(0.5px) drop-shadow(0 0 6px rgba(255, 255, 255, 0.35));\n  animation: mfCgSpin calc(var(--mf-cg-dur, 14s) * 0.6) linear infinite reverse;\n  animation-play-state: var(--mf-cg-state, running);\n}\n\n.center {\n  width: calc(var(--mf-cg-size, 55%) * 0.5);\n  background: radial-gradient(circle at 50% 50%, var(--mf-cg-bg, #07070b) 10%, transparent 70%);\n  opacity: 0.6;\n}\n\n.noise {\n  position: absolute;\n  inset: 0;\n  pointer-events: none;\n  opacity: 0.14;\n  mix-blend-mode: overlay;\n  background-image: url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 1.4 -0.2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E\");\n  background-size: 160px 160px;\n}\n\n.vignette {\n  position: absolute;\n  inset: 0;\n  pointer-events: none;\n  background: radial-gradient(120% 100% at 50% 50%, transparent 55%, rgba(0, 0, 0, 0.55) 100%);\n}\n\n.content {\n  position: relative;\n  z-index: 1;\n  display: flex;\n  flex: 1;\n  align-items: center;\n  justify-content: center;\n  padding: 2rem;\n}\n\n.copy {\n  text-align: center;\n  text-shadow: 0 1px 24px rgba(0, 0, 0, 0.45);\n}\n\n.title {\n  margin: 0;\n  font-size: 2rem;\n  font-weight: 700;\n  letter-spacing: -0.035em;\n  color: var(--mf-fg, #f4f4f6);\n}\n\n.subtitle {\n  margin: 0.5rem 0 0;\n  font-size: 0.9375rem;\n  color: var(--mf-fg, #f4f4f6);\n  opacity: 0.78;\n}\n\n@keyframes mfCgSpin {\n  from { transform: translate(-50%, -50%) rotate(0deg); }\n  to { transform: translate(-50%, -50%) rotate(360deg); }\n}\n\n@media (prefers-reduced-motion: reduce) {\n  .glow,\n  .core,\n  .ring {\n    animation: none;\n  }\n\n  .stage {\n    transform: none;\n  }\n}\n"
+    }
+  ],
+  "tailwindExample": "\"use client\";\n\nexport function ConicGradientTailwind({ children }: { children?: React.ReactNode }) {\n  const conic = \"conic-gradient(from 0deg, #ff3d7f, #ffb020, #18d6a3, #5b6cff, #ff3d7f)\";\n  return (\n    <div className=\"relative isolate flex h-[360px] w-full items-center justify-center overflow-hidden rounded-[20px] border border-zinc-800 bg-[#07070b]\">\n      <div aria-hidden className=\"absolute left-[16%] top-1/2 aspect-square w-[68%] -translate-y-1/2 animate-[spin_14s_linear_infinite] rounded-full opacity-60 blur-[60px]\" style={{ background: conic }} />\n      <div aria-hidden className=\"absolute left-[22.5%] top-1/2 aspect-square w-[55%] -translate-y-1/2 animate-[spin_14s_linear_infinite] rounded-full opacity-80 blur-[18px] [mask-image:radial-gradient(circle,#000_30%,transparent_70%)]\" style={{ background: conic }} />\n      <div className=\"relative text-center\">\n        {children ?? (\n          <>\n            <h3 className=\"text-3xl font-bold tracking-tight text-zinc-50\">Conic Gradient</h3>\n            <p className=\"mt-2 text-sm text-zinc-400\">A slow-turning spectrum core with a soft halo.</p>\n          </>\n        )}\n      </div>\n    </div>\n  );\n}"
+}

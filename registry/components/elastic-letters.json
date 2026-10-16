@@ -1,0 +1,179 @@
+{
+  "slug": "elastic-letters",
+  "name": "ElasticLetters",
+  "category": "Advanced Text Animations",
+  "collection": "text-fx",
+  "featured": true,
+  "addedAt": "2026-10-16",
+  "version": "2.2.0",
+  "requiresMotion": false,
+  "dependencies": [
+    "react"
+  ],
+  "description": "Headline whose letters bounce in on mount and then react to the pointer: letters near the cursor lift, stretch, thicken, and tint toward an accent color, driven by per-letter spring physics that settle with an elastic wobble.",
+  "tags": [
+    "text",
+    "spring",
+    "physics",
+    "pointer",
+    "hover",
+    "elastic",
+    "interactive",
+    "letters"
+  ],
+  "a11yNotes": "The text is read once from a visually hidden span; the per-letter spans are aria-hidden. The pointer effect is purely decorative and needs no keyboard equivalent. Under prefers-reduced-motion there is no intro and no pointer reaction. The spring loop sleeps when settled, pauses off-screen via IntersectionObserver, and is cancelled on unmount.",
+  "defaultProps": {
+    "text": "Feel the spring",
+    "strength": 1,
+    "radius": 160,
+    "stiffness": 170,
+    "damping": 11,
+    "intro": true,
+    "accentColor": "#38bdf8",
+    "fontSize": 72
+  },
+  "controls": [
+    {
+      "prop": "text",
+      "label": "Text",
+      "type": "text"
+    },
+    {
+      "prop": "strength",
+      "label": "Strength",
+      "type": "range",
+      "min": 0,
+      "max": 3,
+      "step": 0.1
+    },
+    {
+      "prop": "radius",
+      "label": "Radius (px)",
+      "type": "range",
+      "min": 40,
+      "max": 400,
+      "step": 10
+    },
+    {
+      "prop": "stiffness",
+      "label": "Stiffness",
+      "type": "range",
+      "min": 40,
+      "max": 500,
+      "step": 10
+    },
+    {
+      "prop": "damping",
+      "label": "Damping",
+      "type": "range",
+      "min": 2,
+      "max": 40,
+      "step": 1
+    },
+    {
+      "prop": "intro",
+      "label": "Intro bounce",
+      "type": "boolean"
+    },
+    {
+      "prop": "accentColor",
+      "label": "Accent",
+      "type": "color"
+    },
+    {
+      "prop": "fontSize",
+      "label": "Font size",
+      "type": "range",
+      "min": 24,
+      "max": 120,
+      "step": 2
+    }
+  ],
+  "propsApi": [
+    {
+      "name": "text",
+      "type": "string",
+      "default": "'Feel the spring'",
+      "description": "Text whose letters react to the pointer."
+    },
+    {
+      "name": "strength",
+      "type": "number",
+      "default": "1",
+      "description": "Intensity of the pointer reaction."
+    },
+    {
+      "name": "radius",
+      "type": "number",
+      "default": "160",
+      "description": "Radius of pointer influence in pixels."
+    },
+    {
+      "name": "stiffness",
+      "type": "number",
+      "default": "170",
+      "description": "Spring stiffness; higher snaps back faster."
+    },
+    {
+      "name": "damping",
+      "type": "number",
+      "default": "11",
+      "description": "Spring damping; lower values wobble longer."
+    },
+    {
+      "name": "intro",
+      "type": "boolean",
+      "default": "true",
+      "description": "Play a staggered elastic drop-in when mounted."
+    },
+    {
+      "name": "accentColor",
+      "type": "string",
+      "default": "'#38bdf8'",
+      "description": "Tint that excited letters blend toward."
+    },
+    {
+      "name": "color",
+      "type": "string",
+      "default": "undefined",
+      "description": "Resting text color (defaults to the theme foreground)."
+    },
+    {
+      "name": "fontSize",
+      "type": "number",
+      "default": "72",
+      "description": "Font size in pixels."
+    },
+    {
+      "name": "as",
+      "type": "\"h1\" | \"h2\" | \"h3\" | \"h4\" | \"p\" | \"div\"",
+      "default": "'h2'",
+      "description": "Element rendered as the root."
+    },
+    {
+      "name": "className",
+      "type": "string",
+      "default": "''",
+      "description": "Additional class merged onto the root element."
+    },
+    {
+      "name": "style",
+      "type": "React.CSSProperties",
+      "default": "undefined",
+      "description": "Inline styles merged onto the root element (CSS variables included)."
+    }
+  ],
+  "files": [
+    {
+      "path": "components/ui/elastic-letters.tsx",
+      "type": "registry:component",
+      "content": "\"use client\";\n\nimport * as React from \"react\";\nimport styles from \"../styles/elastic-letters.module.css\";\n\nexport interface ElasticLettersProps {\n  /** Text whose letters react to the pointer */\n  text?: string;\n  /** Intensity of the pointer reaction (1 = default lift and stretch) */\n  strength?: number;\n  /** Radius of pointer influence in pixels */\n  radius?: number;\n  /** Spring stiffness; higher snaps back faster */\n  stiffness?: number;\n  /** Spring damping; lower values wobble longer */\n  damping?: number;\n  /** Play a staggered elastic drop-in when mounted */\n  intro?: boolean;\n  /** Tint that excited letters blend toward */\n  accentColor?: string;\n  /** Resting text color (defaults to the theme foreground) */\n  color?: string;\n  /** Font size in pixels */\n  fontSize?: number;\n  /** Element rendered as the root */\n  as?: \"h1\" | \"h2\" | \"h3\" | \"h4\" | \"p\" | \"div\";\n  /** Optional className merged onto the root */\n  className?: string;\n  /** Optional inline styles merged onto the root */\n  style?: React.CSSProperties;\n}\n\ninterface LetterState {\n  cx: number;\n  cy: number;\n  y: number;\n  vy: number;\n  s: number;\n  vs: number;\n  k: number;\n  vk: number;\n  release: number;\n}\n\nconst useIsoLayoutEffect = typeof window !== \"undefined\" ? React.useLayoutEffect : React.useEffect;\n\nexport function ElasticLetters({\n  text = \"Feel the spring\",\n  strength = 1,\n  radius = 160,\n  stiffness = 170,\n  damping = 11,\n  intro = true,\n  accentColor = \"#38bdf8\",\n  color,\n  fontSize = 72,\n  as = \"h2\",\n  className = \"\",\n  style,\n}: ElasticLettersProps) {\n  const rootRef = React.useRef<HTMLElement | null>(null);\n  const words = React.useMemo(() => text.split(/\\s+/).filter(Boolean), [text]);\n\n  useIsoLayoutEffect(() => {\n    const root = rootRef.current;\n    if (!root) return;\n    const els = Array.from(root.querySelectorAll<HTMLElement>(\"[data-mf-el-char]\"));\n    const reduced = window.matchMedia(\"(prefers-reduced-motion: reduce)\").matches;\n    if (reduced || els.length === 0) return;\n\n    const lift = fontSize * 0.42;\n    const states: LetterState[] = els.map((_, i) => ({\n      cx: 0,\n      cy: 0,\n      y: intro ? -fontSize * 1.1 : 0,\n      vy: 0,\n      s: intro ? 0.2 : 1,\n      vs: 0,\n      k: 0,\n      vk: 0,\n      release: intro ? 0.08 + i * 0.045 : 0,\n    }));\n\n    const measure = () => {\n      els.forEach((el, i) => {\n        states[i].cx = el.offsetLeft + el.offsetWidth / 2;\n        states[i].cy = el.offsetTop + el.offsetHeight / 2;\n      });\n    };\n    measure();\n\n    const render = (el: HTMLElement, st: LetterState, opacity: number) => {\n      const sy = st.s;\n      const sx = 1 + (st.s - 1) * 0.45;\n      el.style.transform = `translate3d(0, ${st.y.toFixed(2)}px, 0) scale(${sx.toFixed(4)}, ${sy.toFixed(4)})`;\n      el.style.opacity = opacity >= 1 ? \"\" : opacity.toFixed(3);\n      el.style.setProperty(\"--mf-el-k\", Math.max(0, Math.min(1, st.k)).toFixed(3));\n    };\n    els.forEach((el, i) => render(el, states[i], intro ? 0 : 1));\n\n    const pointer = { x: 0, y: 0, inside: false };\n    let raf = 0;\n    let running = false;\n    let visible = true;\n    let last = 0;\n    const start = performance.now();\n    const k = Math.max(1, stiffness);\n    const c = Math.max(0, damping);\n    const rad = Math.max(1, radius);\n\n    const tick = (now: number) => {\n      raf = 0;\n      if (!visible) {\n        running = false;\n        return;\n      }\n      const dt = Math.min(1 / 30, Math.max(0.001, (now - last) / 1000));\n      last = now;\n      const t = (now - start) / 1000;\n      let moving = false;\n      states.forEach((st, i) => {\n        const released = t >= st.release;\n        let ty = st.y;\n        let ts = st.s;\n        let tk = 0;\n        if (released) {\n          let f = 0;\n          if (pointer.inside) {\n            const dx = pointer.x - st.cx;\n            const dy = pointer.y - st.cy;\n            const d = Math.sqrt(dx * dx + dy * dy);\n            f = Math.max(0, 1 - d / rad);\n            f = f * f * (3 - 2 * f);\n          }\n          ty = -lift * strength * f;\n          ts = 1 + 0.38 * strength * f;\n          tk = f;\n        } else {\n          moving = true;\n        }\n        if (released) {\n          // Semi-implicit Euler spring per channel.\n          st.vy += (k * (ty - st.y) - c * st.vy) * dt;\n          st.y += st.vy * dt;\n          st.vs += (k * (ts - st.s) - c * st.vs) * dt;\n          st.s += st.vs * dt;\n          st.vk += (k * (tk - st.k) - c * 1.6 * st.vk) * dt;\n          st.k += st.vk * dt;\n          const restless =\n            Math.abs(st.vy) > 0.05 ||\n            Math.abs(ty - st.y) > 0.05 ||\n            Math.abs(st.vs) > 0.001 ||\n            Math.abs(ts - st.s) > 0.001 ||\n            Math.abs(tk - st.k) > 0.002;\n          if (restless) moving = true;\n        }\n        const opacity = released ? Math.min(1, (t - st.release) / 0.18) : 0;\n        if (opacity < 1) moving = true;\n        render(els[i], st, opacity);\n      });\n      if (moving || pointer.inside) {\n        raf = requestAnimationFrame(tick);\n      } else {\n        running = false;\n      }\n    };\n\n    const wake = () => {\n      if (running || !visible) return;\n      running = true;\n      last = performance.now();\n      raf = requestAnimationFrame(tick);\n    };\n\n    const onMove = (e: PointerEvent) => {\n      const rect = root.getBoundingClientRect();\n      pointer.x = e.clientX - rect.left;\n      pointer.y = e.clientY - rect.top;\n      pointer.inside = true;\n      wake();\n    };\n    const onLeave = () => {\n      pointer.inside = false;\n      wake();\n    };\n\n    root.addEventListener(\"pointermove\", onMove);\n    root.addEventListener(\"pointerleave\", onLeave);\n\n    let ro: ResizeObserver | null = null;\n    if (typeof ResizeObserver !== \"undefined\") {\n      ro = new ResizeObserver(() => measure());\n      ro.observe(root);\n    }\n    let io: IntersectionObserver | null = null;\n    if (typeof IntersectionObserver !== \"undefined\") {\n      io = new IntersectionObserver((entries) => {\n        visible = entries.some((e) => e.isIntersecting);\n        if (visible) wake();\n      });\n      io.observe(root);\n    }\n\n    wake();\n\n    return () => {\n      if (raf) cancelAnimationFrame(raf);\n      root.removeEventListener(\"pointermove\", onMove);\n      root.removeEventListener(\"pointerleave\", onLeave);\n      ro?.disconnect();\n      io?.disconnect();\n      els.forEach((el) => {\n        el.style.transform = \"\";\n        el.style.opacity = \"\";\n        el.style.removeProperty(\"--mf-el-k\");\n      });\n    };\n  }, [text, strength, radius, stiffness, damping, intro, fontSize]);\n\n  const Tag = as;\n  const vars = {\n    \"--mf-el-size\": `${fontSize}px`,\n    \"--mf-el-accent\": accentColor,\n    ...(color ? { \"--mf-el-color\": color } : {}),\n    ...style,\n  } as React.CSSProperties;\n\n  let index = 0;\n  return (\n    <Tag\n      ref={(el: HTMLElement | null) => {\n        rootRef.current = el;\n      }}\n      className={`${styles.root} ${className}`.trim()}\n      style={vars}\n    >\n      <span className={styles.srOnly}>{text}</span>\n      <span aria-hidden=\"true\" className={styles.letters}>\n        {words.map((word, wi) => (\n          <React.Fragment key={`${word}-${wi}`}>\n            <span className={styles.word}>\n              {Array.from(word).map((ch) => {\n                const i = index++;\n                return (\n                  <span key={i} className={styles.char} data-mf-el-char=\"\">\n                    {ch}\n                  </span>\n                );\n              })}\n            </span>\n            {wi < words.length - 1 ? \" \" : null}\n          </React.Fragment>\n        ))}\n      </span>\n    </Tag>\n  );\n}\n"
+    },
+    {
+      "path": "components/styles/elastic-letters.module.css",
+      "type": "registry:style",
+      "content": ".root {\n  position: relative;\n  max-width: 100%;\n  margin: 0;\n  padding: 0.45em 0.6em;\n  color: var(--mf-el-color, var(--mf-fg, #f4f4f6));\n  font-size: var(--mf-el-size, 72px);\n  font-weight: 800;\n  letter-spacing: -0.04em;\n  line-height: 1.05;\n  text-align: center;\n  cursor: default;\n  user-select: none;\n  touch-action: pan-y;\n}\n\n.letters {\n  display: inline;\n}\n\n.word {\n  display: inline-block;\n  white-space: nowrap;\n}\n\n.char {\n  display: inline-block;\n  color: inherit;\n  color: color-mix(\n    in oklab,\n    var(--mf-el-accent, #38bdf8) calc(var(--mf-el-k, 0) * 100%),\n    var(--mf-el-color, var(--mf-fg, #f4f4f6))\n  );\n  -webkit-text-stroke: calc(var(--mf-el-k, 0) * 0.035em) currentColor;\n  transform-origin: 50% 100%;\n  will-change: transform;\n}\n\n.srOnly {\n  position: absolute;\n  width: 1px;\n  height: 1px;\n  padding: 0;\n  margin: -1px;\n  overflow: hidden;\n  clip: rect(0, 0, 0, 0);\n  white-space: nowrap;\n  border: 0;\n}\n\n@media (prefers-reduced-motion: reduce) {\n  .char {\n    transform: none !important;\n    opacity: 1 !important;\n    will-change: auto;\n  }\n}\n"
+    }
+  ],
+  "tailwindExample": "\"use client\";\n\nimport { useState } from \"react\";\n\nexport function ElasticLettersTailwind({ text = \"Feel the spring\", radius = 160 }) {\n  const [p, setP] = useState<{ x: number; y: number } | null>(null);\n  return (\n    <h2\n      onPointerMove={(e) => setP({ x: e.clientX, y: e.clientY })}\n      onPointerLeave={() => setP(null)}\n      className=\"select-none px-10 py-6 text-center text-7xl font-extrabold tracking-tighter text-zinc-100\"\n    >\n      <span className=\"sr-only\">{text}</span>\n      {Array.from(text).map((ch, i) => (\n        <span\n          key={i}\n          aria-hidden\n          ref={(el) => {\n            if (!el) return;\n            if (!p) {\n              el.style.transform = \"none\";\n              return;\n            }\n            const r = el.getBoundingClientRect();\n            const f = Math.max(0, 1 - Math.hypot(p.x - r.left - r.width / 2, p.y - r.top - r.height / 2) / radius);\n            el.style.transform = \"translateY(\" + -30 * f + \"px) scale(\" + (1 + 0.15 * f) + \",\" + (1 + 0.38 * f) + \")\";\n          }}\n          className=\"inline-block origin-bottom transition-transform duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)]\"\n        >\n          {ch === \" \" ? \"\\u00a0\" : ch}\n        </span>\n      ))}\n    </h2>\n  );\n}"
+}
