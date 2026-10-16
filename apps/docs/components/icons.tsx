@@ -1,3 +1,4 @@
+import Image from "next/image";
 import * as React from "react";
 
 export function GitHubIcon(props: React.SVGProps<SVGSVGElement>) {
@@ -8,11 +9,7 @@ export function GitHubIcon(props: React.SVGProps<SVGSVGElement>) {
   );
 }
 
-export function LogoMark(props: React.SVGProps<SVGSVGElement>) {
-  return (
-    <svg viewBox="0 0 32 32" aria-hidden="true" {...props}>
-      <rect width="32" height="32" rx="8" fill="#fafafa" />
-      <path d="M8 22V10l8 7 8-7v12" fill="none" stroke="#0a0a0a" strokeWidth="2.8" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
-  );
+/** Site logo (apps/docs/public/logo.png, generated from the 1254px source at assets/logo.png). */
+export function LogoMark({ className = "", size = 28 }: { className?: string; size?: number }) {
+  return <Image src="/logo.png" alt="" width={size} height={size} priority className={`rounded-lg ${className}`.trim()} />;
 }

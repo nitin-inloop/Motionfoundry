@@ -139,7 +139,13 @@ Edit `apps/docs/content/docs/<page>.mdx`, then run `pnpm build:docs-content`. Ne
 
 ## 8. Deploy the docs site
 
-**Vercel (recommended):** import the GitHub repo — `vercel.json` already sets the install command, build command, and output directory. No environment variables are required.
+**Vercel (recommended):**
+
+1. Import the GitHub repo in Vercel.
+2. Set **Root Directory** to **`apps/docs`** (Project → Settings → Build and Deployment). Leave "Include files outside the root directory" enabled — the site reads `registry/` and `packages/ui/src/` from the monorepo.
+3. Deploy. `apps/docs/vercel.json` sets the framework, install, and build commands; pnpm installs the whole workspace from the repo root. No environment variables are required.
+
+The site's generated data (`registry/*.json`, `apps/docs/lib/docs.ts`) is committed, so the deploy only runs `next build`. Regenerate and commit those files (`pnpm build`) after changing components, designs, or docs.
 
 **Any Node host:**
 
@@ -175,4 +181,5 @@ Bump `version` in `packages/ui/package.json`, `packages/cli/package.json`, and `
 | `… is out of date (run node scripts/…)` in CI | Run that script locally and commit the regenerated file |
 | Port 3000 already in use | `pnpm --filter @motionfoundry/docs exec next dev -p 3001` |
 | Stale pages or route type errors after moving files | Delete `apps/docs/.next` and rebuild |
+| Vercel: `No Next.js version detected` or missing `routes-manifest.json` | Set the project Root Directory to `apps/docs` (see section 8) |
 | Windows: `EPERM` while building | Stop any running `next dev` / `next start` process, then rebuild |

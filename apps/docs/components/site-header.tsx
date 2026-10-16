@@ -26,7 +26,7 @@ export function SiteHeader({ nav }: { nav: NavIndex }) {
     <header className="sticky top-0 z-40 h-[var(--header-height)] bg-background">
       <div className="mx-auto flex h-full max-w-[1600px] items-center gap-6 px-4 md:px-8">
         <Link href="/" aria-label={`${BRAND_CONFIG.name} home`} className="flex shrink-0 items-center gap-2">
-          <LogoMark className="h-6 w-6" />
+          <LogoMark size={28} className="h-7 w-7" />
           <span className="hidden font-semibold tracking-tight xl:inline">{BRAND_CONFIG.name}</span>
         </Link>
         <nav className="mf-scrollbar flex min-w-0 items-center gap-0.5 overflow-x-auto text-sm font-medium" aria-label="Main">

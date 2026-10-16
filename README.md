@@ -1,3 +1,5 @@
+<p align="center"><img src="apps/docs/public/logo.png" width="96" height="96" alt="MotionFoundry logo" /></p>
+
 # MotionFoundry (`@motionfoundry/ui` v2.1.0)
 
 > **Get started:** see [SETUP.md](./SETUP.md) for prerequisites, running the docs site, builds, tests, and deployment.
