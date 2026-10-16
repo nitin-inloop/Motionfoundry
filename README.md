@@ -1,96 +1,174 @@
 <p align="center"><img src="apps/docs/public/logo.png" width="96" height="96" alt="MotionFoundry logo" /></p>
 
-# MotionFoundry (`@motionfoundry/ui` v2.4.1)
+<h1 align="center">MotionFoundry</h1>
 
-> **Get started:** see [SETUP.md](./SETUP.md) for prerequisites, running the docs site, builds, tests, and deployment.
-> Repository: https://github.com/nitin-inloop/Motionfoundry
+<p align="center">
+  <strong>142 animated React components</strong> — smooth scroll, shader backgrounds, and accessible UI primitives — built from scratch with TypeScript, Motion, WebGL, and scoped CSS Modules.
+</p>
 
-Precision-engineered, open-source animated React component library, CLI source installer, and interactive documentation platform built with **Next.js App Router**, **TypeScript**, **Motion (`motion/react`)**, **SVG**, **HTML5 Canvas**, and **scoped CSS Modules**.
+<p align="center">
+  <a href="https://www.npmjs.com/package/@motionfoundry/ui"><img alt="npm" src="https://img.shields.io/npm/v/@motionfoundry/ui?color=0a0a0a&label=%40motionfoundry%2Fui" /></a>
+  <a href="https://www.npmjs.com/package/motionfoundry"><img alt="CLI" src="https://img.shields.io/npm/v/motionfoundry?color=0a0a0a&label=CLI" /></a>
+  <a href="./LICENSE"><img alt="MIT license" src="https://img.shields.io/badge/license-MIT-0a0a0a" /></a>
+</p>
 
-## 142 Animated Components
+---
 
-### Core (24)
+## What is MotionFoundry?
 
-1. **Advanced Text Animations**: `KineticType`, `GlyphCascade`, `TextMorph`, `OrbitingWords`, `AuroraHeadline`
-2. **Interactive Buttons and Controls**: `MagneticButton`, `VelocityButton`, `ElasticPressButton`
-3. **High-End Animated Cards**: `ConstellationCard`, `LiquidGlassCard`, `HoloTiltCard`, `MorphingBorder`
-4. **Reveals and Continuous Motion**: `PortalRevealPanel`, `InfiniteMarquee`, `ScrollNarrative`, `ParallaxDepthScene`
-5. **Animated Backgrounds and Visual Effects**: `FluidMeshBackground`, `NoiseAurora`, `OrbitingParticles`, `LiquidBlob`
-6. **Developer-Interface Animations**: `MagneticDock`, `ScrollVelocityProgress`, `MorphingCommandPalette`, `StaggeredGridReveal`
+MotionFoundry is an open-source library of production-ready animated components for **React 18/19 and Next.js**. Use it two ways:
 
-### Studio Kit (24) — new in v2.1
+- **Copy the source** into your project with the `motionfoundry` CLI — you own every line (one `.tsx` + one `.module.css` per component).
+- **Install the package** `@motionfoundry/ui` and import components like any other library.
 
-Hand-picked from the Swirl Studio Kit prototypes and rebuilt on MotionFoundry conventions (see `apps/docs/content/docs/studio-kit.mdx`):
+Every component:
 
-1. **Advanced Text Animations**: `BlurInText`, `Typewriter`, `NumberTicker`, `SplitReveal`, `RotatingWords`, `ShimmerText`
-2. **Interactive Buttons and Controls**: `ShinyBorderButton`, `ConfettiButton`, `LoadingButton`, `SlideFillButton`, `ToggleSwitch`, `AnimatedCheckbox`
-3. **High-End Animated Cards**: `FlipCard`, `SwipeCards`, `RevealCard`, `DrawBorderCard`
-4. **Animated Backgrounds and Visual Effects**: `Meteors`, `BeamLines`, `GridPulse`
-5. **Loaders and Feedback**: `OrbitLoader`, `PulseLoader`, `NotificationStack`
-6. **Developer-Interface Animations**: `ReorderList`, `ExpandableSearch`
+- renders a complete demo with **zero props**, and exposes its knobs (colors, speed, easing, sizes, copy…) as **typed props**;
+- respects **`prefers-reduced-motion`**, follows **WAI-ARIA** patterns with full keyboard support, and is **SSR-safe**;
+- has **no heavy dependencies** — no GSAP, Lenis, Radix, or three.js. 72 components need only React; the rest also use [`motion`](https://motion.dev).
 
-### Scroll (18), Shaders (13) & UI (50) — the headline collections
+<p align="center">
+  <img src=".github/assets/shaders.png" alt="Shader backgrounds: NebulaGradient, SilkGradient, EclipseGradient, EmberGradient, WaveGradient, AuroraRibbons" width="100%" />
+  <br /><sub><b>Shaders</b> — hand-written WebGL and canvas backgrounds, every color and speed a prop.</sub>
+</p>
 
-The docs site leads with these three. **UI** (new in v2.3) is 50 animated primitives built from scratch — buttons, inputs, selects, dialogs, drawers, menus, tabs, toasts, tables, charts, and more — following WAI-ARIA patterns with no Radix or shadcn dependency. **Shaders** (formerly Gradients) adds 5 dark WebGL backgrounds in v2.3, and **Scroll** adds 10 more smooth-scroll effects. See `apps/docs/content/docs/gradients-text-scroll.mdx`.
+## Components
 
-### Gradients → Shaders (8 from v2.2)
+| Collection | Count | What's inside |
+| --- | ---: | --- |
+| **Scroll** | 18 | Lenis-style smooth scrolling built from scratch: `SmoothScroll`, `ParallaxLayers`, `StickyStackCards`, `VelocityMarquee`, `ScrollCoverflow`, `PinnedSteps`, `ScrollPathDraw`, `SnapSections`, `ScrollColorShift`, … |
+| **Shaders** | 13 | Living backgrounds: `NebulaGradient`, `SilkGradient`, `EclipseGradient`, `EmberGradient`, `PlasmaGradient` (raw WebGL), plus `MeshGradient`, `WaveGradient`, `AuroraRibbons`, `SpotlightGradient`, … |
+| **UI** | 55 | Accessible primitives with motion: `Button`, `Select`, `Combobox`, `OtpInput`, `RangeSlider`, `Tabs`, `Dialog`, `Drawer`, `DropdownMenu`, `Toast`, `DataTable`, `BarChart`, `Carousel`, `CreditCard`, `AccordionCards`, `ProgressBar`, `SkeletonShimmer`, … |
+| **Text FX** | 8 | GSAP-style text animation without GSAP: `SplitText`, `MaskWipeText`, `ElasticLetters`, `MarkerHighlight`, `CubeFlipWords`, … |
+| **Studio Kit** | 24 | Everyday motion: `BlurInText`, `Typewriter`, `NumberTicker`, `ConfettiButton`, `FlipCard`, `SwipeCards`, `Meteors`, `NotificationStack`, … |
+| **Core** | 24 | The original primitives: `KineticType`, `MagneticButton`, `HoloTiltCard`, `LiquidGlassCard`, `MagneticDock`, `MorphingCommandPalette`, … |
+| **Total** | **142** | across 13 categories |
 
-`MeshGradient`, `AuroraRibbons`, `ConicGradient`, `LiquidGradient`, `WaveGradient`, `GradientOrbs`, `GrainGradient`, `SpotlightGradient` — animated backgrounds with every color, speed, and texture exposed as props.
+Run `npx motionfoundry list` for the full list, or `npx motionfoundry list --collection ui` for one collection.
 
-### Text FX (8) — new in v2.2
+<p align="center">
+  <img src=".github/assets/playground.png" alt="CreditCard component playground with live preview, Dark/Light toggle, design picker, and prop controls" width="80%" />
+  <br /><sub>Every component has a playground: live preview, Dark / Light and brand-theme presets, prop controls, and copy-ready code.</sub>
+</p>
 
-`SplitText`, `MaskWipeText`, `ElasticLetters`, `TextOnPath`, `RollingText`, `MarkerHighlight`, `ScatterText`, `CubeFlipWords` — GSAP-style eases and staggers, built from scratch (no GSAP dependency).
+## Quick start
 
-### Scroll (8) — new in v2.2
+### Option A — copy components into your project (recommended)
 
-`SmoothScroll`, `ParallaxLayers`, `ScrollFillText`, `HorizontalScroll`, `StickyStackCards`, `VelocityMarquee`, `ScrollZoomReveal`, `ScrollTimeline` — Lenis-style smooth scrolling, built from scratch (no Lenis dependency); each renders its own scroll viewport.
+```bash
+npx motionfoundry add eclipse-gradient credit-card smooth-scroll
+```
 
-## 11 Brand Design Systems
+This writes the source next to your code (under `src/` if it exists):
 
-`design-md/` vendors DESIGN.md files from [VoltAgent/awesome-design-md](https://github.com/VoltAgent/awesome-design-md) (MIT) for **Vercel, Cursor, Claude, Framer, Apple, Airbnb, Expo, ElevenLabs, Runway, Resend, and Spotify**. Each has a curated theme in `design-md/themes.json`. The docs site renders a page per brand (tokens, type specimen, live re-skinned components, full spec), and every component playground has a **Design** picker. Components read `--mf-*` CSS variables (with their original values as fallbacks), so any wrapper can adopt a brand theme.
+```
+components/ui/eclipse-gradient.tsx
+components/styles/eclipse-gradient.module.css
+…
+```
 
-## Repository Layout
+Then install the peer dependency the CLI prints (usually `motion`) and import from your own files:
+
+```tsx
+import { EclipseGradient } from "@/components/ui/eclipse-gradient";
+```
+
+### Option B — install the package
+
+```bash
+npm install @motionfoundry/ui motion
+# or: pnpm add @motionfoundry/ui motion
+```
+
+Import the stylesheet **once**, e.g. in your Next.js root layout:
+
+```tsx
+// app/layout.tsx
+import "@motionfoundry/ui/styles.css";
+
+export default function RootLayout({ children }: { children: React.ReactNode }) {
+  return (
+    <html lang="en">
+      <body>{children}</body>
+    </html>
+  );
+}
+```
+
+## Using it in your code
+
+Components are client components (the bundle is marked `"use client"`), so you can render them straight from a Server Component page:
+
+```tsx
+// app/page.tsx
+import { Button, CreditCard, EclipseGradient, SmoothScroll, Toast } from "@motionfoundry/ui";
+
+export default function Page() {
+  return (
+    <main>
+      {/* A shader background with your content on top */}
+      <EclipseGradient height={420} speed={3}>
+        <h1>Ship interfaces that feel considered.</h1>
+      </EclipseGradient>
+
+      {/* Smooth, eased scrolling inside its own viewport */}
+      <SmoothScroll height={360} showProgress>
+        <section>…your long content…</section>
+      </SmoothScroll>
+
+      {/* UI primitives with sensible defaults — override what you need */}
+      <CreditCard holder="ADA LOVELACE" glowColor="#38bdf8" maskNumber />
+      <Button variant="outline" label="Get started" href="/docs" />
+      <Toast position="bottom-right" title="Deployed to production" />
+    </main>
+  );
+}
+```
+
+Every prop is optional — `<CreditCard />` on its own renders a full demo. Controlled and uncontrolled APIs are supported where they make sense (`value` / `defaultValue` / `onValueChange`, `open` / `defaultOpen` / `onOpenChange`).
+
+### Theming
+
+Components read their surfaces, text, borders, and accent from `--mf-*` CSS variables (each with a built-in fallback), so you can restyle everything inside a wrapper — or the whole app via `:root`:
+
+```css
+.brand-theme {
+  --mf-bg: #ffffff;
+  --mf-surface: #fafafa;
+  --mf-fg: #171717;
+  --mf-muted: #4d4d4d;
+  --mf-border: #ebebeb;
+  --mf-accent: #0070f3;
+}
+```
+
+The repo also ships **11 brand design systems** (Vercel, Cursor, Claude, Framer, Apple, Airbnb, Expo, ElevenLabs, Runway, Resend, Spotify) as `DESIGN.md` files in [`design-md/`](./design-md), each with a ready-made theme you can apply in the docs playground.
+
+## Run the docs locally
+
+```bash
+git clone https://github.com/nitin-inloop/Motionfoundry.git
+cd Motionfoundry
+pnpm install
+pnpm dev        # http://localhost:3000
+```
+
+See **[SETUP.md](./SETUP.md)** for builds, tests, the CLI, deployment, and publishing.
+
+## Repository layout
 
 | Path | Purpose |
 | --- | --- |
-| `packages/ui/src/components/*.tsx` + `src/styles/*.module.css` | Component source (single source of truth) |
-| `registry/components/*.json` | Per-component metadata: description, controls, props API, a11y notes, Tailwind variant |
-| `registry/registry.json` | Generated manifest consumed by the CLI and docs (`scripts/build-registry.mjs`) |
-| `packages/ui` | `@motionfoundry/ui` — compiled ESM/CJS bundle, types, `styles.css` |
-| `packages/cli` | `motionfoundry` CLI — copies component source into apps |
-| `apps/docs` | Next.js docs site with live previews and prop playgrounds (imports components from source) |
-| `apps/docs/content/docs/*.mdx` | Documentation copy; `scripts/build-docs.mjs` generates `apps/docs/lib/docs.ts` |
-| `design-md/` | Vendored DESIGN.md files + `themes.json`; `scripts/build-designs.mjs` generates `registry/designs.json` |
+| `packages/ui` | `@motionfoundry/ui` — component source (`src/components`, `src/styles`) and the compiled bundle |
+| `packages/cli` | `motionfoundry` CLI — copies component source into your app |
+| `registry/` | Per-component metadata (props, controls, a11y notes) and the generated manifest |
+| `apps/docs` | Next.js docs site with live playgrounds |
+| `design-md/` | Brand DESIGN.md files and their themes |
 
-## Quickstart & Local Development
+## Contributing
 
-```bash
-# 1. Install dependencies
-pnpm install
+Contributions are welcome — see [CONTRIBUTING.md](./CONTRIBUTING.md). Run `pnpm check` before opening a pull request.
 
-# 2. Regenerate registry, design systems, and docs data; build @motionfoundry/ui and the CLI
-node scripts/build-registry.mjs
-node scripts/build-designs.mjs
-node scripts/build-docs.mjs
-node packages/ui/scripts/build.mjs
-node packages/cli/scripts/build.mjs
+## License
 
-# 3. Run the docs site with live component playgrounds
-pnpm dev
-
-# 4. Try the CLI component installer
-node packages/cli/dist/index.mjs list --collection studio-kit
-node packages/cli/dist/index.mjs add rotating-words confetti-button flip-card --dir ./examples/nextjs-app
-
-# 5. Run lint, typecheck, and automated test suite
-node tests/lint-check.mjs
-node tests/typecheck.mjs
-node --test tests/motionfoundry.test.mjs
-```
-
-## Adding a Component
-
-1. Write `packages/ui/src/components/<slug>.tsx` and `packages/ui/src/styles/<slug>.module.css`.
-2. Export it (and its `Props` type) from `packages/ui/src/index.ts` — export order is registry order.
-3. Add `registry/components/<slug>.json` with metadata (`files` may be `[]`).
-4. Run `node scripts/build-registry.mjs`; the docs site picks it up automatically.
+[MIT](./LICENSE) © MotionFoundry contributors
