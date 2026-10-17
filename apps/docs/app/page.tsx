@@ -163,61 +163,61 @@ export default function HomePage() {
   return (
     <div className="space-y-28 overflow-x-clip pb-24 sm:space-y-36">
       <section className="relative overflow-hidden border-b border-border">
-          {/* Hero background image */}
-          <div
-            className="absolute inset-0 z-0"
-            style={{
-              backgroundImage: "url('/hero-bg.png')",
-              backgroundSize: "cover",
-              backgroundPosition: "center",
-              backgroundRepeat: "no-repeat",
-            }}
-          />
-          {/* Dark overlay for text readability */}
-          <div className="absolute inset-0 z-[1] bg-gradient-to-b from-background/80 via-background/70 to-background" />
-          <div className="relative z-[2] text-left">
-            <div className="mx-auto grid max-w-7xl gap-12 px-6 pb-20 pt-16 lg:grid-cols-[1.15fr_1fr] lg:items-center">
-              <div className="min-w-0 space-y-7">
-                {newComponents.length > 0 ? (
-                  <Link
-                    href="/docs/changelog"
-                    className="inline-flex max-w-full items-center gap-2 rounded-full border border-emerald-400/30 bg-emerald-500/10 px-3.5 py-1 font-mono text-xs text-emerald-200 backdrop-blur hover:border-emerald-300/50"
-                  >
-                    <span className="min-w-0 truncate">
-                      {NEW_VERSION_LABEL} • New: {newCollectionList} — {newComponents.length} components →
-                    </span>
-                  </Link>
-                ) : (
-                  <Link
-                    href="/collections/scroll"
-                    className="inline-flex max-w-full items-center gap-2 rounded-full border border-sky-500/30 bg-sky-500/10 px-3.5 py-1 font-mono text-xs text-sky-300 backdrop-blur hover:border-sky-400/50"
-                  >
-                    <span className="min-w-0 truncate">v{BRAND_CONFIG.version} • {components.length} components →</span>
-                  </Link>
-                )}
-                <BlurInText
-                  as="h1"
-                  text="Motion primitives forged for production React"
-                  className="text-4xl font-semibold leading-[1.05] tracking-tight text-foreground sm:text-5xl md:text-6xl"
-                />
-                <p className="max-w-xl text-lg leading-relaxed text-foreground/75">
-                  {components.length} animated components across {collections.length} collections. Copy the source with one CLI command or import the package — every
-                  component is typed, SSR-safe, and respects reduced motion.
-                </p>
-                <HeroActions
-                  componentCount={components.length}
-                  secondary={newComponents.length > 0 ? { label: `What's new in ${NEW_VERSION_LABEL}`, href: "/docs/changelog" } : { label: "Browse Scroll", href: "/collections/scroll" }}
-                />
-              </div>
-              <div className="min-w-0">
-                <CodeBlock
-                  filename="terminal"
-                  language="bash"
-                  code={`# copy components (source + CSS module) into your app\nnpx ${BRAND_CONFIG.cliName} add eclipse-gradient split-text smooth-scroll\n\n# or install the package\npnpm add ${BRAND_CONFIG.packageScope} motion`}
-                />
-              </div>
+        {/* Hero background image */}
+        <div
+          className="absolute inset-0 z-0"
+          style={{
+            backgroundImage: "url('/hero-bg.png')",
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+            backgroundRepeat: "no-repeat",
+          }}
+        />
+        {/* Dark overlay for text readability */}
+        <div className="absolute inset-0 z-[1] bg-gradient-to-b from-background/80 via-background/70 to-background" />
+        <div className="relative z-[2] text-left">
+          <div className="mx-auto grid max-w-7xl gap-12 px-6 pb-20 pt-16 lg:grid-cols-[1.15fr_1fr] lg:items-center">
+            <div className="min-w-0 space-y-7">
+              {newComponents.length > 0 ? (
+                <Link
+                  href="/docs/changelog"
+                  className="inline-flex max-w-full items-center gap-2 rounded-full border border-emerald-400/30 bg-emerald-500/10 px-3.5 py-1 font-mono text-xs text-emerald-200 backdrop-blur hover:border-emerald-300/50"
+                >
+                  <span className="min-w-0 truncate">
+                    {NEW_VERSION_LABEL} • New: {newCollectionList} — {newComponents.length} components →
+                  </span>
+                </Link>
+              ) : (
+                <Link
+                  href="/collections/scroll"
+                  className="inline-flex max-w-full items-center gap-2 rounded-full border border-sky-500/30 bg-sky-500/10 px-3.5 py-1 font-mono text-xs text-sky-300 backdrop-blur hover:border-sky-400/50"
+                >
+                  <span className="min-w-0 truncate">v{BRAND_CONFIG.version} • {components.length} components →</span>
+                </Link>
+              )}
+              <BlurInText
+                as="h1"
+                text="Motion primitives forged for production React"
+                className="text-4xl font-semibold leading-[1.05] tracking-tight text-foreground sm:text-5xl md:text-6xl"
+              />
+              <p className="max-w-xl text-lg leading-relaxed text-foreground/75">
+                {components.length} animated components across {collections.length} collections. Copy the source with one CLI command or import the package every
+                component is typed, SSR-safe, and respects reduced motion.
+              </p>
+              <HeroActions
+                componentCount={components.length}
+                secondary={newComponents.length > 0 ? { label: `What's new in ${NEW_VERSION_LABEL}`, href: "/docs/changelog" } : { label: "Browse Scroll", href: "/collections/scroll" }}
+              />
+            </div>
+            <div className="min-w-0">
+              <CodeBlock
+                filename="terminal"
+                language="bash"
+                code={`# copy components (source + CSS module) into your app\nnpx ${BRAND_CONFIG.cliName} add eclipse-gradient split-text smooth-scroll\n\n# or install the package\npnpm add ${BRAND_CONFIG.packageScope} motion`}
+              />
             </div>
           </div>
+        </div>
       </section>
 
       {/* 2 — Scroll */}
@@ -387,9 +387,8 @@ export default function HomePage() {
             <Link
               key={c.id}
               href={`/collections/${c.id}`}
-              className={`group flex min-w-0 flex-col rounded-2xl border border-border bg-card/40 p-6 transition hover:border-neutral-600 ${collectionSpan(i, collections.length)} ${
-                collections.length % 2 === 1 && i === collections.length - 1 ? "sm:col-span-2" : ""
-              }`}
+              className={`group flex min-w-0 flex-col rounded-2xl border border-border bg-card/40 p-6 transition hover:border-neutral-600 ${collectionSpan(i, collections.length)} ${collections.length % 2 === 1 && i === collections.length - 1 ? "sm:col-span-2" : ""
+                }`}
             >
               <div className="flex items-start justify-between gap-3">
                 <h3 className="min-w-0 text-xl font-semibold">{c.name}</h3>
