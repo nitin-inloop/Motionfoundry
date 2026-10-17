@@ -33,7 +33,7 @@ export function DocsPage({ toc, wide = false, children }: { toc?: TocItem[]; wid
   const hasRail = toc !== undefined;
   return (
     <div className="flex min-w-0 flex-1 gap-12">
-      <article className={`mx-auto min-w-0 flex-1 space-y-8 py-10 ${wide ? "max-w-6xl" : "max-w-3xl"}`}>{children}</article>
+      <article className={`mx-auto min-w-0 flex-1 space-y-6 px-1 py-6 sm:space-y-8 sm:px-0 sm:py-10 ${wide ? "max-w-6xl" : "max-w-3xl"}`}>{children}</article>
       {hasRail && (
         <aside className="mf-scrollbar sticky top-[var(--header-height)] hidden h-[calc(100vh-var(--header-height))] w-72 shrink-0 space-y-10 overflow-y-auto py-10 xl:block">
           <OnThisPage items={toc} />

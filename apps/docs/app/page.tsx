@@ -161,7 +161,7 @@ export default function HomePage() {
     newCollectionNames.length > 1 ? `${newCollectionNames.slice(0, -1).join(", ")} & ${newCollectionNames[newCollectionNames.length - 1]}` : newCollectionNames[0] ?? "";
 
   return (
-    <div className="space-y-28 overflow-x-clip pb-24 sm:space-y-36">
+    <div className="space-y-16 overflow-x-clip pb-16 sm:space-y-28 sm:pb-24 lg:space-y-36">
       <section className="relative overflow-hidden border-b border-border">
         {/* Hero background image */}
         <div
@@ -176,7 +176,7 @@ export default function HomePage() {
         {/* Dark overlay for text readability */}
         <div className="absolute inset-0 z-[1] bg-gradient-to-b from-background/80 via-background/70 to-background" />
         <div className="relative z-[2] text-left">
-          <div className="mx-auto grid max-w-7xl gap-12 px-6 pb-20 pt-16 lg:grid-cols-[1.15fr_1fr] lg:items-center">
+          <div className="mx-auto grid max-w-7xl gap-8 px-4 pb-12 pt-10 sm:gap-12 sm:px-6 sm:pb-20 sm:pt-16 lg:grid-cols-[1.15fr_1fr] lg:items-center">
             <div className="min-w-0 space-y-7">
               {newComponents.length > 0 ? (
                 <Link
@@ -198,10 +198,10 @@ export default function HomePage() {
               <BlurInText
                 as="h1"
                 text="Motion primitives forged for production React"
-                className="text-4xl font-semibold leading-[1.05] tracking-tight text-foreground sm:text-5xl md:text-6xl"
+                className="text-3xl font-semibold leading-[1.08] tracking-tight text-foreground sm:text-4xl md:text-5xl lg:text-6xl"
               />
-              <p className="max-w-xl text-lg leading-relaxed text-foreground/75">
-                {components.length} animated components across {collections.length} collections. Copy the source with one CLI command or import the package every
+              <p className="max-w-xl text-base leading-relaxed text-foreground/75 sm:text-lg">
+                {components.length} animated components across {collections.length} collections. Copy the source with one CLI command or import the package — every
                 component is typed, SSR-safe, and respects reduced motion.
               </p>
               <HeroActions
@@ -262,7 +262,7 @@ export default function HomePage() {
           href="/collections/shaders"
           linkLabel={`Browse ${shaders?.name ?? "Shaders"}`}
         />
-        <div className="grid auto-rows-[160px] grid-cols-2 gap-3 sm:auto-rows-[200px] md:grid-cols-4">
+        <div className="grid auto-rows-[140px] grid-cols-1 gap-3 sm:auto-rows-[160px] sm:grid-cols-2 md:auto-rows-[200px] md:grid-cols-4">
           {SHADERS.map((s) => {
             const m = meta(s.slug, s.fallback);
             return (
@@ -275,16 +275,16 @@ export default function HomePage() {
       </section>
 
       {/* 4 — Stats */}
-      <section className="mx-auto grid max-w-7xl grid-cols-2 gap-4 px-4 sm:px-6 md:grid-cols-4" aria-label="Library at a glance">
+      <section className="mx-auto grid max-w-7xl grid-cols-2 gap-3 px-4 sm:gap-4 sm:px-6 md:grid-cols-4" aria-label="Library at a glance">
         {[
           { value: components.length, label: "Animated components" },
           { value: collections.length, label: "Collections" },
           { value: categories.length, label: "Categories" },
           { value: designs.length, label: "Design system presets" },
         ].map((stat) => (
-          <div key={stat.label} className="min-w-0 rounded-2xl border border-border bg-card/40 p-5">
-            <NumberTicker value={stat.value} suffix="" className="text-3xl font-semibold tracking-tight text-foreground" />
-            <div className="mt-1 text-sm text-muted-foreground">{stat.label}</div>
+          <div key={stat.label} className="min-w-0 rounded-xl border border-border bg-card/40 p-4 sm:rounded-2xl sm:p-5">
+            <NumberTicker value={stat.value} suffix="" className="text-2xl font-semibold tracking-tight text-foreground sm:text-3xl" />
+            <div className="mt-1 text-xs text-muted-foreground sm:text-sm">{stat.label}</div>
           </div>
         ))}
       </section>
@@ -378,7 +378,7 @@ export default function HomePage() {
       <section className="mx-auto max-w-7xl space-y-8 px-4 sm:px-6" aria-labelledby="collections-heading">
         <div className="space-y-2">
           <div className="font-mono text-xs uppercase tracking-wider text-muted-foreground">Collections</div>
-          <h2 id="collections-heading" className="text-3xl font-semibold tracking-tight sm:text-4xl">
+          <h2 id="collections-heading" className="text-2xl font-semibold tracking-tight sm:text-3xl md:text-4xl">
             {collections.length} collections, one set of conventions
           </h2>
         </div>

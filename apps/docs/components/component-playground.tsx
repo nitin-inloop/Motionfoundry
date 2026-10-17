@@ -159,7 +159,7 @@ export function ComponentPlayground({ component, presets }: { component: Registr
       <section className="space-y-4">
         <SectionHeading id="preview">Preview</SectionHeading>
         <div className="overflow-hidden rounded-xl border border-border">
-          <div className="flex flex-wrap items-center justify-between gap-2 border-b border-border bg-card/60 px-3 py-2">
+          <div className="flex flex-col items-start gap-2 border-b border-border bg-card/60 px-3 py-2 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between">
             <label className="relative flex items-center gap-2 text-sm">
               <span className="text-muted-foreground">Design</span>
               <span className="relative">
@@ -203,7 +203,7 @@ export function ComponentPlayground({ component, presets }: { component: Registr
           </div>
           <div
             data-preview-mode={mode}
-            className={`${stageTheme ? "" : "mf-stage"} flex min-h-[400px] items-center justify-center overflow-hidden p-8 transition-colors`}
+            className={`${stageTheme ? "" : "mf-stage"} flex min-h-[260px] items-center justify-center overflow-hidden p-4 transition-colors sm:min-h-[400px] sm:p-8`}
             style={stageTheme ? stageStyle(stageTheme, mode) : undefined}
           >
             {/* Remount on every prop change so mount-triggered animations replay with the new values. */}

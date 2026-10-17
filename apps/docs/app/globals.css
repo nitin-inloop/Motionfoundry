@@ -155,3 +155,39 @@ input[type="range"].mf-range {
   vertical-align: top;
   color: #d4d4d4;
 }
+
+/* ── Mobile responsiveness ───────────────────────────────────────── */
+
+/* Remove tap highlight on mobile */
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Prevent horizontal overflow on mobile */
+html, body {
+  overflow-x: hidden;
+}
+
+/* Responsive prose on mobile */
+@media (max-width: 640px) {
+  .mf-prose {
+    font-size: 0.9375rem;
+    line-height: 1.7;
+  }
+  .mf-prose h2 {
+    margin-top: 2rem;
+    font-size: 1.25rem;
+  }
+  .mf-prose h3 {
+    margin-top: 1.5rem;
+    font-size: 1.1rem;
+  }
+  .mf-prose table {
+    font-size: 0.8125rem;
+  }
+  .mf-prose th,
+  .mf-prose td {
+    padding: 0.5rem 0.5rem;
+  }
+}
+

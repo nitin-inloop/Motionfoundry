@@ -3,6 +3,7 @@
 import * as React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { Menu, X } from "lucide-react";
 import type { NavIndex } from "../lib/nav";
 
 /** Friendlier sidebar labels for the doc `category` values in content/docs/*.mdx. */
@@ -70,12 +71,9 @@ function groupBy<T>(items: T[], key: (item: T) => string, order?: string[]): [st
   return [...map.entries()].filter(([, list]) => list.length > 0);
 }
 
-export function DocsSidebar({ nav }: { nav: NavIndex }) {
-  const pathname = usePathname() ?? "";
+function SidebarContent({ nav, pathname, onLinkClick }: { nav: NavIndex; pathname: string; onLinkClick?: () => void }) {
   const docGroups = groupBy(nav.docs, (d) => DOC_GROUP_LABEL[d.category] ?? d.category);
-  // Browsing components: the sidebar starts at Scroll — docs and setup pages stay in the Docs section.
   const componentContext = pathname.startsWith("/components") || pathname.startsWith("/collections");
-  // An unlisted collection (Text FX, Studio Kit, Core) gets its own group while you're inside it.
   const currentCollection =
     nav.allComponents.find((c) => pathname === `/components/${c.slug}`)?.collection ?? (pathname.startsWith("/collections/") ? pathname.slice("/collections/".length) : undefined);
   const extraCollection = nav.allCollections.find((col) => col.id === currentCollection && !col.listed);
@@ -85,61 +83,115 @@ export function DocsSidebar({ nav }: { nav: NavIndex }) {
   ];
 
   return (
-    <aside
-      aria-label="Documentation"
-      className="mf-scrollbar sticky top-[var(--header-height)] hidden h-[calc(100vh-var(--header-height))] w-64 shrink-0 overflow-y-auto border-r border-border/60 py-8 pr-4 lg:block"
-    >
-      <div className="space-y-8">
-        {!componentContext && (
-          <Group title="Docs">
-            {docGroups.map(([label, docs]) => (
-              <React.Fragment key={label}>
-                <SubHeading>{label}</SubHeading>
-                {docs.map((d) => (
-                  <SidebarLink key={d.slug} href={`/docs/${d.slug}`} active={pathname === `/docs/${d.slug}`}>
-                    {d.title}
-                  </SidebarLink>
-                ))}
-              </React.Fragment>
-            ))}
-          </Group>
-        )}
-
-        {groups.map(({ col, items }) => {
-          const byCategory = groupBy(items, (c) => c.category, nav.categories);
-          const href = `/collections/${col.id}`;
-          return (
-            <Group key={col.id} title={col.name} href={href} count={col.count} active={pathname === href}>
-              {items.length === 0 && <p className="px-2.5 py-1 text-xs text-muted-foreground/70">Coming soon</p>}
-              {byCategory.length > 1
-                ? byCategory.map(([category, list]) => (
-                    <React.Fragment key={category}>
-                      <SubHeading>{category}</SubHeading>
-                      {list.map((c) => (
-                        <SidebarLink key={c.slug} href={`/components/${c.slug}`} active={pathname === `/components/${c.slug}`}>
-                          {c.name}
-                        </SidebarLink>
-                      ))}
-                    </React.Fragment>
-                  ))
-                : items.map((c) => (
-                    <SidebarLink key={c.slug} href={`/components/${c.slug}`} active={pathname === `/components/${c.slug}`}>
-                      {c.name}
-                    </SidebarLink>
-                  ))}
-            </Group>
-          );
-        })}
-
-        <Group title="Design Systems" href="/designs" count={nav.designs.length} active={pathname === "/designs"}>
-          {nav.designs.map((d) => (
-            <SidebarLink key={d.id} href={`/designs/${d.id}`} active={pathname === `/designs/${d.id}`}>
-              <span className="h-3 w-3 shrink-0 rounded-full border border-white/15" style={{ background: d.accent }} aria-hidden="true" />
-              {d.brand}
-            </SidebarLink>
+    <div className="space-y-8" onClick={onLinkClick}>
+      {!componentContext && (
+        <Group title="Docs">
+          {docGroups.map(([label, docs]) => (
+            <React.Fragment key={label}>
+              <SubHeading>{label}</SubHeading>
+              {docs.map((d) => (
+                <SidebarLink key={d.slug} href={`/docs/${d.slug}`} active={pathname === `/docs/${d.slug}`}>
+                  {d.title}
+                </SidebarLink>
+              ))}
+            </React.Fragment>
           ))}
         </Group>
-      </div>
-    </aside>
+      )}
+
+      {groups.map(({ col, items }) => {
+        const byCategory = groupBy(items, (c) => c.category, nav.categories);
+        const href = `/collections/${col.id}`;
+        return (
+          <Group key={col.id} title={col.name} href={href} count={col.count} active={pathname === href}>
+            {items.length === 0 && <p className="px-2.5 py-1 text-xs text-muted-foreground/70">Coming soon</p>}
+            {byCategory.length > 1
+              ? byCategory.map(([category, list]) => (
+                  <React.Fragment key={category}>
+                    <SubHeading>{category}</SubHeading>
+                    {list.map((c) => (
+                      <SidebarLink key={c.slug} href={`/components/${c.slug}`} active={pathname === `/components/${c.slug}`}>
+                        {c.name}
+                      </SidebarLink>
+                    ))}
+                  </React.Fragment>
+                ))
+              : items.map((c) => (
+                  <SidebarLink key={c.slug} href={`/components/${c.slug}`} active={pathname === `/components/${c.slug}`}>
+                    {c.name}
+                  </SidebarLink>
+                ))}
+          </Group>
+        );
+      })}
+
+      <Group title="Design Systems" href="/designs" count={nav.designs.length} active={pathname === "/designs"}>
+        {nav.designs.map((d) => (
+          <SidebarLink key={d.id} href={`/designs/${d.id}`} active={pathname === `/designs/${d.id}`}>
+            <span className="h-3 w-3 shrink-0 rounded-full border border-white/15" style={{ background: d.accent }} aria-hidden="true" />
+            {d.brand}
+          </SidebarLink>
+        ))}
+      </Group>
+    </div>
+  );
+}
+
+export function DocsSidebar({ nav }: { nav: NavIndex }) {
+  const pathname = usePathname() ?? "";
+  const [mobileOpen, setMobileOpen] = React.useState(false);
+
+  // Close sidebar on route change
+  React.useEffect(() => {
+    setMobileOpen(false);
+  }, [pathname]);
+
+  // Lock body scroll when sidebar is open on mobile
+  React.useEffect(() => {
+    if (mobileOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [mobileOpen]);
+
+  return (
+    <>
+      {/* Mobile sidebar toggle */}
+      <button
+        type="button"
+        aria-label="Toggle sidebar"
+        onClick={() => setMobileOpen((o) => !o)}
+        className="fixed bottom-5 right-5 z-50 flex h-12 w-12 items-center justify-center rounded-full bg-foreground text-background shadow-lg shadow-black/30 transition-transform active:scale-95 lg:hidden"
+      >
+        {mobileOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+      </button>
+
+      {/* Mobile sidebar overlay */}
+      {mobileOpen && (
+        <div className="fixed inset-0 top-[var(--header-height)] z-40 bg-black/60 backdrop-blur-sm lg:hidden" onClick={() => setMobileOpen(false)} />
+      )}
+
+      {/* Mobile sidebar drawer */}
+      <aside
+        aria-label="Documentation"
+        className={`fixed inset-y-0 left-0 top-[var(--header-height)] z-50 w-72 transform overflow-y-auto border-r border-border/60 bg-background px-4 py-8 transition-transform duration-300 ease-in-out lg:hidden ${
+          mobileOpen ? "translate-x-0" : "-translate-x-full"
+        }`}
+      >
+        <SidebarContent nav={nav} pathname={pathname} onLinkClick={() => setMobileOpen(false)} />
+      </aside>
+
+      {/* Desktop sidebar (unchanged behavior) */}
+      <aside
+        aria-label="Documentation"
+        className="mf-scrollbar sticky top-[var(--header-height)] hidden h-[calc(100vh-var(--header-height))] w-64 shrink-0 overflow-y-auto border-r border-border/60 py-8 pr-4 lg:block"
+      >
+        <SidebarContent nav={nav} pathname={pathname} />
+      </aside>
+    </>
   );
 }
