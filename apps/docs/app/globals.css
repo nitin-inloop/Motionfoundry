@@ -163,9 +163,9 @@ input[type="range"].mf-range {
   -webkit-tap-highlight-color: transparent;
 }
 
-/* Prevent horizontal overflow on mobile */
+/* Prevent horizontal overflow without breaking position: sticky */
 html, body {
-  overflow-x: hidden;
+  overflow-x: clip;
 }
 
 /* Responsive prose on mobile */

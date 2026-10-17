@@ -98,7 +98,17 @@ export function getCollectionsListedFirst(): RegistryCollection[] {
 
 /** Every component (listed or not), in `getCollectionsListedFirst()` order and then registry order. */
 export function getAllComponentsOrdered(): RegistryComponent[] {
-  return getCollectionsListedFirst().flatMap((col) => getComponentsByCollection(col.id));
+  const seen = new Set<string>();
+  const res: RegistryComponent[] = [];
+  for (const col of getCollectionsListedFirst()) {
+    for (const comp of getComponentsByCollection(col.id)) {
+      if (!seen.has(comp.slug)) {
+        seen.add(comp.slug);
+        res.push(comp);
+      }
+    }
+  }
+  return res;
 }
 
 /** Categories used by at least one component (any collection), in registry order. */
@@ -112,6 +122,9 @@ export function getCollection(id: string): RegistryCollection | undefined {
 }
 
 export function getComponentsByCollection(id: string): RegistryComponent[] {
+  if (id === "text-fx") {
+    return registryData.components.filter((c) => c.collection === "text-fx" || c.category === "Advanced Text Animations");
+  }
   return registryData.components.filter((c) => c.collection === id);
 }
 

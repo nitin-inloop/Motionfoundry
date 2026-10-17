@@ -26,13 +26,18 @@ export interface NavIndex {
   allCollections: (NavCollection & { listed: boolean })[];
 }
 
-const toNavComponent = ({ slug, name, collection, category }: NavComponent): NavComponent => ({ slug, name, collection, category });
+const toNavComponent = ({ slug, name, collection, category }: NavComponent): NavComponent => ({
+  slug,
+  name,
+  collection: category === "Advanced Text Animations" ? "text-fx" : collection,
+  category,
+});
 
 export function getNavIndex(): NavIndex {
   const components = getListedComponents();
   const allComponents = getAllComponentsOrdered();
   // Count from the registry entries so in-progress additions are reflected immediately.
-  const countOf = (id: string) => allComponents.filter((c) => c.collection === id).length;
+  const countOf = (id: string) => (id === "text-fx" ? allComponents.filter((c) => c.collection === "text-fx" || c.category === "Advanced Text Animations").length : allComponents.filter((c) => c.collection === id).length);
   return {
     docs: DOCS_PAGES.map(({ slug, title, category }) => ({ slug, title, category })),
     designs: getDesigns().map(({ id, brand, category, theme }) => ({ id, brand, category, accent: theme.accent, bg: theme.bg })),
