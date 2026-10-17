@@ -2,6 +2,7 @@ import Link from "next/link";
 import { BRAND_CONFIG } from "../lib/brand";
 import { NEW_VERSION_LABEL, getAllComponents, getCategories, getCollections, getComponentBySlug, isNewComponent } from "../lib/registry";
 import { getDesigns } from "../lib/designs";
+import { themeForMode } from "../lib/theme-style";
 import { CodeBlock } from "../components/code-block";
 import { DesignMock } from "../components/design-mock";
 import { HeroActions } from "../components/hero-actions";
@@ -162,7 +163,19 @@ export default function HomePage() {
   return (
     <div className="space-y-28 overflow-x-clip pb-24 sm:space-y-36">
       <section className="relative overflow-hidden border-b border-border">
-          <div className="bg-background text-left">
+          {/* Hero background image */}
+          <div
+            className="absolute inset-0 z-0"
+            style={{
+              backgroundImage: "url('/hero-bg.png')",
+              backgroundSize: "cover",
+              backgroundPosition: "center",
+              backgroundRepeat: "no-repeat",
+            }}
+          />
+          {/* Dark overlay for text readability */}
+          <div className="absolute inset-0 z-[1] bg-gradient-to-b from-background/80 via-background/70 to-background" />
+          <div className="relative z-[2] text-left">
             <div className="mx-auto grid max-w-7xl gap-12 px-6 pb-20 pt-16 lg:grid-cols-[1.15fr_1fr] lg:items-center">
               <div className="min-w-0 space-y-7">
                 {newComponents.length > 0 ? (
@@ -354,7 +367,7 @@ export default function HomePage() {
           {designs.slice(0, 8).map((d) => (
             <Link key={d.id} href={`/designs/${d.id}`} className="group min-w-0 overflow-hidden rounded-xl border border-border transition hover:border-neutral-600">
               <div className="h-52 overflow-hidden">
-                <DesignMock brand={d.brand} theme={d.theme} />
+                <DesignMock brand={d.brand} theme={themeForMode(d.theme, "dark")} />
               </div>
             </Link>
           ))}
