@@ -66,7 +66,7 @@ const COLLECTIONS = [
     id: "text-fx",
     name: "Text FX",
     order: 4,
-    listed: false,
+    listed: true,
     description: "GSAP-style text animations built from scratch: split-text staggers, mask wipes, elastic letters, text on a path, rolling hovers, marker highlights, scatter, and cube-flip words.",
   },
   {

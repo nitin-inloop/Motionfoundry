@@ -136,7 +136,7 @@ const COLLECTION_SLUGS = {
   scroll: [...SCROLL_SLUGS, ...SCROLL_V23_SLUGS],
   ui: [...UI_SLUGS, ...UI_V24_SLUGS],
 };
-const LISTED_ORDER = ["scroll", "shaders", "ui"];
+const LISTED_ORDER = ["scroll", "shaders", "ui", "text-fx"];
 
 const EXPECTED_SLUGS = Object.values(COLLECTION_SLUGS).flat();
 const TOTAL = EXPECTED_SLUGS.length;
@@ -180,7 +180,7 @@ test("1. Registry contains all 142 components across 6 collections and 13 catego
     Object.fromEntries(Object.entries(COLLECTION_SLUGS).map(([id, slugs]) => [id, slugs.length]))
   );
   const listed = registry.collections.filter((c) => c.listed).sort((a, b) => a.order - b.order).map((c) => c.id);
-  assert.deepEqual(listed, LISTED_ORDER, "Docs navigation lists Scroll, Shaders, then UI");
+  assert.deepEqual(listed, LISTED_ORDER, "Docs navigation lists Scroll, Shaders, UI, then Text FX");
   for (const comp of registry.components) {
     const expectedCollection = Object.keys(COLLECTION_SLUGS).find((id) => COLLECTION_SLUGS[id].includes(comp.slug));
     assert.equal(comp.collection, expectedCollection, `${comp.slug} must belong to ${expectedCollection}`);
